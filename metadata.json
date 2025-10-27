@@ -1,0 +1,5 @@
+{
+  "name": "Stat-AI 2.0",
+  "description": "Um aplicativo para professores de estatística gerarem listas de exercícios personalizadas para seus alunos, usando um assistente de IA interativo para criar e refinar problemas em várias lições.",
+  "requestFramePermissions": []
+}
