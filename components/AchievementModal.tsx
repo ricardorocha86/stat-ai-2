@@ -6,25 +6,26 @@ interface AchievementModalProps {
   achievementData: AchievementDisplayState;
   onClose: () => void;
   achievements: Achievements;
+  onRetry: () => void;
 }
 
 const loadingDetails: { [key: number]: string } = {
-    10: "Forjando seu primeiro equipamento...",
-    20: "Aprimorando sua armadura com aço e couro...",
-    30: "Gravando seu brasão em um escudo de metal...",
-    40: "Polindo sua armadura de campeão(ã)...",
-    50: "Canalizando poder cósmico em sua armadura divina...",
+    10: "Esboçando seu avatar digital...",
+    20: "Aplicando cores vibrantes de pop art...",
+    30: "Instalando upgrades de neon cyberpunk...",
+    40: "Forjando sua armadura de fantasia épica...",
+    50: "Canalizando poder cósmico em seu avatar...",
 };
 
 const achievementSteps: { milestone: AchievementMilestone; icon: React.ReactNode; title: string }[] = [
-    { milestone: 10, icon: <CubeIcon className="w-6 h-6" />, title: "Iniciante" },
-    { milestone: 20, icon: <SparklesIcon className="w-6 h-6" />, title: "Aprimorado(a)" },
-    { milestone: 30, icon: <BoltIcon className="w-6 h-6" />, title: "Condecorado(a)" },
-    { milestone: 40, icon: <TrophyIcon className="w-6 h-6" />, title: "Campeão(ã)" },
-    { milestone: 50, icon: <StarIcon className="w-6 h-6" />, title: "Lenda Divina" },
+    { milestone: 10, icon: <CubeIcon className="w-6 h-6" />, title: "Esboço" },
+    { milestone: 20, icon: <SparklesIcon className="w-6 h-6" />, title: "Pop Art" },
+    { milestone: 30, icon: <BoltIcon className="w-6 h-6" />, title: "Cyberpunk" },
+    { milestone: 40, icon: <TrophyIcon className="w-6 h-6" />, title: "Fantasia" },
+    { milestone: 50, icon: <StarIcon className="w-6 h-6" />, title: "Cósmico" },
 ];
 
-const AchievementModal: React.FC<AchievementModalProps> = ({ achievementData, onClose, achievements }) => {
+const AchievementModal: React.FC<AchievementModalProps> = ({ achievementData, onClose, achievements, onRetry }) => {
   const [timer, setTimer] = useState(0);
 
   useEffect(() => {
@@ -54,6 +55,25 @@ const AchievementModal: React.FC<AchievementModalProps> = ({ achievementData, on
         );
     }
 
+    if (achievementData.error) {
+        return (
+            <div className="w-full h-full bg-red-900/50 rounded-lg flex items-center justify-center min-h-[20rem] md:min-h-0 text-center p-4">
+                <div>
+                    <XCircleIcon className="w-12 h-12 text-red-400 mx-auto" />
+                    <p className="mt-4 font-semibold text-slate-200">Ocorreu um Erro</p>
+                    <p className="mt-1 text-sm text-slate-400 max-w-sm">{achievementData.error}</p>
+                    <button
+                        onClick={onRetry}
+                        className="mt-6 bg-amber-500 text-slate-900 font-bold py-2 px-6 rounded-lg hover:bg-amber-400 transition-colors"
+                    >
+                        Tentar Novamente
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+
     if (achievementData.type === 'image' && achievementData.contentBase64) {
         return (
             <img src={`data:image/png;base64,${achievementData.contentBase64}`} alt={achievementData.title} className="w-full h-full object-cover rounded-lg border-2 border-amber-400/50 shadow-lg" />
@@ -62,10 +82,16 @@ const AchievementModal: React.FC<AchievementModalProps> = ({ achievementData, on
     
     // Fallback for failed generation
     return (
-      <div className="w-full h-full bg-red-900/50 rounded-lg flex items-center justify-center min-h-[20rem] md:min-h-0">
-          <div className="text-center p-4">
+      <div className="w-full h-full bg-red-900/50 rounded-lg flex items-center justify-center min-h-[20rem] md:min-h-0 text-center p-4">
+          <div>
               <span className="text-4xl">😢</span>
               <p className="mt-2 text-slate-300">Falha ao gerar a imagem da recompensa.</p>
+              <button
+                  onClick={onRetry}
+                  className="mt-6 bg-amber-500 text-slate-900 font-bold py-2 px-6 rounded-lg hover:bg-amber-400 transition-colors"
+              >
+                  Tentar Novamente
+              </button>
           </div>
       </div>
     );
@@ -87,7 +113,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({ achievementData, on
         
         {/* Progress Tracker */}
         <div className="w-full">
-            <h3 className="text-center font-bold text-lg text-amber-300 mb-1">A Jornada do Guerreiro</h3>
+            <h3 className="text-center font-bold text-lg text-amber-300 mb-1">Evolução do Avatar Digital</h3>
             <p className="text-center text-sm text-slate-400 mb-5">Sua evolução a cada marco de conhecimento.</p>
             <div className="flex items-center justify-between">
                 {achievementSteps.map((step, index) => {

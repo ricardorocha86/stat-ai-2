@@ -85,6 +85,7 @@ export interface AchievementDisplayState {
   title?: string;
   storyText?: string;
   contentBase64?: string;
+  error?: string;
 }
 
 

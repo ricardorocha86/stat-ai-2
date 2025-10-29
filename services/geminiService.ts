@@ -194,7 +194,7 @@ ${studentAnswer}
 
 // --- New Narrative Achievement Service ---
 
-const warriorNarrative: { 
+const achievementNarrative: { 
     [key: number]: { 
         title: string; 
         storyText: string; 
@@ -202,29 +202,29 @@ const warriorNarrative: {
     } 
 } = {
     10: { 
-        title: "O Início da Jornada", 
-        storyText: "Sua jornada como guerreiro(a) da estatística começa! Você recebeu seu primeiro equipamento: uma espada simples e um escudo de madeira. São humildes, mas são um começo. Continue assim!",
-        prompt: "Transforme a pessoa da imagem fornecida em um(a) guerreiro(a) de fantasia iniciante. Mantenha os traços faciais da pessoa. O cenário deve ser simples, como um campo de treinamento. O equipamento deve ser básico: uma pequena espada de ferro e um escudo redondo de madeira, um pouco gasto."
+        title: "Avatar Esboçado", 
+        storyText: "Sua jornada de aprendizado começou, e seu avatar digital ganhou sua primeira forma: um elegante esboço a lápis.",
+        prompt: "Crie um avatar a partir da imagem fornecida no estilo de um esboço detalhado a lápis sobre papel texturizado. Mantenha os traços faciais da pessoa. O fundo deve ser branco ou de papel claro. - image output only"
     },
     20: { 
-        title: "A Primeira Evolução", 
-        storyText: "Sua dedicação aprimorou seu equipamento! Sua espada agora é de aço e seu escudo foi reforçado com ferro. Você também ganhou um peitoral de couro. A jornada está ficando séria.",
-        prompt: "Evolua o(a) guerreiro(a) da imagem fornecida. Mantenha os traços faciais e a pose geral. Aprimore o equipamento: a espada deve ser de aço, mais robusta; o escudo agora tem reforços de ferro; e adicione um peitoral de couro resistente. O cenário pode ser uma floresta."
+        title: "Avatar Pop Art", 
+        storyText: "Com mais conhecimento, seu avatar explode em cores! Uma vibrante obra de arte no estilo pop art.",
+        prompt: "Evolua o avatar da imagem fornecida para o estilo Pop Art, inspirado em Andy Warhol. Use cores vibrantes e contrastantes e padrões de meio-tom. Mantenha os traços faciais reconhecíveis. - image output only"
     },
     30: { 
-        title: "Guerreiro(a) Condecorado(a)", 
-        storyText: "Você é agora um(a) guerreiro(a) experiente. Sua armadura está mais completa, com ombreiras e manoplas de metal. Sua espada brilha com uma aura sutil, e seu escudo agora ostenta um brasão.",
-        prompt: "Evolua o(a) guerreiro(a) da imagem fornecida. Mantenha os traços faciais. A armadura agora deve ser mais completa, adicionando ombreiras e manoplas de metal. A espada deve ter um leve brilho mágico. O escudo de metal agora exibe um brasão (pode ser um leão ou uma águia estilizada). O cenário pode ser o portão de um castelo."
+        title: "Avatar Cyberpunk", 
+        storyText: "Você está se aprofundando nos dados. Seu avatar agora tem um visual cyberpunk, com detalhes em neon e um toque futurista.",
+        prompt: "Transforme o avatar da imagem fornecida em um personagem cyberpunk. Adicione implantes cibernéticos sutis, iluminação de neon e um fundo de uma cidade futurista chuvosa. Mantenha os traços faciais. - image output only"
     },
     40: { 
-        title: "Campeão(ã) do Reino", 
-        storyText: "Seu nome é conhecido por todo o reino. Você veste uma armadura de placas completa e reluzente. Sua espada emite uma luz poderosa e seu escudo é uma obra de arte forjada pelos melhores ferreiros.",
-        prompt: "Evolua o(a) guerreiro(a) da imagem fornecida para um(a) campeão(ã) do reino. Mantenha os traços faciais. A armadura agora deve ser uma armadura de placas completa e polida. A espada deve emitir uma luz visível e poderosa. O escudo deve ser ornamentado e imponente. O cenário pode ser uma sala do trono."
+        title: "Avatar Fantástico", 
+        storyText: "Seu domínio está se tornando épico. Seu avatar se tornou um herói ou heroína de fantasia, com iluminação cinematográfica e um ar de aventura.",
+        prompt: "Evolua o avatar da imagem fornecida para um personagem de fantasia épica. Adicione uma armadura leve e ornamentada e um fundo de paisagem fantástica com iluminação dramática (golden hour). Mantenha os traços faciais. - image output only"
     },
     50: { 
-        title: "Lenda Divina", 
-        storyText: "Você transcendeu o plano mortal! Sua armadura é forjada com luz divina, sua espada corta a própria realidade e seu escudo é impenetrável. Você se tornou uma lenda viva, o(a) maior guerreiro(a) que já existiu.",
-        prompt: "Transforme o(a) campeão(ã) da imagem fornecida em uma lenda com armadura divina. Mantenha os traços faciais. A armadura deve parecer ser feita de energia ou metal celestial, com padrões de luz e gravuras complexas. A espada deve ser uma lâmina de pura energia. O escudo deve ser igualmente etéreo e poderoso. O cenário deve ser cósmico ou divino, com estrelas e nebulosas ao fundo."
+        title: "Avatar Cósmico", 
+        storyText: "Você alcançou o ápice! Seu avatar transcendeu, tornando-se uma entidade cósmica, fundida com estrelas e nebulosas.",
+        prompt: "Transforme o avatar da imagem fornecida em uma entidade cósmica. O cabelo e as roupas devem se fundir com nebulosas e constelações. O fundo deve ser o espaço sideral. Mantenha os traços faciais claros e reconhecíveis. - image output only"
     },
 };
 
@@ -234,7 +234,7 @@ export const generateOracleFragment = async (
     achievements?: Achievements
 ): Promise<Partial<Achievement> | { error: string }> => {
     try {
-        const step = warriorNarrative[milestone];
+        const step = achievementNarrative[milestone];
         if (!step) {
             return { error: "Milestone inválido." };
         }
@@ -247,10 +247,10 @@ export const generateOracleFragment = async (
                 inputImage = { data: userProfile.photoBase64, mimeType: userProfile.photoMimeType };
             } else {
                 // Modify prompt if no profile picture is available
-                promptText = promptText.replace("Transforme a pessoa da imagem fornecida em um(a)", "Crie um(a)");
+                promptText = promptText.replace("Crie um avatar a partir da imagem fornecida no estilo", "Crie um avatar de um(a) estudante de estatística genérico(a) no estilo");
             }
         } else {
-            const previousMilestone = Object.keys(warriorNarrative).map(Number).sort((a,b) => a-b)[Object.keys(warriorNarrative).indexOf(String(milestone)) - 1];
+            const previousMilestone = Object.keys(achievementNarrative).map(Number).sort((a,b) => a-b)[Object.keys(achievementNarrative).indexOf(String(milestone)) - 1];
             const previousAchievement = achievements?.[previousMilestone];
             if (previousAchievement?.contentBase64) {
                 inputImage = { data: previousAchievement.contentBase64, mimeType: 'image/png' }; // Assuming png, as it's the output format

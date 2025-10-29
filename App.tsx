@@ -183,8 +183,14 @@ const App: React.FC = () => {
 
     } catch (error: any) {
         console.error(`Falha ao gerar recompensa para ${milestone} exercícios`, error);
-        alert(`Falha ao gerar recompensa: ${error.message}`);
-        setAchievementToDisplay(null);
+        setAchievementToDisplay(prev => {
+            if (!prev) return null;
+            return {
+                ...prev,
+                isLoading: false,
+                error: `Falha ao gerar a recompensa: ${error.message}. Por favor, tente novamente.`
+            };
+        });
     } finally {
         setIsGeneratingAchievement(false);
     }
@@ -345,6 +351,7 @@ const App: React.FC = () => {
              achievementData={achievementToDisplay} 
              achievements={achievements}
              onClose={() => setAchievementToDisplay(null)} 
+             onRetry={() => handleClaimAchievement(achievementToDisplay.milestone)}
           />
         )}
     </div>
