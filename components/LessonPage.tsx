@@ -27,10 +27,10 @@ const LessonPage: React.FC<LessonPageProps> = ({
   
   const renderProfessorView = () => (
     <div className="flex flex-col md:flex-row h-full">
-      <div className="w-full md:flex-1 md:overflow-y-auto">
+      <div className="w-full h-1/2 md:h-auto md:flex-1 overflow-y-auto">
         <ExerciseList lesson={lesson} unit={unit} course={course} />
       </div>
-      <div className="w-full md:w-1/3 lg:w-2/5 border-t-2 md:border-t-0 md:border-l-2 border-slate-200 flex flex-col">
+      <div className="w-full h-1/2 md:h-auto md:w-1/3 lg:w-2/5 border-t-2 md:border-t-0 md:border-l-2 border-slate-200 flex flex-col">
         <ChatPanel lesson={lesson} onSaveExercise={onSaveExercise} onSaveExercises={onSaveExercises} />
       </div>
     </div>

@@ -135,7 +135,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ lesson, onSaveExercise }) => {
   }
 
   return (
-    <div className="w-full md:w-1/3 lg:w-2/5 border-l border-[--border-color] bg-[--bg-card] flex flex-col h-full">
+    <div className="w-full bg-[--bg-card] flex flex-col h-full">
        <div className="p-4 border-b border-[--border-color] bg-slate-50 flex-shrink-0">
           <h2 className="text-base font-bold text-[--text-primary] flex items-center gap-2">
             <SparklesIcon />
