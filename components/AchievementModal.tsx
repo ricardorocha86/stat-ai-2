@@ -128,7 +128,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({ achievementData, on
                         <React.Fragment key={step.milestone}>
                             <div className="flex flex-col items-center text-center">
                                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${iconBgClass} transition-colors duration-500`}>
-                                    {isUnlocked && !isCurrent ? <CheckIcon className="w-7 h-7 text-white" /> : React.cloneElement(step.icon as React.ReactElement, { className: `w-7 h-7 ${iconTextClass}` })}
+                                    {isUnlocked && !isCurrent ? <CheckIcon className="w-7 h-7 text-white" /> : React.cloneElement(step.icon as React.ReactElement<{ className?: string }>, { className: `w-7 h-7 ${iconTextClass}` })}
                                 </div>
                                 <span className={`mt-2 text-xs font-semibold ${isUnlocked ? 'text-white' : 'text-slate-400'}`}>{step.milestone}</span>
                             </div>
