@@ -17,7 +17,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   // Função auxiliar para gerar URL
   const getCoverUrl = (index: number) => {
     const paddedIndex = String(index).padStart(3, '0');
-    return `/capas/capa_statai_${paddedIndex}.jpg`;
+    return `capas/capa_statai_${paddedIndex}.jpg`;
   };
 
   // Inicializa com capa aleatória
@@ -53,7 +53,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     <div className="w-screen h-screen flex flex-col lg:flex-row overflow-hidden font-sans bg-slate-50">
       
       {/* LADO ESQUERDO (Topo no mobile): Área da Imagem */}
-      <div className="relative w-full lg:w-[65%] h-[35%] lg:h-full flex items-center justify-center p-4 lg:p-16 bg-slate-100 flex-shrink-0">
+      <div className="relative w-full lg:w-[65%] h-[40%] lg:h-full flex items-center justify-center p-4 lg:p-16 bg-slate-100 flex-shrink-0">
         
         {/* Número da imagem (Temporário) */}
         <div className="absolute top-2 right-2 text-[10px] text-slate-400 opacity-60 font-mono select-none pointer-events-none">
@@ -130,7 +130,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       </div>
 
       {/* LADO DIREITO (Baixo no mobile): Login */}
-      <div className="w-full lg:w-[35%] h-[65%] lg:h-full flex flex-col justify-center px-8 sm:px-14 bg-white border-t lg:border-t-0 lg:border-l border-slate-200 shadow-2xl z-10 overflow-y-auto">
+      <div className="w-full lg:w-[35%] h-[60%] lg:h-full flex flex-col justify-center px-8 sm:px-14 bg-white border-t lg:border-t-0 lg:border-l border-slate-200 shadow-2xl z-10 overflow-y-auto">
         <div className="max-w-sm w-full mx-auto py-8 lg:py-0">
             <div className="mb-6 lg:mb-10 text-center lg:text-left">
                 <div className="inline-flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-blue-600 text-white mb-4 lg:mb-6 lg:hidden shadow-lg shadow-blue-200">
