@@ -17,9 +17,11 @@ const Header: React.FC<HeaderProps> = ({ page, lesson, unit, viewMode, setViewMo
     const getTitle = () => {
         switch(page) {
             case 'home':
-                return { main: "Início", breadcrumb: "Dashboard" };
+                return { main: "Área do Aluno", breadcrumb: "Portal" };
             case 'about':
                 return { main: "Sobre o Stat-AI 2.0", breadcrumb: "Informações" };
+            case 'profile':
+                return { main: "Meu Perfil", breadcrumb: "Configurações" };
             case 'lesson':
                 if (lesson) {
                     return { main: lesson.title, breadcrumb: unit?.title || 'Curso' };

@@ -1,0 +1,88 @@
+[
+  {
+    "id": "livro-aula-16-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "Uma moeda honesta é lançada 5 vezes. Calcule a probabilidade de obter exatamente 3 caras.  \n(Dica: $n = 5$, $x = 3$, $p = 0{,}5$).",
+    "origem": {
+      "arquivo": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt",
+      "linha_inicial": 92,
+      "linha_final": 97,
+      "aula": 16
+    },
+    "solucao_completa": "Existem $\\binom53=10$ posições possíveis para as três caras. Cada sequência com três caras e duas coroas tem probabilidade $(0{,}5)^3(0{,}5)^2=(0{,}5)^5$. Logo,\n$$P(X=3)=10(0{,}5)^5=\\frac{10}{32}=0{,}3125=31{,}25\\%.$$",
+    "resourceBasePath": "/aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/",
+    "solucao_original": "**Resolução:**  \n$$P(X = 3) = \\binom{5}{3} (0{,}5)^3 (0{,}5)^{5-3} = \\frac{5!}{3! \\, 2!} (0{,}125) (0{,}25) = 10 \\times 0{,}03125 = 0{,}3125 \\quad (31{,}25\\%)$$",
+    "dica": "Há cinco ensaios independentes, dois resultados possíveis e probabilidade constante: use a binomial.",
+    "passo_inicial": "Defina $X$ como número de caras. Use $P(X=x)=\\binom nx p^x(1-p)^{n-x}$, com $n=5$, $x=3$ e $p=0{,}5$.",
+    "resposta_final": "$P(X=3)=0{,}3125=31{,}25\\%$.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt",
+          "linha_inicial": 92,
+          "linha_final": 97
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-16-multipla-escolha-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "multipla_escolha",
+    "enunciado": "Em um processo de fabricação de parafusos, a probabilidade de uma peça ser defeituosa é de 5%. Retira-se uma amostra aleatória de 10 parafusos. Qual é o valor esperado (média) e o desvio-padrão de parafusos defeituosos nessa amostra?  \n(a) $\\mu = 0{,}5$ e $\\sigma = 0{,}69$  \n(b) $\\mu = 1{,}0$ e $\\sigma = 0{,}95$  \n(c) $\\mu = 0{,}5$ e $\\sigma = 0{,}475$  \n(d) $\\mu = 5{,}0$ e $\\sigma = 2{,}18$  \n(e) $\\mu = 0{,}5$ e $\\sigma = 0{,}85$",
+    "origem": {
+      "arquivo": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt",
+      "linha_inicial": 100,
+      "linha_final": 109,
+      "aula": 16
+    },
+    "solucao_completa": "Pelo modelo binomial, $\\mu=np=10\\cdot0{,}05=0{,}5$. A variância é $10\\cdot0{,}05\\cdot0{,}95=0{,}475$; portanto,\n$$\\sigma=\\sqrt{0{,}475}\\approx0{,}6892.$$\nA média pode ser fracionária, pois é um valor esperado, não a contagem de uma amostra particular.",
+    "resposta_final": "Alternativa A — $\\mu=0{,}5$ e $\\sigma\\approx0{,}69$.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "$\\mu = 0{,}5$ e $\\sigma = 0{,}69$"
+      },
+      {
+        "id": "b",
+        "texto": "$\\mu = 1{,}0$ e $\\sigma = 0{,}95$"
+      },
+      {
+        "id": "c",
+        "texto": "$\\mu = 0{,}5$ e $\\sigma = 0{,}475$"
+      },
+      {
+        "id": "d",
+        "texto": "$\\mu = 5{,}0$ e $\\sigma = 2{,}18$"
+      },
+      {
+        "id": "e",
+        "texto": "$\\mu = 0{,}5$ e $\\sigma = 0{,}85$"
+      }
+    ],
+    "resourceBasePath": "/aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/",
+    "solucao_original": "**Gabarito: (a)**  \n**Comentário:** $\\mu = n \\cdot p = 10 \\times 0{,}05 = 0{,}5$.  \nDesvio-padrão: $\\sigma = \\sqrt{n \\cdot p \\cdot (1-p)} = \\sqrt{10 \\times 0{,}05 \\times 0{,}95} = \\sqrt{0{,}475} \\cong 0{,}689 \\cong 0{,}69$.",
+    "dica": "Para a binomial, a média é $np$ e a variância é $np(1-p)$. O desvio-padrão exige uma raiz.",
+    "passo_inicial": "Adote o modelo binomial da aula com $n=10$ e $p=0{,}05$, supondo ensaios independentes e probabilidade constante. Calcule primeiro média e variância.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt",
+          "linha_inicial": 100,
+          "linha_final": 109
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

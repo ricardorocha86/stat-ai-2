@@ -1,0 +1,106 @@
+[
+  {
+    "id": "livro-aula-13-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "Considere o lançamento de um dado equilibrado de 6 faces:  \n(a) Determine o espaço amostral $S$.  \n(b) Defina o evento simples $E_1$: \"sair a face 4\". Calcule $P(E_1)$.  \n(c) Defina o evento composto $E_2$: \"sair uma face par\". Calcule $P(E_2)$.  \n(d) Defina o evento composto $E_3$: \"sair uma face maior que 4\". Calcule $P(E_3)$.",
+    "origem": {
+      "arquivo": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt",
+      "linha_inicial": 74,
+      "linha_final": 85,
+      "aula": 13
+    },
+    "solucao_completa": "(a) $S=\\{1,2,3,4,5,6\\}$.\n(b) $E_1=\\{4\\}$ tem um resultado favorável: $P(E_1)=1/6\\approx16{,}67\\%$.\n(c) $E_2=\\{2,4,6\\}$ tem três: $P(E_2)=3/6=1/2=50\\%$.\n(d) $E_3=\\{5,6\\}$ tem dois: $P(E_3)=2/6=1/3\\approx33{,}33\\%$.\nA contagem usa equiprobabilidade, garantida pelo dado equilibrado.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Determine o espaço amostral $S$."
+      },
+      {
+        "id": "b",
+        "texto": "Defina o evento simples $E_1$: \"sair a face 4\". Calcule $P(E_1)$."
+      },
+      {
+        "id": "c",
+        "texto": "Defina o evento composto $E_2$: \"sair uma face par\". Calcule $P(E_2)$."
+      },
+      {
+        "id": "d",
+        "texto": "Defina o evento composto $E_3$: \"sair uma face maior que 4\". Calcule $P(E_3)$."
+      }
+    ],
+    "resourceBasePath": "/aulas/02-probabilidade/aula-13-conceitos-basicos-e-abordagens-de-probabilidade/",
+    "solucao_original": "**Resolução:**  \n(a) $S = \\{1, 2, 3, 4, 5, 6\\}$, logo $N_S = 6$.  \n(b) $E_1 = \\{4\\} \\implies P(E_1) = \\frac{1}{6} \\cong 16{,}67\\%$.  \n(c) $E_2 = \\{2, 4, 6\\} \\implies P(E_2) = \\frac{3}{6} = \\frac{1}{2} = 50\\%$.  \n(d) $E_3 = \\{5, 6\\} \\implies P(E_3) = \\frac{2}{6} = \\frac{1}{3} \\cong 33{,}33\\%$.",
+    "dica": "Num dado equilibrado, todas as faces têm a mesma probabilidade. Conte os resultados favoráveis a cada evento.",
+    "passo_inicial": "Liste as seis faces no espaço amostral e escreva cada evento como um subconjunto. Depois use $P(E)=|E|/|S|$.",
+    "resposta_final": "(a) $\\{1,2,3,4,5,6\\}$. (b) $\\{4\\}$; $1/6$. (c) $\\{2,4,6\\}$; $1/2$. (d) $\\{5,6\\}$; $1/3$.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt",
+          "linha_inicial": 74,
+          "linha_final": 85
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-13-multipla-escolha-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "multipla_escolha",
+    "enunciado": "Uma urna contém 12 bolas brancas, 8 vermelhas e 5 pretas, todas idênticas em peso e tamanho. Retirando-se ao acaso uma bola dessa urna, qual é a probabilidade de ela NÃO ser preta?  \n(a) $20\\%$  \n(b) $50\\%$  \n(c) $68\\%$  \n(d) $80\\%$  \n(e) $85\\%$",
+    "origem": {
+      "arquivo": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt",
+      "linha_inicial": 88,
+      "linha_final": 96,
+      "aula": 13
+    },
+    "solucao_completa": "Há $12+8+5=25$ bolas. O evento desejado inclui $12+8=20$ bolas. Portanto, $P(\\text{não preta})=20/25=0{,}80$. Também se obtém $1-5/25=0{,}80$ pelo complemento.",
+    "resposta_final": "Alternativa D — 80%.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "$20\\%$"
+      },
+      {
+        "id": "b",
+        "texto": "$50\\%$"
+      },
+      {
+        "id": "c",
+        "texto": "$68\\%$"
+      },
+      {
+        "id": "d",
+        "texto": "$80\\%$"
+      },
+      {
+        "id": "e",
+        "texto": "$85\\%$"
+      }
+    ],
+    "resourceBasePath": "/aulas/02-probabilidade/aula-13-conceitos-basicos-e-abordagens-de-probabilidade/",
+    "solucao_original": "**Gabarito: (d)**  \n**Comentário:** Total de bolas = $12 + 8 + 5 = 25$. As bolas não pretas são as brancas e vermelhas: $12 + 8 = 20$. Logo, $P(\\text{não preta}) = \\frac{20}{25} = 0{,}80 = 80\\%$.",
+    "dica": "O evento “não ser preta” é o complemento de “ser preta”.",
+    "passo_inicial": "Some todas as bolas para encontrar o total e some brancas com vermelhas para obter o número de resultados favoráveis.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt",
+          "linha_inicial": 88,
+          "linha_final": 96
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

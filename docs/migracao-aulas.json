@@ -1,0 +1,803 @@
+{
+  "lessons": [
+    {
+      "aula": 0,
+      "titulo": "Apresentação e Sumário",
+      "exercicios": 0,
+      "com_resolucao": 0,
+      "atividades": 0,
+      "recursos": 0,
+      "source_sha256": "d9e2f690ece6d6001f91b2e64af354bc59d4b26dfe3bc9153cd5781f82007ddd",
+      "resolucoes_na_fonte": 0,
+      "pendencias": []
+    },
+    {
+      "aula": 1,
+      "titulo": "Introdução à Estatística",
+      "exercicios": 3,
+      "com_resolucao": 3,
+      "atividades": 0,
+      "recursos": 2,
+      "source_sha256": "ad39076a75209e43ddf6e2d2054c4a96c48b10530fc6c82cd679b2a66f426849",
+      "resolucoes_na_fonte": 3,
+      "pendencias": []
+    },
+    {
+      "aula": 2,
+      "titulo": "Amostragens Probabilísticas",
+      "exercicios": 8,
+      "com_resolucao": 8,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "f70a57b2fea69c0ce518e6c6d7a115edb4b386d9b3e7c0bf80ccdff7422c4f55",
+      "resolucoes_na_fonte": 0,
+      "pendencias": []
+    },
+    {
+      "aula": 3,
+      "titulo": "Classificação de Variáveis",
+      "exercicios": 5,
+      "com_resolucao": 5,
+      "atividades": 1,
+      "recursos": 3,
+      "source_sha256": "9d503b8fbc0a82a191fa22fb30c566351308a596feacf2b73cafc3b653608216",
+      "resolucoes_na_fonte": 4,
+      "pendencias": []
+    },
+    {
+      "aula": 4,
+      "titulo": "Organização de Dados Qualitativos",
+      "exercicios": 3,
+      "com_resolucao": 3,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "16f5d21d3b972e74fd7f081d5da654ff4b44125d5e390c98a84bcc0086410c91",
+      "resolucoes_na_fonte": 0,
+      "pendencias": []
+    },
+    {
+      "aula": 5,
+      "titulo": "Gráficos Qualitativos e Diagrama de Pareto",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 4,
+      "source_sha256": "9a6d2eee7f15109cbfbbd39e1dc7462c0337f5a6b3d73e3834092fcf5c195039",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 6,
+      "titulo": "Organização de Dados Quantitativos",
+      "exercicios": 5,
+      "com_resolucao": 5,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "7f08e3313d810b96d3422d03effa9b07d40e29cea43d172df62da485fb46ae60",
+      "resolucoes_na_fonte": 0,
+      "pendencias": []
+    },
+    {
+      "aula": 7,
+      "titulo": "Gráficos Quantitativos e Ramo-e-Folha",
+      "exercicios": 5,
+      "com_resolucao": 5,
+      "atividades": 2,
+      "recursos": 7,
+      "source_sha256": "ab65258ac59f2c32e29b9f8e442f8db95bc119953bb3358049e47d5b62267573",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 8,
+      "titulo": "Medidas de Tendência Central",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "7c81dfec6631f1e9031102fe2cba53a4ae7e802b7f122f97ed7b6903e28905e2",
+      "resolucoes_na_fonte": 0,
+      "pendencias": []
+    },
+    {
+      "aula": 9,
+      "titulo": "Medidas de Dispersão",
+      "exercicios": 1,
+      "com_resolucao": 1,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "af8c6367828782e7e8d5ace47f38fee34b5ec9b42afecc766d51e1d62eb8b1df",
+      "resolucoes_na_fonte": 1,
+      "pendencias": []
+    },
+    {
+      "aula": 10,
+      "titulo": "Medidas de Posição e Boxplot",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 4,
+      "source_sha256": "5cca4c24e513fc1e62d2524f72e706f2092b23fb0bf7e355c82b142a05a266c1",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 11,
+      "titulo": "Medidas para Dados Agrupados",
+      "exercicios": 1,
+      "com_resolucao": 1,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "19a143b8b08b1ed36901e5af29e1bb184127d062d47f05e37088440c8a329609",
+      "resolucoes_na_fonte": 0,
+      "pendencias": []
+    },
+    {
+      "aula": 12,
+      "titulo": "Aplicações do Desvio-Padrão e Controle de Qualidade",
+      "exercicios": 3,
+      "com_resolucao": 3,
+      "atividades": 0,
+      "recursos": 3,
+      "source_sha256": "08f5e23f3bb5ae30fa61e77616a324e70b1eb752f69bdeebe8ef226e323d33cf",
+      "resolucoes_na_fonte": 3,
+      "pendencias": []
+    },
+    {
+      "aula": 13,
+      "titulo": "Conceitos Básicos e Abordagens de Probabilidade",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 2,
+      "source_sha256": "d86a3cefba6511aeaca63de4d4c7601e561eb40bfd85818c8f242740f5a48846",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 14,
+      "titulo": "Probabilidade Condicional e Independência",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "ada8944faed3f765c13dbe9f2f7d8aab860c0d0f6e6e6748f00ba20664943f1e",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 15,
+      "titulo": "Regras de Contagem",
+      "exercicios": 3,
+      "com_resolucao": 3,
+      "atividades": 0,
+      "recursos": 3,
+      "source_sha256": "66971b9e3cc7656b3145b31daf5811965326a5cd60ac6481cb6e3d533c2abc9b",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 16,
+      "titulo": "Variáveis Aleatórias Discretas e Distribuição Binomial",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 3,
+      "source_sha256": "78b866c25b17d35c3d8613325b219adf4d675bb9e7d35b7dbffd31df67c9f175",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 17,
+      "titulo": "Distribuição Hipergeométrica",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "336dcab9cebfe5e5cd5b42d6b93a7a26b250c55e1e73538cf568c02731127631",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 18,
+      "titulo": "Distribuição de Poisson",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "9ac50c5d77bf1a698fdce78eb2a1d9370603578001044891a07e42efb4b499b4",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 19,
+      "titulo": "Distribuição Normal ou Gaussiana",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 1,
+      "source_sha256": "d92bc8157efa3c0d6e2ce9ae490dd3954b5bc014992e12919984bd24aca4ba17",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 20,
+      "titulo": "Distribuição Normal Padronizada e Escore Z",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 6,
+      "source_sha256": "317d0c2b0e8ee876adbef5397e183c46e4833575fbb541213fc0e2e19f23d13a",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 21,
+      "titulo": "Distribuição Exponencial",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 2,
+      "source_sha256": "7e95a2ea98d545313dfb3a46d38c92d15de478ee8f38772836703bf1a8cb924e",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 22,
+      "titulo": "Regressão Linear Simples",
+      "exercicios": 2,
+      "com_resolucao": 2,
+      "atividades": 0,
+      "recursos": 2,
+      "source_sha256": "6318c713bebc4e068306f0e7a986f15e27bbb22b2f8696448ca2a4856cc6a170",
+      "resolucoes_na_fonte": 2,
+      "pendencias": []
+    },
+    {
+      "aula": 23,
+      "titulo": "Correlação Linear e Coeficiente de Determinação",
+      "exercicios": 11,
+      "com_resolucao": 11,
+      "atividades": 1,
+      "recursos": 4,
+      "source_sha256": "1616b50cf89acc0b8281f596dd00ba782209140321ba8895138791241132f06c",
+      "resolucoes_na_fonte": 0,
+      "pendencias": []
+    },
+    {
+      "aula": 24,
+      "titulo": "Apêndice, Referências e Formulário",
+      "exercicios": 0,
+      "com_resolucao": 0,
+      "atividades": 0,
+      "recursos": 0,
+      "source_sha256": "11ac1e73b97ecec6872934d02facf9bc916b71497c036e1e32789906ab2bf2da",
+      "resolucoes_na_fonte": 0,
+      "pendencias": []
+    }
+  ],
+  "resources": [
+    {
+      "aula": 1,
+      "arquivo": "figura_1_pinguins.png",
+      "descricao": "Figura 1: Amostragem aleatória simples de pinguins",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-01-introducao-a-estatistica/recursos/figura_1_pinguins.png",
+      "status": "preservado"
+    },
+    {
+      "aula": 1,
+      "arquivo": "grafico_amostragem.html",
+      "descricao": "Simulador Interativo: População e Amostra",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-01-introducao-a-estatistica/recursos/grafico_amostragem.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 2,
+      "arquivo": "grafico_tipos_amostragem.html",
+      "descricao": "Tipos de Amostragem Probabilística",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-02-amostragens-probabilisticas/recursos/grafico_tipos_amostragem.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 3,
+      "arquivo": "figura_2_tipos_variaveis.png",
+      "descricao": "Figura 2: Classificação dos tipos de variáveis",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-03-classificacao-de-variaveis/recursos/figura_2_tipos_variaveis.svg",
+      "status": "diagrama_vetorial",
+      "origem_dados": "Classificação dos tipos de variáveis",
+      "destino_original": "aulas/01-descritiva/aula-03-classificacao-de-variaveis/recursos/figura_2_tipos_variaveis.png"
+    },
+    {
+      "aula": 3,
+      "arquivo": "grafico_tipos_variaveis.html",
+      "descricao": "Classificação Interativa dos Tipos de Variáveis",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-03-classificacao-de-variaveis/recursos/grafico_tipos_variaveis.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 3,
+      "arquivo": "figura_3_etapas_estudo.png",
+      "descricao": "Figura 3: Diagrama das etapas de um estudo estatístico",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-03-classificacao-de-variaveis/recursos/figura_3_etapas_estudo.svg",
+      "status": "diagrama_vetorial",
+      "origem_dados": "Etapas de um estudo estatístico",
+      "destino_original": "aulas/01-descritiva/aula-03-classificacao-de-variaveis/recursos/figura_3_etapas_estudo.png"
+    },
+    {
+      "aula": 4,
+      "arquivo": "grafico_frequencias_qualitativas.html",
+      "descricao": "Distribuição de Frequências Qualitativas",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/grafico_frequencias_qualitativas.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 5,
+      "arquivo": "figura_4_barras_pizza.png",
+      "descricao": "Figura 4 – Gráfico de pizza e gráfico de barras",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/figura_4_barras_pizza.html",
+      "status": "plotly",
+      "origem_dados": "Tabela 1 da aula 4: contagens 8, 4, 4, 1, 1; percentuais arredondados 44%, 22%, 22%, 6%, 6%.",
+      "esquematico": false,
+      "destino_original": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/figura_4_barras_pizza.png"
+    },
+    {
+      "aula": 5,
+      "arquivo": "figura_5_diagrama_pareto.png",
+      "descricao": "Figura 5 – Diagrama de Pareto da Tabela 2",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/figura_5_diagrama_pareto.html",
+      "status": "plotly",
+      "origem_dados": "Tabela 2 da aula 5: 132, 18, 8 e 2 reclamações.",
+      "esquematico": false,
+      "destino_original": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/figura_5_diagrama_pareto.png"
+    },
+    {
+      "aula": 5,
+      "arquivo": "grafico_diagrama_pareto.html",
+      "descricao": "Diagrama de Pareto Interativo",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/grafico_diagrama_pareto.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 5,
+      "arquivo": "ex14_grafico_1_enem.png",
+      "descricao": "Questão ENEM 2017 - Gráficos",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/ex14_grafico_1_enem.html",
+      "status": "plotly",
+      "motivo": "A imagem extraída não corresponde à figura descrita; dados da figura não constam no material.",
+      "origem_dados": "Esquema do efeito de truncar o eixo; alturas 70 e 30 identificadas na imagem fornecida.",
+      "esquematico": true,
+      "destino_original": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/ex14_grafico_1_enem.png"
+    },
+    {
+      "aula": 6,
+      "arquivo": "grafico_distribuicao_quantitativa.html",
+      "descricao": "Tabela 3: Distribuição de Frequências Quantitativas",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/recursos/grafico_distribuicao_quantitativa.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 7,
+      "arquivo": "figura_6_histograma_poligono.png",
+      "descricao": "Figura 6 – Histograma e polígono de frequências relativas para as estaturas dos 18 alunos da FATEC-Americana",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_6_histograma_poligono.html",
+      "status": "plotly",
+      "origem_dados": "Tabela 3 do material: classes [1,55;1,66), [1,66;1,77), [1,77;1,88), [1,88;1,99]; frequências relativas arredondadas.",
+      "esquematico": false,
+      "destino_original": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_6_histograma_poligono.png"
+    },
+    {
+      "aula": 7,
+      "arquivo": "figura_7_ogiva.png",
+      "descricao": "Figura 7 – Ogiva para as frequências percentuais acumuladas das estaturas dos 18 alunos da FATEC-Americana",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_7_ogiva.html",
+      "status": "plotly",
+      "origem_dados": "Tabela 3: percentuais acumulados 22%, 61%, 89%, 100%.",
+      "esquematico": false,
+      "destino_original": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_7_ogiva.png"
+    },
+    {
+      "aula": 7,
+      "arquivo": "figura_8_grafico_linha_dolar.png",
+      "descricao": "Figura 8 – Gráfico de linha para a cotação do dólar comercial em reais (2009–2018)",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_8_grafico_linha_dolar.html",
+      "status": "plotly",
+      "origem_dados": "Tabela 4 da aula 7, de 2009 a 2018.",
+      "esquematico": false,
+      "destino_original": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_8_grafico_linha_dolar.png"
+    },
+    {
+      "aula": 7,
+      "arquivo": "figura_9_grafico_radar_iogurte.png",
+      "descricao": "Figura 9 – Gráfico de radar para a nota média atribuída a cinco quesitos avaliados em três marcas de iogurte",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_9_grafico_radar_iogurte.html",
+      "status": "plotly",
+      "origem_dados": "Tabela 5 da aula 7: escala de 0 a 9 cm.",
+      "esquematico": false,
+      "destino_original": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_9_grafico_radar_iogurte.png"
+    },
+    {
+      "aula": 7,
+      "arquivo": "grafico_radar_histograma.html",
+      "descricao": "Gráficos Quantitativos Interativos: Radar e Histograma",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/grafico_radar_histograma.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 7,
+      "arquivo": "ex11_ramo_folha_cervejas.png",
+      "descricao": "Ramo-e-folha: Flying Dog vs Sierra Nevada",
+      "formato": "png",
+      "destino": "Markdown na aula/exercício",
+      "status": "tabela_markdown",
+      "origem_dados": "Valores do material aprovado",
+      "destino_original": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/ex11_ramo_folha_cervejas.png"
+    },
+    {
+      "aula": 7,
+      "arquivo": "ex13_histograma_salarios.png",
+      "descricao": "Histograma Salários - FCC 2009",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/ex13_histograma_salarios.html",
+      "status": "plotly",
+      "origem_dados": "Gráfico original: livro, p. 50. Classes [2,4), [4,5), [5,8), [8,10); densidades 0,10; 0,25; 0,15; 0,05.",
+      "esquematico": false,
+      "destino_original": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/ex13_histograma_salarios.png"
+    },
+    {
+      "aula": 8,
+      "arquivo": "grafico_tendencia_central.html",
+      "descricao": "Cotação do Dólar Comercial e Medidas de Tendência Central",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-08-medidas-de-tendencia-central/recursos/grafico_tendencia_central.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 9,
+      "arquivo": "grafico_dispersao_acoes.html",
+      "descricao": "Comparativo de Dispersão e Volatilidade",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-09-medidas-de-dispersao/recursos/grafico_dispersao_acoes.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 10,
+      "arquivo": "figura_10_quartis.png",
+      "descricao": "Figura 10. Representação dos quartis em um conjunto de dados organizados em ordem crescente",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/figura_10_quartis.svg",
+      "status": "diagrama_vetorial",
+      "origem_dados": "Quartis: quatro partes com 25% dos dados",
+      "destino_original": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/figura_10_quartis.png"
+    },
+    {
+      "aula": 10,
+      "arquivo": "figura_11_esboco_boxplot.png",
+      "descricao": "Figura 11. Esboço de um boxplot",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/figura_11_esboco_boxplot.svg",
+      "status": "diagrama_vetorial",
+      "origem_dados": "Elementos de um boxplot",
+      "destino_original": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/figura_11_esboco_boxplot.png"
+    },
+    {
+      "aula": 10,
+      "arquivo": "figura_8_boxplot_petr_vale.png",
+      "descricao": "Figura 8. Boxplots referentes aos preços (em reais) das ações da Petrobrás e da Vale do Rio Doce no dia 1º de março entre os anos de 2009 e 2018",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/figura_8_boxplot_petr_vale.html",
+      "status": "plotly",
+      "origem_dados": "Quartis e extremos explicitamente calculados na aula 10.",
+      "esquematico": false,
+      "destino_original": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/figura_8_boxplot_petr_vale.png"
+    },
+    {
+      "aula": 10,
+      "arquivo": "grafico_boxplot_acoes.html",
+      "descricao": "Boxplot Interativo: Petrobras vs Vale",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/grafico_boxplot_acoes.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 11,
+      "arquivo": "grafico_dados_agrupados.html",
+      "descricao": "Distribuição de Frequências para Dados Agrupados",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-11-medidas-para-dados-agrupados/recursos/grafico_dados_agrupados.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 12,
+      "arquivo": "grafico_regra_empirica_chebyshev.html",
+      "descricao": "Regra Empírica e Teorema de Chebyshev",
+      "formato": "html",
+      "destino": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/grafico_regra_empirica_chebyshev.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 12,
+      "arquivo": "ex07_cap3_distribuicao.png",
+      "descricao": "Distribuições de Frequências e Assimetria",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex07_cap3_distribuicao.html",
+      "status": "plotly",
+      "motivo": "A imagem extraída não corresponde à figura descrita; dados da figura não constam no material.",
+      "origem_dados": "Formas conceituais descritas no exercício 7 da aula 12; sem amostras observadas.",
+      "esquematico": true,
+      "destino_original": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex07_cap3_distribuicao.png"
+    },
+    {
+      "aula": 12,
+      "arquivo": "ex13_cap3_boxplot.png",
+      "descricao": "Boxplot Comparativo de Produção",
+      "formato": "png",
+      "destino": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex13_cap3_boxplot.html",
+      "status": "plotly",
+      "motivo": "A imagem extraída não corresponde à figura descrita; dados da figura não constam no material.",
+      "origem_dados": "Relações qualitativas descritas no exercício 13 da aula 12; sem valores numéricos observados.",
+      "esquematico": true,
+      "destino_original": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex13_cap3_boxplot.png"
+    },
+    {
+      "aula": 13,
+      "arquivo": "figura_9_arvore_moedas.png",
+      "descricao": "Figura 9. Diagrama de árvore para o lançamento de uma moeda duas vezes, sendo CA = cara e CO = coroa",
+      "formato": "png",
+      "destino": "aulas/02-probabilidade/aula-13-conceitos-basicos-e-abordagens-de-probabilidade/recursos/figura_9_arvore_moedas.svg",
+      "status": "diagrama_vetorial",
+      "origem_dados": "Árvore de resultados do experimento",
+      "destino_original": "aulas/02-probabilidade/aula-13-conceitos-basicos-e-abordagens-de-probabilidade/recursos/figura_9_arvore_moedas.png"
+    },
+    {
+      "aula": 13,
+      "arquivo": "grafico_arvore_probabilidades.html",
+      "descricao": "Árvore de Probabilidades Interativa",
+      "formato": "html",
+      "destino": "aulas/02-probabilidade/aula-13-conceitos-basicos-e-abordagens-de-probabilidade/recursos/grafico_arvore_probabilidades.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 14,
+      "arquivo": "grafico_tabela_contingencia.html",
+      "descricao": "Tabela de Contingência Interativa",
+      "formato": "html",
+      "destino": "aulas/02-probabilidade/aula-14-probabilidade-condicional-e-independencia/recursos/grafico_tabela_contingencia.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 15,
+      "arquivo": "grafico_combinatoria_arranjos.html",
+      "descricao": "Calculadora Interativa de Análise Combinatória",
+      "formato": "html",
+      "destino": "aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/grafico_combinatoria_arranjos.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 15,
+      "arquivo": "ex08_cap4_venn.png",
+      "descricao": "Diagrama de Venn - Exercício 8",
+      "formato": "png",
+      "destino": "aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/ex08_cap4_venn.svg",
+      "status": "diagrama_vetorial",
+      "origem_dados": "Eventos A e B e sua interseção",
+      "destino_original": "aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/ex08_cap4_venn.png"
+    },
+    {
+      "aula": 15,
+      "arquivo": "ex10_cap4_arvore.png",
+      "descricao": "Árvore de Decisão - Exercício 10",
+      "formato": "png",
+      "destino": "aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/ex10_cap4_arvore.png",
+      "status": "substituido_exercicio_equivalente",
+      "motivo": "Árvore nova com dados explícitos; imagem antiga não usada.",
+      "destino_novo": "public/aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/ex10_arvore_probabilidades.svg"
+    },
+    {
+      "aula": 16,
+      "arquivo": "figura_10_prob_tecelagem.png",
+      "descricao": "Figura 10. Gráfico da distribuição de probabilidades da Tabela 5",
+      "formato": "png",
+      "destino": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/recursos/figura_10_prob_tecelagem.html",
+      "status": "plotly",
+      "origem_dados": "Tabela 5 da aula 16: 0,17; 0,42; 0,25; 0,12; 0,04.",
+      "esquematico": false,
+      "destino_original": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/recursos/figura_10_prob_tecelagem.png"
+    },
+    {
+      "aula": 16,
+      "arquivo": "figura_11_arvore_notebooks.png",
+      "descricao": "Figura 11. Diagrama de árvore para o experimento do Exemplo 5.1.1",
+      "formato": "png",
+      "destino": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/recursos/figura_11_arvore_notebooks.svg",
+      "status": "diagrama_vetorial",
+      "origem_dados": "Árvore de resultados do experimento",
+      "destino_original": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/recursos/figura_11_arvore_notebooks.png"
+    },
+    {
+      "aula": 16,
+      "arquivo": "grafico_distribuicao_binomial.html",
+      "descricao": "Simulador Interativo da Distribuição Binomial",
+      "formato": "html",
+      "destino": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/recursos/grafico_distribuicao_binomial.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 17,
+      "arquivo": "grafico_comparativo_hiper_binomial.html",
+      "descricao": "Comparativo Interativo: Hipergeométrica vs Binomial",
+      "formato": "html",
+      "destino": "aulas/03-distribuicoes-discretas/aula-17-distribuicao-hipergeometrica/recursos/grafico_comparativo_hiper_binomial.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 18,
+      "arquivo": "grafico_distribuicao_poisson.html",
+      "descricao": "Simulador Interativo da Distribuição de Poisson",
+      "formato": "html",
+      "destino": "aulas/03-distribuicoes-discretas/aula-18-distribuicao-de-poisson/recursos/grafico_distribuicao_poisson.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 19,
+      "arquivo": "grafico_curva_normal.html",
+      "descricao": "Curva da Distribuição Normal e Parâmetros",
+      "formato": "html",
+      "destino": "aulas/04-distribuicoes-continuas/aula-19-distribuicao-normal-ou-gaussiana/recursos/grafico_curva_normal.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 20,
+      "arquivo": "figura_12_normal_padrao.png",
+      "descricao": "Figura 12. Distribuição Normal Padrão",
+      "formato": "png",
+      "destino": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_12_normal_padrao.html",
+      "status": "plotly",
+      "origem_dados": "Parâmetros e limites dos exemplos da aula 20.",
+      "esquematico": false,
+      "destino_original": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_12_normal_padrao.png"
+    },
+    {
+      "aula": 20,
+      "arquivo": "figura_13_tabela_normal.png",
+      "descricao": "Figura 13. Parte da Tabela da Normal Padrão",
+      "formato": "png",
+      "destino": "Markdown na aula/exercício",
+      "status": "tabela_markdown",
+      "origem_dados": "Valores do material aprovado",
+      "destino_original": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_13_tabela_normal.png"
+    },
+    {
+      "aula": 20,
+      "arquivo": "figura_14_padronizacao_ex622a.png",
+      "descricao": "Figura 14 – Padronização (Exemplo 6.2.2.a)",
+      "formato": "png",
+      "destino": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_14_padronizacao_ex622a.html",
+      "status": "plotly",
+      "origem_dados": "Parâmetros e limites dos exemplos da aula 20.",
+      "esquematico": false,
+      "destino_original": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_14_padronizacao_ex622a.png"
+    },
+    {
+      "aula": 20,
+      "arquivo": "figura_15_padronizacao_ex623a.png",
+      "descricao": "Figura 15 – Padronização (Exemplo 6.2.3.a)",
+      "formato": "png",
+      "destino": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_15_padronizacao_ex623a.html",
+      "status": "plotly",
+      "origem_dados": "Parâmetros e limites dos exemplos da aula 20.",
+      "esquematico": false,
+      "destino_original": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_15_padronizacao_ex623a.png"
+    },
+    {
+      "aula": 20,
+      "arquivo": "figura_16_padronizacao_ex623b.png",
+      "descricao": "Figura 16 – Padronização (Exemplo 6.2.3.b)",
+      "formato": "png",
+      "destino": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_16_padronizacao_ex623b.html",
+      "status": "plotly",
+      "origem_dados": "Parâmetros e limites dos exemplos da aula 20.",
+      "esquematico": false,
+      "destino_original": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_16_padronizacao_ex623b.png"
+    },
+    {
+      "aula": 20,
+      "arquivo": "grafico_padronizacao_z.html",
+      "descricao": "Simulador Interativo: Escore Z e Normal Padrão",
+      "formato": "html",
+      "destino": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/grafico_padronizacao_z.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 21,
+      "arquivo": "grafico_distribuicao_exponencial.html",
+      "descricao": "Simulador Interativo da Distribuição Exponencial",
+      "formato": "html",
+      "destino": "aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/recursos/grafico_distribuicao_exponencial.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 21,
+      "arquivo": "ex05_cap6_curva_normal.png",
+      "descricao": "Distribuição Contínua - Exercício 5",
+      "formato": "png",
+      "destino": "aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/recursos/ex05_cap6_curva_normal.html",
+      "status": "plotly",
+      "origem_dados": "Função f(x) = exp(−x/λ)/λ da aula 21, em unidades do tempo médio.",
+      "esquematico": false,
+      "destino_original": "aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/recursos/ex05_cap6_curva_normal.png"
+    },
+    {
+      "aula": 22,
+      "arquivo": "figura_17_dispersao_reta.png",
+      "descricao": "Figura 17. Gráfico de dispersão dos pontos e linha de regressão",
+      "formato": "png",
+      "destino": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/figura_17_dispersao_reta.html",
+      "status": "plotly",
+      "origem_dados": "Tabela do Exemplo 7.1.1 da aula 22; reta ŷ = 99,35 − 7,29x.",
+      "esquematico": false,
+      "destino_original": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/figura_17_dispersao_reta.png"
+    },
+    {
+      "aula": 22,
+      "arquivo": "grafico_dispersao_regressao.html",
+      "descricao": "Regressão Linear e Diagrama de Dispersão",
+      "formato": "html",
+      "destino": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/grafico_dispersao_regressao.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 23,
+      "arquivo": "escala_correlacao.png",
+      "descricao": "Escala de Intensidade da Correlação",
+      "formato": "png",
+      "destino": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/escala_correlacao.svg",
+      "status": "diagrama_vetorial",
+      "origem_dados": "Escala de associação linear",
+      "destino_original": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/escala_correlacao.png"
+    },
+    {
+      "aula": 23,
+      "arquivo": "grafico_correlacao_escala.html",
+      "descricao": "Gráfico Interativo: Padrões de Associação e Escala de Pearson",
+      "formato": "html",
+      "destino": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/grafico_correlacao_escala.html",
+      "status": "preservado"
+    },
+    {
+      "aula": 23,
+      "arquivo": "ex03_cap7_dispersao.png",
+      "descricao": "Gráfico de dispersão da questão 3 (Funiversa, 2015)",
+      "formato": "png",
+      "destino": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/ex03_cap7_dispersao.png",
+      "status": "imagem_preservada_dados_ausentes",
+      "motivo": "Os pares de dados completos não constam no material; nenhuma coordenada foi inventada."
+    },
+    {
+      "aula": 23,
+      "arquivo": "ex05_cap7_massa_corporal.png",
+      "descricao": "Massa corporal e tendência de evolução da questão 5 (Famerp, 2018)",
+      "formato": "png",
+      "destino": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/ex05_cap7_massa_corporal.png",
+      "status": "imagem_preservada_dados_ausentes",
+      "motivo": "Os pares de dados completos não constam no material; nenhuma coordenada foi inventada."
+    }
+  ],
+  "source": "Aulas aprovadas do Stat-AI 1.0"
+}

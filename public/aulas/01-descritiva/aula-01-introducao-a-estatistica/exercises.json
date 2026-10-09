@@ -1,0 +1,184 @@
+[
+  {
+    "id": "livro-aula-01-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "Indique se cada um dos casos a seguir constitui dados coletados de uma população ou de uma amostra:  \n(a) Gastos anuais com publicidade de oito unidades da FATEC  \n(b) Total de itens produzidos em uma máquina, por dia, em 2019  \n(c) 30 pacientes selecionados para o teste de um novo medicamento  \n(d) Salários dos diretores executivos (CEOs) de todas as multinacionais da cidade de São Paulo",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+      "linha_inicial": 37,
+      "linha_final": 48,
+      "aula": 1
+    },
+    "solucao_completa": "(a) Foram observadas apenas oito unidades de um conjunto maior de unidades da FATEC: trata-se de uma amostra.\n(b) O enunciado abrange o total de itens produzidos na máquina no período delimitado: trata-se da população desse estudo.\n(c) Os 30 pacientes selecionados são uma parte do grupo de pacientes de interesse: trata-se de uma amostra.\n(d) Foram incluídos os CEOs de todas as multinacionais da cidade delimitada: trata-se da população.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Gastos anuais com publicidade de oito unidades da FATEC"
+      },
+      {
+        "id": "b",
+        "texto": "Total de itens produzidos em uma máquina, por dia, em 2019"
+      },
+      {
+        "id": "c",
+        "texto": "30 pacientes selecionados para o teste de um novo medicamento"
+      },
+      {
+        "id": "d",
+        "texto": "Salários dos diretores executivos (CEOs) de todas as multinacionais da cidade de São Paulo"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-01-introducao-a-estatistica/",
+    "solucao_original": "**Resolução:**  \n(a) **Amostra**, pois existem dezenas de unidades da FATEC no estado de São Paulo e foram coletados dados de apenas 8 unidades.  \n(b) **População**, pois refere-se ao total completo de itens produzidos na máquina a cada dia ao longo de todo o ano de 2019.  \n(c) **Amostra**, pois 30 pacientes representam um subconjunto selecionado para teste dentro do universo de potenciais usuários do medicamento.  \n(d) **População**, pois a palavra \"todas\" indica a inclusão integral de todos os CEOs de multinacionais da cidade de São Paulo.",
+    "dica": "Veja se foram observados todos os elementos do grupo de interesse ou apenas uma parte deles.",
+    "passo_inicial": "Para cada item, delimite o grupo de interesse. Expressões como “total” e “todas” ajudam a distinguir um levantamento completo de uma seleção.",
+    "resposta_final": "(a) Amostra; (b) população; (c) amostra; (d) população.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+          "linha_inicial": 37,
+          "linha_final": 48
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Exercício 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-01-multipla-escolha-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "multipla_escolha",
+    "enunciado": "(FCC, 2006) O processo estatístico que consiste em uma avaliação direta de um parâmetro, utilizando-se todos os componentes da população, denomina-se:  \n(a) amostragem  \n(b) estimação  \n(c) censo  \n(d) parametrização  \n(e) correlação",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+      "linha_inicial": 51,
+      "linha_final": 60,
+      "aula": 1
+    },
+    "solucao_completa": "Um levantamento que inclui todos os elementos da população é um censo. A amostragem observa um subconjunto; a estimação usa dados para aproximar um parâmetro. Correlação estuda associação entre variáveis.",
+    "resposta_final": "Alternativa C — censo.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "amostragem"
+      },
+      {
+        "id": "b",
+        "texto": "estimação"
+      },
+      {
+        "id": "c",
+        "texto": "censo"
+      },
+      {
+        "id": "d",
+        "texto": "parametrização"
+      },
+      {
+        "id": "e",
+        "texto": "correlação"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-01-introducao-a-estatistica/",
+    "solucao_original": "**Gabarito: (c)**  \n**Comentário:** O censo consiste na contagem e avaliação direta de 100% dos indivíduos de uma população, permitindo obter o parâmetro exato sem necessidade de estimativas amostrais.",
+    "dica": "O nome do procedimento depende de ele abranger uma parte ou a totalidade da população.",
+    "passo_inicial": "Identifique no enunciado a expressão “todos os componentes”. Compare essa abrangência com a definição de amostragem.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+          "linha_inicial": 51,
+          "linha_final": 60
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-01-multipla-escolha-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "multipla_escolha",
+    "enunciado": "(FCC, 2010) Sobre estatística aplicada, é correto afirmar que:  \n(a) Parâmetros são medidas características de grupos, determinadas por meio de uma amostra aleatória.  \n(b) A estatística descritiva é a técnica pela são coletados dados de uma amostra, a partir do que são tomadas decisões sobre uma determinada população.  \n(c) A caracterização de uma população se dá por meio da observação de todos os seus componentes que a integram.  \n(d) A estatística inferencial compreende um conjunto de técnicas destinadas à síntese de dados numéricos.  \n(e) Censo é o processo utilizado para se medir as características de todos os membros de uma dada população.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+      "linha_inicial": 61,
+      "linha_final": 69,
+      "aula": 1
+    },
+    "solucao_completa": "A alternativa A confunde parâmetro populacional com medida amostral. B atribui à descritiva uma decisão sobre a população a partir de uma amostra, que é inferência. D descreve a descritiva como inferencial. C é uma afirmação excessivamente restritiva: também se pode caracterizar uma população por estimativas amostrais. E fornece a definição de censo, pois inclui todos os membros da população.",
+    "resposta_final": "Alternativa E — censo mede as características de todos os membros da população.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Parâmetros são medidas características de grupos, determinadas por meio de uma amostra aleatória."
+      },
+      {
+        "id": "b",
+        "texto": "A estatística descritiva é a técnica pela são coletados dados de uma amostra, a partir do que são tomadas decisões sobre uma determinada população."
+      },
+      {
+        "id": "c",
+        "texto": "A caracterização de uma população se dá por meio da observação de todos os seus componentes que a integram."
+      },
+      {
+        "id": "d",
+        "texto": "A estatística inferencial compreende um conjunto de técnicas destinadas à síntese de dados numéricos."
+      },
+      {
+        "id": "e",
+        "texto": "Censo é o processo utilizado para se medir as características de todos os membros de uma dada população."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-01-introducao-a-estatistica/",
+    "solucao_original": "**Gabarito: (e)**  \n**Comentário:** Por definição, o censo é o processo que mede/avalia as características de absolutamente todos os membros de uma dada população. A alternativa (a) está incorreta porque parâmetros pertencem à população; a (b) e (d) invertem os conceitos de descritiva e inferencial; e a (c) descreve o censo, enquanto populações podem ser caracterizadas por inferência amostral.",
+    "dica": "Separe três pares de conceitos: população e amostra, parâmetro e estatística, descritiva e inferencial.",
+    "passo_inicial": "Lembre que um parâmetro caracteriza a população e uma estatística caracteriza a amostra. Em seguida, procure a definição de um levantamento completo.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+          "linha_inicial": 61,
+          "linha_final": 69
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 3",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getCourseProgress } from '../services/progressService';
 import { Course, Lesson, StudentProgress } from '../types';
 import { BookOpenIcon, StatAiIcon, TrophyIcon } from './Icons';
 
@@ -11,19 +12,7 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ course, onSelectLesson, studentProgress }) => {
   const quickAccessLessons = course.units.flatMap(u => u.lessons).slice(0, 4);
 
-  const calculateOverallProgress = () => {
-      let totalCompleted = 0;
-      let totalExercises = 0;
-      course.units.forEach(unit => {
-          unit.lessons.forEach(lesson => {
-              totalCompleted += (studentProgress[lesson.id] || new Set()).size;
-              totalExercises += lesson.exercises.length;
-          });
-      });
-      return { totalCompleted, totalExercises };
-  };
-
-  const { totalCompleted, totalExercises } = calculateOverallProgress();
+  const { completedCount: totalCompleted, totalCount: totalExercises } = getCourseProgress(course, studentProgress);
   const overallPercentage = totalExercises > 0 ? Math.round((totalCompleted / totalExercises) * 100) : 0;
 
 
@@ -57,7 +46,7 @@ const HomePage: React.FC<HomePageProps> = ({ course, onSelectLesson, studentProg
                     </div>
                     <div>
                         <p className="text-3xl font-bold text-slate-800">{totalCompleted} <span className="text-xl font-medium text-slate-500">de {totalExercises}</span></p>
-                        <p className="text-slate-600">Exercícios completos. Continue assim!</p>
+                        <p className="text-slate-600">Exercícios verificados.</p>
                     </div>
                 </div>
             </div>

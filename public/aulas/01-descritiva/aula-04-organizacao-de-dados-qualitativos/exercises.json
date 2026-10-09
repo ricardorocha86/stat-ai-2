@@ -1,0 +1,162 @@
+[
+  {
+    "id": "livro-aula-04-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "Giuseppe decidiu abrir uma pizzaria em frente à FATEC e escolheu trabalhar com apenas 5 sabores clássicos de minipizzas: muçarela (MU), portuguesa (PT), calabresa (CA), frango com catupiry (FC) e marguerita (MA). Como a divulgação da pizzaria foi um sucesso, Giuseppe decidiu comprar ingredientes para elaboração de 120 mini pizzas. Porém, para estimar a quantidade de ingredientes que deveria comprar para cada sabor, fez uma pesquisa com 30 alunos da FATEC escolhidos aleatoriamente durante o intervalo para saber quais eram os sabores favoritos e obteve os registros abaixo.\n\n| | | | | | |\n| :---: | :---: | :---: | :---: | :---: | :---: |\n| MA | CA | FC | MA | CA | PT |\n| MU | FC | CA | MA | CA | FC |\n| MU | CA | MA | PT | MU | CA |\n| CA | MU | MA | FC | MA | CA |\n| FC | CA | CA | MA | MA | MA |\n\n(a) Qual é a variável analisada? Classifique-a quanto ao tipo.  \n(b) Construa uma tabela de distribuição de frequências, considerando as frequências absoluta ($f_a$), relativa ($f_r$) e percentual ($f_p$).  \n(c) Represente as frequências percentuais com um gráfico adequado.  \n(d) Supondo que a amostra coletada por Giuseppe seja representativa, qual é o número de minipizzas de cada sabor que deverá considerar ao comprar os ingredientes para as 120 minipizzas?",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+      "linha_inicial": 46,
+      "linha_final": 60,
+      "aula": 4
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Qual é a variável analisada? Classifique-a quanto ao tipo."
+      },
+      {
+        "id": "b",
+        "texto": "Construa uma tabela de distribuição de frequências, considerando as frequências absoluta ($f_a$), relativa ($f_r$) e percentual ($f_p$)."
+      },
+      {
+        "id": "c",
+        "texto": "Represente as frequências percentuais com um gráfico adequado."
+      },
+      {
+        "id": "d",
+        "texto": "Supondo que a amostra coletada por Giuseppe seja representativa, qual é o número de minipizzas de cada sabor que deverá considerar ao comprar os ingredientes para as 120 minipizzas?"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/",
+    "dica": "Conte cada sabor antes de calcular as proporções. Para estimar a produção, use a proporção sem arredondá-la antecipadamente.",
+    "passo_inicial": "Monte uma coluna para MA, CA, FC, PT e MU. Conte as 30 respostas e confira a soma; depois use $f_r=f_a/30$ e $f_p=100f_r$.",
+    "solucao_completa": "(a) A variável é sabor favorito de minipizza, qualitativa nominal.\n(b) Contando os registros exibidos:\n\n| Sabor | $f_a$ | $f_r$ | $f_p$ |\n| --- | ---: | ---: | ---: |\n| MA | 9 | 0,3000 | 30,00% |\n| CA | 10 | 0,3333 | 33,33% |\n| FC | 5 | 0,1667 | 16,67% |\n| PT | 2 | 0,0667 | 6,67% |\n| MU | 4 | 0,1333 | 13,33% |\n| Total | 30 | 1,0000 | 100,00% |\n\n(c) Um gráfico de barras tem as cinco categorias no eixo horizontal e alturas 30,00%, 33,33%, 16,67%, 6,67% e 13,33%. Também é possível um gráfico de setores, com ângulos 108°, 120°, 60°, 24° e 48°.\n(d) Multiplique cada frequência relativa exata por 120. Como $120/30=4$, basta multiplicar as contagens por 4: 36 MA, 40 CA, 20 FC, 8 PT e 16 MU.\n\nO PDF do gabarito apresenta MA=8 e PT=3; a contagem da tabela do próprio livro e desta aula é MA=9 e PT=2. Aqui se usa a tabela efetivamente apresentada.\n\n![Sabores de minipizza — resolução](recursos/gabarito-ex01-pizzas.html)",
+    "resposta_final": "(a) Qualitativa nominal. (b) MA=9; CA=10; FC=5; PT=2; MU=4. (c) Barras ou setores com as proporções indicadas. (d) 36 MA, 40 CA, 20 FC, 8 PT e 16 MU.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+          "linha_inicial": 46,
+          "linha_final": 60
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "Divergência no próprio gabarito: MA=8 e PT=3. Livro p. 41 e tabela da aula têm MA=9 e PT=2; prevalecem os dados do enunciado.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-04-exercicio-2",
+    "numero": 2,
+    "numero_original": "2",
+    "categoria": "exercicio",
+    "enunciado": "Trinta estudantes foram indagados acerca de quais aplicativos de celular achariam mais difícil abrir mão, dentre eles: Facebook (FB), Instagram (IG), Twitter (TT), Snapchat (SC) ou WhatsApp (WA). As respostas desses estudantes estão listadas a seguir.\n\n| | | | | |\n| :---: | :---: | :---: | :---: | :---: |\n| WA | WA | IG | WA | IG |\n| WA | FB | WA | FB | WA |\n| FB | IG | WA | FB | IG |\n| TT | IG | WA | IG | FB |\n| WA | SC | IG | TT | WA |\n| TT | WA | FB | SC | WA |\n\n(a) Construa uma tabela de distribuição de frequências, considerando as frequências absoluta ($f_a$), relativa ($f_r$) e percentual ($f_p$).  \n(b) Que percentagem desses estudantes escolheu o WhatsApp ou o Facebook como o aplicativo do qual achariam mais difícil abrir mão?  \n(c) Desenhe um gráfico de barras correspondente à distribuição de frequências percentuais.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+      "linha_inicial": 61,
+      "linha_final": 75,
+      "aula": 4
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Construa uma tabela de distribuição de frequências, considerando as frequências absoluta ($f_a$), relativa ($f_r$) e percentual ($f_p$)."
+      },
+      {
+        "id": "b",
+        "texto": "Que percentagem desses estudantes escolheu o WhatsApp ou o Facebook como o aplicativo do qual achariam mais difícil abrir mão?"
+      },
+      {
+        "id": "c",
+        "texto": "Desenhe um gráfico de barras correspondente à distribuição de frequências percentuais."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/",
+    "dica": "As categorias são exclusivas: cada estudante escolheu um único aplicativo.",
+    "passo_inicial": "Conte cada sigla nas 30 respostas. Use o total 30 como denominador das frequências relativas e some as contagens de WA e FB para o item (b).",
+    "solucao_completa": "(a) As contagens e proporções são:\n\n| Aplicativo | $f_a$ | $f_r$ | $f_p$ |\n| --- | ---: | ---: | ---: |\n| WA | 12 | 0,4000 | 40,00% |\n| IG | 7 | 0,2333 | 23,33% |\n| FB | 6 | 0,2000 | 20,00% |\n| SC | 2 | 0,0667 | 6,67% |\n| TT | 3 | 0,1000 | 10,00% |\n| Total | 30 | 1,0000 | 100,00% |\n\n(b) WA ou FB reúne $12+6=18$ estudantes: $18/30=0{,}60=60\\%$.\n(c) O gráfico de barras deve identificar os aplicativos no eixo horizontal e usar as frequências percentuais como alturas, com eixo vertical iniciado em zero.\n\n![Aplicativos escolhidos — resolução](recursos/gabarito-ex02-aplicativos.html)",
+    "resposta_final": "(a) WA=12; IG=7; FB=6; SC=2; TT=3, com percentuais 40,00%; 23,33%; 20,00%; 6,67%; 10,00%. (b) 60%. (c) Barras com essas alturas.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+          "linha_inicial": 61,
+          "linha_final": 75
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-04-exercicio-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "exercicio",
+    "enunciado": "Os dados a seguir mostram os métodos de pagamento utilizados por 16 clientes de um supermercado. Nesse caso, DN refere-se a dinheiro, CQ a cheque, CC a cartão de crédito e CD a cartão de débito.\n\n| | | | |\n| :---: | :---: | :---: | :---: |\n| DN | CQ | CC | CD |\n| CC | CD | CD | CC |\n| CC | CC | CD | CC |\n| DN | CC | DN | CC |\n\n(a) Construa uma tabela de distribuição de frequências, considerando as frequências absoluta ($f_a$), relativa ($f_r$) e percentual ($f_p$).  \n(b) Desenhe um gráfico de pizza para as frequências percentuais e interprete-o.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+      "linha_inicial": 76,
+      "linha_final": 86,
+      "aula": 4
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Construa uma tabela de distribuição de frequências, considerando as frequências absoluta ($f_a$), relativa ($f_r$) e percentual ($f_p$)."
+      },
+      {
+        "id": "b",
+        "texto": "Desenhe um gráfico de pizza para as frequências percentuais e interprete-o."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/",
+    "dica": "Para um gráfico de setores, transforme cada proporção em uma fração de 360°.",
+    "passo_inicial": "Conte DN, CQ, CC e CD nas 16 respostas. Calcule $f_r=f_a/16$, $f_p=100f_r$ e $\\theta=360^\\circ f_r$.",
+    "solucao_completa": "(a) A distribuição é:\n\n| Método | $f_a$ | $f_r$ | $f_p$ | Ângulo do setor |\n| --- | ---: | ---: | ---: | ---: |\n| DN | 3 | 0,1875 | 18,75% | 67,5° |\n| CQ | 1 | 0,0625 | 6,25% | 22,5° |\n| CC | 8 | 0,5000 | 50,00% | 180° |\n| CD | 4 | 0,2500 | 25,00% | 90° |\n| Total | 16 | 1,0000 | 100,00% | 360° |\n\n(b) No gráfico de pizza, metade do círculo corresponde ao cartão de crédito. Crédito e débito somam 75% dos pagamentos, enquanto cheque é o método menos frequente. Use os valores exatos antes de arredondar os rótulos.\n\n![Métodos de pagamento — resolução](recursos/gabarito-ex03-pagamentos.html)",
+    "resposta_final": "DN: 3 (18,75%); CQ: 1 (6,25%); CC: 8 (50%); CD: 4 (25%). Setores de 67,5°; 22,5°; 180°; 90°, respectivamente.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+          "linha_inicial": 76,
+          "linha_final": 86
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 3",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

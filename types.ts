@@ -1,20 +1,40 @@
-import { Chat } from "@google/genai";
-
 export type ExerciseDifficulty = 'Fácil' | 'Médio' | 'Difícil';
-export type ExerciseType = 'Conceitual' | 'Cálculo' | 'Interpretação de Dados';
-
-export interface Solution {
-  hint: string;
-  startingGuide: string;
-  fullSolution: string;
-}
-
 export interface Exercise {
   id: string;
-  problemStatement: string;
-  difficulty: ExerciseDifficulty;
-  type: ExerciseType;
-  solution: Solution;
+  numero: number;
+  enunciado?: string;
+  dificuldade?: ExerciseDifficulty;
+  dica?: string;
+  passo_inicial?: string;
+  solucao_completa?: string;
+  resposta_final?: string;
+  pendencias?: string[];
+  solucao_original?: string;
+  enunciado_original?: string;
+  correcao_automatica?: boolean;
+  criterios_avaliacao?: string[];
+  gabarito_meta?: {
+    origem: 'autor' | 'recalculado' | 'elaborado' | 'roteiro';
+    conferido_enunciado?: boolean;
+    observacoes?: string;
+    referencias: {
+      tipo: 'material' | 'livro' | 'gabarito';
+      arquivo: string;
+      capitulo?: number;
+      questao?: string;
+      pagina_pdf?: number;
+      linha_inicial?: number;
+      linha_final?: number;
+      url?: string;
+    }[];
+  };
+  titulo?: string;
+  numero_original?: string;
+  categoria?: 'exercicio' | 'multipla_escolha' | 'atividade';
+  resourceBasePath?: string;
+  subitens?: { id: string; texto: string }[];
+  alternativas?: { id: string; texto: string }[];
+  origem?: { arquivo: string; linha_inicial: number; linha_final: number; aula: number };
 }
 
 export interface Lesson {
@@ -22,6 +42,10 @@ export interface Lesson {
   title: string;
   filePath: string;
   exercises: Exercise[];
+  exercisesPath?: string;
+  number?: number;
+  exerciseCount?: number;
+  sourcePath?: string;
 }
 
 export interface Unit {
@@ -32,6 +56,7 @@ export interface Unit {
 
 export interface Course {
   title: string;
+  contentVersion?: string;
   units: Unit[];
 }
 
@@ -53,13 +78,20 @@ export type StudentChatMessage = {
   timestamp: number;
 }
 
+export interface AiChatSession {
+  kind: 'exercise' | 'student';
+  lessonTitle?: string;
+  style?: ChatbotStyle;
+  history: StudentChatMessage[];
+}
+
 export interface ChatSessionCache {
-  [lessonId: string]: Chat;
+  [lessonId: string]: AiChatSession;
 }
 
 export type ViewMode = 'professor' | 'aluno';
 
-export type Page = 'home' | 'lesson' | 'about';
+export type Page = 'home' | 'lesson' | 'about' | 'profile';
 
 export type StudentProgress = {
   [lessonId: string]: Set<string>; // Set of completed exercise IDs for each lesson
@@ -67,37 +99,107 @@ export type StudentProgress = {
 
 export type AchievementMilestone = 10 | 20 | 30 | 40 | 50;
 
-export type AchievementType = 'image' | 'audio';
+export type ArtifactKind = 'card_marco' | 'selo' | 'anotacao' | 'carta' | 'diploma';
+
+export interface CardMarcoArtifact {
+  kind: 'card_marco';
+  titulo: string;
+  reconhecimento: string;
+  corpo: string;
+  projecao: string;
+}
+
+export interface SeloArtifact {
+  kind: 'selo';
+  titulo_selo: string;
+  virtude_reconhecida: string;
+  principio: string;
+  convite: string;
+}
+
+export interface AnotacaoArtifact {
+  kind: 'anotacao';
+  data_simbolica: string;
+  abertura: string;
+  observacao: string;
+  fechamento: string;
+}
+
+export interface CartaArtifact {
+  kind: 'carta';
+  saudacao: string;
+  paragrafos: string[];
+  fecho: string;
+  assinatura: string;
+}
+
+export interface DiplomaArtifact {
+  kind: 'diploma';
+  titulo_concedido: string;
+  considerando: string;
+  outorga: string;
+  data_simbolica: string;
+}
+
+export type ArtifactData =
+  | CardMarcoArtifact
+  | SeloArtifact
+  | AnotacaoArtifact
+  | CartaArtifact
+  | DiplomaArtifact;
+
+export interface AchievementVersion {
+  artifact: ArtifactData;
+  transcricao: string;
+  audioUrl: string;
+  generatedAt: number;
+}
 
 export interface Achievement {
   milestone: AchievementMilestone;
-  unlockedAt: number; // timestamp
-  type: AchievementType;
-  title: string;
-  storyText: string;
-  contentBase64?: string; // For images
+  unlockedAt: number;
+  kind: ArtifactKind;
+  artifact: ArtifactData;
+  transcricao: string;
+  audioUrl: string;
+  previousVersions?: AchievementVersion[];
 }
 
 export interface AchievementDisplayState {
   milestone: AchievementMilestone;
   isLoading: boolean;
-  type?: AchievementType;
-  title?: string;
-  storyText?: string;
-  contentBase64?: string;
+  isRegenerating?: boolean;
+  kind?: ArtifactKind;
+  artifact?: ArtifactData;
+  transcricao?: string;
+  audioUrl?: string;
   error?: string;
 }
-
 
 export interface Achievements {
   [milestone: number]: Achievement;
 }
+
+export const MILESTONE_KIND: Record<AchievementMilestone, ArtifactKind> = {
+  10: 'card_marco',
+  20: 'selo',
+  30: 'anotacao',
+  40: 'carta',
+  50: 'diploma',
+};
+
+export type ChatbotStyle = 'Padrão' | 'Xarope' | 'Amiguinho';
 
 export interface UserProfile {
   name: string;
   email: string;
   photoBase64?: string;
   photoMimeType?: string;
+  userType?: 'nutrição' | 'convidado';
+  registrationNumber?: string;
+  origin?: string;
+  isOnboarded?: boolean;
+  chatbotStyle?: ChatbotStyle;
 }
 
 export interface GenerationOptions {

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "livro-aula-22-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "Uma empresa de logística coletou dados de distância percorrida ($x$, em centenas de km) e custo de manutenção ($y$, em centenas de reais) para 5 frotas de caminhões:\n\n| Caminhão | Distância ($x$) | Custo ($y$) |\n| :---: | :---: | :---: |\n| A | 2 | 5 |\n| B | 4 | 7 |\n| C | 6 | 11 |\n| D | 8 | 13 |\n| E | 10 | 19 |\n\n(a) Calcule os somatórios $\\sum x, \\sum y, \\sum xy, \\sum x^2$.  \n(b) Calcule os coeficientes $a$ e $b$ da reta de regressão $\\hat{y} = a + bx$.  \n(c) Preveja o custo de manutenção para um caminhão que percorra 7 centenas de km ($x = 7$).",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt",
+      "linha_inicial": 110,
+      "linha_final": 133,
+      "aula": 22
+    },
+    "solucao_completa": "(a) As somas são $\\sum x=30$, $\\sum y=55$, $\\sum xy=398$ e $\\sum x^2=220$.\n(b) Com $n=5$, $\\bar x=6$ e $\\bar y=11$:\n$$b=\\frac{398-30(55)/5}{220-30^2/5}=\\frac{68}{40}=1{,}70,$$\n$$a=11-1{,}70(6)=0{,}80.$$\nPortanto, $\\hat y=0{,}80+1{,}70x$, com $x$ em centenas de km e $\\hat y$ em centenas de reais.\n(c) Para $x=7$, $\\hat y=0{,}80+1{,}70(7)=12{,}70$ centenas de reais, equivalentes a R$ 1.270,00. A previsão é a resposta estimada pelo modelo, não uma cobrança garantida.\n\n![Distância e custo — resolução](recursos/gabarito-ex01-regressao.html)",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Calcule os somatórios $\\sum x, \\sum y, \\sum xy, \\sum x^2$."
+      },
+      {
+        "id": "b",
+        "texto": "Calcule os coeficientes $a$ e $b$ da reta de regressão $\\hat{y} = a + bx$."
+      },
+      {
+        "id": "c",
+        "texto": "Preveja o custo de manutenção para um caminhão que percorra 7 centenas de km ($x = 7$)."
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/",
+    "solucao_original": "**Resolução:**  \n(a) $n = 5$: $\\sum x = 30$, $\\sum y = 55$, $\\sum xy = 398$, $\\sum x^2 = 220$.  \n(b) $\\bar{x} = 6$, $\\bar{y} = 11$.  \n- $SQ_{XY} = 398 - \\frac{30 \\cdot 55}{5} = 398 - 330 = 68$.  \n- $SQ_X = 220 - \\frac{30^2}{5} = 220 - 180 = 40$.  \n- $b = \\frac{68}{40} = 1{,}70$.  \n- $a = 11 - 1{,}70 \\cdot 6 = 11 - 10{,}2 = 0{,}80$.  \nEquação: $\\hat{y} = 0{,}80 + 1{,}70x$.  \n(c) Para $x = 7$: $\\hat{y} = 0{,}80 + 1{,}70 \\cdot 7 = 0{,}80 + 11{,}90 = 12{,}70$ centenas de reais (R$ 1.270,00).",
+    "dica": "A reta de mínimos quadrados usa somas de produtos e quadrados; preserve as unidades das variáveis.",
+    "passo_inicial": "Crie as colunas $x^2$ e $xy$. Depois use $b=[\\sum xy-(\\sum x)(\\sum y)/n]/[\\sum x^2-(\\sum x)^2/n]$ e $a=\\bar y-b\\bar x$.",
+    "resposta_final": "(a) 30; 55; 398; 220. (b) $a=0{,}80$, $b=1{,}70$; $\\hat y=0{,}80+1{,}70x$. (c) R$ 1.270,00.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt",
+          "linha_inicial": 110,
+          "linha_final": 133
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-22-multipla-escolha-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "multipla_escolha",
+    "enunciado": "No modelo de regressão linear simples $\\hat{y} = a + bx$, o método dos mínimos quadrados ordinários busca uma reta que:  \n(a) Maximize a distância entre os pontos e a reta.  \n(b) Minimize a soma dos quadrados das distâncias verticais (resíduos) entre os pontos observados e a reta estimada.  \n(c) Passe obrigatoriamente por todos os pontos observados.  \n(d) Torne o coeficiente linear $a$ sempre igual a zero.  \n(e) Faça o coeficiente angular $b$ ser sempre positivo.",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt",
+      "linha_inicial": 136,
+      "linha_final": 144,
+      "aula": 22
+    },
+    "solucao_completa": "O método escolhe os coeficientes da reta que minimizam $\\sum_i(y_i-\\hat y_i)^2$. Ele não exige passar por todos os pontos, nem determina previamente o sinal da inclinação ou um intercepto zero. As distâncias consideradas são verticais, na direção da variável dependente.",
+    "resposta_final": "Alternativa B — minimizar a soma dos quadrados dos resíduos verticais.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Maximize a distância entre os pontos e a reta."
+      },
+      {
+        "id": "b",
+        "texto": "Minimize a soma dos quadrados das distâncias verticais (resíduos) entre os pontos observados e a reta estimada."
+      },
+      {
+        "id": "c",
+        "texto": "Passe obrigatoriamente por todos os pontos observados."
+      },
+      {
+        "id": "d",
+        "texto": "Torne o coeficiente linear $a$ sempre igual a zero."
+      },
+      {
+        "id": "e",
+        "texto": "Faça o coeficiente angular $b$ ser sempre positivo."
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/",
+    "solucao_original": "**Gabarito: (b)**  \n**Comentário:** O método dos mínimos quadrados (MQO) obtém os estimadores minimizando a soma dos resíduos quadráticos $\\sum (y_i - \\hat{y}_i)^2$.",
+    "dica": "O resíduo é a diferença vertical entre o valor observado e o valor previsto.",
+    "passo_inicial": "Escreva $e_i=y_i-\\hat y_i$ e identifique o que o critério dos mínimos quadrados minimiza.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt",
+          "linha_inicial": 136,
+          "linha_final": 144
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
+import { getCourseProgress, getLessonProgress } from '../services/progressService';
 import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, Achievements, AchievementMilestone, UserProfile } from '../types';
-import { BookOpenIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, CameraIcon, XMarkIcon } from './Icons';
+import { BookOpenIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, CameraIcon, XMarkIcon, PencilSquareIcon } from './Icons';
 
 interface SidebarProps {
   course: Course;
@@ -89,9 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   const calculateLessonProgress = (lesson: Lesson) => {
-      const completedSet = studentProgress[lesson.id] || new Set();
-      const completedCount = completedSet.size;
-      const totalCount = lesson.exercises.length;
+      const { completedCount, totalCount } = getLessonProgress(lesson, studentProgress);
       if (totalCount === 0) return { completedCount: 0, totalCount: 0, stars: 0 };
       const percentage = completedCount / totalCount;
       let stars = 0;
@@ -101,17 +100,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       return { completedCount, totalCount, stars };
   };
 
-  const calculateOverallProgress = () => {
-      let totalCompleted = 0;
-      course.units.forEach(unit => {
-          unit.lessons.forEach(lesson => {
-              totalCompleted += (studentProgress[lesson.id] || new Set()).size;
-          });
-      });
-      return { totalCompleted, totalExercises: allExercisesCount };
-  };
-
-  const overallProgress = calculateOverallProgress();
+  const { completedCount, totalCount } = getCourseProgress(course, studentProgress);
+  const overallProgress = { totalCompleted: completedCount, totalExercises: totalCount };
   const overallPercentage = overallProgress.totalExercises > 0 ? (overallProgress.totalCompleted / overallProgress.totalExercises) * 100 : 0;
 
   const MILESTONES = React.useMemo(() => 
@@ -129,43 +119,48 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside className={`fixed inset-y-0 left-0 z-40 w-80 lg:w-96 bg-gradient-to-b from-slate-900 to-slate-800 p-4 flex-shrink-0 h-screen overflow-y-auto flex flex-col text-[--text-inverted] transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}>
-      <div className="mb-6 px-2 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold flex items-center gap-3 text-white">
-            <StatAiIcon className="text-[--accent] w-7 h-7"/>
-            <span>Stat-AI 2.0</span>
-            </h1>
+      {/* Header Section */}
+      <div className="mb-8 px-2">
+        <div className="flex items-center gap-3 mb-1">
+          <StatAiIcon className="text-[--accent] w-9 h-9 drop-shadow-glow" />
+          <h1 className="text-2xl font-black text-white tracking-tight">Stat-AI 2.0</h1>
         </div>
-        <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-400 hover:text-white">
-            <XMarkIcon className="w-6 h-6" />
-        </button>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 pl-12 flex items-center gap-2">
+          <span className="w-4 h-[1px] bg-slate-700"></span>
+          Portal do Aluno
+        </p>
       </div>
-      <p className="text-sm text-slate-400 -mt-5 mb-6 px-2 pl-12">Portal do Aluno de Estatística</p>
-      
-      {/* User Profile Section */}
-      {viewMode === 'aluno' && (
-          <div className="mb-6 px-2">
-              <div className="flex items-center gap-4 p-3 bg-black/20 rounded-lg">
-                  <div className="relative">
-                      <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/png, image/jpeg" className="hidden" />
-                      <button onClick={handleAvatarClick} className="w-12 h-12 rounded-full bg-slate-600 flex items-center justify-center text-white font-semibold text-lg ring-2 ring-white/20 overflow-hidden group transition-all" title="Alterar foto de perfil">
-                           {userProfile.photoBase64 && userProfile.photoMimeType ? (
-                                <img src={`data:${userProfile.photoMimeType};base64,${userProfile.photoBase64}`} alt="Foto de Perfil" className="w-full h-full object-cover" />
-                           ) : (
-                                <UserIcon className="w-7 h-7" />
-                           )}
-                           <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <CameraIcon className="w-6 h-6 text-white" />
-                           </div>
-                      </button>
-                  </div>
-                  <div>
-                    <p className="text-base font-semibold text-white">{userProfile.name}</p>
-                    <p className="text-sm text-slate-400">{userProfile.email}</p>
-                  </div>
+
+      {/* Profile Section */}
+      <div className="mb-8 px-2 group cursor-pointer" onClick={() => handleSelectPage('profile')}>
+        <div className="relative p-4 rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 shadow-2xl transition-all duration-300 group-hover:bg-white/[0.08] group-hover:border-white/20">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-2xl bg-slate-700 border-2 border-white/10 overflow-hidden shadow-inner ring-4 ring-white/5 transition-transform group-hover:scale-105 duration-300">
+                {userProfile.photoBase64 ? (
+                  <img src={userProfile.photoBase64.startsWith('http') || userProfile.photoBase64.startsWith('data:') ? userProfile.photoBase64 : `data:${userProfile.photoMimeType || 'image/png'};base64,${userProfile.photoBase64}`} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <UserIcon className="w-8 h-8 text-slate-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                )}
               </div>
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg bg-[--accent] flex items-center justify-center shadow-lg border-2 border-slate-900">
+                <PencilSquareIcon className="w-3.5 h-3.5 text-white" />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-lg font-bold text-white truncate leading-tight">{userProfile.name}</p>
+              <p className="text-xs text-slate-400 truncate mb-2">{userProfile.email}</p>
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-white/5 text-[10px] uppercase font-bold text-slate-500 tracking-wider group-hover:text-[--accent] group-hover:border-[--accent]/30 transition-colors">
+                 <span className="w-1 h-1 rounded-full bg-[--accent] animate-pulse"></span>
+                 Meu Perfil
+              </div>
+            </div>
           </div>
-      )}
+        </div>
+      </div>
+
+
+      <div className="border-t border-white/10 mb-6 mx-2"></div>
 
       {/* Achievements Section */}
       {viewMode === 'aluno' && (
@@ -173,7 +168,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <p className="text-xs font-semibold uppercase text-slate-400 flex items-center gap-2"><TrophyIcon className="w-4 h-4" /> Minhas Conquistas 🏆</p>
             <div>
                 <div className="flex justify-between items-center text-xs mb-1">
-                    <span className="font-medium text-slate-300">Progresso Geral</span>
+                    <span className="font-medium text-slate-300">Exercícios verificados</span>
                     <span className="font-mono text-white">{overallProgress.totalCompleted} / {overallProgress.totalExercises}</span>
                 </div>
                 <div className="w-full bg-slate-700 rounded-full h-2.5 shadow-inner">
@@ -238,12 +233,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
       )}
       
-       <div className="border-t border-white/10 mb-4 -mx-4"></div>
 
-       <nav className="space-y-1 mb-4 px-2">
-         <NavLink icon={<HomeIcon />} label="Início" isActive={page === 'home'} onClick={() => handleSelectPage('home')} />
-         <NavLink icon={<QuestionMarkCircleIcon />} label="Sobre o App" isActive={page === 'about'} onClick={() => handleSelectPage('about')} />
-       </nav>
 
       <div className="border-t border-white/10 mb-4 -mx-4"></div>
 
@@ -278,7 +268,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         <BookOpenIcon className="w-4 h-4 flex-shrink-0" />
                         <span className="flex-1">{lesson.title}</span>
                          {viewMode === 'aluno' && totalCount > 0 && (
-                            <div className="ml-auto flex items-center" title={`${completedCount} de ${totalCount} exercícios completos`}>
+                            <div className="ml-auto flex items-center" title={`${completedCount} de ${totalCount} exercícios verificados`}>
                                 <StarDisplay stars={stars} />
                             </div>
                          )}
@@ -292,7 +282,13 @@ const Sidebar: React.FC<SidebarProps> = ({
         ))}
       </nav>
       
-      <div className="mt-auto pt-4 border-t border-white/10">
+      <div className="mt-auto pt-4 border-t border-white/10 space-y-1">
+          <NavLink 
+            icon={<QuestionMarkCircleIcon className="w-5 h-5" />} 
+            label="Sobre o App" 
+            isActive={page === 'about'} 
+            onClick={() => handleSelectPage('about')} 
+          />
           <button 
             onClick={onLogout} 
             className="w-full flex items-center justify-center gap-2 p-2.5 text-slate-400 hover:text-white hover:bg-red-500/20 rounded-lg transition-colors text-sm font-medium" 

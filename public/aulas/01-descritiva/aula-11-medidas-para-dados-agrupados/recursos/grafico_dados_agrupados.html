@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Medidas para Dados Agrupados em Classes</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.72rem; font-weight: 600; color: #334155; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; width: 100%; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.media { border-left-color: #2563eb; }
+    .kpi-card.mediana { border-left-color: #16a34a; }
+    .kpi-card.moda { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>📊 Laboratório Dinâmico: Média, Mediana e Moda para Dados Agrupados</span>
+        </div>
+        <span class="sim-badge">Aula 11 • Estaturas FATEC</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <span class="ctrl-label">[1.55 ⊢ 1.66): <b class="ctrl-val" id="v_f1">4</b></span>
+            <input type="range" id="s_f1" min="0" max="15" value="4" oninput="atualizarFreq(0, this.value, 'v_f1')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">[1.66 ⊢ 1.77): <b class="ctrl-val" id="v_f2">7</b></span>
+            <input type="range" id="s_f2" min="0" max="15" value="7" oninput="atualizarFreq(1, this.value, 'v_f2')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">[1.77 ⊢ 1.88): <b class="ctrl-val" id="v_f3">5</b></span>
+            <input type="range" id="s_f3" min="0" max="15" value="5" oninput="atualizarFreq(2, this.value, 'v_f3')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">[1.88 ⊢ 1.99): <b class="ctrl-val" id="v_f4">2</b></span>
+            <input type="range" id="s_f4" min="0" max="15" value="2" oninput="atualizarFreq(3, this.value, 'v_f4')">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetarLivro()">🔄 Livro (18)</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card media">
+            <div class="kpi-label">Média Agrupada (x̄)</div>
+            <div class="kpi-val" id="kpi_media">1.731 m</div>
+        </div>
+        <div class="kpi-card mediana">
+            <div class="kpi-label">Mediana Interpolada (Md)</div>
+            <div class="kpi-val" id="kpi_mediana">1.738 m</div>
+        </div>
+        <div class="kpi-card moda">
+            <div class="kpi-label">Moda Bruta (Classe Modal)</div>
+            <div class="kpi-val" id="kpi_moda">1.715 m</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Total Alunos (n)</div>
+            <div class="kpi-val" id="kpi_total">18 alunos</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Fórmula da Mediana Interpolada (p. 58):</b> Md = Li + [(n/2 - Fant) / f_md] × AC. A classe mediana (verde) contém o 9º elemento. A Média é a soma dos produtos ponto médio × frequência: x̄ = Σ(mi × fi) / n.
+    </div>
+</div>
+
+<script>
+    const classesInfo = [
+        { label: '[1.55 ⊢ 1.66)', li: 1.55, ls: 1.66, mi: 1.605, fa: 4 },
+        { label: '[1.66 ⊢ 1.77)', li: 1.66, ls: 1.77, mi: 1.715, fa: 7 },
+        { label: '[1.77 ⊢ 1.88)', li: 1.77, ls: 1.88, mi: 1.825, fa: 5 },
+        { label: '[1.88 ⊢ 1.99)', li: 1.88, ls: 1.99, mi: 1.935, fa: 2 }
+    ];
+    const AC = 0.11;
+
+    function atualizarFreq(idx, val, lblId) {
+        classesInfo[idx].fa = parseInt(val);
+        document.getElementById(lblId).innerText = val;
+        renderizar();
+    }
+
+    function resetarLivro() {
+        const faLivro = [4, 7, 5, 2];
+        classesInfo.forEach((c, i) => {
+            c.fa = faLivro[i];
+            document.getElementById('s_f' + (i+1)).value = c.fa;
+            document.getElementById('v_f' + (i+1)).innerText = c.fa;
+        });
+        renderizar();
+    }
+
+    function renderizar() {
+        let n = classesInfo.reduce((a,b) => a + b.fa, 0);
+        document.getElementById('kpi_total').innerText = `${n} alunos`;
+
+        if (n === 0) return;
+
+        // Média Agrupada: Σ(mi * fa) / n
+        let somaProd = classesInfo.reduce((a,b) => a + (b.mi * b.fa), 0);
+        let media = somaProd / n;
+
+        // Classe Mediana: posição n/2
+        let posMed = n / 2;
+        let fc = 0;
+        let idxMed = 0;
+        let fAntMed = 0;
+        for(let i=0; i<classesInfo.length; i++) {
+            let prevFc = fc;
+            fc += classesInfo[i].fa;
+            if (fc >= posMed) {
+                idxMed = i;
+                fAntMed = prevFc;
+                break;
+            }
+        }
+        let cMed = classesInfo[idxMed];
+        let mediana = cMed.fa > 0 ? (cMed.li + ((posMed - fAntMed) / cMed.fa) * AC) : cMed.mi;
+
+        // Classe Modal (Maior fa)
+        let idxModal = 0;
+        let maxFa = -1;
+        classesInfo.forEach((c, i) => {
+            if (c.fa > maxFa) {
+                maxFa = c.fa;
+                idxModal = i;
+            }
+        });
+        let moda = classesInfo[idxModal].mi;
+
+        document.getElementById('kpi_media').innerText = `${media.toFixed(3)} m`;
+        document.getElementById('kpi_mediana').innerText = `${mediana.toFixed(3)} m`;
+        document.getElementById('kpi_moda').innerText = `${moda.toFixed(3)} m`;
+
+        let cores = classesInfo.map((c, i) => {
+            if (i === idxMed && i === idxModal) return '#003485';
+            if (i === idxMed) return '#16a34a'; // Mediana
+            if (i === idxModal) return '#ea580c'; // Modal
+            return '#94a3b8';
+        });
+
+        let trace = {
+            x: classesInfo.map(c => c.label),
+            y: classesInfo.map(c => c.fa),
+            type: 'bar',
+            marker: { color: cores, line: { color: '#0f172a', width: 1.2 } },
+            text: classesInfo.map(c => `${c.fa} alunos`),
+            textposition: 'auto'
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 35, r: 15 },
+            bargap: 0.04,
+            xaxis: { title: 'Classes de Estatura' },
+            yaxis: { title: 'Frequência Absoluta (fa)' }
+        };
+
+        Plotly.react('chart_div', [trace], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

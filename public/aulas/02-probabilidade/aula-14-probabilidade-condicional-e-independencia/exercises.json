@@ -1,0 +1,102 @@
+[
+  {
+    "id": "livro-aula-14-exercicio-4",
+    "numero": 4,
+    "numero_original": "4",
+    "categoria": "exercicio",
+    "enunciado": "Em um lote de 100 peças eletrônicas fabricadas, 10 são defeituosas ($D$) e 90 são perfeitas ($P$). Duas peças são retiradas sucessivamente e sem reposição.  \n(a) Qual é a probabilidade de que a primeira peça seja defeituosa?  \n(b) Qual é a probabilidade de que a segunda peça seja defeituosa, dado que a primeira foi defeituosa?  \n(c) Qual é a probabilidade de que ambas sejam defeituosas?",
+    "origem": {
+      "arquivo": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt",
+      "linha_inicial": 84,
+      "linha_final": 95,
+      "aula": 14
+    },
+    "solucao_completa": "(a) $P(D_1)=10/100=0{,}10=10\\%$.\n(b) Se a primeira foi defeituosa, restam 9 defeituosas em 99 peças: $P(D_2\\mid D_1)=9/99=1/11\\approx9{,}09\\%$.\n(c) Pela regra da multiplicação:\n$$P(D_1\\cap D_2)=P(D_1)P(D_2\\mid D_1)=\\frac{10}{100}\\frac9{99}=\\frac1{110}\\approx0{,}009091.$$\nAssim, a probabilidade conjunta é aproximadamente 0,91%. As retiradas são dependentes, por isso não se usa $0{,}10^2$.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Qual é a probabilidade de que a primeira peça seja defeituosa?"
+      },
+      {
+        "id": "b",
+        "texto": "Qual é a probabilidade de que a segunda peça seja defeituosa, dado que a primeira foi defeituosa?"
+      },
+      {
+        "id": "c",
+        "texto": "Qual é a probabilidade de que ambas sejam defeituosas?"
+      }
+    ],
+    "resourceBasePath": "/aulas/02-probabilidade/aula-14-probabilidade-condicional-e-independencia/",
+    "solucao_original": "**Resolução:**  \n(a) $P(D_1) = \\frac{10}{100} = \\frac{1}{10} = 0{,}10$.  \n(b) Sem reposição, restam 99 peças no lote e 9 com defeito:  \n$$P(D_2|D_1) = \\frac{9}{99} = \\frac{1}{11} \\cong 0{,}0909$$  \n(c) Pela regra da multiplicação:  \n$$P(D_1 \\cap D_2) = P(D_1) \\cdot P(D_2|D_1) = \\frac{10}{100} \\cdot \\frac{9}{99} = \\frac{90}{9900} = \\frac{1}{110} \\cong 0{,}0091 \\quad (0{,}91\\%)$$",
+    "dica": "Sem reposição, a primeira retirada altera o total e a quantidade de defeituosas disponíveis.",
+    "passo_inicial": "Escreva $P(D_1)$ com as quantidades iniciais. Para $P(D_2\\mid D_1)$, retire uma peça defeituosa do lote antes de formar a fração.",
+    "resposta_final": "(a) 10%. (b) $1/11\\approx9{,}09\\%$. (c) $1/110\\approx0{,}91\\%$.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt",
+          "linha_inicial": 84,
+          "linha_final": 95
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-14-multipla-escolha-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Cesgranrio, 2014) Em uma pesquisa sobre hábitos de leitura de 200 universitários, constatou-se que 120 leem regularmente jornais, 80 leem revistas e 40 leem ambos. Escolhendo-se ao acaso um estudante desse grupo, qual é a probabilidade de que ele leia jornais ou revistas?  \n(a) $60\\%$  \n(b) $70\\%$  \n(c) $80\\%$  \n(d) $90\\%$  \n(e) $100\\%$",
+    "origem": {
+      "arquivo": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt",
+      "linha_inicial": 98,
+      "linha_final": 106,
+      "aula": 14
+    },
+    "solucao_completa": "A união contém $120+80-40=160$ estudantes. A subtração elimina a dupla contagem dos 40 que leem jornais e revistas. Logo, $P(J\\cup R)=160/200=0{,}80$.",
+    "resposta_final": "Alternativa C — 80%.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "$60\\%$"
+      },
+      {
+        "id": "b",
+        "texto": "$70\\%$"
+      },
+      {
+        "id": "c",
+        "texto": "$80\\%$"
+      },
+      {
+        "id": "d",
+        "texto": "$90\\%$"
+      },
+      {
+        "id": "e",
+        "texto": "$100\\%$"
+      }
+    ],
+    "resourceBasePath": "/aulas/02-probabilidade/aula-14-probabilidade-condicional-e-independencia/",
+    "solucao_original": "**Gabarito: (c)**  \n**Comentário:** Pela regra da união: $P(J \\cup R) = P(J) + P(R) - P(J \\cap R) = \\frac{120}{200} + \\frac{80}{200} - \\frac{40}{200} = \\frac{160}{200} = 0{,}80 = 80\\%$.",
+    "dica": "Somar os dois grupos sem ajuste contaria duas vezes quem lê ambos.",
+    "passo_inicial": "Use $|J\\cup R|=|J|+|R|-|J\\cap R|$ e divida o total de estudantes da união por 200.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt",
+          "linha_inicial": 98,
+          "linha_final": 106
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

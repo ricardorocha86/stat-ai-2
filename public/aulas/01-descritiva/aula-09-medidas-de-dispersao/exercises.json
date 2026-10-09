@@ -1,0 +1,44 @@
+[
+  {
+    "id": "livro-aula-09-exercicio-4",
+    "numero": 4,
+    "numero_original": "4",
+    "categoria": "exercicio",
+    "enunciado": "Os salários dos funcionários de dois setores de uma empresa apresentam as seguintes características:  \nSetor Administrativo: $\\bar{x}_A = 4.000,00$ e $s_A = 800,00$.  \nSetor Operacional: $\\bar{x}_O = 1.800,00$ e $s_O = 540,00$.  \n(a) Em qual dos setores os salários apresentam maior dispersão absoluta?  \n(b) Em qual dos setores os salários apresentam maior dispersão relativa? Justifique utilizando o coeficiente de variação ($CV$).",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 9 -  Medidas de Dispersão.txt",
+      "linha_inicial": 132,
+      "linha_final": 143,
+      "aula": 9
+    },
+    "solucao_completa": "(a) Na escala monetária, $s_A=800>s_O=540$: o setor administrativo tem maior dispersão absoluta.\n(b) Os coeficientes são\n$$CV_A=\\frac{800}{4000}\\cdot100\\%=20\\%,\\qquad CV_O=\\frac{540}{1800}\\cdot100\\%=30\\%.$$\nAssim, o setor operacional apresenta maior dispersão em relação à sua própria média salarial.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Em qual dos setores os salários apresentam maior dispersão absoluta?"
+      },
+      {
+        "id": "b",
+        "texto": "Em qual dos setores os salários apresentam maior dispersão relativa? Justifique utilizando o coeficiente de variação ($CV$)."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-09-medidas-de-dispersao/",
+    "solucao_original": "**Resolução:**  \n(a) A dispersão absoluta é medida pelo desvio-padrão ($s$). Como $s_A = 800,00 > s_O = 540,00$, o **Setor Administrativo** apresenta maior dispersão absoluta.  \n(b) Dispersão relativa:  \n$$CV_A = \\frac{800}{4000} \\times 100\\% = 20{,}0\\%$$  \n$$CV_O = \\frac{540}{1800} \\times 100\\% = 30{,}0\\%$$  \nO **Setor Operacional** apresenta maior dispersão relativa ($30{,}0\\% > 20{,}0\\%$), sendo os salários de seus funcionários proporcionalmente mais desiguais em relação à sua média salarial.",
+    "dica": "Compare o desvio-padrão para dispersão absoluta e o coeficiente de variação para dispersão relativa.",
+    "passo_inicial": "Use $CV=(s/\\bar x)\\cdot100\\%$ separadamente em cada setor. Não compare apenas os valores monetários para decidir a dispersão relativa.",
+    "resposta_final": "(a) Administrativo. (b) Operacional: CV de 30%, contra 20% do administrativo.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 9 -  Medidas de Dispersão.txt",
+          "linha_inicial": 132,
+          "linha_final": 143
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

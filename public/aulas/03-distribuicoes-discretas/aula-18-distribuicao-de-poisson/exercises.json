@@ -1,0 +1,102 @@
+[
+  {
+    "id": "livro-aula-18-exercicio-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "exercicio",
+    "enunciado": "Em uma central de atendimento telefônico de emergência, chegam em média 3 chamadas por minuto ($\\lambda = 3$). Calcule a probabilidade de que em um minuto qualquer cheguem:  \n(a) Nenhuma chamada ($x = 0$).  \n(b) Exatamente 2 chamadas ($x = 2$).  \n(c) No máximo 2 chamadas ($x \\le 2$).",
+    "origem": {
+      "arquivo": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt",
+      "linha_inicial": 70,
+      "linha_final": 82,
+      "aula": 18
+    },
+    "solucao_completa": "Pelo modelo de Poisson do enunciado:\n(a) $P(X=0)=e^{-3}\\approx0{,}049787=4{,}98\\%$.\n(b) $P(X=2)=e^{-3}3^2/2!=4{,}5e^{-3}\\approx0{,}224042=22{,}40\\%$.\n(c) $P(X=1)=3e^{-3}\\approx0{,}149361$. Então\n$$P(X\\le2)=e^{-3}(1+3+4{,}5)=8{,}5e^{-3}\\approx0{,}423190=42{,}32\\%.$$\nMantenha as casas decimais durante a soma e arredonde apenas ao apresentar a resposta.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Nenhuma chamada ($x = 0$)."
+      },
+      {
+        "id": "b",
+        "texto": "Exatamente 2 chamadas ($x = 2$)."
+      },
+      {
+        "id": "c",
+        "texto": "No máximo 2 chamadas ($x \\le 2$)."
+      }
+    ],
+    "resourceBasePath": "/aulas/03-distribuicoes-discretas/aula-18-distribuicao-de-poisson/",
+    "solucao_original": "**Resolução:**  \nCom $\\lambda = 3$ e $e^{-3} \\cong 0{,}04979$:  \n(a) $P(X = 0) = \\frac{e^{-3} \\cdot 3^0}{0!} = 0{,}04979 \\cong 4{,}98\\%$.  \n(b) $P(X = 2) = \\frac{e^{-3} \\cdot 3^2}{2!} = \\frac{0{,}04979 \\cdot 9}{2} = \\frac{0{,}4481}{2} \\cong 0{,}2240 \\quad (22{,}40\\%)$.  \n(c) $P(X \\le 2) = P(0) + P(1) + P(2)$:  \n- $P(X = 1) = \\frac{e^{-3} \\cdot 3^1}{1!} = 0{,}04979 \\cdot 3 = 0{,}14937$.  \n- $P(X \\le 2) = 0{,}04979 + 0{,}14937 + 0{,}22405 = 0{,}4232 \\quad (42{,}32\\%)$.",
+    "dica": "“No máximo 2” reúne as contagens 0, 1 e 2, que são eventos mutuamente exclusivos.",
+    "passo_inicial": "Use $P(X=x)=e^{-\\lambda}\\lambda^x/x!$ com $\\lambda=3$ no intervalo de um minuto. Calcule cada termo necessário antes de somá-los.",
+    "resposta_final": "(a) Aproximadamente 4,98%. (b) Aproximadamente 22,40%. (c) Aproximadamente 42,32%.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt",
+          "linha_inicial": 70,
+          "linha_final": 82
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-18-multipla-escolha-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "multipla_escolha",
+    "enunciado": "Uma variável aleatória $X$ segue uma distribuição de Poisson tal que sua variância é igual a $4$. Qual é a probabilidade de que $X = 0$?  \n(a) $e^{-2}$  \n(b) $e^{-4}$  \n(c) $4 e^{-4}$  \n(d) $\\frac{1}{4}$  \n(e) $1 - e^{-4}$",
+    "origem": {
+      "arquivo": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt",
+      "linha_inicial": 85,
+      "linha_final": 93,
+      "aula": 18
+    },
+    "solucao_completa": "Como $\\operatorname{Var}(X)=\\lambda=4$, temos\n$$P(X=0)=\\frac{e^{-4}4^0}{0!}=e^{-4},$$\npois $4^0=1$ e $0!=1$. Numericamente, isso é aproximadamente 1,83%.",
+    "resposta_final": "Alternativa B — $e^{-4}$.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "$e^{-2}$"
+      },
+      {
+        "id": "b",
+        "texto": "$e^{-4}$"
+      },
+      {
+        "id": "c",
+        "texto": "$4 e^{-4}$"
+      },
+      {
+        "id": "d",
+        "texto": "$\\frac{1}{4}$"
+      },
+      {
+        "id": "e",
+        "texto": "$1 - e^{-4}$"
+      }
+    ],
+    "resourceBasePath": "/aulas/03-distribuicoes-discretas/aula-18-distribuicao-de-poisson/",
+    "solucao_original": "**Gabarito: (b)**  \n**Comentário:** Na distribuição de Poisson, $\\sigma^2 = \\lambda$. Se a variância é 4, então $\\lambda = 4$. Portanto, $P(X = 0) = \\frac{e^{-4} \\cdot 4^0}{0!} = e^{-4}$.",
+    "dica": "Na Poisson, média e variância são iguais ao parâmetro $\\lambda$.",
+    "passo_inicial": "Use a variância informada para identificar $\\lambda$ e substitua $x=0$ na função de probabilidade.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt",
+          "linha_inicial": 85,
+          "linha_final": 93
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

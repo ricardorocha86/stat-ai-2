@@ -1,0 +1,638 @@
+[
+  {
+    "id": "livro-aula-23-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "Uma empresa de locação de automóveis cobra R$ 50 por dia mais 20 centavos por quilômetro rodado para a locação de um veículo compacto. Faça com que $y$ represente o total da tarifa para a locação (em reais) de um automóvel compacto para um único dia, e faça com que $x$ represente os quilômetros percorridos.\n   - (a) Qual é a equação para a relação entre $x$ e $y$?\n   - (b) Quanto pagará uma pessoa que aluga um automóvel por um dia e dirige por 100 quilômetros?\n   - (c) Suponha que 10 pessoas aluguem um automóvel compacto dessa agência, por um único dia, e dirija esse automóvel por 200 quilômetros. Cada uma dessas pessoas pagará a mesma quantia para alugar um automóvel por um único dia? Explique.\n   - (d) A relação entre $x$ e $y$ é exata ou não exata?",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 83,
+      "linha_final": 88,
+      "aula": 23
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Qual é a equação para a relação entre $x$ e $y$?"
+      },
+      {
+        "id": "b",
+        "texto": "Quanto pagará uma pessoa que aluga um automóvel por um dia e dirige por 100 quilômetros?"
+      },
+      {
+        "id": "c",
+        "texto": "Suponha que 10 pessoas aluguem um automóvel compacto dessa agência, por um único dia, e dirija esse automóvel por 200 quilômetros. Cada uma dessas pessoas pagará a mesma quantia para alugar um automóvel por um único dia? Explique."
+      },
+      {
+        "id": "d",
+        "texto": "A relação entre $x$ e $y$ é exata ou não exata?"
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "Há uma parcela fixa diária e uma parcela que depende da quilometragem.",
+    "passo_inicial": "Converta 20 centavos para R$ 0,20 e escreva total = tarifa fixa + tarifa por km × quilômetros.",
+    "solucao_completa": "(a) Para um dia, $y=50+0{,}20x$.\n(b) Se $x=100$, $y=50+0{,}20(100)=70$ reais.\n(c) Sob as condições do enunciado, todos pagam a mesma tarifa ao percorrer 200 km: $50+0{,}20(200)=90$ reais. Não foram especificadas outras taxas.\n(d) A relação é exata: fixado $x$ e mantidas as condições, a fórmula determina o mesmo $y$. Não é um ajuste estatístico com resíduos aleatórios.\n\nO gabarito online omite a tarifa fixa de R$ 50 nos itens (a) e (b). A resposta aqui inclui essa parcela expressa no enunciado.",
+    "resposta_final": "(a) $y=50+0{,}20x$. (b) R$ 70,00. (c) Sim; R$ 90,00 cada. (d) Relação exata.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 83,
+          "linha_final": 88
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Exercício 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": "O gabarito escreve y=0,20x e R$20; isso omite os R$50 diários do enunciado do livro e da aula.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-exercicio-2",
+    "numero": 2,
+    "numero_original": "2",
+    "categoria": "exercicio",
+    "enunciado": "O professor de estatística deseja avaliar a relação existente entre o número de horas estudadas por semana ($x$) e a nota final da disciplina de estatística ($y$). Para isso, coletou uma amostra aleatória de 8 estudantes que está apresentada na tabela a seguir:\n\n| Horas | Nota |\n| :-: | :-: |\n| 14 | 8 |\n| 9 | 7 |\n| 2 | 3 |\n| 18 | 10 |\n| 11 | 8 |\n| 1 | 2 |\n| 6 | 5 |\n| 5 | 3 |\n\n   - (a) Plote o diagrama de dispersão dos pontos e avalie a existência de relação linear entre horas de estudo e nota final;\n   - (b) Encontre a linha de regressão, sendo nota a variável dependente, e horas de estudo a variável independente;\n   - (c) Interprete os valores de $a$ e $b$ encontrados;\n   - (d) Faça uma previsão para a quantidade média de horas de estudo para que o aluno fique com média 6.0;\n   - (e) Calcule o coeficiente de correlação entre as variáveis e, em seguida, avalie a relação existente entre o número de horas estudadas por semana e a nota final da disciplina de estatística dos alunos amostrados.",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 89,
+      "linha_final": 107,
+      "aula": 23
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Plote o diagrama de dispersão dos pontos e avalie a existência de relação linear entre horas de estudo e nota final;"
+      },
+      {
+        "id": "b",
+        "texto": "Encontre a linha de regressão, sendo nota a variável dependente, e horas de estudo a variável independente;"
+      },
+      {
+        "id": "c",
+        "texto": "Interprete os valores de $a$ e $b$ encontrados;"
+      },
+      {
+        "id": "d",
+        "texto": "Faça uma previsão para a quantidade média de horas de estudo para que o aluno fique com média 6.0;"
+      },
+      {
+        "id": "e",
+        "texto": "Calcule o coeficiente de correlação entre as variáveis e, em seguida, avalie a relação existente entre o número de horas estudadas por semana e a nota final da disciplina de estatística dos alunos amostrados."
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "Use horas como variável explicativa e nota como resposta. A correlação descreve associação, sem estabelecer causalidade.",
+    "passo_inicial": "Calcule $\\sum x$, $\\sum y$, $\\sum x^2$, $\\sum y^2$ e $\\sum xy$. Use as fórmulas da reta de mínimos quadrados e de Pearson.",
+    "solucao_completa": "(a) Os oito pares mostram tendência linear positiva: notas maiores aparecem, em geral, junto a mais horas.\n(b) As somas são $n=8$, $\\sum x=66$, $\\sum y=46$, $\\sum x^2=788$, $\\sum y^2=324$, $\\sum xy=496$. Logo,\n$$S_{xx}=788-\\frac{66^2}{8}=243{,}5,\\quad S_{xy}=496-\\frac{66(46)}8=116{,}5,$$\n$$b=\\frac{116{,}5}{243{,}5}\\approx0{,}478439,\\quad a=5{,}75-b(8{,}25)\\approx1{,}802875.$$\nA reta é $\\hat y\\approx1{,}802875+0{,}478439x$.\n(c) O intercepto é a nota prevista para zero hora, ligeiramente fora da faixa observada; deve ser interpretado com cautela. A inclinação indica acréscimo previsto de aproximadamente 0,478 ponto de nota por hora adicional de estudo semanal neste modelo.\n(d) Substituindo $\\hat y=6$ e isolando $x$, $x=(6-a)/b\\approx8{,}77$ h. Se forem usados os coeficientes já arredondados $1{,}80$ e $0{,}48$, obtém-se 8,75 h, como no gabarito. Esta é uma inversão da reta ajustada para nota; não garante nota 6 nem substitui um ajuste próprio de horas em função da nota.\n(e) $S_{yy}=324-46^2/8=59{,}5$. Assim,\n$$r=\\frac{116{,}5}{\\sqrt{243{,}5(59{,}5)}}\\approx0{,}9679.$$\nA associação linear é positiva e forte na amostra.\n\n![Horas de estudo e nota — resolução](recursos/gabarito-ex02-regressao.html)",
+    "resposta_final": "(a) Associação positiva. (b) $\\hat y\\approx1{,}802875+0{,}478439x$. (c) Inclinação aproximadamente 0,478 ponto por hora. (d) Aproximadamente 8,77 h; 8,75 h com coeficientes arredondados. (e) $r\\approx0{,}9679$.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 89,
+          "linha_final": 107
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Exercício 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": "Concordância com os coeficientes e a correlação do gabarito; previsões calculadas com maior precisão antes do arredondamento.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-exercicio-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "exercicio",
+    "enunciado": "(MANN, 2015) A tabela a seguir apresenta informações sobre a quantidade de açúcar (em gramas) e o conteúdo de calorias em uma porção de uma amostra de 13 variedades dos cereais Kellogg’s:\n\n| Açúcar (gramas) | Calorias |\n| :-: | :-: |\n| 4 | 120 |\n| 15 | 200 |\n| 12 | 140 |\n| 11 | 110 |\n| 8 | 120 |\n| 6 | 80 |\n| 7 | 190 |\n| 2 | 100 |\n| 7 | 120 |\n| 14 | 190 |\n| 20 | 190 |\n| 3 | 110 |\n| 13 | 120 |\n\n*Fonte: Kelloggs.com*\n\n   - (a) Construa um diagrama de dispersão para esses dados. O diagrama de dispersão exibe uma relação linear entre quantidade de açúcar e a quantidade de calorias por porção?\n   - (b) Encontre a equação de previsão para a regressão da quantidade de calorias em relação à quantidade de açúcar.\n   - (c) Forneça uma interpretação sucinta para os valores de $a$ e $b$, calculados no item b.\n   - (d) Desenhe a linha de regressão para fins de previsão no diagrama de dispersão do item a, e mostre os erros, traçando linhas verticais entre os pontos dispersos e a linha de regressão para previsão.\n   - (e) Calcule a previsão para o número de calorias de um cereal com 16 gramas de açúcar por porção.\n   - (f) Faça a estimativa para a quantidade de calorias de um cereal com 52 gramas de açúcar por porção. Comente sobre as suas descobertas.",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 108,
+      "linha_final": 134,
+      "aula": 23
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Construa um diagrama de dispersão para esses dados. O diagrama de dispersão exibe uma relação linear entre quantidade de açúcar e a quantidade de calorias por porção?"
+      },
+      {
+        "id": "b",
+        "texto": "Encontre a equação de previsão para a regressão da quantidade de calorias em relação à quantidade de açúcar."
+      },
+      {
+        "id": "c",
+        "texto": "Forneça uma interpretação sucinta para os valores de $a$ e $b$, calculados no item b."
+      },
+      {
+        "id": "d",
+        "texto": "Desenhe a linha de regressão para fins de previsão no diagrama de dispersão do item a, e mostre os erros, traçando linhas verticais entre os pontos dispersos e a linha de regressão para previsão."
+      },
+      {
+        "id": "e",
+        "texto": "Calcule a previsão para o número de calorias de um cereal com 16 gramas de açúcar por porção."
+      },
+      {
+        "id": "f",
+        "texto": "Faça a estimativa para a quantidade de calorias de um cereal com 52 gramas de açúcar por porção. Comente sobre as suas descobertas."
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "A reta resume a tendência, mas não elimina a dispersão nem permite extrapolar com segurança para qualquer quantidade de açúcar.",
+    "passo_inicial": "Use açúcar como $x$ e calorias como $y$. Monte colunas $x^2$, $xy$ e calcule os coeficientes. Para desenhar resíduos, compare cada $y_i$ com seu $\\hat y_i$.",
+    "solucao_completa": "(a) O diagrama dos 13 pares mostra associação positiva, com dispersão considerável.\n(b) As somas são $\\sum x=122$, $\\sum y=1790$, $\\sum x^2=1482$ e $\\sum xy=18530$. Aplicando mínimos quadrados,\n$$b=\\frac{18530-122(1790)/13}{1482-122^2/13}\\approx5{,}136924,$$\n$$a=\\frac{1790}{13}-b\\frac{122}{13}\\approx89{,}484254.$$\nPortanto, $\\hat y\\approx89{,}484254+5{,}136924x$.\n(c) A inclinação representa aproximadamente 5,14 kcal adicionais previstas por grama adicional de açúcar. O intercepto prevê 89,48 kcal para açúcar zero, fora da faixa observada de 2 a 20 g, e deve ser interpretado com cautela. A associação não prova que o açúcar seja a única causa da variação nas calorias.\n(d) Trace a reta sobre os pontos. Para cada $x_i$, o resíduo vertical é $e_i=y_i-\\hat y_i$, com segmento entre $(x_i;y_i)$ e $(x_i;\\hat y_i)$.\n(e) Para 16 g, $\\hat y\\approx171{,}675$ kcal, ou 172 kcal.\n(f) Para 52 g, o cálculo fornece aproximadamente 356,60 kcal, ou 357 kcal. Contudo, 52 g está muito além dos dados: é uma extrapolação sem validação nessa faixa, portanto a estimativa é pouco confiável.\n\n![Açúcar, calorias e resíduos — resolução](recursos/gabarito-ex03-regressao.html)",
+    "resposta_final": "(a) Associação positiva com dispersão. (b) $\\hat y\\approx89{,}484254+5{,}136924x$. (c) Aproximadamente 5,14 kcal/g. (d) Resíduos verticais $y_i-\\hat y_i$. (e) Aproximadamente 172 kcal. (f) Aproximadamente 357 kcal, com extrapolação pouco confiável.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 108,
+          "linha_final": 134
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Exercício 3",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": "Coeficientes e previsões concordam com o gabarito; elaboradas interpretação, resíduos e ressalva de extrapolação.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-exercicio-4",
+    "numero": 4,
+    "numero_original": "4",
+    "categoria": "exercicio",
+    "enunciado": "(MANN, 2015) A administração de um supermercado deseja descobrir se existe uma relação entre o número de vezes em que um produto específico é anunciado como promoção no sistema de alto-falante interno da loja e o número de unidades desse produto que são vendidas. Para realizar a experiência, a administração da loja selecionou determinado produto e anunciou, durante sete dias, uma promoção para ele no sistema de alto-falante interno da loja. A tabela a seguir fornece o número de vezes que esse produto foi anunciado como promoção, a cada dia, e o número de unidades vendidas:\n\n| Número de promoções por dia | Número de unidades vendidas por dia (centenas) |\n| :-: | :-: |\n| 15 | 11 |\n| 22 | 22 |\n| 42 | 30 |\n| 30 | 26 |\n| 18 | 17 |\n| 12 | 15 |\n| 38 | 23 |\n\n   - (a) Com o número de promoções realizadas representando uma variável independente e o número de unidades vendidas representando uma variável dependente, qual você espera que venha a ser o sinal de $B$ na linha de regressão $y = A + Bx + \\epsilon$?\n   - (b) Encontre a linha de regressão dos mínimos quadrados, $\\hat{y} = a + bx$. O sinal de $b$ é o mesmo que o sinal da sua hipótese de $B$ no item a?\n   - (c) Forneça uma interpretação sucinta para o valor de $a$ e para o valor de $b$, calculados no item b.\n   - (d) Calcule $r$ e $r^2$ e explique o que eles significam.\n   - (e) Faça a previsão para o número de unidades vendidas desse produto em um dia com 35 promoções.",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 135,
+      "linha_final": 152,
+      "aula": 23
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Com o número de promoções realizadas representando uma variável independente e o número de unidades vendidas representando uma variável dependente, qual você espera que venha a ser o sinal de $B$ na linha de regressão $y = A + Bx + \\epsilon$?"
+      },
+      {
+        "id": "b",
+        "texto": "Encontre a linha de regressão dos mínimos quadrados, $\\hat{y} = a + bx$. O sinal de $b$ é o mesmo que o sinal da sua hipótese de $B$ no item a?"
+      },
+      {
+        "id": "c",
+        "texto": "Forneça uma interpretação sucinta para o valor de $a$ e para o valor de $b$, calculados no item b."
+      },
+      {
+        "id": "d",
+        "texto": "Calcule $r$ e $r^2$ e explique o que eles significam."
+      },
+      {
+        "id": "e",
+        "texto": "Faça a previsão para o número de unidades vendidas desse produto em um dia com 35 promoções."
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "A variável resposta está em centenas de unidades. Converta essa escala ao apresentar a previsão final.",
+    "passo_inicial": "Calcule a reta para promoções ($x$) e vendas em centenas ($y$). Em seguida, obtenha $r$ e $r^2$, distinguindo associação de causa.",
+    "solucao_completa": "(a) Espera-se um sinal positivo: mais promoções podem acompanhar mais vendas.\n(b) As somas são $n=7$, $\\sum x=177$, $\\sum y=144$, $\\sum x^2=5285$, $\\sum y^2=3224$, $\\sum xy=4049$. Aplicando as fórmulas,\n$$b\\approx0{,}503883,\\qquad a\\approx7{,}830392,\\qquad \\hat y\\approx7{,}830392+0{,}503883x.$$\nO sinal de $b$ é positivo, como esperado.\n(c) O intercepto prevê 7,83 centenas de unidades sem anúncios, extrapolando abaixo da faixa de 12 a 42 observada. Cada anúncio adicional associa-se a aproximadamente 0,5039 centena, ou 50,39 unidades, adicionais previstas pelo modelo.\n(d) $r\\approx0{,}8861$ e $r^2\\approx0{,}7853$: a associação linear é positiva e forte; aproximadamente 78,53% da variação amostral de vendas é explicada pelo ajuste linear a promoções. Isso não demonstra causalidade nem significa que 78,53% das vendas foram causadas pelos anúncios.\n(e) Para $x=35$, $\\hat y\\approx25{,}46629$ centenas, ou 2546,63 unidades; arredondando a uma contagem, aproximadamente 2547 unidades.\n\n![Promoções e vendas — resolução](recursos/gabarito-ex04-regressao.html)",
+    "resposta_final": "(a) Positivo. (b) $\\hat y\\approx7{,}830392+0{,}503883x$. (c) Cerca de 50,39 unidades adicionais previstas por anúncio. (d) $r\\approx0{,}8861$, $r^2\\approx0{,}7853$. (e) Aproximadamente 2.547 unidades.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 135,
+          "linha_final": 152
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Exercício 4",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": "Resultados concordam com o gabarito; preservada a escala de centenas e esclarecida a interpretação de r².",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-exercicio-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "exercicio",
+    "enunciado": "(MANN, 2015) Ao longo dos últimos 25 anos, Burton Hodge tem mantido registros sobre o número de vezes que ele apara a sua relva e sobre o tamanho médio das espigas de milho em sua horta. Tendo ouvido de um colega estatístico sobre o coeficiente de correlação de Pearson, Burton decide consubstanciar a sua suspeita de que quanto mais frequentemente ele apara a sua relva, maiores ficam as espigas de milho. Ele faz isso calculando o coeficiente de correlação. Pasmem! Burton encontra um coeficiente de correlação de 0,93!\n\nExultante, ele chama o seu amigo estatístico para agradecer-lhe e anuncia que no próximo ano ele terá espigas de milho vencedoras de prêmios, pois planeja aparar sua grama todos os dias. Você acredita que a lógica de Burton esteja correta? Se não for o caso, como você explicaria a Burton sobre o engano que ele está cometendo em sua suposição (sem abalar a nova opinião dele sobre a estatística)?",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 153,
+      "linha_final": 158,
+      "aula": 23
+    },
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "Uma associação forte entre duas variáveis não demonstra que uma provoque mudanças na outra.",
+    "passo_inicial": "Separe a afirmação observada, correlação de 0,93, da conclusão causal proposta por Burton. Pense em fatores que poderiam influenciar as duas variáveis.",
+    "solucao_completa": "O valor $r=0{,}93$ indica associação linear positiva forte nos registros, mas não estabelece causa. Chuva, estação do ano ou condições de crescimento poderiam influenciar tanto o crescimento da relva quanto o milho, sem que aparar a grama aumente as espigas. A estratégia de cortar todos os dias não decorre do coeficiente de correlação. Uma explicação respeitosa seria: “Seus dados mostram uma associação interessante. Para saber se cortar a grama muda o crescimento do milho, precisamos investigar outras condições e comparar tratamentos em um experimento adequado.” Essas possíveis causas são hipóteses, não fatos demonstrados pela amostra.",
+    "resposta_final": "A lógica causal de Burton não está justificada. Correlação de 0,93 não prova que aparar a relva aumente as espigas.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 153,
+          "linha_final": 158
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-multipla-escolha-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Vunesp, 2014) O modelo de regressão linear pressupõe que entre a variável independente e a variável dependente há uma relação:\n   - (a) logarítmica\n   - (b) quadrática\n   - (c) linear\n   - (d) constante\n   - (e) exponencial",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 161,
+      "linha_final": 167,
+      "aula": 23
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "logarítmica"
+      },
+      {
+        "id": "b",
+        "texto": "quadrática"
+      },
+      {
+        "id": "c",
+        "texto": "linear"
+      },
+      {
+        "id": "d",
+        "texto": "constante"
+      },
+      {
+        "id": "e",
+        "texto": "exponencial"
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "Identifique a forma da relação representada por uma reta.",
+    "passo_inicial": "Observe o modelo $\\hat y=a+bx$: a variação prevista de $y$ por unidade de $x$ é constante.",
+    "solucao_completa": "O modelo linear simples representa a tendência da variável resposta por uma função afim de $x$, com intercepto e inclinação. Entre as alternativas, essa forma é denominada relação linear.",
+    "resposta_final": "Alternativa C — linear.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 161,
+          "linha_final": 167
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-multipla-escolha-2",
+    "numero": 2,
+    "numero_original": "2",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Faurgs, 2018) A análise de _______ permite estudar a relação entre dois conjuntos de valores e quantificar o quanto um está relacionado com o outro, no sentido de determinar a intensidade e a direção dessa relação. Isto é, essa análise indica se, e com que intensidade, os valores de uma variável aumentam ou diminuem enquanto os valores da outra variável aumentam ou diminuem. Assinale a alternativa que completa corretamente a lacuna do texto acima.\n   - (a) correlação\n   - (b) dispersão\n   - (c) classificação\n   - (d) agrupamento\n   - (e) regressão",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 168,
+      "linha_final": 174,
+      "aula": 23
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "correlação"
+      },
+      {
+        "id": "b",
+        "texto": "dispersão"
+      },
+      {
+        "id": "c",
+        "texto": "classificação"
+      },
+      {
+        "id": "d",
+        "texto": "agrupamento"
+      },
+      {
+        "id": "e",
+        "texto": "regressão"
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "A pergunta destaca intensidade e direção da associação, não a construção de uma equação de previsão.",
+    "passo_inicial": "Compare as finalidades de correlação e regressão. Procure a análise que quantifica como os valores das duas variáveis se associam.",
+    "solucao_completa": "Correlação quantifica a direção e a intensidade de uma associação; o coeficiente de Pearson faz isso para a associação linear. Regressão estima uma relação para explicar ou prever uma variável resposta. A definição do enunciado corresponde à correlação.",
+    "resposta_final": "Alternativa A — correlação.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 168,
+          "linha_final": 174
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-multipla-escolha-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Funiversa, 2015) Com o intuito de avaliar possíveis correlações entre variáveis, um gráfico de dispersão pode ser um aliado na tomada de decisão. Esse gráfico, elaborado no eixo cartesiano, plota resultados das variáveis estudadas a fim de representá-las conjuntamente. Sejam $x$ e $y$ variáveis referentes a “tempo de experiência\" e “tempo de execução de tarefa\", respectivamente, e analisando o gráfico de dispersão apresentado, assinale a alternativa correta.\n\n\n![Gráfico de dispersão da questão 3 (Funiversa, 2015)](recursos/ex03_cap7_dispersao.png)\n\n   - (a) É observada uma correlação negativa perfeita entre as variáveis.\n   - (b) É observada uma correlação positiva perfeita entre as variáveis.\n   - (c) É observada uma correlação positiva entre as variáveis.\n   - (d) É observada uma correlação nula entre as variáveis.\n   - (e) É observada uma correlação negativa entre as variáveis.",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 175,
+      "linha_final": 185,
+      "aula": 23
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "É observada uma correlação negativa perfeita entre as variáveis."
+      },
+      {
+        "id": "b",
+        "texto": "É observada uma correlação positiva perfeita entre as variáveis."
+      },
+      {
+        "id": "c",
+        "texto": "É observada uma correlação positiva entre as variáveis."
+      },
+      {
+        "id": "d",
+        "texto": "É observada uma correlação nula entre as variáveis."
+      },
+      {
+        "id": "e",
+        "texto": "É observada uma correlação negativa entre as variáveis."
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "Observe se os pontos tendem a subir ou descer com o aumento de $x$, e se estão exatamente sobre uma reta.",
+    "passo_inicial": "Leia a nuvem de pontos da esquerda para a direita. Compare a tendência geral com a dispersão em torno dela.",
+    "solucao_completa": "Na figura, maiores tempos de experiência tendem a acompanhar maiores tempos de execução da tarefa. A tendência é ascendente, indicando associação positiva. Como os pontos não estão exatamente alinhados em uma reta, a correlação não é perfeita. A conclusão vem da figura apresentada, ainda que a direção possa contrariar uma expectativa intuitiva sobre experiência.",
+    "resposta_final": "Alternativa C — correlação positiva, sem perfeição.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 175,
+          "linha_final": 185
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 3",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-multipla-escolha-4",
+    "numero": 4,
+    "numero_original": "4",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Enem, 2009) Um experimento consiste em colocar certa quantidade de bolas de vidro idênticas em um copo com água até certo nível de água. Como resultado do experimento, concluiu-se que o nível de água é função do número de bolas de vidro que são colocadas dentro do copo. O quadro a seguir mostra alguns resultados do experimento realizado.\n\n| Número de bolas ($x$) | Nível de água ($y$) |\n| :-: | :-: |\n| 5 | 6,35 cm |\n| 10 | 6,70 cm |\n| 15 | 7,05 cm |\n\nQual expressão algébrica permite calcular o nível da água ($y$) em função do número de bolas ($x$)?\n   - (a) $y = 30x$\n   - (b) $y = 25x + 20{,}2$\n   - (c) $y = 1{,}27x$\n   - (d) $y = 0{,}7x$\n   - (e) $y = 0{,}07x + 6$",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 186,
+      "linha_final": 200,
+      "aula": 23
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "$y = 30x$"
+      },
+      {
+        "id": "b",
+        "texto": "$y = 25x + 20{,}2$"
+      },
+      {
+        "id": "c",
+        "texto": "$y = 1{,}27x$"
+      },
+      {
+        "id": "d",
+        "texto": "$y = 0{,}7x$"
+      },
+      {
+        "id": "e",
+        "texto": "$y = 0{,}07x + 6$"
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "Uma função afim é determinada pela taxa de variação e por um dos pares da tabela.",
+    "passo_inicial": "Use dois pares para calcular $b=\\Delta y/\\Delta x$. Depois encontre $a=y-bx$ e confira no terceiro par.",
+    "solucao_completa": "Ao aumentar de 5 para 10 bolas, o nível sobe de 6,35 para 6,70 cm:\n$$b=\\frac{6{,}70-6{,}35}{10-5}=\\frac{0{,}35}{5}=0{,}07.$$\nUsando $(5;6{,}35)$, $a=6{,}35-0{,}07(5)=6$. Logo $y=0{,}07x+6$, que também fornece $7{,}05$ cm para 15 bolas.",
+    "resposta_final": "Alternativa E — $y=0{,}07x+6$.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 186,
+          "linha_final": 200
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 4",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-multipla-escolha-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Famerp, 2018) Um animal, submetido à ação de uma droga experimental, teve sua massa corporal registrada nos sete primeiros meses de vida. Os sete pontos destacados no gráfico mostram esses registros e a reta indica a tendência de evolução da massa corporal em animais que não tenham sido submetidos à ação da droga experimental. Sabe-se que houve correlação perfeita entre os registros coletados no experimento e a reta apenas no 1º e no 3º mês.\n\n![Massa corporal e tendência de evolução da questão 5 (Famerp, 2018)](recursos/ex05_cap7_massa_corporal.png)\n\nSe a massa registrada no 6º mês do experimento foi 210 gramas inferior à tendência de evolução da massa em animais não submetidos à droga experimental, o valor dessa massa registrada é igual a:\n   - (a) 3,47 kg\n   - (b) 3,27 kg\n   - (c) 3,31 kg\n   - (d) 3,35 kg\n   - (e) 3,29 kg",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 201,
+      "linha_final": 213,
+      "aula": 23
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "3,47 kg"
+      },
+      {
+        "id": "b",
+        "texto": "3,27 kg"
+      },
+      {
+        "id": "c",
+        "texto": "3,31 kg"
+      },
+      {
+        "id": "d",
+        "texto": "3,35 kg"
+      },
+      {
+        "id": "e",
+        "texto": "3,29 kg"
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "Encontre a reta de referência pelos meses em que os registros coincidem com ela e depois desconte a diferença informada.",
+    "passo_inicial": "Leia na figura os pontos da reta em 1 e 3 meses: (1;1 kg) e (3;2 kg). Calcule a inclinação e o intercepto. Converta 210 g para kg antes de subtrair.",
+    "solucao_completa": "A inclinação da tendência é $(2-1)/(3-1)=0{,}5$ kg/mês. Com o ponto (1;1), o intercepto é $1-0{,}5(1)=0{,}5$ kg. Logo, a tendência é $m(t)=0{,}5+0{,}5t$. Aos seis meses, prevê $m(6)=3{,}5$ kg. O registro experimental é 210 g, ou 0,210 kg, inferior:\n$$m_{\\text{registrada}}=3{,}5-0{,}210=3{,}29\\text{ kg}.$$",
+    "resposta_final": "Alternativa E — 3,29 kg.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 201,
+          "linha_final": 213
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 5",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-23-atividade-miniprojeto-viii-visitando-o-supermercado",
+    "numero": 11,
+    "numero_original": "MINIPROJETO VIII – VISITANDO O SUPERMERCADO",
+    "categoria": "atividade",
+    "enunciado": "(MANN, 2015 – Adaptado) Visite um supermercado e escolha no mínimo 20 diferentes itens de alimentação que incluam informações nutricionais na embalagem. Para cada um dos alimentos, identifique a quantidade de gordura (em gramas) e o conteúdo de sódio (em miligramas) por porção. Não deixe de pegar uma ampla variedade de alimentos, para que possa obter uma ampla variedade de valores para essas duas variáveis. Por exemplo, selecionar 20 diferentes refrigerantes dietéticos não seria proveitoso para fins de uma análise interessante.\n\n   - (a) Calcule o coeficiente de correlação linear entre as duas variáveis. Você encontra uma associação positiva ou negativa entre o conteúdo de sódio e a quantidade de gordura?\n   - (b) Crie um gráfico de dispersão para esses dados utilizando a quantidade de gordura como a variável $x$. O seu gráfico de dispersão sugere que faz sentido criar uma linha de regressão para representar esses dados?\n   - (c) Encontre uma linha de regressão para os seus dados. Caso faça sentido ajustar uma linha, interprete os valores da inclinação e do intercepto. Caso não faça sentido, explique a razão pela qual esses números poderiam induzir algum tipo de erro.",
+    "origem": {
+      "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+      "linha_inicial": 216,
+      "linha_final": 222,
+      "aula": 23
+    },
+    "titulo": "MINIPROJETO VIII – VISITANDO O SUPERMERCADO",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Calcule o coeficiente de correlação linear entre as duas variáveis. Você encontra uma associação positiva ou negativa entre o conteúdo de sódio e a quantidade de gordura?"
+      },
+      {
+        "id": "b",
+        "texto": "Crie um gráfico de dispersão para esses dados utilizando a quantidade de gordura como a variável $x$. O seu gráfico de dispersão sugere que faz sentido criar uma linha de regressão para representar esses dados?"
+      },
+      {
+        "id": "c",
+        "texto": "Encontre uma linha de regressão para os seus dados. Caso faça sentido ajustar uma linha, interprete os valores da inclinação e do intercepto. Caso não faça sentido, explique a razão pela qual esses números poderiam induzir algum tipo de erro."
+      }
+    ],
+    "resourceBasePath": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/",
+    "dica": "Registre as unidades e a porção de cada rótulo. Uma associação pode variar conforme os alimentos selecionados.",
+    "passo_inicial": "Escolha pelo menos 20 alimentos variados. Monte colunas para alimento, porção, gordura em g e sódio em mg, sempre emparelhando as informações da mesma porção.",
+    "solucao_completa": "Este roteiro orienta a análise dos dados reais da coleta.\n1. Identifique produtos, tamanhos de porção e unidades. Se padronizar porções, registre a conversão e aplique-a de modo consistente; se mantiver porções dos rótulos, discuta essa diferença na interpretação.\n2. Use $x$ para gordura (g) e $y$ para sódio (mg); verifique valores ausentes e erros de transcrição.\n3. Calcule $r=S_{xy}/\\sqrt{S_{xx}S_{yy}}$. Se uma variável não variar, o coeficiente não é definido.\n4. Desenhe os pares no diagrama de dispersão e avalie direção, forma, dispersão e pontos influentes.\n5. Quando um ajuste linear fizer sentido, calcule $b=S_{xy}/S_{xx}$ e $a=\\bar y-b\\bar x$; interprete a inclinação em mg de sódio por g de gordura e o intercepto no contexto.\n6. Se não houver tendência linear plausível, ou poucos pontos dominarem o ajuste, explique a limitação em vez de apresentar a reta como boa previsão.\n7. A conclusão deve indicar a associação observada, sem afirmar que gordura causa sódio ou generalizar uma seleção por conveniência a todos os alimentos.",
+    "resposta_final": "Entrega esperada: pelo menos 20 registros verificáveis, porções e unidades, coeficiente de correlação quando definido, gráfico de dispersão e regressão interpretada ou justificativa para não usar a reta. Os resultados dependem dos alimentos escolhidos.",
+    "correcao_automatica": false,
+    "gabarito_meta": {
+      "origem": "roteiro",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 216,
+          "linha_final": 222
+        }
+      ],
+      "conferido_enunciado": true
+    },
+    "criterios_avaliacao": [
+      "Pelo menos 20 alimentos variados e dados dos rótulos identificados.",
+      "Mesma porção para os valores emparelhados e unidades consistentes.",
+      "Cálculo de r e da reta conferível, quando definidos.",
+      "Gráfico e interpretação coerentes, com limites e pontos influentes discutidos."
+    ]
+  }
+]

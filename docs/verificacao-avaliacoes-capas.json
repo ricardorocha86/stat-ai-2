@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-10-09T18:50:21.500Z",
+  "site": "https://statai-app.web.app",
+  "project": "statai-app-2026-ricardo",
+  "checks": 13,
+  "cases": [
+    "mean hidden before voting",
+    "first real anonymous vote",
+    "anonymous vote does not log into portal",
+    "two visitors share live mean",
+    "repeated click does not count twice",
+    "changed score replaces previous score",
+    "three rounds of concurrent updates keep exact aggregate",
+    "own rating persists on reload",
+    "mobile has no overflow",
+    "320px view has no overflow",
+    "reduced motion respected",
+    "next cover isolates rating and mean",
+    "failure shows message and keeps retry available"
+  ],
+  "baseline": {
+    "count": 0,
+    "sum": 0
+  },
+  "finalSummaryBeforeCleanup": {
+    "count": 2,
+    "sum": 9
+  },
+  "testVisitors": 2,
+  "pageErrors": [],
+  "auth": {
+    "mainGoogleLoginStayedVisible": true,
+    "anonymousProviderEnabled": true
+  },
+  "viewports": [
+    1280,
+    390,
+    320
+  ],
+  "reducedMotion": true,
+  "cleanup": {
+    "checkedAt": "2026-10-09T18:50:23.996Z",
+    "removedTestVotes": 2,
+    "removedTestScoreSum": 9,
+    "remainingRealVotes": 0,
+    "remainingScoreSum": 0,
+    "anonymousAccounts": {
+      "testVisitors": 2,
+      "deleted": 2
+    }
+  }
+}

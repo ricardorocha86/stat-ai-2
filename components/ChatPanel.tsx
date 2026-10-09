@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Chat } from '@google/genai';
-import { Lesson, Exercise, ChatMessage, ChatSessionCache } from '../types';
+import { Lesson, Exercise, ChatMessage, ChatSessionCache, AiChatSession } from '../types';
 import { createChatSession, generateExercise } from '../services/geminiService';
 import Loader from './Loader';
 import { CheckCircleIcon, PaperAirplaneIcon, SparklesIcon, UserIcon } from './Icons';
@@ -21,7 +20,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ lesson, onSaveExercise }) => {
   const chatSessionCache = useRef<ChatSessionCache>({});
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  const getChatSession = useCallback((lessonId: string, lessonTitle: string): Chat => {
+  const getChatSession = useCallback((lessonId: string, lessonTitle: string): AiChatSession => {
     if (!chatSessionCache.current[lessonId]) {
       chatSessionCache.current[lessonId] = createChatSession(lessonTitle);
     }
@@ -116,13 +115,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ lesson, onSaveExercise }) => {
         <div className="bg-[--bg-card] p-4 rounded-lg border border-[--border-color] space-y-2">
             <h4 className="font-semibold text-slate-800">Prévia do Exercício</h4>
              <div className="text-sm prose max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{exercise.problemStatement}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{exercise.enunciado}</ReactMarkdown>
             </div>
             <div className="flex gap-2 text-xs">
-                <span className="px-2 py-1 bg-slate-100 rounded-md"><strong>Dificuldade:</strong> {exercise.difficulty}</span>
-                <span className="px-2 py-1 bg-slate-100 rounded-md"><strong>Tipo:</strong> {exercise.type}</span>
+                <span className="px-2 py-1 bg-slate-100 rounded-md"><strong>Dificuldade:</strong> {exercise.dificuldade}</span>
             </div>
-            <p className="text-slate-700 text-sm pt-2 border-t border-[--border-color]"><strong className="font-medium text-slate-800">Dica:</strong> {exercise.solution.hint}</p>
+            <p className="text-slate-700 text-sm pt-2 border-t border-[--border-color]"><strong className="font-medium text-slate-800">Dica:</strong> {exercise.dica}</p>
         </div>
     );
   };

@@ -1,0 +1,273 @@
+{
+  "title": "Estatística Aplicada",
+  "contentVersion": "livro-2020-v1",
+  "units": [
+    {
+      "id": "livro-00-apresentacao",
+      "title": "Apresentação",
+      "lessons": [
+        {
+          "id": "livro-aula-00",
+          "title": "Apresentação e Sumário",
+          "number": 0,
+          "filePath": "aulas/00-apresentacao/aula-00-apresentacao-e-sumario/material.md",
+          "exercisesPath": "aulas/00-apresentacao/aula-00-apresentacao-e-sumario/exercises.json",
+          "exerciseCount": 0,
+          "sourcePath": "aulas/0_Apresentacao/Lição 0 - Apresentação e Sumário.txt"
+        }
+      ]
+    },
+    {
+      "id": "livro-01-descritiva",
+      "title": "Estatística descritiva",
+      "lessons": [
+        {
+          "id": "livro-aula-01",
+          "title": "Introdução à Estatística",
+          "number": 1,
+          "filePath": "aulas/01-descritiva/aula-01-introducao-a-estatistica/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-01-introducao-a-estatistica/exercises.json",
+          "exerciseCount": 3,
+          "sourcePath": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt"
+        },
+        {
+          "id": "livro-aula-02",
+          "title": "Amostragens Probabilísticas",
+          "number": 2,
+          "filePath": "aulas/01-descritiva/aula-02-amostragens-probabilisticas/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-02-amostragens-probabilisticas/exercises.json",
+          "exerciseCount": 8,
+          "sourcePath": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt"
+        },
+        {
+          "id": "livro-aula-03",
+          "title": "Classificação de Variáveis",
+          "number": 3,
+          "filePath": "aulas/01-descritiva/aula-03-classificacao-de-variaveis/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-03-classificacao-de-variaveis/exercises.json",
+          "exerciseCount": 5,
+          "sourcePath": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt"
+        },
+        {
+          "id": "livro-aula-04",
+          "title": "Organização de Dados Qualitativos",
+          "number": 4,
+          "filePath": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/exercises.json",
+          "exerciseCount": 3,
+          "sourcePath": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt"
+        },
+        {
+          "id": "livro-aula-05",
+          "title": "Gráficos Qualitativos e Diagrama de Pareto",
+          "number": 5,
+          "filePath": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt"
+        },
+        {
+          "id": "livro-aula-06",
+          "title": "Organização de Dados Quantitativos",
+          "number": 6,
+          "filePath": "aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/exercises.json",
+          "exerciseCount": 5,
+          "sourcePath": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt"
+        },
+        {
+          "id": "livro-aula-07",
+          "title": "Gráficos Quantitativos e Ramo-e-Folha",
+          "number": 7,
+          "filePath": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/exercises.json",
+          "exerciseCount": 5,
+          "sourcePath": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt"
+        },
+        {
+          "id": "livro-aula-08",
+          "title": "Medidas de Tendência Central",
+          "number": 8,
+          "filePath": "aulas/01-descritiva/aula-08-medidas-de-tendencia-central/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-08-medidas-de-tendencia-central/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt"
+        },
+        {
+          "id": "livro-aula-09",
+          "title": "Medidas de Dispersão",
+          "number": 9,
+          "filePath": "aulas/01-descritiva/aula-09-medidas-de-dispersao/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-09-medidas-de-dispersao/exercises.json",
+          "exerciseCount": 1,
+          "sourcePath": "aulas/1_Descritiva/Lição 9 -  Medidas de Dispersão.txt"
+        },
+        {
+          "id": "livro-aula-10",
+          "title": "Medidas de Posição e Boxplot",
+          "number": 10,
+          "filePath": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt"
+        },
+        {
+          "id": "livro-aula-11",
+          "title": "Medidas para Dados Agrupados",
+          "number": 11,
+          "filePath": "aulas/01-descritiva/aula-11-medidas-para-dados-agrupados/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-11-medidas-para-dados-agrupados/exercises.json",
+          "exerciseCount": 1,
+          "sourcePath": "aulas/1_Descritiva/Lição 11 -  Medidas para Dados Agrupados.txt"
+        },
+        {
+          "id": "livro-aula-12",
+          "title": "Aplicações do Desvio-Padrão e Controle de Qualidade",
+          "number": 12,
+          "filePath": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/material.md",
+          "exercisesPath": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/exercises.json",
+          "exerciseCount": 3,
+          "sourcePath": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt"
+        }
+      ]
+    },
+    {
+      "id": "livro-02-probabilidade",
+      "title": "Probabilidade",
+      "lessons": [
+        {
+          "id": "livro-aula-13",
+          "title": "Conceitos Básicos e Abordagens de Probabilidade",
+          "number": 13,
+          "filePath": "aulas/02-probabilidade/aula-13-conceitos-basicos-e-abordagens-de-probabilidade/material.md",
+          "exercisesPath": "aulas/02-probabilidade/aula-13-conceitos-basicos-e-abordagens-de-probabilidade/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt"
+        },
+        {
+          "id": "livro-aula-14",
+          "title": "Probabilidade Condicional e Independência",
+          "number": 14,
+          "filePath": "aulas/02-probabilidade/aula-14-probabilidade-condicional-e-independencia/material.md",
+          "exercisesPath": "aulas/02-probabilidade/aula-14-probabilidade-condicional-e-independencia/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt"
+        },
+        {
+          "id": "livro-aula-15",
+          "title": "Regras de Contagem",
+          "number": 15,
+          "filePath": "aulas/02-probabilidade/aula-15-regras-de-contagem/material.md",
+          "exercisesPath": "aulas/02-probabilidade/aula-15-regras-de-contagem/exercises.json",
+          "exerciseCount": 3,
+          "sourcePath": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt"
+        }
+      ]
+    },
+    {
+      "id": "livro-03-distribuicoes-discretas",
+      "title": "Distribuições discretas",
+      "lessons": [
+        {
+          "id": "livro-aula-16",
+          "title": "Variáveis Aleatórias Discretas e Distribuição Binomial",
+          "number": 16,
+          "filePath": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/material.md",
+          "exercisesPath": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt"
+        },
+        {
+          "id": "livro-aula-17",
+          "title": "Distribuição Hipergeométrica",
+          "number": 17,
+          "filePath": "aulas/03-distribuicoes-discretas/aula-17-distribuicao-hipergeometrica/material.md",
+          "exercisesPath": "aulas/03-distribuicoes-discretas/aula-17-distribuicao-hipergeometrica/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/3_Variaveis_Discretas/Lição 17 -  Distribuição Hipergeométrica.txt"
+        },
+        {
+          "id": "livro-aula-18",
+          "title": "Distribuição de Poisson",
+          "number": 18,
+          "filePath": "aulas/03-distribuicoes-discretas/aula-18-distribuicao-de-poisson/material.md",
+          "exercisesPath": "aulas/03-distribuicoes-discretas/aula-18-distribuicao-de-poisson/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt"
+        }
+      ]
+    },
+    {
+      "id": "livro-04-distribuicoes-continuas",
+      "title": "Distribuições contínuas",
+      "lessons": [
+        {
+          "id": "livro-aula-19",
+          "title": "Distribuição Normal ou Gaussiana",
+          "number": 19,
+          "filePath": "aulas/04-distribuicoes-continuas/aula-19-distribuicao-normal-ou-gaussiana/material.md",
+          "exercisesPath": "aulas/04-distribuicoes-continuas/aula-19-distribuicao-normal-ou-gaussiana/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt"
+        },
+        {
+          "id": "livro-aula-20",
+          "title": "Distribuição Normal Padronizada e Escore Z",
+          "number": 20,
+          "filePath": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/material.md",
+          "exercisesPath": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt"
+        },
+        {
+          "id": "livro-aula-21",
+          "title": "Distribuição Exponencial",
+          "number": 21,
+          "filePath": "aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/material.md",
+          "exercisesPath": "aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt"
+        }
+      ]
+    },
+    {
+      "id": "livro-05-regressao-e-correlacao",
+      "title": "Regressão e correlação",
+      "lessons": [
+        {
+          "id": "livro-aula-22",
+          "title": "Regressão Linear Simples",
+          "number": 22,
+          "filePath": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/material.md",
+          "exercisesPath": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/exercises.json",
+          "exerciseCount": 2,
+          "sourcePath": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt"
+        },
+        {
+          "id": "livro-aula-23",
+          "title": "Correlação Linear e Coeficiente de Determinação",
+          "number": 23,
+          "filePath": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/material.md",
+          "exercisesPath": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/exercises.json",
+          "exerciseCount": 11,
+          "sourcePath": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt"
+        }
+      ]
+    },
+    {
+      "id": "livro-06-apendice",
+      "title": "Apêndice e referências",
+      "lessons": [
+        {
+          "id": "livro-aula-24",
+          "title": "Apêndice, Referências e Formulário",
+          "number": 24,
+          "filePath": "aulas/06-apendice/aula-24-apendice-referencias-e-formulario/material.md",
+          "exercisesPath": "aulas/06-apendice/aula-24-apendice-referencias-e-formulario/exercises.json",
+          "exerciseCount": 0,
+          "sourcePath": "aulas/6_Apendice_e_Referencias/Lição 24 - Apêndice, Referências e Formulário.txt"
+        }
+      ]
+    }
+  ]
+}

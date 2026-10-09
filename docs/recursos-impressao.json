@@ -1,0 +1,92 @@
+{
+  "resources": 14,
+  "width": 980,
+  "theme_sha256": "84594fc070cc00cb026b36defd5c4c36723e8f988a34bd72407bfbc83c41e889",
+  "plotly_sha256": "de3be007a25aa90cabc6d36479046dafa3babeec1001149ab04940a7642083e4",
+  "images": [
+    {
+      "html": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex01-pizzas.html",
+      "png": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex01-pizzas-print.png",
+      "source_sha256": "ce9dac5954be536921ea0b83ea9a54ae85b2544a7fc92e2247506b34b6878a09",
+      "image_sha256": "c1c8ec557aaff0d1efc9dbf5a4f2ee0efa38c00622f732d03443d59f9bf677c4"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex02-aplicativos.html",
+      "png": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex02-aplicativos-print.png",
+      "source_sha256": "74ac45651d27d107fe41478e7bef575848b16f0d35e71bb3c8261ce7744675f6",
+      "image_sha256": "3d11d29993e50e5f4a3b3e7d64617bc577667898d1f3d63374e07a6f15590526"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex03-pagamentos.html",
+      "png": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex03-pagamentos-print.png",
+      "source_sha256": "da71ddc82586bc07ecab0a840fc25b0c5eca6cd952f33b4874e056777df76f79",
+      "image_sha256": "7e934aec5045222956613ce2f94a218e6ace469f20244316a02d7bea0d7b96a2"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/ex14_grafico_1_enem.html",
+      "png": "/aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/ex14_grafico_1_enem-print.png",
+      "source_sha256": "bc6b6fdebb5cd2a09fe88e0e37ea917c68fc7237176df3d2613e02c461f9f762",
+      "image_sha256": "fac4bf5f4e0ee3acbf37be2ef9673d6d1291e06133cdfedc6de6615cc5055ec2"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/recursos/gabarito-ex05-smartphones.html",
+      "png": "/aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/recursos/gabarito-ex05-smartphones-print.png",
+      "source_sha256": "6b7061a5ae897425a460ba847d5757e5741c7d46fc554a4d16de4938648fa429",
+      "image_sha256": "f842d7ec03600e341a8e63bbf86917d428b15de98f3113b572e71d989f189cd0"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/ex13_histograma_salarios.html",
+      "png": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/ex13_histograma_salarios-print.png",
+      "source_sha256": "998a14621b8379f4f68ec0f35ae2fe3a11478a08602bae0452f4123577909109",
+      "image_sha256": "5fb149eba12f49b08650073c17ae82327dcfb2fbdb87c262cef70eb9b0c563bb"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-histograma.html",
+      "png": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-histograma-print.png",
+      "source_sha256": "57c692ba28a83671933e4ad1ca48c5dd38514d6dd427e0d323b49d0fa37bef60",
+      "image_sha256": "b7f5ab8f69fe5159969d59eeb1b784a2c36898bcc23374faec29e655fff9fef2"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-ogiva.html",
+      "png": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-ogiva-print.png",
+      "source_sha256": "71c022c2db246b6acd756810ab72d2dc4c354c04f9de87f0563dd020df94d647",
+      "image_sha256": "510bf52c1abf2bf7d755d4478a3178e8ce3c546e44f0b7756d452eceb5e0e9fb"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex07_cap3_distribuicao.html",
+      "png": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex07_cap3_distribuicao-print.png",
+      "source_sha256": "6323823fb0e1e1395b63360908ca4b93e2f9fe3ae54a4d18457094ea40b34596",
+      "image_sha256": "4f0024091e1471462aaafdd9c2dc0a17d0f209604c18ee7a79fe08df105c7731"
+    },
+    {
+      "html": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex13_cap3_boxplot.html",
+      "png": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex13_cap3_boxplot-print.png",
+      "source_sha256": "286aa409ed36d2ea74a3a768645f12028a954ba85ee04f45debfa4d8897ce4c4",
+      "image_sha256": "4846670d30db822495733af434385272432a45aa9390ee3f11fb432c945c6f8a"
+    },
+    {
+      "html": "/aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/gabarito-ex01-regressao.html",
+      "png": "/aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/gabarito-ex01-regressao-print.png",
+      "source_sha256": "b888b5dde036f5c0a0698285c4873b27c56ff2e1a9b99894782a9e339d9dc45b",
+      "image_sha256": "7baa27c6f506e7980c64395b0ce6e673a4d03fb8abd7457472eb992ce41db0f1"
+    },
+    {
+      "html": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex02-regressao.html",
+      "png": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex02-regressao-print.png",
+      "source_sha256": "cfbafccb86927b129e0d805ecaa88d3e44b9710c265762e74d42a12c820e1127",
+      "image_sha256": "6ee912faa83908fe7f042583e4edc79c65064f46c493062d0b36611aa33094e8"
+    },
+    {
+      "html": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex03-regressao.html",
+      "png": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex03-regressao-print.png",
+      "source_sha256": "dcb39d9a5d91312c2e79eeea3258685ae9916fdbcb93a53316e8572fc42105b6",
+      "image_sha256": "82c48c02e14989eea32a1e99295cec3732fd9002feb7c965ca81be56ab3796da"
+    },
+    {
+      "html": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex04-regressao.html",
+      "png": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex04-regressao-print.png",
+      "source_sha256": "3eadad9dd0d09df66e9dafc303b9ba5e05636aa3e0053f95577169ba49fdfeea",
+      "image_sha256": "9b81caa7fb6dddc5b25dfda8157ddb88cad00272447fc687db9be83a8a8ee786"
+    }
+  ]
+}

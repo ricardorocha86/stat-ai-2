@@ -1,0 +1,170 @@
+{
+  "numeric_checks": 41,
+  "activity_rubrics": 4,
+  "checks": [
+    {
+      "id": "livro-aula-04-exercicio-1",
+      "verificacao": "Frequências da resolução iguais à recontagem das respostas do enunciado."
+    },
+    {
+      "id": "livro-aula-04-exercicio-2",
+      "verificacao": "Frequências da resolução iguais à recontagem das respostas do enunciado."
+    },
+    {
+      "id": "livro-aula-04-exercicio-3",
+      "verificacao": "Frequências da resolução iguais à recontagem das respostas do enunciado."
+    },
+    {
+      "id": "livro-aula-06-exercicio-5",
+      "verificacao": "65%"
+    },
+    {
+      "id": "livro-aula-07-exercicio-8",
+      "verificacao": "4, 10, 12, 9, 5"
+    },
+    {
+      "id": "livro-aula-02-exercicio-3",
+      "verificacao": "24 homens"
+    },
+    {
+      "id": "livro-aula-02-exercicio-3",
+      "verificacao": "18 mulheres"
+    },
+    {
+      "id": "livro-aula-02-exercicio-4",
+      "verificacao": "ADS: 40"
+    },
+    {
+      "id": "livro-aula-02-exercicio-5",
+      "verificacao": "34º, 39º, 44º, 49º e 54º"
+    },
+    {
+      "id": "livro-aula-02-multipla-escolha-6",
+      "verificacao": "19.995"
+    },
+    {
+      "id": "livro-aula-07-multipla-escolha-8",
+      "verificacao": "140"
+    },
+    {
+      "id": "livro-aula-06-exercicio-6",
+      "verificacao": "6,82%"
+    },
+    {
+      "id": "livro-aula-06-exercicio-6",
+      "verificacao": "128"
+    },
+    {
+      "id": "livro-aula-08-exercicio-1",
+      "verificacao": "4,21"
+    },
+    {
+      "id": "livro-aula-12-exercicio-1",
+      "verificacao": "2,03"
+    },
+    {
+      "id": "livro-aula-12-exercicio-1",
+      "verificacao": "33,79"
+    },
+    {
+      "id": "livro-aula-08-exercicio-3",
+      "verificacao": "134,4"
+    },
+    {
+      "id": "livro-aula-08-exercicio-3",
+      "verificacao": "127 milhões"
+    },
+    {
+      "id": "livro-aula-11-exercicio-8",
+      "verificacao": "212 km"
+    },
+    {
+      "id": "livro-aula-11-exercicio-8",
+      "verificacao": "59,60 km"
+    },
+    {
+      "id": "livro-aula-14-exercicio-4",
+      "verificacao": "0,91%"
+    },
+    {
+      "id": "livro-aula-15-exercicio-10",
+      "verificacao": "0,09=9%"
+    },
+    {
+      "id": "livro-aula-16-exercicio-1",
+      "verificacao": "31,25%"
+    },
+    {
+      "id": "livro-aula-17-exercicio-2",
+      "verificacao": "26,37%"
+    },
+    {
+      "id": "livro-aula-17-exercicio-2",
+      "verificacao": "49,45%"
+    },
+    {
+      "id": "livro-aula-18-exercicio-3",
+      "verificacao": "42,32%"
+    },
+    {
+      "id": "livro-aula-20-exercicio-2",
+      "verificacao": "77,45%"
+    },
+    {
+      "id": "livro-aula-21-exercicio-3",
+      "verificacao": "38,34%"
+    },
+    {
+      "id": "livro-aula-23-exercicio-2",
+      "verificacao": "1,802875"
+    },
+    {
+      "id": "livro-aula-23-exercicio-2",
+      "verificacao": "0,478439"
+    },
+    {
+      "id": "livro-aula-23-exercicio-2",
+      "verificacao": "8,77 h"
+    },
+    {
+      "id": "livro-aula-23-exercicio-3",
+      "verificacao": "89,484254"
+    },
+    {
+      "id": "livro-aula-23-exercicio-3",
+      "verificacao": "5,136924"
+    },
+    {
+      "id": "livro-aula-23-exercicio-3",
+      "verificacao": "172 kcal"
+    },
+    {
+      "id": "livro-aula-23-exercicio-3",
+      "verificacao": "357 kcal"
+    },
+    {
+      "id": "livro-aula-23-exercicio-4",
+      "verificacao": "7,830392"
+    },
+    {
+      "id": "livro-aula-23-exercicio-4",
+      "verificacao": "0,503883"
+    },
+    {
+      "id": "livro-aula-23-exercicio-4",
+      "verificacao": "2.547 unidades"
+    },
+    {
+      "id": "livro-aula-23-exercicio-4",
+      "verificacao": "0,8861"
+    },
+    {
+      "id": "livro-aula-23-exercicio-1",
+      "verificacao": "R$ 70,00"
+    },
+    {
+      "id": "livro-aula-23-multipla-escolha-5",
+      "verificacao": "3,29 kg"
+    }
+  ]
+}

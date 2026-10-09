@@ -1,0 +1,47 @@
+[
+  {
+    "id": "livro-aula-11-exercicio-8",
+    "numero": 8,
+    "numero_original": "8",
+    "categoria": "exercicio",
+    "enunciado": "A tabela de distribuição de frequências a seguir fornece as distâncias (em km) percorridas diariamente por 50 caminhões de uma transportadora:\n\n| Distância (km) | $f_a$ |\n| :---: | :---: |\n| 100 ⊢ 150 | 8 |\n| 150 ⊢ 200 | 14 |\n| 200 ⊢ 250 | 16 |\n| 250 ⊢ 300 | 7 |\n| 300 ⊢ 350 | 5 |\n| **Total** | **50** |\n\n(a) Encontre o ponto médio de cada classe.  \n(b) Calcule a média aritmética da distância percorrida pelos caminhões.  \n(c) Calcule a variância e o desvio-padrão para esses dados agrupados.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 11 -  Medidas para Dados Agrupados.txt",
+      "linha_inicial": 91,
+      "linha_final": 104,
+      "aula": 11
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Encontre o ponto médio de cada classe."
+      },
+      {
+        "id": "b",
+        "texto": "Calcule a média aritmética da distância percorrida pelos caminhões."
+      },
+      {
+        "id": "c",
+        "texto": "Calcule a variância e o desvio-padrão para esses dados agrupados."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-11-medidas-para-dados-agrupados/",
+    "dica": "Dados agrupados substituem cada valor de uma classe pelo seu ponto médio, produzindo estimativas das medidas.",
+    "passo_inicial": "Calcule os cinco pontos médios e as somas $\\sum f_i m_i$ e $\\sum f_i m_i^2$. Para a variância amostral, use denominador $n-1$.",
+    "solucao_completa": "(a) Os pontos médios são 125, 175, 225, 275 e 325 km.\n(b) As somas ponderadas são:\n\n| $m_i$ | $f_i$ | $f_i m_i$ | $f_i m_i^2$ |\n| ---: | ---: | ---: | ---: |\n| 125 | 8 | 1000 | 125000 |\n| 175 | 14 | 2450 | 428750 |\n| 225 | 16 | 3600 | 810000 |\n| 275 | 7 | 1925 | 529375 |\n| 325 | 5 | 1625 | 528125 |\n| Total | 50 | 10600 | 2421250 |\n\nAssim, $\\bar x\\approx10600/50=212$ km.\n(c) Tratando os 50 caminhões como amostra, conforme a convenção da aula:\n$$s^2\\approx\\frac{2421250-10600^2/50}{49}=\\frac{174050}{49}\\approx3552{,}04\\text{ km}^2.$$\nLogo $s\\approx59{,}60$ km. Se os 50 constituírem toda a população de interesse, use denominador 50: $\\sigma^2\\approx3481$ km² e $\\sigma\\approx59$ km. Os valores são aproximações, pois não conhecemos as distâncias individuais dentro das classes.",
+    "resposta_final": "Pontos médios: 125, 175, 225, 275, 325 km. Média estimada: 212 km. Pela convenção amostral: variância 3.552,04 km² e desvio-padrão 59,60 km. Pela convenção populacional: 3.481 km² e 59 km.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 11 -  Medidas para Dados Agrupados.txt",
+          "linha_inicial": 91,
+          "linha_final": 104
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

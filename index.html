@@ -4,14 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stat-AI 2.0 - Portal do Aluno de Estatística</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
+      /* Melhoria visual para equações LaTeX */
+      .katex { font-size: 1.1em !important; }
+      .katex-display { margin: 1em 0 !important; overflow-x: auto; overflow-y: hidden; }
+      
       :root {
         --bg-sidebar: #0f172a; /* slate-900 */
         --bg-main: #f1f5f9; /* slate-100 */
@@ -57,22 +62,26 @@
       .animate-pulse-play {
         animation: pulse-play-button 2s infinite;
       }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideInFromTop {
+        from { transform: translateY(-10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      .animate-in {
+        animation-duration: 400ms;
+        animation-fill-mode: both;
+      }
+      .fade-in {
+        animation-name: fadeIn;
+      }
+      .slide-in-from-top-4 {
+        animation-name: slideInFromTop;
+      }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.27.0",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react-dom/server": "https://aistudiocdn.com/react-dom@^19.2.0/server",
-    "jspdf": "https://aistudiocdn.com/jspdf@^2.5.1",
-    "react-markdown": "https://aistudiocdn.com/react-markdown@^9.0.0",
-    "remark-gfm": "https://aistudiocdn.com/remark-gfm@^4.0.0",
-    "canvas-confetti": "https://aistudiocdn.com/canvas-confetti@^1.9.4"
-  }
-}
-</script>
+
 </head>
   <body class="bg-[--bg-main] text-[--text-primary]">
     <div id="root"></div>

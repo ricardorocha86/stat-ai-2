@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador da Lei dos Grandes Números</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1.2fr 1fr auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.78rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🪙 Laboratório: Lei dos Grandes Números e Abordagem Frequentista</span>
+        </div>
+        <span class="sim-badge">Aula 13 • Teoria da Probabilidade</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Número de Lançamentos de Moeda (N):</span>
+                <span id="lbl_N" class="ctrl-val">1000 lançamentos</span>
+            </div>
+            <input type="range" id="slider_N" min="50" max="3000" step="50" value="1000" oninput="atualizarN(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Probabilidade Teórica de Cara (p):</span>
+                <span id="lbl_p" class="ctrl-val">0.50 (Honesta)</span>
+            </div>
+            <input type="range" id="slider_p" min="0.10" max="0.90" step="0.05" value="0.50" oninput="atualizarP(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="simular()">🎲 Relançar</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Probabilidade Teórica</div>
+            <div class="kpi-val" id="kpi_pteor">0.5000 (50.0%)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Frequência Relativa Final</div>
+            <div class="kpi-val" id="kpi_ffinal">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Caras Obtidas</div>
+            <div class="kpi-val" id="kpi_caras">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Erro Absoluto |fr - p|</div>
+            <div class="kpi-val" id="kpi_erro">--</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Lei dos Grandes Números (p. 78):</b> À medida que o número de repetições de um experimento aleatório cresce, a proporção observada (frequência relativa) aproxima-se irresistivelmente da probabilidade teórica real.
+    </div>
+</div>
+
+<script>
+    let N = 1000;
+    let p = 0.50;
+
+    function atualizarN(val) {
+        N = parseInt(val);
+        document.getElementById('lbl_N').innerText = `${N} lançamentos`;
+        simular();
+    }
+
+    function atualizarP(val) {
+        p = parseFloat(val);
+        document.getElementById('lbl_p').innerText = p === 0.50 ? '0.50 (Honesta)' : `${p.toFixed(2)} (Viciada)`;
+        document.getElementById('kpi_pteor').innerText = `${p.toFixed(4)} (${(p*100).toFixed(1)}%)`;
+        simular();
+    }
+
+    function simular() {
+        let nPassos = Math.min(N, 500); // amostragem visual de pontos
+        let step = Math.max(1, Math.floor(N / nPassos));
+
+        let xVals = [];
+        let yFreq = [];
+        let totalCaras = 0;
+
+        for(let i=1; i<=N; i++) {
+            if (Math.random() < p) totalCaras++;
+            if (i % step === 0 || i === N) {
+                xVals.push(i);
+                yFreq.push(totalCaras / i);
+            }
+        }
+
+        let freqFinal = totalCaras / N;
+        let erro = Math.abs(freqFinal - p);
+
+        document.getElementById('kpi_ffinal').innerText = `${freqFinal.toFixed(4)} (${(freqFinal*100).toFixed(1)}%)`;
+        document.getElementById('kpi_caras').innerText = `${totalCaras} de ${N}`;
+        document.getElementById('kpi_erro').innerText = erro.toFixed(4);
+
+        let traceSim = {
+            x: xVals,
+            y: yFreq,
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Frequência Relativa Acumulada',
+            line: { color: '#003485', width: 2 }
+        };
+
+        let traceTeor = {
+            x: [1, N],
+            y: [p, p],
+            type: 'scatter',
+            mode: 'lines',
+            name: `Probabilidade Teórica (p = ${p.toFixed(2)})`,
+            line: { color: '#dc2626', width: 2.5, dash: 'dash' }
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Número de Lançamentos de Moeda (n)', type: 'linear' },
+            yaxis: { title: 'Frequência Relativa de Caras', range: [Math.max(0, p - 0.35), Math.min(1, p + 0.35)], showgrid: true }
+        };
+
+        Plotly.react('chart_div', [traceSim, traceTeor], layout, {responsive: true, displayModeBar: false});
+    }
+
+    simular();
+</script>
+</body>
+</html>

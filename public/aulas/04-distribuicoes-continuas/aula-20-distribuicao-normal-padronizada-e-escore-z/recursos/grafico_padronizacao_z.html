@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador de Padronização Z e Tabela Normal</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr) 1.2fr auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.75rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    select { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.82rem; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.escore { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🎯 Laboratório: Padronização Z e Leitura da Tabela Normal Padrão</span>
+        </div>
+        <span class="sim-badge">Aula 20 • Figuras 12 a 16</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Média Original (μ):</span>
+                <span id="lbl_mu" class="ctrl-val">μ = 70</span>
+            </div>
+            <input type="range" id="slider_mu" min="40" max="100" value="70" oninput="atualizarMu(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Desvio-Padrão (σ):</span>
+                <span id="lbl_sigma" class="ctrl-val">σ = 10</span>
+            </div>
+            <input type="range" id="slider_sigma" min="2" max="25" value="10" oninput="atualizarSigma(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Valor Observado (x):</span>
+                <span id="lbl_x" class="ctrl-val">x = 85</span>
+            </div>
+            <input type="range" id="slider_x" min="30" max="110" value="85" oninput="atualizarX(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Região de Probabilidade:</span>
+            <select id="sel_regiao" onchange="renderizar()">
+                <option value="menor_igual">P(X ≤ x) = P(Z ≤ z) [À esquerda]</option>
+                <option value="maior">P(X > x) = P(Z > z) [À direita / Sobrevivência]</option>
+                <option value="centro">P(μ ≤ X ≤ x) [Área Central]</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetar()">Ex. Livro</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card escore">
+            <div class="kpi-label">Escore Padronizado Z = (x-μ)/σ</div>
+            <div class="kpi-val" id="kpi_z">+1.50 desvios</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Probabilidade da Área</div>
+            <div class="kpi-val" id="kpi_area">93.32%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Área na Tabela (Típica)</div>
+            <div class="kpi-val" id="kpi_tab">0.4332 (0 a z)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Posição Relativa de x</div>
+            <div class="kpi-val" id="kpi_pos">Percentil 93.3</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Fórmula de Padronização (p. 119):</b> A transformação <b>Z = (X - μ) / σ</b> converte qualquer variável de qualquer unidade (quilos, metros, reais) na escala universal padrão N(0, 1), permitindo consultar a mesma tabela para qualquer problema!
+    </div>
+</div>
+
+<script>
+    let mu = 70.0;
+    let sigma = 10.0;
+    let xObs = 85.0;
+
+    function atualizarMu(v) { mu = parseFloat(v); document.getElementById('lbl_mu').innerText = `μ = ${mu}`; renderizar(); }
+    function atualizarSigma(v) { sigma = parseFloat(v); document.getElementById('lbl_sigma').innerText = `σ = ${sigma}`; renderizar(); }
+    function atualizarX(v) { xObs = parseFloat(v); document.getElementById('lbl_x').innerText = `x = ${xObs}`; renderizar(); }
+
+    function resetar() {
+        mu = 70.0; sigma = 10.0; xObs = 85.0;
+        document.getElementById('slider_mu').value = 70; document.getElementById('lbl_mu').innerText = 'μ = 70';
+        document.getElementById('slider_sigma').value = 10; document.getElementById('lbl_sigma').innerText = 'σ = 10';
+        document.getElementById('slider_x').value = 85; document.getElementById('lbl_x').innerText = 'x = 85';
+        document.getElementById('sel_regiao').value = 'menor_igual';
+        renderizar();
+    }
+
+    function erf(x) {
+        let a1 =  0.254829592, a2 = -0.284496736, a3 =  1.421413741;
+        let a4 = -1.453152027, a5 =  1.061405429, p  =  0.3275911;
+        let sign = x < 0 ? -1 : 1;
+        x = Math.abs(x);
+        let t = 1.0 / (1.0 + p * x);
+        let y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        return sign * y;
+    }
+
+    function cdfStd(z) {
+        return 0.5 * (1.0 + erf(z / Math.sqrt(2.0)));
+    }
+
+    function renderizar() {
+        let regiao = document.getElementById('sel_regiao').value;
+        let z = (xObs - mu) / sigma;
+        let pMenor = cdfStd(z);
+
+        let areaFinal = 0;
+        if (regiao === 'menor_igual') areaFinal = pMenor;
+        else if (regiao === 'maior') areaFinal = 1.0 - pMenor;
+        else areaFinal = Math.abs(pMenor - 0.5);
+
+        let areaTab = Math.abs(pMenor - 0.5);
+
+        document.getElementById('kpi_z').innerText = `${z >= 0 ? '+' : ''}${z.toFixed(2)} σ`;
+        document.getElementById('kpi_area').innerText = `${(areaFinal * 100).toFixed(2)}%`;
+        document.getElementById('kpi_tab').innerText = `${areaTab.toFixed(4)} (0 a |z|)`;
+        document.getElementById('kpi_pos').innerText = `Percentil ${(pMenor * 100).toFixed(1)}`;
+
+        // Subplots: Curva Original X (Superior) vs Curva Z (Inferior)
+        let zMin = -3.8, zMax = 3.8;
+        let nPoints = 200;
+        let step = (zMax - zMin) / nPoints;
+
+        let xStd = [], yStd = [], xFillZ = [], yFillZ = [];
+        for(let valZ = zMin; valZ <= zMax; valZ += step) {
+            let y = (1.0 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * valZ * valZ);
+            xStd.push(valZ);
+            yStd.push(y);
+
+            let include = false;
+            if (regiao === 'menor_igual' && valZ <= z) include = true;
+            else if (regiao === 'maior' && valZ >= z) include = true;
+            else if (regiao === 'centro' && ((z >= 0 && valZ >= 0 && valZ <= z) || (z < 0 && valZ <= 0 && valZ >= z))) include = true;
+
+            if (include) {
+                xFillZ.push(valZ);
+                yFillZ.push(y);
+            }
+        }
+
+        let traceCurvaZ = {
+            x: xStd, y: yStd, type: 'scatter', mode: 'lines',
+            name: 'Normal Padrão Z ~ N(0, 1)',
+            line: { color: '#003485', width: 2.5 }
+        };
+
+        let traceAreaZ = {
+            x: xFillZ, y: yFillZ, fill: 'tozeroy', type: 'scatter', mode: 'none',
+            name: `Área Z = ${(areaFinal*100).toFixed(1)}%`,
+            fillcolor: 'rgba(0, 52, 133, 0.4)'
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: `Escala Padronizada Z (Escore Z = ${z.toFixed(2)})`, range: [-4.0, 4.0] },
+            yaxis: { title: 'Densidade φ(z)', showgrid: true },
+            shapes: [
+                { type: 'line', x0: z, x1: z, y0: 0, y1: 1, yref: 'paper', line: { color: '#ea580c', width: 2.5, dash: 'dash' } }
+            ],
+            annotations: [
+                {
+                    x: z, y: 1.0, yref: 'paper',
+                    text: `z = ${z.toFixed(2)} (x = ${xObs})`,
+                    showarrow: true, arrowhead: 2, arrowcolor: '#ea580c',
+                    font: { color: '#ea580c', weight: 'bold', size: 10 },
+                    bgcolor: '#ffffff'
+                }
+            ]
+        };
+
+        Plotly.react('chart_div', [traceAreaZ, traceCurvaZ], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

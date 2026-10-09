@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Lesson, GenerationOptions, QAMessage, StructuredLesson } from '../types';
 import { generateInteractiveLesson, answerQuestionAboutLesson } from '../services/geminiService';
 import { SparklesIcon, PaperAirplaneIcon, UserIcon, QuestionMarkCircleIcon, ExclamationTriangleIcon, DownloadIcon, OwlIcon, XMarkIcon } from './Icons';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface InteractiveMaterialProps {
   lesson: Lesson;
@@ -81,6 +80,7 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>${lesson.title}</title>
+                <base href="/${lesson.filePath.substring(0, lesson.filePath.lastIndexOf('/') + 1)}">
                 <style>
                     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #374151; max-width: 800px; margin: 20px auto; padding: 0 20px; background-color: #ffffff; }
                     h1, h2, h3 { color: #1e293b; } 
@@ -94,6 +94,7 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
                     .section { margin-bottom: 30px; }
                     #questionamentos-section ul { list-style-type: none; padding-left: 0; }
                     #questionamentos-section li { background-color: #eff6ff; border-left: 5px solid #3b82f6; margin-bottom: 10px; padding: 15px; border-radius: 0 5px 5px 0; }
+                    img { max-width: 100%; height: auto; border-radius: 8px; margin: 1.5rem 0; display: block; }
                 </style>
             </head>
             <body>
@@ -161,14 +162,22 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
     setIsGenerating(true);
     setError(null);
     try {
-      const result = await generateInteractiveLesson(lesson.title, options);
+      // 1. Fetch professor's original material
+      const response = await fetch(lesson.filePath);
+      if (!response.ok) {
+        throw new Error("Não foi possível ler o material original do professor.");
+      }
+      const professorContent = await response.text();
+
+      // 2. Generate adapted version
+      const result = await generateInteractiveLesson(lesson.title, professorContent, options);
       if (typeof result === 'string') {
         setError(result);
       } else {
         onSetInteractiveMaterial(result);
       }
     } catch (e: any) {
-      setError("Ocorreu um erro ao gerar o material. Por favor, tente novamente.");
+      setError(e.message || "Ocorreu um erro ao gerar o material. Por favor, tente novamente.");
       console.error(e);
     } finally {
       setIsGenerating(false);
@@ -331,8 +340,8 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
                                 <OwlIcon className="w-8 h-8"/>
                             </div>
                             <div>
-                                <h2 className="font-bold text-slate-800">Stat, o Sábio Coruja</h2>
-                                <p className="text-xs text-slate-600">Dúvidas sobre o material gerado? Pergunte.</p>
+                                <h2 className="font-bold text-slate-800">StatChat</h2>
+                                <p className="text-xs text-slate-600">Dúvidas sobre o material gerado? Pergunte ao StatChat.</p>
                             </div>
                         </div>
                         <button onClick={() => setIsQaChatOpen(false)} className="p-1 text-slate-500 hover:text-slate-800">
@@ -343,8 +352,8 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
                         {qaMessages.map((msg, index) => (
                             <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                                 {msg.role === 'model' && <div className="w-8 h-8 rounded-full bg-[--accent] text-white flex items-center justify-center flex-shrink-0 shadow-sm"><SparklesIcon className="w-5 h-5"/></div>}
-                                <div className={`w-full max-w-md p-3 rounded-xl shadow-sm prose prose-sm prose-p:my-0.5 ${msg.role === 'user' ? 'bg-[--bg-user-message] text-[--text-user-message]' : 'bg-[--bg-card] border border-[--border-color]'}`}>
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                <div className={`w-full max-w-md p-3 rounded-xl shadow-sm ${msg.role === 'user' ? 'bg-[--bg-user-message] text-[--text-user-message]' : 'bg-[--bg-card] border border-[--border-color]'}`}>
+                                    <MarkdownRenderer content={msg.content} className="prose prose-sm prose-p:my-0.5" />
                                 </div>
                                 {msg.role === 'user' && <div className="w-8 h-8 rounded-full bg-slate-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm"><UserIcon className="w-5 h-5"/></div>}
                             </div>

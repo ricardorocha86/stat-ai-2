@@ -1,0 +1,102 @@
+[
+  {
+    "id": "livro-aula-19-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "Seja $X$ uma variável aleatória contínua que segue uma distribuição normal com média $\\mu = 50$ e desvio-padrão $\\sigma = 10$.  \n(a) Qual é o valor da probabilidade pontual $P(X = 50)$?  \n(b) Qual é o valor da área total sob a curva da densidade $f(x)$?  \n(c) Qual é o valor de $P(X < 50)$? Justifique com base nas propriedades de simetria.",
+    "origem": {
+      "arquivo": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt",
+      "linha_inicial": 55,
+      "linha_final": 65,
+      "aula": 19
+    },
+    "solucao_completa": "(a) Uma variável contínua atribui probabilidade zero a cada ponto isolado: $P(X=50)=0$.\n(b) A área total sob a densidade é 1, correspondendo à probabilidade de todos os resultados possíveis.\n(c) A normal é simétrica em torno de $\\mu=50$. Cada lado da média contém metade da área; logo $P(X<50)=0{,}5$. Incluir ou excluir o ponto 50 não altera essa probabilidade.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Qual é o valor da probabilidade pontual $P(X = 50)$?"
+      },
+      {
+        "id": "b",
+        "texto": "Qual é o valor da área total sob a curva da densidade $f(x)$?"
+      },
+      {
+        "id": "c",
+        "texto": "Qual é o valor de $P(X < 50)$? Justifique com base nas propriedades de simetria."
+      }
+    ],
+    "resourceBasePath": "/aulas/04-distribuicoes-continuas/aula-19-distribuicao-normal-ou-gaussiana/",
+    "solucao_original": "**Resolução:**  \n(a) Para qualquer variável contínua, a probabilidade em um ponto exato é zero: $P(X = 50) = 0$.  \n(b) A área total sob qualquer função densidade de probabilidade é exatamente igual a **1** (ou 100%).  \n(c) Por simetria em relação à média ($\\mu = 50$), exatamente metade da área sob a curva situa-se à esquerda da média, portanto:  \n$$P(X < 50) = 0{,}50 \\quad (50\\%)$$",
+    "dica": "Na distribuição contínua, probabilidades são áreas de intervalos. Um ponto isolado não tem largura.",
+    "passo_inicial": "Use as propriedades de qualquer densidade para (a) e (b). Para (c), identifique a posição 50 em relação ao centro da normal.",
+    "resposta_final": "(a) 0. (b) 1. (c) 0,50 ou 50%.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt",
+          "linha_inicial": 55,
+          "linha_final": 65
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-19-multipla-escolha-2",
+    "numero": 2,
+    "numero_original": "2",
+    "categoria": "multipla_escolha",
+    "enunciado": "A curva normal de Gauss é assintótica em relação ao eixo das abscissas. Isso significa que:  \n(a) A curva toca o eixo horizontal exatamente no ponto $\\mu + 3\\sigma$.  \n(b) As caudas da curva prolongam-se indefinidamente aproximando-se do eixo horizontal sem nunca tocá-lo.  \n(c) A área sob a curva ultrapassa 1 para valores extremos de $x$.  \n(d) A média e o desvio-padrão são sempre números inteiros positivos.  \n(e) A probabilidade de ocorrência de valores positivos é maior que a de negativos.",
+    "origem": {
+      "arquivo": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt",
+      "linha_inicial": 68,
+      "linha_final": 76,
+      "aula": 19
+    },
+    "solucao_completa": "Para qualquer $x$ finito, a densidade normal é positiva. Quando $x$ tende a $-\\infty$ ou $+\\infty$, a densidade tende a zero, aproximando-se do eixo horizontal sem tocá-lo. Os pontos $\\mu\\pm3\\sigma$ não são extremos da distribuição.",
+    "resposta_final": "Alternativa B — as caudas aproximam-se do eixo sem tocá-lo.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "A curva toca o eixo horizontal exatamente no ponto $\\mu + 3\\sigma$."
+      },
+      {
+        "id": "b",
+        "texto": "As caudas da curva prolongam-se indefinidamente aproximando-se do eixo horizontal sem nunca tocá-lo."
+      },
+      {
+        "id": "c",
+        "texto": "A área sob a curva ultrapassa 1 para valores extremos de $x$."
+      },
+      {
+        "id": "d",
+        "texto": "A média e o desvio-padrão são sempre números inteiros positivos."
+      },
+      {
+        "id": "e",
+        "texto": "A probabilidade de ocorrência de valores positivos é maior que a de negativos."
+      }
+    ],
+    "resourceBasePath": "/aulas/04-distribuicoes-continuas/aula-19-distribuicao-normal-ou-gaussiana/",
+    "solucao_original": "**Gabarito: (b)**  \n**Comentário:** Por definição matemática, as extremidades da curva normal estendem-se até $-\\infty$ e $+\\infty$ como assíntotas horizontais, aproximando-se de zero sem jamais encostar no eixo horizontal.",
+    "dica": "Uma assíntota é uma linha da qual a curva se aproxima cada vez mais.",
+    "passo_inicial": "Observe o comportamento da densidade normal nas caudas, quando $x$ se afasta muito da média.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt",
+          "linha_inicial": 68,
+          "linha_final": 76
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

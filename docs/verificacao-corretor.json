@@ -1,0 +1,8 @@
+{
+  "choices": 32,
+  "letterCases": 1120,
+  "blockedActivities": 4,
+  "structuredResponse": "passed",
+  "localCallableCases": 69,
+  "externalAiCalls": 0
+}

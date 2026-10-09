@@ -1,0 +1,32 @@
+{
+  "lessons": 25,
+  "exercises_and_activities": 72,
+  "categories": {
+    "exercicio": 36,
+    "multipla_escolha": 32,
+    "atividade": 4
+  },
+  "with_solution": 72,
+  "without_solution": 0,
+  "gradable_exercises": 68,
+  "activities_with_rubric": 4,
+  "answer_origins": {
+    "autor": 22,
+    "recalculado": 13,
+    "elaborado": 33,
+    "roteiro": 4
+  },
+  "source_lines_checked": 1558,
+  "html_resources": 51,
+  "http_files_checked": 130,
+  "print_resources": 14,
+  "resource_statuses": {
+    "preservado": 24,
+    "diagrama_vetorial": 8,
+    "plotly": 18,
+    "tabela_markdown": 2,
+    "substituido_exercicio_equivalente": 1,
+    "imagem_preservada_dados_ausentes": 2
+  },
+  "pending": []
+}

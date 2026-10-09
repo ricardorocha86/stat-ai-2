@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador de Correlação Linear de Pearson e R²</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1.5fr 1fr auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.78rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.r2 { border-left-color: #16a34a; }
+    .kpi-card.escala { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🧭 Laboratório Dinâmico: Coeficiente de Pearson (r) e Escala de Associação</span>
+        </div>
+        <span class="sim-badge">Aula 23 • Livro p. 150</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Coeficiente de Pearson (r ∈ [-1, +1]):</span>
+                <span id="lbl_r" class="ctrl-val">r = +0.85 (Forte Positiva)</span>
+            </div>
+            <input type="range" id="slider_r" min="-1.0" max="1.0" step="0.05" value="0.85" oninput="atualizarR(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Tamanho da Amostra (n):</span>
+                <span id="lbl_n" class="ctrl-val">50 pontos</span>
+            </div>
+            <input type="range" id="slider_n" min="20" max="120" step="10" value="50" oninput="atualizarN(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="sortearNuvem()">🎲 Nova Nuvem</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Coeficiente Pearson (r)</div>
+            <div class="kpi-val" id="kpi_r">+0.85</div>
+        </div>
+        <div class="kpi-card r2">
+            <div class="kpi-label">Determinação (R² = r²)</div>
+            <div class="kpi-val" id="kpi_r2">72.25%</div>
+        </div>
+        <div class="kpi-card escala">
+            <div class="kpi-label">Classificação do Livro</div>
+            <div class="kpi-val" id="kpi_class" style="font-size:0.88rem;">Forte Positiva</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Variância Não Explicada</div>
+            <div class="kpi-val" id="kpi_nao_exp">27.75%</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Escala de Intensidade (p. 150):</b> |r| = 1 (Perfeita); 0,7 ≤ |r| < 1 (Forte); 0,3 ≤ |r| < 0,7 (Moderada); 0 < |r| < 0,3 (Fraca); r = 0 (Nula). O R² indica a porcentagem da variabilidade de Y que é explicada pelo modelo linear com X!
+    </div>
+</div>
+
+<script>
+    let rDesejado = 0.85;
+    let nPontos = 50;
+
+    function atualizarR(v) {
+        rDesejado = parseFloat(v);
+        sortearNuvem();
+    }
+
+    function atualizarN(v) {
+        nPontos = parseInt(v);
+        document.getElementById('lbl_n').innerText = `${nPontos} pontos`;
+        sortearNuvem();
+    }
+
+    function randNorm() {
+        let u1 = Math.random(), u2 = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+    }
+
+    function sortearNuvem() {
+        // Gerador de pontos bivariados com correlação r exata via Cholesky
+        let xVals = [];
+        let yVals = [];
+
+        let r = rDesejado;
+        let fatorOrtogonal = Math.sqrt(Math.max(0, 1.0 - r * r));
+
+        for(let i=0; i<nPontos; i++) {
+            let z1 = randNorm();
+            let z2 = randNorm();
+            let x = z1;
+            let y = r * z1 + fatorOrtogonal * z2;
+            xVals.push(parseFloat((50 + 10 * x).toFixed(2)));
+            yVals.push(parseFloat((50 + 10 * y).toFixed(2)));
+        }
+
+        renderizar(xVals, yVals);
+    }
+
+    function renderizar(xVals, yVals) {
+        let r = rDesejado;
+        let r2 = r * r * 100;
+        let naoExp = 100 - r2;
+
+        let classificacao = 'Correlação Nula';
+        let absR = Math.abs(r);
+        let sentido = r >= 0 ? 'Positiva' : 'Negativa';
+
+        if (absR >= 0.98) classificacao = `Perfeita ${sentido}`;
+        else if (absR >= 0.70) classificacao = `Forte ${sentido}`;
+        else if (absR >= 0.30) classificacao = `Moderada ${sentido}`;
+        else if (absR > 0.05) classificacao = `Fraca ${sentido}`;
+        else classificacao = 'Nula / Sem Associação';
+
+        document.getElementById('lbl_r').innerText = `r = ${r >= 0 ? '+' : ''}${r.toFixed(2)} (${classificacao})`;
+        document.getElementById('kpi_r').innerText = `${r >= 0 ? '+' : ''}${r.toFixed(2)}`;
+        document.getElementById('kpi_r2').innerText = `${r2.toFixed(1)}%`;
+        document.getElementById('kpi_class').innerText = classificacao;
+        document.getElementById('kpi_nao_exp').innerText = `${naoExp.toFixed(1)}%`;
+
+        let tracePontos = {
+            x: xVals, y: yVals, type: 'scatter', mode: 'markers',
+            name: `Nuvem de Pontos (n = ${nPontos})`,
+            marker: { size: 8, color: '#003485', line: { color: '#0f172a', width: 1 } }
+        };
+
+        let minX = Math.min(...xVals);
+        let maxX = Math.max(...xVals);
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            showlegend: false,
+            xaxis: { title: 'Variável Independente (X)', range: [10, 90] },
+            yaxis: { title: 'Variável Dependente (Y)', range: [10, 90], showgrid: true }
+        };
+
+        Plotly.react('chart_div', [tracePontos], layout, {responsive: true, displayModeBar: false});
+    }
+
+    sortearNuvem();
+</script>
+</body>
+</html>

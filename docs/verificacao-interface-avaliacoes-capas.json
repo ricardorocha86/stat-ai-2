@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-09T19:10:09.407Z",
+  "site": "https://statai-app.web.app",
+  "publishedFilesMatchBuild": true,
+  "clickAnimation": true,
+  "repeatClickAnimation": true,
+  "distinctRatedStyle": true,
+  "lightTooltip": true,
+  "mobileWidth": 320,
+  "pageErrors": [],
+  "cleanup": {
+    "checkedAt": "2026-10-09T19:10:11.255Z",
+    "removedTestVotes": 1,
+    "removedTestScoreSum": 4,
+    "remainingRealVotes": 0,
+    "remainingScoreSum": 0,
+    "anonymousAccounts": {
+      "testVisitors": 1,
+      "deleted": 1
+    }
+  }
+}

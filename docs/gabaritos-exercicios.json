@@ -1,0 +1,1576 @@
+{
+  "total": 72,
+  "quatro_niveis_completos": 72,
+  "exercicios_com_resposta": 68,
+  "atividades_com_roteiro": 4,
+  "origens": {
+    "autor": 22,
+    "recalculado": 13,
+    "elaborado": 33,
+    "roteiro": 4
+  },
+  "graficos_de_resolucao": 10,
+  "arvores_novas": 1,
+  "exercicios": [
+    {
+      "id": "livro-aula-01-exercicio-1",
+      "aula": 1,
+      "categoria": "exercicio",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+          "linha_inicial": 37,
+          "linha_final": 48
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Exercício 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-01-multipla-escolha-1",
+      "aula": 1,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+          "linha_inicial": 51,
+          "linha_final": 60
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-01-multipla-escolha-3",
+      "aula": 1,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+          "linha_inicial": 61,
+          "linha_final": 69
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 3",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-02-exercicio-3",
+      "aula": 2,
+      "categoria": "exercicio",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 31,
+          "linha_final": 34
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Exercício 3 (a, b)",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-02-exercicio-4",
+      "aula": 2,
+      "categoria": "exercicio",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 35,
+          "linha_final": 42
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Tabela de cursos apresentada como item 3(c)",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": "O PDF do gabarito coloca a tabela deste exercício sob 3(c); a associação foi conferida pelos cursos e pelos quantitativos, não só pela numeração.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-02-exercicio-5",
+      "aula": 2,
+      "categoria": "exercicio",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 43,
+          "linha_final": 47
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Exercício 5",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-02-multipla-escolha-2",
+      "aula": 2,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 50,
+          "linha_final": 56
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-02-multipla-escolha-5",
+      "aula": 2,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 57,
+          "linha_final": 63
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 5",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-02-multipla-escolha-6",
+      "aula": 2,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 64,
+          "linha_final": 74
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 6",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-02-multipla-escolha-7",
+      "aula": 2,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 75,
+          "linha_final": 89
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 7",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-02-multipla-escolha-8",
+      "aula": 2,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 90,
+          "linha_final": 105
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 8",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-03-exercicio-2",
+      "aula": 3,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 57,
+          "linha_final": 74
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Exercício 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": "Explicita a convenção da escala da nota e corrige a identificação de conglomerados na solução antiga; preserva alternativas justificadas para a escala não especificada.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-03-multipla-escolha-4",
+      "aula": 3,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 77,
+          "linha_final": 96
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 4",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-03-multipla-escolha-7",
+      "aula": 3,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 97,
+          "linha_final": 106
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-03-multipla-escolha-9",
+      "aula": 3,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 107,
+          "linha_final": 118
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-03-atividade-miniprojeto-i-fase-1",
+      "aula": 3,
+      "categoria": "atividade",
+      "origem": "roteiro",
+      "correcao_automatica": false,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 121,
+          "linha_final": 143
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-04-exercicio-1",
+      "aula": 4,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+          "linha_inicial": 46,
+          "linha_final": 60
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "Divergência no próprio gabarito: MA=8 e PT=3. Livro p. 41 e tabela da aula têm MA=9 e PT=2; prevalecem os dados do enunciado.",
+      "recursos": [
+        {
+          "arquivo": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex01-pizzas.html",
+          "titulo": "Sabores de minipizza — resolução",
+          "origem_dados": "Contagens recontadas diretamente na tabela do enunciado da aula 4."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-04-exercicio-2",
+      "aula": 4,
+      "categoria": "exercicio",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+          "linha_inicial": 61,
+          "linha_final": 75
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": [
+        {
+          "arquivo": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex02-aplicativos.html",
+          "titulo": "Aplicativos escolhidos — resolução",
+          "origem_dados": "Contagens recontadas diretamente na tabela do enunciado da aula 4."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-04-exercicio-3",
+      "aula": 4,
+      "categoria": "exercicio",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+          "linha_inicial": 76,
+          "linha_final": 86
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 3",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": [
+        {
+          "arquivo": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex03-pagamentos.html",
+          "titulo": "Métodos de pagamento — resolução",
+          "origem_dados": "Tabela do enunciado: 3, 1, 8 e 4 clientes; n=16."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-05-exercicio-4",
+      "aula": 5,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt",
+          "linha_inicial": 43,
+          "linha_final": 66
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-05-multipla-escolha-14",
+      "aula": 5,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt",
+          "linha_inicial": 69,
+          "linha_final": 81
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-06-exercicio-5",
+      "aula": 6,
+      "categoria": "exercicio",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 99,
+          "linha_final": 111
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 5",
+          "pagina_pdf": 2,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": [
+        {
+          "arquivo": "aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/recursos/gabarito-ex05-smartphones.html",
+          "titulo": "Smartphones nos domicílios — resolução",
+          "origem_dados": "40 registros do enunciado da aula 6; contagens 2, 12, 15, 8, 3."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-06-exercicio-6",
+      "aula": 6,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 112,
+          "linha_final": 130
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 6",
+          "pagina_pdf": 3,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "O gabarito indica 6% no item (d); a fração exata 15/220 dá 6,82%. Foi evitado somar percentuais já arredondados.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-06-exercicio-7",
+      "aula": 6,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 131,
+          "linha_final": 135
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 7",
+          "pagina_pdf": 3,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        },
+        {
+          "tipo": "livro",
+          "arquivo": "arquivos/livro_estatistica_aplicada.pdf",
+          "pagina_pdf": 44
+        }
+      ],
+      "observacoes": "Tabela omitida na aula recuperada do livro p. 44; percentuais calculados pelas contagens originais.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-06-multipla-escolha-6",
+      "aula": 6,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 138,
+          "linha_final": 153
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Questão objetiva 6",
+          "pagina_pdf": 6,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-06-multipla-escolha-7",
+      "aula": 6,
+      "categoria": "multipla_escolha",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 154,
+          "linha_final": 169
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Questão objetiva 7",
+          "pagina_pdf": 6,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "O gabarito online indica E (5), mas o enunciado pede cinco classes e os valores vão de 26 a 45; pelo procedimento da aula, a amplitude inteira mínima adequada é 4 (B).",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-07-exercicio-8",
+      "aula": 7,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 113,
+          "linha_final": 131
+        }
+      ],
+      "observacoes": "O exercício da aula usa tempos de 45 a 95, diferentes dos tempos de 10 a 38 no exercício 8 do livro. As contagens antigas 4,9,13,8,6 foram corrigidas para 4,10,12,9,5.",
+      "recursos": [
+        {
+          "arquivo": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-histograma.html",
+          "titulo": "Tempos dos caminhões — resolução",
+          "origem_dados": "40 tempos do enunciado; classes [45,55), [55,65), [65,75), [75,85), [85,95]."
+        },
+        {
+          "arquivo": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-ogiva.html",
+          "titulo": "Ogiva dos tempos — resolução",
+          "origem_dados": "Frequências acumuladas calculadas a partir dos 40 tempos do enunciado."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-07-exercicio-11",
+      "aula": 7,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 132,
+          "linha_final": 146
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 11",
+          "pagina_pdf": 6,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "O gabarito oferece uma descrição de homogeneidade no item (b), mas o enunciado pede teor típico. Foram calculadas medianas e médias para responder diretamente.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-07-multipla-escolha-8",
+      "aula": 7,
+      "categoria": "multipla_escolha",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 149,
+          "linha_final": 164
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Questão objetiva 8",
+          "pagina_pdf": 6,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "Resposta oficial D confirmada pelo histograma original do livro p. 50; substitui a resposta E / 160 da solução antiga.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-07-atividade-miniprojeto-i-fase-2",
+      "aula": 7,
+      "categoria": "atividade",
+      "origem": "roteiro",
+      "correcao_automatica": false,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 167,
+          "linha_final": 170
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-07-atividade-miniprojeto-iii",
+      "aula": 7,
+      "categoria": "atividade",
+      "origem": "roteiro",
+      "correcao_automatica": false,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 171,
+          "linha_final": 177
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-08-exercicio-1",
+      "aula": 8,
+      "categoria": "exercicio",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt",
+          "linha_inicial": 108,
+          "linha_final": 115
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 3,
+          "questao": "Exercício 1(a)",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-03.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/14b304035b344d65b7ca41cf4cbc16dc/GABARITO%20-%20LIVRO%20ESTAT%C3%8DSTICA%20-%20CAP%203.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-08-exercicio-3",
+      "aula": 8,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt",
+          "linha_inicial": 116,
+          "linha_final": 132
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-09-exercicio-4",
+      "aula": 9,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 9 -  Medidas de Dispersão.txt",
+          "linha_inicial": 132,
+          "linha_final": 143
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-10-exercicio-5",
+      "aula": 10,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt",
+          "linha_inicial": 87,
+          "linha_final": 104
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-10-multipla-escolha-13",
+      "aula": 10,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt",
+          "linha_inicial": 107,
+          "linha_final": 115
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-11-exercicio-8",
+      "aula": 11,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 11 -  Medidas para Dados Agrupados.txt",
+          "linha_inicial": 91,
+          "linha_final": 104
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-12-exercicio-1",
+      "aula": 12,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+          "linha_inicial": 49,
+          "linha_final": 68
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 3,
+          "questao": "Exercício 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-03.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/14b304035b344d65b7ca41cf4cbc16dc/GABARITO%20-%20LIVRO%20ESTAT%C3%8DSTICA%20-%20CAP%203.pdf"
+        }
+      ],
+      "observacoes": "CV calculado com os valores sem arredondamento intermediário, concordando com 33,79% do gabarito.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-12-multipla-escolha-7",
+      "aula": 12,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+          "linha_inicial": 69,
+          "linha_final": 82
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-12-multipla-escolha-13",
+      "aula": 12,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+          "linha_inicial": 83,
+          "linha_final": 95
+        }
+      ],
+      "observacoes": "Alternativa D especificada como amplitude total para eliminar a ambiguidade de “variabilidade geral”; a figura diferencia amplitude interquartil de amplitude total.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-13-exercicio-1",
+      "aula": 13,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt",
+          "linha_inicial": 74,
+          "linha_final": 85
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-13-multipla-escolha-1",
+      "aula": 13,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt",
+          "linha_inicial": 88,
+          "linha_final": 96
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-14-exercicio-4",
+      "aula": 14,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt",
+          "linha_inicial": 84,
+          "linha_final": 95
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-14-multipla-escolha-5",
+      "aula": 14,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt",
+          "linha_inicial": 98,
+          "linha_final": 106
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-15-exercicio-8",
+      "aula": 15,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+          "linha_inicial": 67,
+          "linha_final": 81
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-15-exercicio-10",
+      "aula": 15,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+          "linha_inicial": 82,
+          "linha_final": 87
+        }
+      ],
+      "observacoes": "Exemplo equivalente elaborado para substituir o enunciado sem dados e sem árvore recuperável. Usa a regra da multiplicação apresentada no material; não atribui estes números ao gabarito do autor.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-15-multipla-escolha-6",
+      "aula": 15,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+          "linha_inicial": 90,
+          "linha_final": 99
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-16-exercicio-1",
+      "aula": 16,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt",
+          "linha_inicial": 92,
+          "linha_final": 97
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-16-multipla-escolha-3",
+      "aula": 16,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt",
+          "linha_inicial": 100,
+          "linha_final": 109
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-17-exercicio-2",
+      "aula": 17,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 17 -  Distribuição Hipergeométrica.txt",
+          "linha_inicial": 45,
+          "linha_final": 56
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-17-multipla-escolha-4",
+      "aula": 17,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 17 -  Distribuição Hipergeométrica.txt",
+          "linha_inicial": 59,
+          "linha_final": 67
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-18-exercicio-3",
+      "aula": 18,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt",
+          "linha_inicial": 70,
+          "linha_final": 82
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-18-multipla-escolha-5",
+      "aula": 18,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt",
+          "linha_inicial": 85,
+          "linha_final": 93
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-19-exercicio-1",
+      "aula": 19,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt",
+          "linha_inicial": 55,
+          "linha_final": 65
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-19-multipla-escolha-2",
+      "aula": 19,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt",
+          "linha_inicial": 68,
+          "linha_final": 76
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-20-exercicio-2",
+      "aula": 20,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt",
+          "linha_inicial": 83,
+          "linha_final": 94
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-20-multipla-escolha-4",
+      "aula": 20,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt",
+          "linha_inicial": 97,
+          "linha_final": 105
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-21-exercicio-3",
+      "aula": 21,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt",
+          "linha_inicial": 57,
+          "linha_final": 66
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-21-multipla-escolha-5",
+      "aula": 21,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt",
+          "linha_inicial": 69,
+          "linha_final": 81
+        }
+      ],
+      "observacoes": "A figura normal foi retirada deste enunciado: era decorativa e não representa a distribuição cuja propriedade está sendo perguntada. O texto anterior fica preservado em enunciado_original.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-22-exercicio-1",
+      "aula": 22,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt",
+          "linha_inicial": 110,
+          "linha_final": 133
+        }
+      ],
+      "observacoes": null,
+      "recursos": [
+        {
+          "arquivo": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/gabarito-ex01-regressao.html",
+          "titulo": "Distância e custo — resolução",
+          "origem_dados": "Pares completos da tabela do enunciado; mínimos quadrados calculados sem arredondar coeficientes."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-22-multipla-escolha-3",
+      "aula": 22,
+      "categoria": "multipla_escolha",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt",
+          "linha_inicial": 136,
+          "linha_final": 144
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-23-exercicio-1",
+      "aula": 23,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 83,
+          "linha_final": 88
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Exercício 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": "O gabarito escreve y=0,20x e R$20; isso omite os R$50 diários do enunciado do livro e da aula.",
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-23-exercicio-2",
+      "aula": 23,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 89,
+          "linha_final": 107
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Exercício 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": "Concordância com os coeficientes e a correlação do gabarito; previsões calculadas com maior precisão antes do arredondamento.",
+      "recursos": [
+        {
+          "arquivo": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex02-regressao.html",
+          "titulo": "Horas de estudo e nota — resolução",
+          "origem_dados": "Pares completos da tabela do enunciado; mínimos quadrados calculados sem arredondar coeficientes."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-23-exercicio-3",
+      "aula": 23,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 108,
+          "linha_final": 134
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Exercício 3",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": "Coeficientes e previsões concordam com o gabarito; elaboradas interpretação, resíduos e ressalva de extrapolação.",
+      "recursos": [
+        {
+          "arquivo": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex03-regressao.html",
+          "titulo": "Açúcar, calorias e resíduos — resolução",
+          "origem_dados": "Pares completos da tabela do enunciado; mínimos quadrados calculados sem arredondar coeficientes."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-23-exercicio-4",
+      "aula": 23,
+      "categoria": "exercicio",
+      "origem": "recalculado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 135,
+          "linha_final": 152
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Exercício 4",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": "Resultados concordam com o gabarito; preservada a escala de centenas e esclarecida a interpretação de r².",
+      "recursos": [
+        {
+          "arquivo": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex04-regressao.html",
+          "titulo": "Promoções e vendas — resolução",
+          "origem_dados": "Pares completos da tabela do enunciado; mínimos quadrados calculados sem arredondar coeficientes."
+        }
+      ]
+    },
+    {
+      "id": "livro-aula-23-exercicio-5",
+      "aula": 23,
+      "categoria": "exercicio",
+      "origem": "elaborado",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 153,
+          "linha_final": 158
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-23-multipla-escolha-1",
+      "aula": 23,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 161,
+          "linha_final": 167
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-23-multipla-escolha-2",
+      "aula": 23,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 168,
+          "linha_final": 174
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-23-multipla-escolha-3",
+      "aula": 23,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 175,
+          "linha_final": 185
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 3",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-23-multipla-escolha-4",
+      "aula": 23,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 186,
+          "linha_final": 200
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 4",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-23-multipla-escolha-5",
+      "aula": 23,
+      "categoria": "multipla_escolha",
+      "origem": "autor",
+      "correcao_automatica": true,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 201,
+          "linha_final": 213
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 7,
+          "questao": "Questão objetiva 5",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    },
+    {
+      "id": "livro-aula-23-atividade-miniprojeto-viii-visitando-o-supermercado",
+      "aula": 23,
+      "categoria": "atividade",
+      "origem": "roteiro",
+      "correcao_automatica": false,
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+          "linha_inicial": 216,
+          "linha_final": 222
+        }
+      ],
+      "observacoes": null,
+      "recursos": []
+    }
+  ]
+}

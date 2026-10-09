@@ -1,0 +1,159 @@
+{
+  "project": "demo-statai-cover-ratings",
+  "emulator": true,
+  "checks": 37,
+  "allowed": 8,
+  "denied": 29,
+  "finalCount": 2,
+  "finalAverage": 3.5,
+  "tests": [
+    {
+      "name": "first anonymous vote",
+      "allowed": true
+    },
+    {
+      "name": "public aggregate read",
+      "allowed": true
+    },
+    {
+      "name": "own private vote read",
+      "allowed": true
+    },
+    {
+      "name": "second visitor contributes once",
+      "allowed": true
+    },
+    {
+      "name": "changing own vote keeps voter count",
+      "allowed": true
+    },
+    {
+      "name": "same vote does not add a voter",
+      "allowed": true
+    },
+    {
+      "name": "duplicate voter inflates count",
+      "allowed": false
+    },
+    {
+      "name": "forged aggregate without vote",
+      "allowed": false
+    },
+    {
+      "name": "vote update without aggregate",
+      "allowed": false
+    },
+    {
+      "name": "new aggregate without a vote",
+      "allowed": false
+    },
+    {
+      "name": "new vote without aggregate",
+      "allowed": false
+    },
+    {
+      "name": "incorrect arithmetic",
+      "allowed": false
+    },
+    {
+      "name": "writing another visitors vote",
+      "allowed": false
+    },
+    {
+      "name": "reading another visitors vote",
+      "allowed": false
+    },
+    {
+      "name": "listing individual votes",
+      "allowed": false
+    },
+    {
+      "name": "public vote read",
+      "allowed": false
+    },
+    {
+      "name": "listing covers",
+      "allowed": false
+    },
+    {
+      "name": "invalid score 0",
+      "allowed": false
+    },
+    {
+      "name": "invalid score 6",
+      "allowed": false
+    },
+    {
+      "name": "invalid score 1.5",
+      "allowed": false
+    },
+    {
+      "name": "invalid score \"3\"",
+      "allowed": false
+    },
+    {
+      "name": "invalid score null",
+      "allowed": false
+    },
+    {
+      "name": "invalid cover capa-000",
+      "allowed": false
+    },
+    {
+      "name": "invalid cover capa-108",
+      "allowed": false
+    },
+    {
+      "name": "invalid cover capa-999",
+      "allowed": false
+    },
+    {
+      "name": "invalid cover other",
+      "allowed": false
+    },
+    {
+      "name": "invalid cover capa-1",
+      "allowed": false
+    },
+    {
+      "name": "noninteger count",
+      "allowed": false
+    },
+    {
+      "name": "extra public field",
+      "allowed": false
+    },
+    {
+      "name": "extra private vote field",
+      "allowed": false
+    },
+    {
+      "name": "unauthenticated vote",
+      "allowed": false
+    },
+    {
+      "name": "deleting aggregate",
+      "allowed": false
+    },
+    {
+      "name": "deleting vote",
+      "allowed": false
+    },
+    {
+      "name": "upper cover boundary",
+      "allowed": true
+    },
+    {
+      "name": "existing private user rule",
+      "allowed": true
+    },
+    {
+      "name": "private user data remains protected",
+      "allowed": false
+    },
+    {
+      "name": "private user writes remain protected",
+      "allowed": false
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Laboratório de Regressão Linear Simples e Resíduos</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.75rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    select { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.82rem; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.destaque { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.0rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>📐 Laboratório Dinâmico: Reta de Regressão e Mínimos Quadrados (MQO)</span>
+        </div>
+        <span class="sim-badge">Aula 22 • Figura 17 (p. 147)</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <span class="ctrl-label">Conjunto de Dados:</span>
+            <select id="sel_dataset" onchange="mudarDataset(this.value)">
+                <option value="estudo">Horas de Estudo (X) vs Nota da Prova (Y)</option>
+                <option value="experiencia">Anos de Experiência (X) vs Salário em R$k (Y)</option>
+                <option value="propaganda">Gastos em Propaganda (X) vs Faturamento (Y)</option>
+            </select>
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Ruído / Dispersão dos Dados (σ):</span>
+                <span id="lbl_ruido" class="ctrl-val">Moderado</span>
+            </div>
+            <input type="range" id="slider_ruido" min="0.5" max="3.5" step="0.5" value="1.5" oninput="atualizarRuido(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Visualização dos Resíduos:</span>
+            <select id="sel_residuos" onchange="renderizar()">
+                <option value="sim">Exibir Linhas de Resíduos (ei = yi - ŷi)</option>
+                <option value="nao">Ocultar Resíduos</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn-action" onclick="sortearPontos()">🎲 Novos Pontos</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card destaque">
+            <div class="kpi-label">Equação da Reta MQO</div>
+            <div class="kpi-val" id="kpi_eq">ŷ = a + bx</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Coeficiente Angular (b)</div>
+            <div class="kpi-val" id="kpi_b">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Intercepto (a)</div>
+            <div class="kpi-val" id="kpi_a">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Soma Quadrados Resíduos</div>
+            <div class="kpi-val" id="kpi_sqres">SQres = --</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Princípio dos Mínimos Quadrados (p. 146):</b> A reta ótima de regressão linear é aquela que minimiza estritamente a soma dos quadrados das distâncias verticais (resíduos) entre os pontos observados e a reta estimada!
+    </div>
+</div>
+
+<script>
+    let datasetTipo = 'estudo';
+    let nivelRuido = 1.5;
+    let pontosX = [];
+    let pontosY = [];
+
+    function mudarDataset(val) {
+        datasetTipo = val;
+        sortearPontos();
+    }
+
+    function atualizarRuido(val) {
+        nivelRuido = parseFloat(val);
+        document.getElementById('lbl_ruido').innerText = nivelRuido <= 1.0 ? 'Baixo' : (nivelRuido >= 2.5 ? 'Alto' : 'Moderado');
+        sortearPontos();
+    }
+
+    function sortearPontos() {
+        pontosX = [];
+        pontosY = [];
+        let n = 15;
+
+        for(let i=0; i<n; i++) {
+            let u1 = Math.random(), u2 = Math.random();
+            let erro = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2) * nivelRuido;
+
+            if (datasetTipo === 'estudo') {
+                let x = parseFloat((1.5 + Math.random() * 8.5).toFixed(1)); // 1.5h a 10h
+                let y = parseFloat((3.0 + 0.65 * x + erro).toFixed(1));     // Nota de 3 a 10
+                if (y < 0) y = 0; if (y > 10) y = 10;
+                pontosX.push(x); pontosY.push(y);
+            } else if (datasetTipo === 'experiencia') {
+                let x = parseFloat((1 + Math.random() * 14).toFixed(1)); // 1 a 15 anos
+                let y = parseFloat((2.5 + 0.85 * x + erro * 1.5).toFixed(1)); // R$ 2.5k a 16k
+                pontosX.push(x); pontosY.push(y);
+            } else {
+                let x = parseFloat((5 + Math.random() * 25).toFixed(1)); // 5k a 30k propaganda
+                let y = parseFloat((15 + 1.8 * x + erro * 4).toFixed(1)); // Vendas
+                pontosX.push(x); pontosY.push(y);
+            }
+        }
+        renderizar();
+    }
+
+    function renderizar() {
+        let n = pontosX.length;
+        let sumX = pontosX.reduce((a,b)=>a+b, 0);
+        let sumY = pontosY.reduce((a,b)=>a+b, 0);
+        let sumXY = pontosX.reduce((acc, x, i) => acc + x * pontosY[i], 0);
+        let sumX2 = pontosX.reduce((acc, x) => acc + x * x, 0);
+
+        let meanX = sumX / n;
+        let meanY = sumY / n;
+
+        // Fórmulas MQO do livro (p. 146)
+        let b = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+        let a = meanY - b * meanX;
+
+        // Resíduos e SQres
+        let sqRes = 0;
+        let residuoShapes = [];
+        let mostrarRes = document.getElementById('sel_residuos').value === 'sim';
+
+        pontosX.forEach((x, i) => {
+            let yReal = pontosY[i];
+            let yPred = a + b * x;
+            let res = yReal - yPred;
+            sqRes += res * res;
+
+            if (mostrarRes) {
+                residuoShapes.push({
+                    type: 'line',
+                    x0: x, x1: x,
+                    y0: yReal, y1: yPred,
+                    line: { color: '#ea580c', width: 1.5, dash: 'dot' }
+                });
+            }
+        });
+
+        document.getElementById('kpi_eq').innerText = `ŷ = ${a.toFixed(2)} + ${b.toFixed(2)}x`;
+        document.getElementById('kpi_b').innerText = `${b >= 0 ? '+' : ''}${b.toFixed(3)}`;
+        document.getElementById('kpi_a').innerText = `${a.toFixed(2)}`;
+        document.getElementById('kpi_sqres').innerText = sqRes.toFixed(2);
+
+        let minX = Math.min(...pontosX) * 0.9;
+        let maxX = Math.max(...pontosX) * 1.08;
+
+        let tracePontos = {
+            x: pontosX, y: pontosY, type: 'scatter', mode: 'markers',
+            name: 'Dados Observados (xi, yi)',
+            marker: { size: 9, color: '#003485', line: { color: '#0f172a', width: 1 } }
+        };
+
+        let traceReta = {
+            x: [minX, maxX],
+            y: [a + b * minX, a + b * maxX],
+            type: 'scatter', mode: 'lines',
+            name: `Reta Estimada ŷ = ${a.toFixed(2)} + ${b.toFixed(2)}x`,
+            line: { color: '#dc2626', width: 3 }
+        };
+
+        let xTitle = datasetTipo === 'estudo' ? 'Horas de Estudo (X)' : (datasetTipo === 'experiencia' ? 'Anos de Experiência (X)' : 'Gasto em Propaganda R$k (X)');
+        let yTitle = datasetTipo === 'estudo' ? 'Nota da Prova (Y)' : (datasetTipo === 'experiencia' ? 'Salário R$k (Y)' : 'Faturamento R$k (Y)');
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: xTitle, range: [minX, maxX] },
+            yaxis: { title: yTitle, showgrid: true },
+            shapes: residuoShapes
+        };
+
+        Plotly.react('chart_div', [tracePontos, traceReta], layout, {responsive: true, displayModeBar: false});
+    }
+
+    sortearPontos();
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+[
+  {
+    "id": "livro-aula-10-exercicio-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "exercicio",
+    "enunciado": "Os tempos (em minutos) gastos por 11 pacientes na sala de espera de um consultório médico foram:  \n`12, 15, 18, 22, 25, 28, 30, 35, 42, 45, 65`  \n(a) Determine o primeiro, segundo e terceiro quartis.  \n(b) Calcule a amplitude interquartil ($AIQ$).  \n(c) Calcule os limites das bordas internas ($BII$ e $BIS$).  \n(d) Existe algum *outlier* nesse conjunto de dados?",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt",
+      "linha_inicial": 87,
+      "linha_final": 104,
+      "aula": 10
+    },
+    "solucao_completa": "(a) Com 11 valores, a mediana é o 6º: $Q_2=28$. A metade inferior é $12,15,18,22,25$, cuja mediana é $Q_1=18$. A superior é $30,35,42,45,65$, cuja mediana é $Q_3=42$.\n(b) $AIQ=42-18=24$ min.\n(c) Os limites internos são $BII=18-1{,}5(24)=-18$ min e $BIS=42+1{,}5(24)=78$ min. O limite negativo é um limiar matemático de detecção, não um tempo observado.\n(d) Todos os tempos estão entre esses limites; não há outliers pelo critério de $1{,}5\\,AIQ$. Outros algoritmos de quartis podem produzir valores diferentes; nesta resposta foi usada a convenção explicitada.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Determine o primeiro, segundo e terceiro quartis."
+      },
+      {
+        "id": "b",
+        "texto": "Calcule a amplitude interquartil ($AIQ$)."
+      },
+      {
+        "id": "c",
+        "texto": "Calcule os limites das bordas internas ($BII$ e $BIS$)."
+      },
+      {
+        "id": "d",
+        "texto": "Existe algum *outlier* nesse conjunto de dados?"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/",
+    "solucao_original": "**Resolução:**  \n(a) Com $n=11$ (ímpar):  \n- $Q_2 = Md = 28$ (6ª posição).  \n- Metade inferior: `12, 15, 18, 22, 25` $\\implies Q_1 = 18$.  \n- Metade superior: `30, 35, 42, 45, 65` $\\implies Q_3 = 42$.  \n(b) $AIQ = Q_3 - Q_1 = 42 - 18 = 24$.  \n(c) Bordas internas:  \n- $BII = 18 - 1{,}5 \\times 24 = 18 - 36 = -18$.  \n- $BIS = 42 + 1{,}5 \\times 24 = 42 + 36 = 78$.  \n(d) Não há outliers, pois o menor valor (12) e o maior valor (65) estão estritamente dentro do intervalo $[-18, 78]$.",
+    "dica": "Os limites para detectar outliers dependem dos quartis e da amplitude interquartil.",
+    "passo_inicial": "O rol já está ordenado. Adote a convenção da aula: encontre a mediana e exclua-a ao dividir o conjunto ímpar em duas metades.",
+    "resposta_final": "$Q_1=18$, $Q_2=28$, $Q_3=42$ min; $AIQ=24$ min; $BII=-18$ e $BIS=78$ min. Não há outliers.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt",
+          "linha_inicial": 87,
+          "linha_final": 104
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-10-multipla-escolha-13",
+    "numero": 13,
+    "numero_original": "13",
+    "categoria": "multipla_escolha",
+    "enunciado": "Em um diagrama de caixa (*boxplot*), o comprimento da própria caixa retangular representa:  \n(a) A amplitude total dos dados.  \n(b) O desvio-padrão amostral.  \n(c) A amplitude interquartil ($AIQ = Q_3 - Q_1$).  \n(d) A média aritmética ponderada.  \n(e) A distância entre o valor mínimo e a mediana.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt",
+      "linha_inicial": 107,
+      "linha_final": 115,
+      "aula": 10
+    },
+    "solucao_completa": "A caixa abrange os 50% centrais da distribuição. Suas bordas são $Q_1$ e $Q_3$, portanto seu comprimento é $Q_3-Q_1$, a amplitude interquartil. A amplitude total também inclui extremos externos à caixa.",
+    "resposta_final": "Alternativa C — amplitude interquartil.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "A amplitude total dos dados."
+      },
+      {
+        "id": "b",
+        "texto": "O desvio-padrão amostral."
+      },
+      {
+        "id": "c",
+        "texto": "A amplitude interquartil ($AIQ = Q_3 - Q_1$)."
+      },
+      {
+        "id": "d",
+        "texto": "A média aritmética ponderada."
+      },
+      {
+        "id": "e",
+        "texto": "A distância entre o valor mínimo e a mediana."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/",
+    "solucao_original": "**Gabarito: (c)**  \n**Comentário:** A caixa do boxplot é delimitada exatamente pelo primeiro quartil ($Q_1$) na extremidade inferior e pelo terceiro quartil ($Q_3$) na extremidade superior, de modo que sua altura ou comprimento representa a amplitude interquartil ($AIQ$).",
+    "dica": "Observe quais dois quartis delimitam a caixa.",
+    "passo_inicial": "Identifique a borda inferior como $Q_1$ e a superior como $Q_3$. O comprimento é a diferença entre essas posições.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt",
+          "linha_inicial": 107,
+          "linha_final": 115
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

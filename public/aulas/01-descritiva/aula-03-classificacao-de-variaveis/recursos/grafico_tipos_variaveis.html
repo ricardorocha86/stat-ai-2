@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Classificador Interativo de Variáveis</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+    .type-btn { padding: 8px 6px; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; color: #475569; transition: all 0.2s; text-align: center; }
+    .type-btn.active { background: #003485; color: #ffffff; border-color: #003485; box-shadow: 0 2px 6px rgba(0,52,133,0.25); }
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .control-group { display: flex; flex-direction: column; gap: 4px; }
+    .control-label { font-size: 0.82rem; font-weight: 600; color: #334155; }
+    select, input[type=range] { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; accent-color: #003485; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>📊 Laboratório Interativo de Classificação de Variáveis</span>
+        </div>
+        <span class="sim-badge">Aula 3 • Tipos de Variáveis</span>
+    </div>
+
+    <div class="type-grid">
+        <button class="type-btn active" id="btn_nom" onclick="selecionarTipo('nom')">Qualitativa Nominal</button>
+        <button class="type-btn" id="btn_ord" onclick="selecionarTipo('ord')">Qualitativa Ordinal</button>
+        <button class="type-btn" id="btn_disc" onclick="selecionarTipo('disc')">Quantitativa Discreta</button>
+        <button class="type-btn" id="btn_cont" onclick="selecionarTipo('cont')">Quantitativa Contínua</button>
+    </div>
+
+    <div class="controls-grid">
+        <div class="control-group">
+            <label class="control-label">Exemplo do Livro do Prof. Renan:</label>
+            <select id="sel_exemplo" onchange="mudarExemplo(this.value)"></select>
+        </div>
+        <div class="control-group">
+            <div class="control-label" style="display:flex; justify-content:space-between;">
+                <span>Tamanho da Amostra Simulada (n):</span>
+                <span id="lbl_n" style="color:#003485; font-weight:700;">60</span>
+            </div>
+            <input type="range" id="slider_n" min="20" max="200" step="10" value="60" oninput="atualizarN(this.value)">
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Natureza</div>
+            <div class="kpi-val" id="kpi_nat">Atributo Categórico</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Existe Ordem?</div>
+            <div class="kpi-val" id="kpi_ord">Não (Sem hierarquia)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Operações Válidas</div>
+            <div class="kpi-val" id="kpi_ops">Frequência e Moda</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Gráficos Recomendados</div>
+            <div class="kpi-val" id="kpi_graf">Barras, Setores/Pizza</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Qualitativas Nominais (Def. 1.7):</b> Expressam atributos ou categorias em que não há sentido matemático em ordenar. Exemplo: Cidade de residência dos alunos da FATEC ou Sexo.
+    </div>
+</div>
+
+<script>
+    const database = {
+        nom: {
+            nome: 'Qualitativa Nominal',
+            nat: 'Atributo Categórico',
+            ord: 'Não (Sem hierarquia)',
+            ops: 'Contagem, Moda, %',
+            graf: 'Barras, Pizza/Setores',
+            banner: '💡 <b>Qualitativa Nominal:</b> Representa categorias sem ordem intrínseca. Operações aritméticas como média são proibidas!',
+            exemplos: [
+                { nome: "Cidade de Residência (FATEC)", categorias: ["Sta Bárbara", "Americana", "Nova Odessa", "Limeira", "Sumaré"], pesos: [0.44, 0.22, 0.22, 0.06, 0.06] },
+                { nome: "Sexo dos Pinguins (Amat et al.)", categorias: ["Macho", "Fêmea"], pesos: [0.49, 0.51] },
+                { nome: "Grupo Sanguíneo", categorias: ["O+", "A+", "B+", "AB+", "O-", "A-"], pesos: [0.36, 0.34, 0.10, 0.04, 0.09, 0.07] }
+            ]
+        },
+        ord: {
+            nome: 'Qualitativa Ordinal',
+            nat: 'Atributo com Ordem',
+            ord: 'Sim (Hierarquia Clara)',
+            ops: 'Frequência, Moda, Mediana',
+            graf: 'Barras Ordenadas',
+            banner: '💡 <b>Qualitativa Ordinal:</b> Há ordenamento natural ou graduação entre as categorias. Mediana e percentis são válidos!',
+            exemplos: [
+                { nome: "Grau de Instrução", categorias: ["Fundamental", "Médio", "Superior", "Pós-Graduação"], pesos: [0.15, 0.40, 0.35, 0.10] },
+                { nome: "Satisfação no Trabalho (IADES)", categorias: ["Muito Insatisfeito", "Insatisfeito", "Neutro", "Satisfeito", "Muito Satisfeito"], pesos: [0.08, 0.17, 0.25, 0.35, 0.15] },
+                { nome: "Classe Social Econômica", categorias: ["Classe E", "Classe D", "Classe C", "Classe B", "Classe A"], pesos: [0.10, 0.25, 0.40, 0.18, 0.07] }
+            ]
+        },
+        disc: {
+            nome: 'Quantitativa Discreta',
+            nat: 'Numérica (Contagem)',
+            ord: 'Sim (Valores Inteiros)',
+            ops: 'Média, Mediana, Moda, Var',
+            graf: 'Barras/Bastões Discretos',
+            banner: '💡 <b>Quantitativa Discreta:</b> Resulta de processo de contagem (números inteiros não negativos 0, 1, 2...). Não há valores intermediários como 1.5 filhos!',
+            exemplos: [
+                { nome: "Smartphones por Domicílio (Ex. 5)", categorias: ["0", "1", "2", "3", "4", "5+"], pesos: [0.05, 0.20, 0.40, 0.22, 0.09, 0.04] },
+                { nome: "Número de Filhos", categorias: ["0", "1", "2", "3", "4"], pesos: [0.28, 0.36, 0.24, 0.09, 0.03] },
+                { nome: "Defeitos por Lote de Peças", categorias: ["0 defeitos", "1 defeito", "2 defeitos", "3 defeitos"], pesos: [0.65, 0.22, 0.09, 0.04] }
+            ]
+        },
+        cont: {
+            nome: 'Quantitativa Contínua',
+            nat: 'Numérica (Mensuração)',
+            ord: 'Sim (Intervalo Real Contínuo)',
+            ops: 'Todas as operações estatísticas',
+            graf: 'Histograma, Ogiva, Boxplot',
+            banner: '💡 <b>Quantitativa Contínua:</b> Resulta de mensuração e pode assumir infinitos valores fracionários dentro de um intervalo contínuo.',
+            exemplos: [
+                { nome: "Estatura dos 18 Alunos FATEC (m)", categorias: ["[1.55-1.66[", "[1.66-1.77[", "[1.77-1.88[", "[1.88-1.99["], pesos: [0.22, 0.39, 0.28, 0.11] },
+                { nome: "Cotação Média do Dólar (R$)", categorias: ["[1.80-2.30[", "[2.30-2.80[", "[2.80-3.30[", "[3.30-3.80[", "[3.80-4.30["], pesos: [0.20, 0.20, 0.30, 0.20, 0.10] },
+                { nome: "Consumo de Chopp em Litros (Ex. 6)", categorias: ["[0-2[", "[2-4[", "[4-6[", "[6-8[", "[8-10["], pesos: [0.10, 0.30, 0.35, 0.18, 0.07] }
+            ]
+        }
+    };
+
+    let tipoAtual = 'nom';
+    let nAmostra = 60;
+    let idxExemplo = 0;
+
+    function selecionarTipo(tipo) {
+        tipoAtual = tipo;
+        ['nom', 'ord', 'disc', 'cont'].forEach(t => {
+            document.getElementById('btn_' + t).className = 'type-btn ' + (t === tipo ? 'active' : '');
+        });
+        idxExemplo = 0;
+        popularExemplos();
+        renderizar();
+    }
+
+    function popularExemplos() {
+        let sel = document.getElementById('sel_exemplo');
+        sel.innerHTML = '';
+        database[tipoAtual].exemplos.forEach((ex, i) => {
+            let opt = document.createElement('option');
+            opt.value = i;
+            opt.innerText = ex.nome;
+            sel.appendChild(opt);
+        });
+        sel.value = idxExemplo;
+    }
+
+    function mudarExemplo(idx) {
+        idxExemplo = parseInt(idx);
+        renderizar();
+    }
+
+    function atualizarN(val) {
+        nAmostra = parseInt(val);
+        document.getElementById('lbl_n').innerText = nAmostra;
+        renderizar();
+    }
+
+    function renderizar() {
+        let meta = database[tipoAtual];
+        document.getElementById('kpi_nat').innerText = meta.nat;
+        document.getElementById('kpi_ord').innerText = meta.ord;
+        document.getElementById('kpi_ops').innerText = meta.ops;
+        document.getElementById('kpi_graf').innerText = meta.graf;
+        document.getElementById('banner_texto').innerHTML = meta.banner;
+
+        let ex = meta.exemplos[idxExemplo];
+        let cats = ex.categorias;
+        let counts = cats.map(c => 0);
+
+        // Gera dados simulados
+        for(let i=0; i<nAmostra; i++) {
+            let r = Math.random();
+            let acc = 0;
+            for(let j=0; j<ex.pesos.length; j++) {
+                acc += ex.pesos[j];
+                if (r <= acc || j === ex.pesos.length - 1) {
+                    counts[j]++;
+                    break;
+                }
+            }
+        }
+
+        let trace;
+        let layout;
+
+        if (tipoAtual === 'cont') {
+            trace = {
+                x: cats,
+                y: counts,
+                type: 'bar',
+                marker: {
+                    color: '#003485',
+                    line: { color: '#0f172a', width: 1.5 }
+                },
+                text: counts.map((c, i) => `${c} (${((c/nAmostra)*100).toFixed(1)}%)`),
+                textposition: 'auto',
+                name: 'Histograma de Classes'
+            };
+            layout = {
+                margin: { t: 30, b: 50, l: 40, r: 20 },
+                bargap: 0.03, // Contíguo para demonstrar continuidade!
+                title: { text: `Histograma Contínuo: ${ex.nome} (n=${nAmostra})`, font: { size: 13, color: '#003485' } },
+                xaxis: { title: 'Intervalos de Classes Contínuas' },
+                yaxis: { title: 'Frequência Absoluta (fa)' }
+            };
+        } else {
+            trace = {
+                x: cats,
+                y: counts,
+                type: 'bar',
+                marker: {
+                    color: cats.map((_, i) => tipoAtual==='ord' ? `rgba(0, 52, 133, ${0.4 + 0.6*(i/cats.length)})` : '#003485'),
+                    line: { color: '#1e3a8a', width: 1 }
+                },
+                text: counts.map(c => `${c} (${((c/nAmostra)*100).toFixed(1)}%)`),
+                textposition: 'auto',
+                name: 'Contagem'
+            };
+            layout = {
+                margin: { t: 30, b: 50, l: 40, r: 20 },
+                bargap: 0.35, // Espaçado para demonstrar categorias discretas/nominais
+                title: { text: `Distribuição: ${ex.nome} (n=${nAmostra})`, font: { size: 13, color: '#003485' } },
+                xaxis: { title: tipoAtual === 'ord' ? 'Categorias em Ordem Crescente' : 'Categorias' },
+                yaxis: { title: 'Frequência Absoluta (fa)' }
+            };
+        }
+
+        Plotly.react('chart_div', [trace], layout, {responsive: true, displayModeBar: false});
+    }
+
+    popularExemplos();
+    renderizar();
+</script>
+</body>
+</html>

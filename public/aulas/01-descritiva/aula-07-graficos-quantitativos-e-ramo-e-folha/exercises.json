@@ -1,0 +1,251 @@
+[
+  {
+    "id": "livro-aula-07-exercicio-8",
+    "numero": 8,
+    "numero_original": "8",
+    "categoria": "exercicio",
+    "enunciado": "Em uma empresa de concreto, foram registrados os tempos (em minutos) gastos por 40 caminhões betoneira para carregar o caminhão, transportar o concreto e descarregá-lo na obra. A tabela a seguir apresenta os dados em rol.\n\n| | | | | | | | |\n| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |\n| 45 | 48 | 51 | 54 | 55 | 55 | 58 | 59 |\n| 60 | 61 | 62 | 62 | 63 | 64 | 65 | 66 |\n| 67 | 67 | 68 | 69 | 70 | 71 | 72 | 72 |\n| 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 84 | 85 | 88 | 90 | 92 | 95 |\n\n(a) Construa uma tabela de distribuição de frequências utilizando 5 classes de mesma amplitude.  \n(b) Calcule as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$).  \n(c) Desenhe o histograma e o polígono de frequências.  \n(d) Desenhe a ogiva de Galton para as frequências acumuladas.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+      "linha_inicial": 113,
+      "linha_final": 131,
+      "aula": 7
+    },
+    "solucao_completa": "(a) $AT=50$ min, logo $h=50/5=10$ min. A última classe inclui o valor 95.\n(b) Recontando os dados:\n\n| Classe (min) | Ponto médio | $f_a$ | $f_r$ | $f_p$ | $F_a$ acumulada | Percentual acumulado |\n| --- | ---: | ---: | ---: | ---: | ---: | ---: |\n| $[45;55)$ | 50 | 4 | 0,100 | 10,0% | 4 | 10,0% |\n| $[55;65)$ | 60 | 10 | 0,250 | 25,0% | 14 | 35,0% |\n| $[65;75)$ | 70 | 12 | 0,300 | 30,0% | 26 | 65,0% |\n| $[75;85)$ | 80 | 9 | 0,225 | 22,5% | 35 | 87,5% |\n| $[85;95]$ | 90 | 5 | 0,125 | 12,5% | 40 | 100,0% |\n\n(c) O histograma tem retângulos contíguos de largura 10, com alturas 4, 10, 12, 9 e 5. O polígono une os pontos (50;4), (60;10), (70;12), (80;9), (90;5); pode ser fechado em (40;0) e (100;0).\n(d) A ogiva das contagens une (45;0), (55;4), (65;14), (75;26), (85;35), (95;40). Para percentuais, use 0%, 10%, 35%, 65%, 87,5%, 100% nas mesmas abscissas.\n\n![Tempos dos caminhões — resolução](recursos/gabarito-ex08-histograma.html)\n\n![Ogiva dos tempos — resolução](recursos/gabarito-ex08-ogiva.html)",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Construa uma tabela de distribuição de frequências utilizando 5 classes de mesma amplitude."
+      },
+      {
+        "id": "b",
+        "texto": "Calcule as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$)."
+      },
+      {
+        "id": "c",
+        "texto": "Desenhe o histograma e o polígono de frequências."
+      },
+      {
+        "id": "d",
+        "texto": "Desenhe a ogiva de Galton para as frequências acumuladas."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/",
+    "solucao_original": "**Resolução:**  \n(a) e (b) $AT = 95 - 45 = 50$. Com $k = 5$ classes, a amplitude é $AC = 50 / 5 = 10$.  \nClasses: $[45 \\vdash 55[$ com $f_a = 4$; $[55 \\vdash 65[$ com $f_a = 9$; $[65 \\vdash 75[$ com $f_a = 13$; $[75 \\vdash 85[$ com $f_a = 8$; $[85 \\vdash 95]$ com $f_a = 6$. Total = 40.",
+    "dica": "Depois de escolher os intervalos, conte cada valor uma única vez e confira se todos os 40 tempos foram incluídos.",
+    "passo_inicial": "Calcule $AT=95-45$ e divida por cinco. Use classes fechadas à esquerda e abertas à direita; inclua 95 na última classe fechando sua extremidade direita.",
+    "resposta_final": "Amplitude 10 min. Frequências: 4, 10, 12, 9, 5. Acumuladas: 4, 14, 26, 35, 40. Histograma, polígono e ogiva conforme os pontos indicados.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 113,
+          "linha_final": 131
+        }
+      ],
+      "observacoes": "O exercício da aula usa tempos de 45 a 95, diferentes dos tempos de 10 a 38 no exercício 8 do livro. As contagens antigas 4,9,13,8,6 foram corrigidas para 4,10,12,9,5.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-07-exercicio-11",
+    "numero": 11,
+    "numero_original": "11",
+    "categoria": "exercicio",
+    "enunciado": "(MANN, 2015) Disposições ramo-e-folha tipo costas com costas (*back-to-back*) podem ser utilizadas para comparar a distribuição de uma variável para dois diferentes grupos. Considere os dados a seguir, que fornecem o teor de álcool por volume (%) para diferentes cervejas produzidas pela Flying Dog Brewery e pela Sierra Nevada Brewery:\n\n| Flying Dog Brewery (%) | Sierra Nevada Brewery (%) |\n| ---: | ---: |\n| 4,7 | 4,4 |\n| 4,7 | 5 |\n| 4,8 | 5 |\n| 5,1 | 5,6 |\n| 5,5 | 5,6 |\n| 5,5 | 5,8 |\n| 5,6 | 5,9 |\n| 6 | 5,9 |\n| 7,1 | 6,7 |\n| 7,4 | 6,8 |\n| 7,8 | 6,9 |\n| 8,3 | 7 |\n| 8,3 | 9,6 |\n| 9,2 | — |\n| 9,9 | — |\n| 10,2 | — |\n| 11,5 | — |\n\n**Flying Dog Brewery:**  \n4,7 | 4,7 | 4,8 | 5,1 | 5,5 | 5,5 | 5,6 | 6,0 | 7,1 | 7,4 | 7,8 | 8,3 | 8,3 | 9,2 | 9,9 | 10,2 | 11,5\n\n**Sierra Nevada Brewery:**  \n4,4 | 5,0 | 5,0 | 5,6 | 5,6 | 5,8 | 5,9 | 5,9 | 6,7 | 6,8 | 6,9 | 7,0 | 9,6\n\n(a) Crie uma disposição ramo-e-folha costas com costas para esses dados. Coloque os dados da Flying Dog Brewery à esquerda.  \n(b) O que você consideraria como um teor de álcool típico das cervejas de cada uma das cervejarias?  \n(c) Uma das cervejarias tende a ter um teor de álcool mais elevado em suas cervejas do que as outras? Em caso afirmativo, qual delas?  \n(d) As distribuições do teor de álcool para as duas cervejarias aparentam ter os mesmos níveis de variabilidade?",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+      "linha_inicial": 132,
+      "linha_final": 146,
+      "aula": 7
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Crie uma disposição ramo-e-folha costas com costas para esses dados. Coloque os dados da Flying Dog Brewery à esquerda."
+      },
+      {
+        "id": "b",
+        "texto": "O que você consideraria como um teor de álcool típico das cervejas de cada uma das cervejarias?"
+      },
+      {
+        "id": "c",
+        "texto": "Uma das cervejarias tende a ter um teor de álcool mais elevado em suas cervejas do que as outras? Em caso afirmativo, qual delas?"
+      },
+      {
+        "id": "d",
+        "texto": "As distribuições do teor de álcool para as duas cervejarias aparentam ter os mesmos níveis de variabilidade?"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/",
+    "dica": "Use a parte inteira como ramo e o décimo como folha. Compare centro e espalhamento, sem confundir essas duas características.",
+    "passo_inicial": "Separe os dados por parte inteira. Coloque Flying Dog à esquerda com as folhas em ordem inversa e Sierra Nevada à direita em ordem crescente.",
+    "solucao_completa": "(a) Uma disposição possível é:\n\n| Flying Dog (folhas) | Ramo | Sierra Nevada (folhas) |\n| ---: | :---: | :--- |\n| 8 7 7 | 4 | 4 |\n| 6 5 5 1 | 5 | 0 0 6 6 8 9 9 |\n| 0 | 6 | 7 8 9 |\n| 8 4 1 | 7 | 0 |\n| 3 3 | 8 | — |\n| 9 2 | 9 | 6 |\n| 2 | 10 | — |\n| 5 | 11 | — |\n\nChave: ramo 4 e folha 7 representam 4,7%, inclusive à esquerda.\n(b) As medianas são 7,1% (Flying Dog, 9º de 17 valores) e 5,9% (Sierra Nevada, 7º de 13). São medidas adequadas de teor típico neste conjunto; as médias são aproximadamente 7,15% e 6,17%.\n(c) Flying Dog tende a ter teor maior, observando as medidas de centro e a distribuição.\n(d) Flying Dog apresenta maior espalhamento: amplitude $11{,}5-4{,}7=6{,}8$ pontos percentuais, contra $9{,}6-4{,}4=5{,}2$ na Sierra Nevada. Os desvios-padrão amostrais são aproximadamente 2,15 e 1,31 pontos percentuais. As duas medidas confirmam dispersões diferentes.",
+    "resposta_final": "(a) Ramo-e-folha conforme a tabela. (b) Medianas 7,1% e 5,9%. (c) Flying Dog tende a ter teor maior. (d) Flying Dog tem maior dispersão.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 132,
+          "linha_final": 146
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 11",
+          "pagina_pdf": 6,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "O gabarito oferece uma descrição de homogeneidade no item (b), mas o enunciado pede teor típico. Foram calculadas medianas e médias para responder diretamente.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-07-multipla-escolha-8",
+    "numero": 8,
+    "numero_original": "8",
+    "categoria": "multipla_escolha",
+    "enunciado": "(FCC, 2009) A distribuição dos salários dos 200 funcionários, em R$ 1.000,00, de determinada carreira profissional em um órgão público está representada pelo histograma abaixo. No eixo vertical estão assinaladas as respectivas densidades de frequências, em (R$ 1.000,00). Define-se densidade de frequência de um intervalo de classe como sendo o quociente da divisão da respectiva frequência relativa pela correspondente amplitude do intervalo.\n\n![Histograma Salários - FCC 2009](recursos/ex13_histograma_salarios.html)\n\nConsiderando todos os intervalos de classe fechados à esquerda e abertos à direita, tem-se que a quantidade de funcionários que possuem salários maiores ou iguais a R$ 4.000,00 e inferiores a R$ 8.000,00 é:  \n(a) 60  \n(b) 80  \n(c) 90  \n(d) 140  \n(e) 160",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+      "linha_inicial": 149,
+      "linha_final": 164,
+      "aula": 7
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "60"
+      },
+      {
+        "id": "b",
+        "texto": "80"
+      },
+      {
+        "id": "c",
+        "texto": "90"
+      },
+      {
+        "id": "d",
+        "texto": "140"
+      },
+      {
+        "id": "e",
+        "texto": "160"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/",
+    "solucao_original": "**Gabarito: (e)**  \n**Comentário:** A área de cada retângulo no histograma de densidade representa a frequência relativa correspondente. Somando as áreas dos intervalos de $[4, 6[$ e $[6, 8[$, multiplicadas por 200 funcionários, obtém-se exatamente 160 funcionários.",
+    "dica": "Em um histograma de densidade, a frequência relativa é a área do retângulo, não sua altura isolada.",
+    "passo_inicial": "Identifique os intervalos contidos em $[4;8)$: $[4;5)$ e $[5;8)$. Multiplique cada densidade pela respectiva largura e depois pelo total de funcionários.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 149,
+          "linha_final": 164
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Questão objetiva 8",
+          "pagina_pdf": 6,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "Resposta oficial D confirmada pelo histograma original do livro p. 50; substitui a resposta E / 160 da solução antiga.",
+      "conferido_enunciado": true
+    },
+    "solucao_completa": "A classe $[4;5)$ tem largura 1 e densidade 0,25, portanto frequência relativa $1\\cdot0{,}25=0{,}25$. A classe $[5;8)$ tem largura 3 e densidade 0,15, portanto frequência relativa $3\\cdot0{,}15=0{,}45$. Somando as áreas,\n$$f_r=0{,}25+0{,}45=0{,}70.$$\nA quantidade é $200\\cdot0{,}70=140$ funcionários. Usar larguras iguais alteraria o significado do gráfico.",
+    "resposta_final": "Alternativa D — 140 funcionários."
+  },
+  {
+    "id": "livro-aula-07-atividade-miniprojeto-i-fase-2",
+    "numero": 4,
+    "numero_original": "MINIPROJETO I – FASE 2",
+    "categoria": "atividade",
+    "enunciado": "Considerando os dados obtidos na Fase 1 do Miniprojeto I, escolha uma variável qualitativa e uma quantitativa e elabore, em Excel, uma tabela de distribuição de frequência totalmente automatizada, contendo para cada caso as frequências absoluta, relativa, percentual e acumulada. Em seguida, desenhe um gráfico apropriado para cada uma das tabelas elaboradas e interprete os resultados.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+      "linha_inicial": 167,
+      "linha_final": 170,
+      "aula": 7
+    },
+    "titulo": "MINIPROJETO I – FASE 2",
+    "resourceBasePath": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/",
+    "dica": "Escolha gráficos e tabelas compatíveis com o tipo de variável. Uma categoria nominal não tem ordem natural para acumular frequências.",
+    "passo_inicial": "Retome os dados da fase 1, selecione uma variável qualitativa e uma quantitativa e crie uma tabela separada para cada uma.",
+    "solucao_completa": "Este roteiro depende dos dados coletados pelo grupo.\n1. Identifique as variáveis e o número de respostas válidas.\n2. Para a qualitativa, conte categorias com CONT.SE (ou tabela dinâmica); calcule proporções e percentuais. Se for nominal, a frequência acumulada não tem interpretação substantiva: indique “não se aplica”. Se for ordinal, acumule na ordem da escala.\n3. Para a quantitativa, escolha valores únicos ou intervalos sem sobreposição. Use fórmulas referenciadas ao intervalo completo da planilha, incluindo contagens, proporções e acumuladas.\n4. Confira se as contagens somam o total e se as proporções somam 1.\n5. Use barras/setores para a qualitativa e barras, histograma, polígono ou ogiva conforme a quantitativa.\n6. Altere um dado para verificar a atualização automática das tabelas e gráficos.\n7. Interprete os padrões observados, identificando limitações da amostra. Não invente dados para completar a entrega.",
+    "resposta_final": "Entrega esperada: planilha com dados, duas tabelas automatizadas, gráficos adequados e interpretação. Os resultados numéricos dependem da coleta; acumuladas para variável nominal devem ser justificadas como não aplicáveis.",
+    "correcao_automatica": false,
+    "gabarito_meta": {
+      "origem": "roteiro",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 167,
+          "linha_final": 170
+        }
+      ],
+      "conferido_enunciado": true
+    },
+    "criterios_avaliacao": [
+      "Dados da fase 1 e variáveis identificados.",
+      "Fórmulas e gráficos atualizados automaticamente.",
+      "Totais, proporções e limites de classe consistentes.",
+      "Acumuladas usadas apenas quando há ordem interpretável.",
+      "Conclusões apoiadas nos dados."
+    ]
+  },
+  {
+    "id": "livro-aula-07-atividade-miniprojeto-iii",
+    "numero": 5,
+    "numero_original": "MINIPROJETO III",
+    "categoria": "atividade",
+    "enunciado": "Nesse miniprojeto, cada aluno se encarrega de registrar o tipo de transporte e o tempo (em minutos) que leva para chegar à FATEC. Após organizar os dados em planilha Excel, faça o que se pede:  \n(1) Classifique as variáveis analisadas quanto ao tipo.  \n(2) Construa uma tabela de distribuição de frequências para cada variável, contendo, para cada classe, as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$) quando necessário.  \n(3) Desenhe um gráfico apropriado para cada uma das tabelas elaboradas no item anterior.  \n(4) Interprete os resultados de maneira a produzir um relatório indicando as suas descobertas.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+      "linha_inicial": 171,
+      "linha_final": 177,
+      "aula": 7
+    },
+    "titulo": "MINIPROJETO III",
+    "resourceBasePath": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/",
+    "dica": "Tipo de transporte e tempo de deslocamento exigem tratamentos diferentes.",
+    "passo_inicial": "Crie uma linha por aluno com transporte e tempo em minutos. Identifique o total válido para cada variável antes de fazer as tabelas.",
+    "solucao_completa": "O tipo de transporte é qualitativo nominal; o tempo de deslocamento é quantitativo contínuo, ainda que registrado com arredondamento em minutos.\n1. Conte os meios de transporte e calcule proporções/percentuais. Não atribua significado a uma acumulada de categorias nominais.\n2. Organize tempos em classes coerentes, com limites claros e sem sobreposição. Calcule contagens, proporções, percentuais e acumuladas.\n3. Use barras ou setores para transporte; histograma e/ou ogiva para tempo.\n4. No relatório, identifique os meios mais frequentes e faixas típicas de tempo, cite o tamanho da amostra e descreva valores ausentes e limites de representatividade.\nOs números devem vir da coleta da turma; não existe um percentual universal de transporte ou tempo.",
+    "resposta_final": "Transporte: qualitativa nominal. Tempo: quantitativa contínua. Entrega esperada: dados coletados, duas tabelas, gráficos e relatório com resultados da turma.",
+    "correcao_automatica": false,
+    "gabarito_meta": {
+      "origem": "roteiro",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+          "linha_inicial": 171,
+          "linha_final": 177
+        }
+      ],
+      "conferido_enunciado": true
+    },
+    "criterios_avaliacao": [
+      "Dados e unidades de medida identificados.",
+      "Classificação das duas variáveis correta.",
+      "Tabelas e gráficos adequados a cada variável.",
+      "Relatório usa resultados reais e reconhece limites da amostra."
+    ]
+  }
+]

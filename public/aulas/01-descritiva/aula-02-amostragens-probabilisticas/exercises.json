@@ -1,0 +1,435 @@
+[
+  {
+    "id": "livro-aula-02-exercicio-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "exercicio",
+    "enunciado": "Uma empresa possui 140 funcionários com o mesmo cargo e tempo de serviço, dos quais 80 são homens e 60 são mulheres. Uma jornalista deseja entrevistar uma amostra de 30% desses funcionários para saber se há diferença entre os salários de homens e mulheres.  \n(a) Qual deve ser o processo de amostragem utilizado?  \n(b) Quantos homens e mulheres deverão ser entrevistados?",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+      "linha_inicial": 31,
+      "linha_final": 34,
+      "aula": 2
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Qual deve ser o processo de amostragem utilizado?"
+      },
+      {
+        "id": "b",
+        "texto": "Quantos homens e mulheres deverão ser entrevistados?"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-02-amostragens-probabilisticas/",
+    "dica": "Para comparar dois grupos, preserve a participação de cada grupo na população.",
+    "passo_inicial": "Separe homens e mulheres em estratos e use a mesma fração amostral de $30\\%=0{,}30$ em cada estrato.",
+    "solucao_completa": "(a) A amostragem aleatória estratificada proporcional representa os dois grupos. Dentro de cada grupo, os entrevistados devem ser sorteados.\n(b) O tamanho total é $n=0{,}30\\cdot140=42$. Para os homens, $n_H=0{,}30\\cdot80=24$. Para as mulheres, $n_M=0{,}30\\cdot60=18$. A soma $24+18=42$ confirma o tamanho da amostra.",
+    "resposta_final": "(a) Amostragem aleatória estratificada proporcional. (b) 24 homens e 18 mulheres; total de 42 funcionários.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 31,
+          "linha_final": 34
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Exercício 3 (a, b)",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-02-exercicio-4",
+    "numero": 4,
+    "numero_original": "4",
+    "categoria": "exercicio",
+    "enunciado": "O diretor da Fatec-Americana deseja coletar informações a respeito da instituição e seus professores. Dessa forma, optou por um levantamento por amostragem, considerando 200 dos 1600 alunos matriculados. Sabendo-se a quantidade de alunos por curso, obtenha uma amostra representativa.\n\n| CURSO | ADS | SI | GE | LOG | TEX |\n| :--- | :---: | :---: | :---: | :---: | :---: |\n| **Nº ALUNOS** | 320 | 255 | 480 | 385 | 160 |\n\n*\\*ADS: Análise e Desenvolvimento de Sistemas; SI: Segurança da Informação; GE: Gestão Empresarial; LOG: Logística; TEX: Têxtil.*",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+      "linha_inicial": 35,
+      "linha_final": 42,
+      "aula": 2
+    },
+    "resourceBasePath": "/aulas/01-descritiva/aula-02-amostragens-probabilisticas/",
+    "dica": "Cada curso deve participar da amostra na proporção de seus alunos.",
+    "passo_inicial": "Calcule a fração $n/N=200/1600$ e multiplique-a pela quantidade de alunos de cada curso. Ao arredondar, confira se a soma continua sendo 200.",
+    "solucao_completa": "A fração amostral é $200/1600=0{,}125=12{,}5\\%$. Aplicando $n_h=(N_h/N)n$:\n\n| Curso | Cota proporcional | Alunos a selecionar |\n| --- | ---: | ---: |\n| ADS | $320\\cdot0{,}125=40$ | 40 |\n| SI | $255\\cdot0{,}125=31{,}875$ | 32 |\n| GE | $480\\cdot0{,}125=60$ | 60 |\n| LOG | $385\\cdot0{,}125=48{,}125$ | 48 |\n| TEX | $160\\cdot0{,}125=20$ | 20 |\n| Total | 200 | 200 |\n\nOs arredondamentos compensam-se. Sorteie os alunos dentro de cada curso, usando uma lista completa de matriculados.",
+    "resposta_final": "ADS: 40; SI: 32; GE: 60; LOG: 48; TEX: 20. Total: 200 alunos.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 35,
+          "linha_final": 42
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Tabela de cursos apresentada como item 3(c)",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": "O PDF do gabarito coloca a tabela deste exercício sob 3(c); a associação foi conferida pelos cursos e pelos quantitativos, não só pela numeração.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-02-exercicio-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "exercicio",
+    "enunciado": "“A Estrada de Ferro de Carajás tem 892 km de extensão e foi inicialmente inaugurada em 1982, liga as maiores minas de minério de ferro de poço aberto do mundo, de Carajás para o porto de Ponta da Madeira em São Luís. Mais de 35 trens diferentes circulam nesta rota, incluindo um dos maiores trens do mundo em operação regular, consistindo de 330 vagões e um comprimento total de 3.300 metros.”  \n*(Fonte: https://top10mais.org/top-10-trens-mais-longos/)*  \n\nUm fiscal deseja verificar a quantidade média de minério de ferro transportada por vagão no super trem de 330 vagões. Assim, optou por realizar uma amostragem sistemática de 20% dos vagões. Supondo que o 29º vagão tenha sido sorteado ao acaso nesse processo, quais seriam os cinco próximos vagões amostrados?",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+      "linha_inicial": 43,
+      "linha_final": 47,
+      "aula": 2
+    },
+    "resourceBasePath": "/aulas/01-descritiva/aula-02-amostragens-probabilisticas/",
+    "dica": "Na amostragem sistemática, o intervalo entre elementos selecionados é constante.",
+    "passo_inicial": "Calcule o tamanho da amostra com $n=0{,}20\\cdot330$ e obtenha o intervalo $k=N/n$. A partir do 29º vagão, acrescente $k$ sucessivamente.",
+    "solucao_completa": "A amostra tem $n=66$ vagões, e o intervalo de seleção é $k=330/66=5$. Após o 29º vagão selecionado, os seguintes são $29+5$, $29+10$, $29+15$, $29+20$ e $29+25$. O cálculo considera o 29º como um vagão já pertencente à sequência sistemática, conforme solicitado; em um planejamento novo, o início usual seria sorteado entre 1 e 5.",
+    "resposta_final": "34º, 39º, 44º, 49º e 54º vagões.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 43,
+          "linha_final": 47
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Exercício 5",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-02-multipla-escolha-2",
+    "numero": 2,
+    "numero_original": "2",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Cesgranrio, 2018) Uma empresa encomenda uma pesquisa de mercado que utilize o método de amostragem aleatória simples. Esse é um caso de amostra probabilística em que cada entrevistado:  \n(a) define o seu grau de satisfação com os serviços prestados pela companhia.  \n(b) é conhecido dos entrevistadores e dos diretores da organização.  \n(c) está presente numa lista segmentada por renda, faixa etária e sexo.  \n(d) indica outro entrevistado e assim sucessivamente até o preenchimento da amostra.  \n(e) tem a mesma chance, entre o universo da pesquisa, de ser abordado.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+      "linha_inicial": 50,
+      "linha_final": 56,
+      "aula": 2
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "define o seu grau de satisfação com os serviços prestados pela companhia."
+      },
+      {
+        "id": "b",
+        "texto": "é conhecido dos entrevistadores e dos diretores da organização."
+      },
+      {
+        "id": "c",
+        "texto": "está presente numa lista segmentada por renda, faixa etária e sexo."
+      },
+      {
+        "id": "d",
+        "texto": "indica outro entrevistado e assim sucessivamente até o preenchimento da amostra."
+      },
+      {
+        "id": "e",
+        "texto": "tem a mesma chance, entre o universo da pesquisa, de ser abordado."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-02-amostragens-probabilisticas/",
+    "dica": "A aleatoriedade simples exige que a seleção não favoreça indivíduos por indicação ou conveniência.",
+    "passo_inicial": "Compare as alternativas com a condição de igualdade das probabilidades de seleção no universo da pesquisa.",
+    "solucao_completa": "Na amostragem aleatória simples, cada indivíduo tem a mesma chance de ser selecionado, usando um mecanismo de sorteio. Ter conhecidos entre os entrevistadores ou receber indicações não garante essa condição. A segmentação por perfil remete a outros desenhos amostrais.",
+    "resposta_final": "Alternativa E — a mesma chance de ser abordado.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 50,
+          "linha_final": 56
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-02-multipla-escolha-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "multipla_escolha",
+    "enunciado": "(FCC, 2019) Uma população com uma certa quantidade de elementos é dividida previamente em grupos mutuamente exclusivos e dentro dos quais são sorteadas amostras casuais simples. Esse tipo de amostragem é denominado de Amostragem:  \n(a) Determinística  \n(b) por Conveniência  \n(c) Aleatória Estratificada  \n(d) por Quotas  \n(e) por Conglomerados",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+      "linha_inicial": 57,
+      "linha_final": 63,
+      "aula": 2
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Determinística"
+      },
+      {
+        "id": "b",
+        "texto": "por Conveniência"
+      },
+      {
+        "id": "c",
+        "texto": "Aleatória Estratificada"
+      },
+      {
+        "id": "d",
+        "texto": "por Quotas"
+      },
+      {
+        "id": "e",
+        "texto": "por Conglomerados"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-02-amostragens-probabilisticas/",
+    "dica": "Verifique se são sorteados grupos inteiros ou indivíduos dentro de cada grupo.",
+    "passo_inicial": "O enunciado informa que os grupos são mutuamente exclusivos e que há um sorteio dentro de cada um. Relacione essa estrutura à definição de estrato.",
+    "solucao_completa": "A população foi dividida em estratos, e uma amostra aleatória simples é selecionada dentro de cada estrato. Isso caracteriza amostragem aleatória estratificada. Em conglomerados, a seleção recai sobre grupos; quotas não exigem sorteio dos indivíduos.",
+    "resposta_final": "Alternativa C — amostragem aleatória estratificada.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 57,
+          "linha_final": 63
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 5",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-02-multipla-escolha-6",
+    "numero": 6,
+    "numero_original": "6",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Cesgranrio, 2018) Para obter uma amostra de tamanho 1.000 dentre uma população de tamanho 20.000, organizada em um cadastro em que cada elemento está numerado sequencialmente de 1 a 20.000, um pesquisador utilizou o seguinte procedimento:  \nI - calculou um intervalo de seleção da amostra, dividindo o total da população pelo tamanho da amostra: $20.000 / 1.000 = 20$;  \nII - sorteou aleatoriamente um número inteiro, do intervalo $[1, 20]$. O número sorteado foi 15; desse modo, o primeiro elemento selecionado é o 15º;  \nIII - a partir desse ponto, aplica-se o intervalo de seleção da amostra: o segundo elemento selecionado é o 35º ($15+20$), o terceiro é o 55º ($15+40$), o quarto é o 75º ($15+60$), e assim sucessivamente.  \nO último elemento selecionado nessa amostra é o:  \n(a) 19.997º  \n(b) 19.995º  \n(c) 19.965º  \n(d) 19.975º  \n(e) 19.980º",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+      "linha_inicial": 64,
+      "linha_final": 74,
+      "aula": 2
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "19.997º"
+      },
+      {
+        "id": "b",
+        "texto": "19.995º"
+      },
+      {
+        "id": "c",
+        "texto": "19.965º"
+      },
+      {
+        "id": "d",
+        "texto": "19.975º"
+      },
+      {
+        "id": "e",
+        "texto": "19.980º"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-02-amostragens-probabilisticas/",
+    "dica": "O primeiro elemento já conta como uma das mil seleções.",
+    "passo_inicial": "Use a progressão $a_j=15+(j-1)\\cdot20$. Substitua $j=1000$, cuidando do número de intervalos.",
+    "solucao_completa": "O primeiro elemento é 15 e a distância entre seleções é 20. Entre o primeiro e o milésimo elemento há 999 intervalos:\n$$a_{1000}=15+999\\cdot20=15+19980=19995.$$\nUsar mil intervalos incluiria um elemento além do tamanho solicitado.",
+    "resposta_final": "Alternativa B — 19.995º elemento.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 64,
+          "linha_final": 74
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 6",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-02-multipla-escolha-7",
+    "numero": 7,
+    "numero_original": "7",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Funrio, 2013) Deseja-se realizar uma pesquisa para se inferir a qualidade de um serviço de telecomunicações oferecido por três operadoras (M, N e P). A quantidade e o perfil dos assinantes do serviço das operadoras são bem diferentes, razão pela qual se optou por adotar amostragem estratificada.\n\n| Operadora | Número de assinantes (mil) |\n| :---: | :---: |\n| M | 15 |\n| N | 25 |\n| P | 30 |\n\nConsiderando os dados apresentados na tabela acima e uma amostra de 200 assinantes, quantos assinantes da operadora M há na amostra?  \n(a) 43  \n(b) 55  \n(c) 69  \n(d) 71  \n(e) 86",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+      "linha_inicial": 75,
+      "linha_final": 89,
+      "aula": 2
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "43"
+      },
+      {
+        "id": "b",
+        "texto": "55"
+      },
+      {
+        "id": "c",
+        "texto": "69"
+      },
+      {
+        "id": "d",
+        "texto": "71"
+      },
+      {
+        "id": "e",
+        "texto": "86"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-02-amostragens-probabilisticas/",
+    "dica": "A cota da operadora depende de sua participação no total de assinantes.",
+    "passo_inicial": "Some os assinantes das três operadoras e calcule $n_M=200\\cdot N_M/N$.",
+    "solucao_completa": "O total é $15+25+30=70$ mil assinantes. A operadora M representa $15/70$ desse total. Sua cota é\n$$n_M=200\\cdot\\frac{15}{70}=42{,}857\\ldots$$\nArredondando para um número inteiro de assinantes, obtém-se 43.",
+    "resposta_final": "Alternativa A — 43 assinantes da operadora M.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 75,
+          "linha_final": 89
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 7",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-02-multipla-escolha-8",
+    "numero": 8,
+    "numero_original": "8",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Funiversa, 2010) Para saber das condições dos animais de uma fazenda, será realizada uma pesquisa por amostragem estratificada, a partir de uma amostra de 15 animais. A tabela seguinte apresenta o efetivo de animais dessa fazenda.\n\n| Animal | Efetivo |\n| :--- | :---: |\n| Asininos | 80 |\n| Bovinos | 300 |\n| Caprinos | 120 |\n| Equinos | 150 |\n| Suínos | 250 |\n\nCom base nessas informações, a quantidade de bovinos e suínos que serão usados na pesquisa é de:  \n(a) 5  \n(b) 6  \n(c) 7  \n(d) 8  \n(e) 9",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+      "linha_inicial": 90,
+      "linha_final": 105,
+      "aula": 2
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "5"
+      },
+      {
+        "id": "b",
+        "texto": "6"
+      },
+      {
+        "id": "c",
+        "texto": "7"
+      },
+      {
+        "id": "d",
+        "texto": "8"
+      },
+      {
+        "id": "e",
+        "texto": "9"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-02-amostragens-probabilisticas/",
+    "dica": "Na estratificação proporcional, a cota depende da quantidade de animais de cada espécie.",
+    "passo_inicial": "Calcule o efetivo total. Depois, obtenha as cotas dos bovinos e dos suínos multiplicando suas proporções pelo tamanho 15.",
+    "solucao_completa": "O efetivo total é $80+300+120+150+250=900$. Para bovinos, $15\\cdot300/900=5$. Para suínos, $15\\cdot250/900=4{,}166\\ldots$, aproximadamente 4. Uma alocação inteira que totaliza 15 é: 1 asinino, 5 bovinos, 2 caprinos, 3 equinos e 4 suínos. Assim, bovinos e suínos somam $5+4=9$.",
+    "resposta_final": "Alternativa E — 9 animais: 5 bovinos e 4 suínos.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+          "linha_inicial": 90,
+          "linha_final": 105
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 8",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

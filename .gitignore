@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +25,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+/archive/
+
+/tmp/
+
+__pycache__/
+
+# Firebase deploy cache and compiled functions
+.firebase/
+/functions/lib/
+
+# Book answer-key PDFs stay out of the public repository
+/docs/fontes/**/*.pdf

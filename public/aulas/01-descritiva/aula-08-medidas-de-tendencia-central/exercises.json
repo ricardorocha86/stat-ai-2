@@ -1,0 +1,88 @@
+[
+  {
+    "id": "livro-aula-08-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "(Mann, 2015) O chocolate ao leite padrão da M&MsTM vem em seis cores. As embalagens Fun Size geralmente contêm entre 16 e 20 confetes, de modo que é comum que uma embalagem do tipo Fun Size venha com algumas cores faltando. Foi fornecida uma embalagem Fun Size a cada um dentre os 14 alunos em um curso de verão de estatística e foi solicitado que eles contassem o número de cores presentes nas embalagens. Os dados a seguir correspondem ao número de cores encontradas nessas 14 embalagens.\n\n| | | | | | | | | | | | | | |\n| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |\n| 3 | 6 | 5 | 4 | 6 | 3 | 2 | 5 | 5 | 4 | 5 | 6 | 3 | 2 |\n\n(a) Encontre a média aritmética, a mediana e a moda. Os valores dessas medidas resumidas representam parâmetros da população ou estatísticas da amostra? Explique.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt",
+      "linha_inicial": 108,
+      "linha_final": 115,
+      "aula": 8
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Encontre a média aritmética, a mediana e a moda. Os valores dessas medidas resumidas representam parâmetros da população ou estatísticas da amostra? Explique."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-08-medidas-de-tendencia-central/",
+    "dica": "Ordene os dados para encontrar a mediana e conte repetições para identificar a moda.",
+    "passo_inicial": "Use as 14 observações: a média é a soma dividida por 14, e a mediana é a média entre o 7º e o 8º valores do rol.",
+    "solucao_completa": "O rol é $2,2,3,3,3,4,4,5,5,5,5,6,6,6$. A soma é 59 e $n=14$:\n$$\\bar x=\\frac{59}{14}\\approx4{,}21\\text{ cores}.$$\nOs valores centrais são 4 e 5, logo $Md=(4+5)/2=4{,}5$ cores. O número 5 aparece quatro vezes, mais que qualquer outro valor, então $Mo=5$ cores. Essas medidas são estatísticas amostrais: descrevem as 14 embalagens observadas, que não abrangem todas as embalagens da população.",
+    "resposta_final": "Média aproximadamente 4,21 cores; mediana 4,5 cores; moda 5 cores. São estatísticas da amostra.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt",
+          "linha_inicial": 108,
+          "linha_final": 115
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 3,
+          "questao": "Exercício 1(a)",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-03.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/14b304035b344d65b7ca41cf4cbc16dc/GABARITO%20-%20LIVRO%20ESTAT%C3%8DSTICA%20-%20CAP%203.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-08-exercicio-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "exercicio",
+    "enunciado": "Considere os salários (em milhões de reais) recebidos em 2018 pelos 10 jogadores de futebol mais bem pagos do mundo:\n\n| Jogador | Clube | Salário (R$ milhões) |\n| :--- | :--- | :---: |\n| Lionel Messi | Barcelona | 197 |\n| Cristiano Ronaldo | Juventus | 185 |\n| Antoine Griezmann | Atlético de Madrid | 163 |\n| Neymar | Paris Saint-Germain | 148 |\n| Gareth Bale | Real Madrid | 134 |\n| Andrés Iniesta | Vissel Kobe | 120 |\n| Alexis Sánchez | Manchester United | 107 |\n| Philippe Coutinho | Barcelona | 100 |\n| Ezequiel Lavezzi | Hebei Fortune | 96 |\n| Luis Suárez | Barcelona | 94 |\n\n(a) Encontre a média aritmética, a mediana e a moda dos salários desses jogadores.  \n(b) A média é uma boa medida representativa desse grupo de salários? Justifique.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt",
+      "linha_inicial": 116,
+      "linha_final": 132,
+      "aula": 8
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Encontre a média aritmética, a mediana e a moda dos salários desses jogadores."
+      },
+      {
+        "id": "b",
+        "texto": "A média é uma boa medida representativa desse grupo de salários? Justifique."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-08-medidas-de-tendencia-central/",
+    "dica": "A média usa todos os valores; a mediana depende dos valores centrais do rol.",
+    "passo_inicial": "Some os dez salários e ordene-os. Como há dez observações, use a média entre a 5ª e a 6ª para a mediana. Verifique se algum salário se repete.",
+    "solucao_completa": "(a) A soma é 1.344 milhões de reais. Logo, $\\bar x=1344/10=134{,}4$ milhões. No rol $94,96,100,107,120,134,148,163,185,197$, os valores centrais são 120 e 134: $Md=(120+134)/2=127$ milhões. Todos os salários são distintos; não há moda.\n(b) A média descreve o valor médio do grupo, mas é sensível aos salários mais altos. A mediana, 127 milhões, fica abaixo da média, indicando essa influência. É aceitável usar a média como resumo do grupo delimitado, desde que acompanhada de informação sobre dispersão; se o objetivo for representar o salário central, a mediana é uma escolha menos sensível aos extremos. Não se pode generalizar esse grupo dos dez mais bem pagos para todos os jogadores.",
+    "resposta_final": "(a) Média R$ 134,4 milhões; mediana R$ 127 milhões; conjunto amodal. (b) A média pode resumir o grupo, mas sofre influência dos valores altos; a mediana é uma alternativa para o salário central.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt",
+          "linha_inicial": 116,
+          "linha_final": 132
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

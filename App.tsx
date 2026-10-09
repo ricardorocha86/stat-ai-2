@@ -1,14 +1,32 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import HomePage from './components/HomePage';
 import AboutPage from './components/AboutPage';
 import LessonPage from './components/LessonPage';
 import Header from './components/Header';
-import { Course, Lesson, Unit, Exercise, ViewMode, Page, StudentProgress, Achievements, Achievement, AchievementMilestone, AchievementDisplayState, UserProfile, StructuredLesson } from './types';
+import { Course, Lesson, Unit, Exercise, ViewMode, Page, StudentProgress, Achievements, Achievement, AchievementMilestone, AchievementDisplayState, AchievementVersion, UserProfile, StructuredLesson } from './types';
 import initialCourseData from './data/courseData';
+import { loadCourseExercises } from './services/courseService';
+import { getCourseProgress } from './services/progressService';
 import LoginPage from './components/LoginPage';
-import { generateOracleFragment } from './services/geminiService';
+import { generateAchievementReward } from './services/geminiService';
 import AchievementModal from './components/AchievementModal';
+import OnboardingModal from './components/OnboardingModal';
+import ProfilePage from './components/ProfilePage';
+import GlobalChat from './components/GlobalChat';
+import { auth } from './services/firebaseConfig';
+import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import {
+    saveStudentProgress,
+    uploadAchievementAudio,
+    saveAchievementMetadata,
+    syncUserProfile,
+    fetchStudentProgress,
+    fetchAchievements,
+    getUserProfile,
+    uploadProfilePicture
+ } from './services/firebaseService';
 
 
 const App: React.FC = () => {
@@ -16,109 +34,146 @@ const App: React.FC = () => {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('aluno');
   const [page, setPage] = useState<Page>('home');
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const [isAchievementTestMode, setIsAchievementTestMode] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [interactiveMaterials, setInteractiveMaterials] = useState<{ [lessonId: string]: StructuredLesson }>({});
+  const [isLoadingExercises, setIsLoadingExercises] = useState<boolean>(true);
+  const [courseLoadingError, setCourseLoadingError] = useState<string | null>(null);
+  const [courseLoadAttempt, setCourseLoadAttempt] = useState(0);
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
 
-  const [userProfile, setUserProfile] = useState<UserProfile>(() => {
-    try {
-        const savedProfile = localStorage.getItem('userProfile');
-        return savedProfile ? JSON.parse(savedProfile) : { name: 'Aluno', email: 'aluno@escola.com' };
-    } catch (error) {
-        console.error("Não foi possível carregar o perfil do usuário do localStorage", error);
-        return { name: 'Aluno', email: 'aluno@escola.com' };
-    }
-  });
+  const [userProfile, setUserProfile] = useState<UserProfile>({ name: 'Aluno', email: '' });
 
-  const [studentProgress, setStudentProgress] = useState<StudentProgress>(() => {
-    try {
-        const savedProgress = localStorage.getItem('studentProgress');
-        if (savedProgress) {
-            const parsed = JSON.parse(savedProgress);
-            Object.keys(parsed).forEach(lessonId => {
-                parsed[lessonId] = new Set(parsed[lessonId]);
-            });
-            return parsed;
-        }
-    } catch (error) {
-        console.error("Não foi possível carregar o progresso do aluno do localStorage", error);
-    }
-    return {};
-  });
+  const [studentProgress, setStudentProgress] = useState<StudentProgress>({});
 
-  const [achievements, setAchievements] = useState<Achievements>(() => {
-    try {
-        const savedAchievements = localStorage.getItem('studentAchievements');
-        return savedAchievements ? JSON.parse(savedAchievements) : {};
-    } catch (error) {
-        console.error("Não foi possível carregar as conquistas do aluno do localStorage", error);
-        return {};
-    }
-  });
+  const [achievements, setAchievements] = useState<Achievements>({});
+  const [testAchievements, setTestAchievements] = useState<Achievements>({});
   
   const [achievementToDisplay, setAchievementToDisplay] = useState<AchievementDisplayState | null>(null);
   const [isGeneratingAchievement, setIsGeneratingAchievement] = useState(false);
 
   const allExercisesCount = useMemo(() => {
-    return course.units.flatMap(u => u.lessons).reduce((acc, lesson) => acc + lesson.exercises.length, 0);
+    return getCourseProgress(course, {}).totalCount;
   }, [course]);
 
+  // Auth Listener
   useEffect(() => {
-    const loggedInStatus = localStorage.getItem('isLoggedIn');
-    setTimeout(() => {
-      if (loggedInStatus === 'true') {
-        setIsLoggedIn(true);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        console.log("App: User logged in", user.uid);
+        setCurrentUser(user);
+        
+        try {
+          const existingProfile = await getUserProfile(user.uid);
+          console.log("App: existingProfile fetched:", existingProfile);
+          
+          if (!existingProfile || !existingProfile.isOnboarded) {
+             const profile: UserProfile = {
+                name: user.displayName || 'Aluno',
+                email: user.email || '',
+                photoBase64: user.photoURL || undefined
+            };
+            console.log("App: No existing profile or not onboarded, showing modal");
+            setUserProfile(profile);
+            setShowOnboarding(true);
+          } else {
+            console.log("App: Profile found, updating state and syncing last login");
+            setUserProfile(existingProfile);
+            setShowOnboarding(false);
+            await loadUserData(user.uid);
+            // Ensure lastLogin is updated even if profile is already there
+            await syncUserProfile(user.uid, existingProfile);
+          }
+        } catch (error) {
+           console.error("App: Error fetching user profile:", error);
+           // Fallback default profile if error
+           const profile: UserProfile = {
+                name: user.displayName || 'Aluno',
+                email: user.email || '',
+                photoBase64: user.photoURL || undefined
+            };
+            setUserProfile(profile);
+            await loadUserData(user.uid); // Try loading data anyway
+        }
+      } else {
+        setCurrentUser(null);
+        setStudentProgress({});
+        setAchievements({});
+        setShowOnboarding(false);
       }
       setIsAuthLoading(false);
-    }, 500);
+    });
+    return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
+  const handleOnboardingComplete = async (profile: UserProfile, photoFile?: File) => {
+    if (!currentUser) return;
+    
     try {
-        const serializableProgress: { [key: string]: string[] } = {};
-        Object.keys(studentProgress).forEach(lessonId => {
-            serializableProgress[lessonId] = Array.from(studentProgress[lessonId]);
-        });
-        localStorage.setItem('studentProgress', JSON.stringify(serializableProgress));
+        let finalPhotoUrl = profile.photoBase64;
+        
+        if (photoFile) {
+            finalPhotoUrl = await uploadProfilePicture(currentUser.uid, photoFile);
+        }
+        
+        const finalProfile: UserProfile = { 
+          ...profile, 
+          photoBase64: finalPhotoUrl, 
+          isOnboarded: true,
+          chatbotStyle: profile.chatbotStyle || 'Padrão'
+        };
+        console.log("App: Saving final onboarding profile:", finalProfile);
+        await syncUserProfile(currentUser.uid, finalProfile);
+        setUserProfile(finalProfile);
+        setShowOnboarding(false);
+        await loadUserData(currentUser.uid);
     } catch (error) {
-        console.error("Não foi possível salvar o progresso do aluno no localStorage", error);
+        console.error("App: Onboarding completion error:", error);
+        throw error;
     }
-  }, [studentProgress]);
-
-  useEffect(() => {
-    try {
-        localStorage.setItem('studentAchievements', JSON.stringify(achievements));
-    } catch (error) {
-        console.error("Não foi possível salvar as conquistas do aluno no localStorage", error);
-    }
-  }, [achievements]);
-
-  useEffect(() => {
-    try {
-        localStorage.setItem('userProfile', JSON.stringify(userProfile));
-    } catch (error) {
-        console.error("Não foi possível salvar o perfil do usuário no localStorage", error);
-    }
-}, [userProfile]);
-
-  const handleLogin = () => {
-    localStorage.setItem('isLoggedIn', 'true');
-    setIsLoggedIn(true);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    setPage('home');
-    setSelectedLesson(null);
-    setIsLoggedIn(false);
+  const loadUserData = async (userId: string) => {
+      try {
+          const [progress, userAchievements] = await Promise.all([
+              fetchStudentProgress(userId),
+              fetchAchievements(userId)
+          ]);
+          setStudentProgress(progress);
+          setAchievements(userAchievements);
+      } catch (error) {
+          console.error("Erro ao carregar dados do usuário:", error);
+      }
   };
+
+  const handleLogin = (firebaseUser: User) => {
+    // onAuthStateChanged handle the rest
+  };
+
+
+  useEffect(() => {
+    let active = true;
+    setIsLoadingExercises(true);
+    setCourseLoadingError(null);
+    loadCourseExercises(initialCourseData)
+      .then(loaded => {
+        if (!active) return;
+        setCourse(loaded);
+        setSelectedLesson(previous => previous
+          ? loaded.units.flatMap(unit => unit.lessons).find(lesson => lesson.id === previous.id) || null
+          : null);
+      })
+      .catch(error => { if (active) setCourseLoadingError(error.message); })
+      .finally(() => { if (active) setIsLoadingExercises(false); });
+    return () => { active = false; };
+  }, [courseLoadAttempt]);
 
   const handleSelectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
   };
-  
+
   const handleSetPage = (newPage: Page) => {
     if (newPage === 'lesson' && !selectedLesson) {
       setPage('home');
@@ -127,76 +182,217 @@ const App: React.FC = () => {
     }
   };
 
-  const handleProfileChange = (newProfile: UserProfile) => {
+  const handleProfileUpdate = async (updatedProfile: UserProfile, photoFile?: File) => {
+    if (!currentUser) return;
+    
+    try {
+        console.log("App: Updating profile:", updatedProfile);
+        let finalPhotoUrl = updatedProfile.photoBase64;
+        
+        if (photoFile) {
+            console.log("App: Uploading new profile picture...");
+            finalPhotoUrl = await uploadProfilePicture(currentUser.uid, photoFile);
+        }
+        
+        // Sanitize object for Firestore (remove undefined)
+        const finalProfile: UserProfile = { ...updatedProfile, isOnboarded: true };
+        if (finalPhotoUrl) finalProfile.photoBase64 = finalPhotoUrl;
+        
+        // Clean undefined fields specifically
+        if (finalProfile.registrationNumber === undefined) delete finalProfile.registrationNumber;
+        if (finalProfile.origin === undefined) delete finalProfile.origin;
+        if (finalProfile.photoBase64 === undefined) delete finalProfile.photoBase64;
+
+        await syncUserProfile(currentUser.uid, finalProfile);
+        setUserProfile(finalProfile);
+        console.log("App: Profile update successful");
+    } catch (error) {
+        console.error("App: Profile update error:", error);
+        throw error;
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+        await signOut(auth);
+        setPage('home');
+        setSelectedLesson(null);
+        // Clear user-specific state
+        setUserProfile({ name: 'Visitante', email: '', photoBase64: undefined });
+        setStudentProgress({});
+        setAchievements({});
+        console.log("App: Logged out successfully");
+    } catch (error) {
+        console.error("App: Erro ao sair:", error);
+    }
+  };
+
+  const handleProfileChange = async (newProfile: UserProfile) => {
+    // Optimistic update
+    const prevProfile = userProfile;
     setUserProfile(newProfile);
+    
+    if (currentUser) {
+        try {
+            await syncUserProfile(currentUser.uid, newProfile);
+        } catch (error) {
+            console.error("App: Falha ao sincronizar perfil:", error);
+            // Rollback on failure? Maybe better to notify
+            // For now, at least it's being awaited and logged
+        }
+    }
   };
   
   const handleToggleAchievementTestMode = () => {
-    setIsAchievementTestMode(prev => !prev);
+    setIsAchievementTestMode(prev => {
+        const next = !prev;
+        if (next) {
+            // Se estiver ativando, limpa a sessão de teste anterior
+            setTestAchievements({});
+        }
+        return next;
+    });
   };
 
+  const generateAndStoreReward = useCallback(async (
+      milestone: AchievementMilestone,
+      isRegen: boolean,
+      existing?: Achievement
+  ) => {
+      if (!currentUser) return;
+      const activeAchievements = isAchievementTestMode ? testAchievements : achievements;
+      const previousVersions: AchievementVersion[] = isRegen && existing
+          ? [...(existing.previousVersions || []), {
+              artifact: existing.artifact,
+              transcricao: existing.transcricao,
+              audioUrl: existing.audioUrl,
+              generatedAt: existing.unlockedAt,
+          }]
+          : [];
+
+      const result = await generateAchievementReward(
+          milestone,
+          userProfile,
+          activeAchievements,
+          previousVersions
+      );
+
+      if ('error' in result) {
+          throw new Error(result.error);
+      }
+
+      let audioUrl = '';
+      if (!isAchievementTestMode) {
+          audioUrl = await uploadAchievementAudio(currentUser.uid, milestone, result.audioWavBase64);
+      } else {
+          audioUrl = `data:audio/wav;base64,${result.audioWavBase64}`;
+      }
+
+      const newAchievement: Achievement = {
+          milestone: milestone,
+          unlockedAt: Date.now(),
+          kind: result.kind,
+          artifact: result.artifact,
+          transcricao: result.transcricao,
+          audioUrl,
+          previousVersions,
+      };
+
+      if (isAchievementTestMode) {
+          setTestAchievements(prev => ({ ...prev, [milestone]: newAchievement }));
+      } else {
+          await saveAchievementMetadata(currentUser.uid, newAchievement);
+          setAchievements(prev => ({ ...prev, [milestone]: newAchievement }));
+      }
+
+      return newAchievement;
+  }, [currentUser, isAchievementTestMode, achievements, testAchievements, userProfile]);
+
   const handleClaimAchievement = useCallback(async (milestone: AchievementMilestone) => {
-    if (achievements[milestone]) {
-        const claimed = achievements[milestone];
-        setAchievementToDisplay({ 
-            milestone: claimed.milestone,
+    const activeAchievements = isAchievementTestMode ? testAchievements : achievements;
+
+    const existing = activeAchievements[milestone];
+    const hasNewShape = existing && existing.kind && existing.artifact;
+    if (existing && hasNewShape) {
+        setAchievementToDisplay({
+            milestone: existing.milestone,
             isLoading: false,
-            type: claimed.type,
-            title: claimed.title,
-            storyText: claimed.storyText,
-            contentBase64: claimed.contentBase64,
+            kind: existing.kind,
+            artifact: existing.artifact,
+            transcricao: existing.transcricao,
+            audioUrl: existing.audioUrl,
         });
         return;
     }
-    
-    if (isGeneratingAchievement) return;
+
+    if (isGeneratingAchievement || !currentUser) return;
 
     setIsGeneratingAchievement(true);
-    setAchievementToDisplay({ 
-        milestone, 
-        isLoading: true,
-    });
-    
+    setAchievementToDisplay({ milestone, isLoading: true });
+
     try {
-        const fragmentResult = await generateOracleFragment(milestone, userProfile, achievements);
-
-        if ('error' in fragmentResult) {
-            throw new Error(fragmentResult.error);
-        }
-
-        const newAchievement: Achievement = {
-            milestone,
-            unlockedAt: Date.now(),
-            ...fragmentResult,
-        } as Achievement;
-
-        setAchievements(prev => ({ ...prev, [milestone]: newAchievement }));
-        
+        const created = await generateAndStoreReward(milestone, false);
+        if (!created) return;
         setAchievementToDisplay({
             milestone,
             isLoading: false,
-            type: newAchievement.type,
-            title: newAchievement.title,
-            storyText: newAchievement.storyText,
-            contentBase64: newAchievement.contentBase64,
+            kind: created.kind,
+            artifact: created.artifact,
+            transcricao: created.transcricao,
+            audioUrl: created.audioUrl,
         });
-
     } catch (error: any) {
         console.error(`Falha ao gerar recompensa para ${milestone} exercícios`, error);
-        setAchievementToDisplay(prev => {
-            if (!prev) return null;
-            return {
-                ...prev,
-                isLoading: false,
-                error: `Falha ao gerar a recompensa: ${error.message}. Por favor, tente novamente.`
-            };
-        });
+        setAchievementToDisplay(prev => prev ? {
+            ...prev,
+            isLoading: false,
+            error: `Falha ao gerar a recompensa: ${error.message}. Tente novamente.`
+        } : null);
     } finally {
         setIsGeneratingAchievement(false);
     }
-}, [isGeneratingAchievement, achievements, userProfile]);
+}, [isGeneratingAchievement, achievements, testAchievements, isAchievementTestMode, currentUser, generateAndStoreReward]);
 
-  const handleCompleteExercise = (lessonId: string, exerciseId: string) => {
+  const handleRegenerateAchievement = useCallback(async () => {
+      if (!achievementToDisplay || !currentUser || isGeneratingAchievement) return;
+      const milestone = achievementToDisplay.milestone;
+      const activeAchievements = isAchievementTestMode ? testAchievements : achievements;
+      const existing = activeAchievements[milestone];
+      if (!existing) {
+          handleClaimAchievement(milestone);
+          return;
+      }
+      setIsGeneratingAchievement(true);
+      setAchievementToDisplay(prev => prev ? { ...prev, isRegenerating: true, error: undefined } : null);
+      try {
+          const updated = await generateAndStoreReward(milestone, true, existing);
+          if (!updated) return;
+          setAchievementToDisplay({
+              milestone,
+              isLoading: false,
+              isRegenerating: false,
+              kind: updated.kind,
+              artifact: updated.artifact,
+              transcricao: updated.transcricao,
+              audioUrl: updated.audioUrl,
+          });
+      } catch (error: any) {
+          console.error(`Falha ao regenerar recompensa do marco ${milestone}`, error);
+          setAchievementToDisplay(prev => prev ? {
+              ...prev,
+              isRegenerating: false,
+              error: `Falha ao regenerar: ${error.message}.`,
+          } : null);
+      } finally {
+          setIsGeneratingAchievement(false);
+      }
+  }, [achievementToDisplay, currentUser, isGeneratingAchievement, achievements, testAchievements, isAchievementTestMode, generateAndStoreReward, handleClaimAchievement]);
+
+  const handleCompleteExercise = async (lessonId: string, exerciseId: string) => {
+    if (currentUser) {
+        await saveStudentProgress(currentUser.uid, lessonId, exerciseId);
+    }
+
     setStudentProgress(prev => {
         if (prev[lessonId]?.has(exerciseId)) {
             return prev;
@@ -215,6 +411,8 @@ const App: React.FC = () => {
     const exercisesWithIds: Exercise[] = newExercises.map((ex, index) => ({
       ...ex,
       id: `ex-${Date.now()}-${index}`,
+      numero: ex.numero || selectedLesson.exercises.length + index + 1,
+      resourceBasePath: ex.resourceBasePath || '/' + selectedLesson.filePath.slice(0, selectedLesson.filePath.lastIndexOf('/') + 1),
     }));
 
     setCourse(prevCourse => {
@@ -256,6 +454,13 @@ const App: React.FC = () => {
   const selectedUnit = selectedLesson ? course.units.find(u => u.lessons.some(l => l.id === selectedLesson.id)) || null : null;
 
   const renderContent = () => {
+    if (isLoadingExercises) return <div role="status" className="p-8 text-slate-600">Carregando aulas e exercícios…</div>;
+    if (courseLoadingError) return (
+      <div role="alert" className="m-6 rounded-lg border border-red-200 bg-red-50 p-6 text-red-800">
+        <p>{courseLoadingError}</p>
+        <button onClick={() => setCourseLoadAttempt(attempt => attempt + 1)} className="mt-3 rounded bg-red-700 px-4 py-2 text-white">Tentar novamente</button>
+      </div>
+    );
     switch(page) {
       case 'home':
         return <HomePage 
@@ -284,6 +489,8 @@ const App: React.FC = () => {
           );
         }
         return <HomePage onSelectLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }} course={course} studentProgress={studentProgress} />;
+      case 'profile':
+        return <ProfilePage userProfile={userProfile} onUpdateProfile={handleProfileUpdate} />;
       default:
         return <HomePage onSelectLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }} course={course} studentProgress={studentProgress} />;
     }
@@ -301,7 +508,7 @@ const App: React.FC = () => {
     );
   }
 
-  if (!isLoggedIn) {
+  if (!currentUser) {
     return <LoginPage onLogin={handleLogin} />;
   }
 
@@ -316,7 +523,7 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         studentProgress={studentProgress}
         viewMode={viewMode}
-        achievements={achievements}
+        achievements={isAchievementTestMode ? testAchievements : achievements}
         onClaimAchievement={handleClaimAchievement}
         allExercisesCount={allExercisesCount}
         userProfile={userProfile}
@@ -347,13 +554,24 @@ const App: React.FC = () => {
           ></div>
         )}
        {achievementToDisplay && (
-          <AchievementModal 
-             achievementData={achievementToDisplay} 
-             achievements={achievements}
-             onClose={() => setAchievementToDisplay(null)} 
+          <AchievementModal
+             achievementData={achievementToDisplay}
+             achievements={isAchievementTestMode ? testAchievements : achievements}
+             onClose={() => setAchievementToDisplay(null)}
              onRetry={() => handleClaimAchievement(achievementToDisplay.milestone)}
+             onRegenerate={handleRegenerateAchievement}
+             userProfile={userProfile}
           />
         )}
+        {showOnboarding && (
+           <OnboardingModal 
+              initialProfile={userProfile} 
+              onComplete={handleOnboardingComplete} 
+           />
+        )}
+        
+        {/* Chatbot Global */}
+        <GlobalChat userProfile={userProfile} />
     </div>
   );
 };

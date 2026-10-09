@@ -1,0 +1,204 @@
+{
+  "progress": {
+    "empty": {
+      "completedCount": 0,
+      "totalCount": 68
+    },
+    "stale": {
+      "completedCount": 0,
+      "totalCount": 68
+    },
+    "full": {
+      "completedCount": 68,
+      "totalCount": 68
+    }
+  },
+  "pdfExports": [
+    {
+      "lesson": 5,
+      "scope": "lesson",
+      "detail": "full",
+      "count": 2,
+      "stages": 8,
+      "pages": 5,
+      "headings": 2,
+      "mathErrors": 0,
+      "maxHeight": 993.546875,
+      "images": [
+        {
+          "source": "/aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/ex14_grafico_1_enem-print.png",
+          "loaded": true
+        }
+      ],
+      "tableRows": 13,
+      "bytes": 902490,
+      "filename": "review-lesson-5-full.pdf",
+      "durationMs": 1383
+    },
+    {
+      "lesson": 15,
+      "scope": "lesson",
+      "detail": "none",
+      "count": 3,
+      "stages": 0,
+      "pages": 3,
+      "headings": 3,
+      "mathErrors": 0,
+      "maxHeight": 880,
+      "images": [
+        {
+          "source": "/aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/ex08_cap4_venn.svg",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/ex10_arvore_probabilidades.svg",
+          "loaded": true
+        }
+      ],
+      "tableRows": 0,
+      "bytes": 326651,
+      "filename": "review-lesson-15-none.pdf",
+      "durationMs": 535
+    },
+    {
+      "lesson": 12,
+      "scope": "lesson",
+      "detail": "guide",
+      "count": 3,
+      "stages": 6,
+      "pages": 4,
+      "headings": 3,
+      "mathErrors": 0,
+      "maxHeight": 945.546875,
+      "images": [
+        {
+          "source": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex07_cap3_distribuicao-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex13_cap3_boxplot-print.png",
+          "loaded": true
+        }
+      ],
+      "tableRows": 0,
+      "bytes": 824580,
+      "filename": "review-lesson-12-guide.pdf",
+      "durationMs": 885
+    },
+    {
+      "lesson": 23,
+      "scope": "unit",
+      "detail": "hint",
+      "count": 13,
+      "stages": 13,
+      "pages": 12,
+      "headings": 13,
+      "mathErrors": 0,
+      "maxHeight": 998.171875,
+      "images": [
+        {
+          "source": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/ex03_cap7_dispersao.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/ex05_cap7_massa_corporal.png",
+          "loaded": true
+        }
+      ],
+      "tableRows": 41,
+      "bytes": 3238954,
+      "filename": "review-unit-23-hint.pdf",
+      "durationMs": 1960
+    },
+    {
+      "lesson": 23,
+      "scope": "course",
+      "detail": "full",
+      "count": 72,
+      "stages": 288,
+      "pages": 85,
+      "headings": 72,
+      "mathErrors": 0,
+      "maxHeight": 1015.75,
+      "images": [
+        {
+          "source": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex01-pizzas-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex02-aplicativos-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex03-pagamentos-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/ex14_grafico_1_enem-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/recursos/gabarito-ex05-smartphones-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-histograma-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-ogiva-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/ex13_histograma_salarios-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex07_cap3_distribuicao-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex13_cap3_boxplot-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/ex08_cap4_venn.svg",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/ex10_arvore_probabilidades.svg",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/gabarito-ex01-regressao-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex02-regressao-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex03-regressao-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex04-regressao-print.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/ex03_cap7_dispersao.png",
+          "loaded": true
+        },
+        {
+          "source": "/aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/ex05_cap7_massa_corporal.png",
+          "loaded": true
+        }
+      ],
+      "tableRows": 232,
+      "bytes": 26429860,
+      "filename": "review-course-23-full.pdf",
+      "durationMs": 15436
+    }
+  ],
+  "errors": []
+}

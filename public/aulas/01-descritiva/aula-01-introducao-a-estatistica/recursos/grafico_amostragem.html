@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador de Amostragem: População vs Amostra</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .control-group { display: flex; flex-direction: column; gap: 4px; }
+    .control-label { font-size: 0.82rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .control-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+    .btn-action:hover { background: #1e3a8a; transform: translateY(-1px); }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.warning { border-left-color: #d97706; }
+    .kpi-card.success { border-left-color: #16a34a; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🎲 Laboratório Dinâmico: População vs Amostra</span>
+        </div>
+        <span class="sim-badge">Aula 1 • Estatística Descritiva</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="control-group">
+            <div class="control-label">
+                <span>Tamanho da Amostra (n):</span>
+                <span id="lbl_n" class="control-val">20</span>
+            </div>
+            <input type="range" id="slider_n" min="5" max="150" step="5" value="20" oninput="atualizarN(this.value)">
+        </div>
+        <div class="control-group">
+            <div class="control-label">
+                <span>Variabilidade Populacional (σ):</span>
+                <span id="lbl_sigma" class="control-val">12</span>
+            </div>
+            <input type="range" id="slider_sigma" min="5" max="25" step="1" value="12" oninput="atualizarSigma(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="sortearAmostra()">
+                <span>🎲 Sortear Amostra</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Média Pop. (μ)</div>
+            <div class="kpi-val" id="kpi_mu">70.00</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Média Amostral (x̄)</div>
+            <div class="kpi-val" id="kpi_xbar">--</div>
+        </div>
+        <div class="kpi-card warning" id="card_erro">
+            <div class="kpi-label">Erro Amostral |x̄ - μ|</div>
+            <div class="kpi-val" id="kpi_erro">--</div>
+        </div>
+        <div class="kpi-card" id="card_s">
+            <div class="kpi-label">Desvio Amostral (s)</div>
+            <div class="kpi-val" id="kpi_s">--</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Observe o efeito de n:</b> Com amostras pequenas (ex: n=5), o erro amostral oscila bastante entre sorteios e a caixa do boxplot pode distorcer. Ao aumentar n para 80 ou mais, a média amostral converge quase perfeitamente para a média real populacional (Lei dos Grandes Números).
+    </div>
+</div>
+
+<script>
+    // Parâmetros Populacionais
+    const N_POP = 1000;
+    const MU_POP = 70.0;
+    let sigma_pop = 12.0;
+    let n_amostra = 20;
+    let populacao = [];
+    let amostra = [];
+
+    // Gerador Normal Box-Muller
+    function randn_bm() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random();
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    function gerarPopulacao() {
+        populacao = [];
+        for(let i=0; i<N_POP; i++) {
+            let val = MU_POP + randn_bm() * sigma_pop;
+            populacao.push(parseFloat(val.toFixed(2)));
+        }
+    }
+
+    function sortearAmostra() {
+        amostra = [];
+        let copia = [...populacao];
+        for(let i=0; i<n_amostra; i++) {
+            let idx = Math.floor(Math.random() * copia.length);
+            amostra.push(copia[idx]);
+            copia.splice(idx, 1);
+        }
+        renderizar();
+    }
+
+    function atualizarN(val) {
+        n_amostra = parseInt(val);
+        document.getElementById('lbl_n').innerText = n_amostra;
+        sortearAmostra();
+    }
+
+    function atualizarSigma(val) {
+        sigma_pop = parseFloat(val);
+        document.getElementById('lbl_sigma').innerText = sigma_pop;
+        gerarPopulacao();
+        sortearAmostra();
+    }
+
+    function calcularEstatisticas(arr) {
+        let sum = arr.reduce((a,b)=>a+b, 0);
+        let media = sum / arr.length;
+        let sumSq = arr.reduce((a,b)=>a + Math.pow(b - media, 2), 0);
+        let s = Math.sqrt(sumSq / (arr.length - 1));
+        return { media, s };
+    }
+
+    function renderizar() {
+        let estPop = calcularEstatisticas(populacao);
+        let estAmo = calcularEstatisticas(amostra);
+        let erro = Math.abs(estAmo.media - MU_POP);
+
+        document.getElementById('kpi_mu').innerText = MU_POP.toFixed(2);
+        document.getElementById('kpi_xbar').innerText = estAmo.media.toFixed(2);
+        document.getElementById('kpi_erro').innerText = erro.toFixed(2);
+        document.getElementById('kpi_s').innerText = estAmo.s.toFixed(2);
+
+        let cardErro = document.getElementById('card_erro');
+        if (erro < 1.0) {
+            cardErro.className = 'kpi-card success';
+        } else if (erro < 2.5) {
+            cardErro.className = 'kpi-card';
+        } else {
+            cardErro.className = 'kpi-card warning';
+        }
+
+        // Subplots: Boxplot Comparativo & Histograma
+        let traceBoxPop = {
+            y: populacao,
+            type: 'box',
+            name: 'População (N=1000)',
+            marker: { color: '#94a3b8' },
+            boxpoints: false,
+            jitter: 0.3
+        };
+
+        let traceBoxAmo = {
+            y: amostra,
+            type: 'box',
+            name: `Amostra (n=${n_amostra})`,
+            marker: { color: '#003485' },
+            boxpoints: 'all',
+            jitter: 0.3,
+            pointpos: -1.8
+        };
+
+        let traceHistPop = {
+            x: populacao,
+            type: 'histogram',
+            name: 'Densidade Pop.',
+            opacity: 0.35,
+            marker: { color: '#64748b' },
+            histnorm: 'probability density',
+            xaxis: 'x2',
+            yaxis: 'y2',
+            nbinsx: 35
+        };
+
+        let traceHistAmo = {
+            x: amostra,
+            type: 'histogram',
+            name: 'Densidade Amostra',
+            opacity: 0.7,
+            marker: { color: '#003485' },
+            histnorm: 'probability density',
+            xaxis: 'x2',
+            yaxis: 'y2',
+            nbinsx: 20
+        };
+
+        let layout = {
+            margin: { t: 30, b: 35, l: 45, r: 20 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.05, y: 1.15, font: { size: 10 } },
+            grid: { rows: 1, columns: 2, pattern: 'independent' },
+            xaxis: { title: 'Boxplot Comparativo' },
+            yaxis: { title: 'Valor da Variável', range: [MU_POP - 3.8*sigma_pop, MU_POP + 3.8*sigma_pop] },
+            xaxis2: { title: 'Histograma Sobreposto' },
+            yaxis2: { title: 'Densidade', showgrid: true }
+        };
+
+        Plotly.react('chart_div', [traceBoxPop, traceBoxAmo, traceHistPop, traceHistAmo], layout, {responsive: true, displayModeBar: false});
+    }
+
+    // Inicialização
+    gerarPopulacao();
+    sortearAmostra();
+</script>
+</body>
+</html>

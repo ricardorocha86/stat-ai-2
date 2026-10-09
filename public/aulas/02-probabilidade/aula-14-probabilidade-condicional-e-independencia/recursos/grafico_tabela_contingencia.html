@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador de Probabilidade Condicional e Bayes</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.75rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.bayes { border-left-color: #dc2626; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .split-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px; }
+    .sim-chart { height: 330px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .table-container { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; height: 330px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left; }
+    th { background: #f1f5f9; color: #003485; font-weight: 700; padding: 7px 10px; border-bottom: 2px solid #cbd5e1; }
+    td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color: #334155; }
+    tr:last-child td { font-weight: 700; background: #f8fafc; border-top: 2px solid #cbd5e1; color: #003485; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🔬 Laboratório: Tabela de Contingência & Teorema de Bayes</span>
+        </div>
+        <span class="sim-badge">Aula 14 • Probabilidade Condicional</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Prevalência da Condição (P(D)):</span>
+                <span id="lbl_prev" class="ctrl-val">2.0%</span>
+            </div>
+            <input type="range" id="slider_prev" min="0.5" max="15.0" step="0.5" value="2.0" oninput="atualizarPrev(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Sensibilidade P(+ | D):</span>
+                <span id="lbl_sens" class="ctrl-val">95.0%</span>
+            </div>
+            <input type="range" id="slider_sens" min="70.0" max="99.5" step="0.5" value="95.0" oninput="atualizarSens(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Especificidade P(- | S):</span>
+                <span id="lbl_esp" class="ctrl-val">90.0%</span>
+            </div>
+            <input type="range" id="slider_esp" min="70.0" max="99.5" step="0.5" value="90.0" oninput="atualizarEsp(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetar()">🔄 Padrão</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card bayes">
+            <div class="kpi-label">P(Doente | Teste +)</div>
+            <div class="kpi-val" id="kpi_bayes">16.2% (VPP)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Verdadeiros Positivos</div>
+            <div class="kpi-val" id="kpi_vp">190 pessoas</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Falsos Positivos</div>
+            <div class="kpi-val" id="kpi_fp">980 pessoas</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">População Simulada</div>
+            <div class="kpi-val">10.000 pessoas</div>
+        </div>
+    </div>
+
+    <div class="split-layout">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tabela 2x2 (N=10.000)</th>
+                        <th style="text-align:right;">Teste Positivo (+)</th>
+                        <th style="text-align:right;">Teste Negativo (-)</th>
+                        <th style="text-align:right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tb_bayes"></tbody>
+            </table>
+        </div>
+        <div id="chart_div" class="sim-chart"></div>
+    </div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>O Paradoxo do Falso Positivo:</b> Mesmo com um teste de 95% de sensibilidade e 90% de especificidade, se a condição é rara (2%), a maioria esmagadora dos testes positivos são na verdade <i>falsos positivos</i>!
+    </div>
+</div>
+
+<script>
+    const POP = 10000;
+    let prevPct = 2.0;
+    let sensPct = 95.0;
+    let espPct = 90.0;
+
+    function atualizarPrev(v) { prevPct = parseFloat(v); document.getElementById('lbl_prev').innerText = `${prevPct.toFixed(1)}%`; renderizar(); }
+    function atualizarSens(v) { sensPct = parseFloat(v); document.getElementById('lbl_sens').innerText = `${sensPct.toFixed(1)}%`; renderizar(); }
+    function atualizarEsp(v) { espPct = parseFloat(v); document.getElementById('lbl_esp').innerText = `${espPct.toFixed(1)}%`; renderizar(); }
+
+    function resetar() {
+        prevPct = 2.0; sensPct = 95.0; espPct = 90.0;
+        document.getElementById('slider_prev').value = 2.0; document.getElementById('lbl_prev').innerText = '2.0%';
+        document.getElementById('slider_sens').value = 95.0; document.getElementById('lbl_sens').innerText = '95.0%';
+        document.getElementById('slider_esp').value = 90.0; document.getElementById('lbl_esp').innerText = '90.0%';
+        renderizar();
+    }
+
+    function renderizar() {
+        let pD = prevPct / 100.0;
+        let pS = 1.0 - pD;
+        let sens = sensPct / 100.0;
+        let esp = espPct / 100.0;
+
+        let totalD = Math.round(POP * pD);
+        let totalS = POP - totalD;
+
+        let VP = Math.round(totalD * sens);
+        let FN = totalD - VP;
+
+        let VN = Math.round(totalS * esp);
+        let FP = totalS - VN;
+
+        let totalPos = VP + FP;
+        let totalNeg = FN + VN;
+
+        let vpp = totalPos > 0 ? (VP / totalPos) * 100 : 0;
+
+        document.getElementById('kpi_bayes').innerText = `${vpp.toFixed(1)}% (VPP)`;
+        document.getElementById('kpi_vp').innerText = `${VP} pessoas`;
+        document.getElementById('kpi_fp').innerText = `${FP} pessoas`;
+
+        let tbody = document.getElementById('tb_bayes');
+        tbody.innerHTML = `
+            <tr>
+                <td><b>Realmente Doente (D)</b></td>
+                <td style="text-align:right; color:#16a34a;"><b>${VP}</b> (VP)</td>
+                <td style="text-align:right; color:#dc2626;">${FN} (FN)</td>
+                <td style="text-align:right;"><b>${totalD}</b></td>
+            </tr>
+            <tr>
+                <td><b>Saudável / Não Doente (S)</b></td>
+                <td style="text-align:right; color:#dc2626;">${FP} (FP)</td>
+                <td style="text-align:right; color:#16a34a;"><b>${VN}</b> (VN)</td>
+                <td style="text-align:right;"><b>${totalS}</b></td>
+            </tr>
+            <tr>
+                <td><b>TOTAL</b></td>
+                <td style="text-align:right;"><b>${totalPos}</b></td>
+                <td style="text-align:right;"><b>${totalNeg}</b></td>
+                <td style="text-align:right;"><b>${POP}</b></td>
+            </tr>
+        `;
+
+        let trace1 = {
+            x: ['Com Doença', 'Sem Doença (Sadio)'],
+            y: [VP, FP],
+            name: 'Teste Positivo (+)',
+            type: 'bar',
+            marker: { color: '#003485' },
+            text: [VP, FP], textposition: 'auto'
+        };
+
+        let trace2 = {
+            x: ['Com Doença', 'Sem Doença (Sadio)'],
+            y: [FN, VN],
+            name: 'Teste Negativo (-)',
+            type: 'bar',
+            marker: { color: '#cbd5e1' },
+            text: [FN, VN], textposition: 'auto'
+        };
+
+        let layout = {
+            barmode: 'stack',
+            margin: { t: 25, b: 40, l: 45, r: 15 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Condição Real do Indivíduo' },
+            yaxis: { title: 'Número de Indivíduos', showgrid: true }
+        };
+
+        Plotly.react('chart_div', [trace1, trace2], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

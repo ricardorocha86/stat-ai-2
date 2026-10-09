@@ -1,18 +1,22 @@
 
 import React, { useState, useEffect } from 'react';
-import { GoogleIcon, StatAiIcon, StarIcon, ChevronRightIcon, ExclamationTriangleIcon } from './Icons';
+import { GoogleIcon, StatAiIcon, ExclamationTriangleIcon } from './Icons';
+import CoverRatingControls from './CoverRatingControls';
+import { TOTAL_COVERS } from '../services/coverRatingService';
+import { signInWithPopup, GoogleAuthProvider, type User } from "firebase/auth";
+import { auth } from "../services/firebaseConfig";
+import { getGoogleLoginError } from "../services/authError";
 
 interface LoginPageProps {
-  onLogin: () => void;
+  onLogin: (user: User) => void;
 }
-
-const TOTAL_COVERS = 107;
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [coverIndex, setCoverIndex] = useState<number>(1);
-  const [rating, setRating] = useState<number>(0);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   // Função auxiliar para gerar URL
   const getCoverUrl = (index: number) => {
@@ -39,15 +43,26 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const handleNextCover = () => {
     setIsImageLoaded(false);
     setImageError(false);
-    setRating(0);
     setCoverIndex((prev) => (prev >= TOTAL_COVERS ? 1 : prev + 1));
   };
 
-  const handleRate = (stars: number) => {
-    setRating(stars);
-  };
-
   const currentCoverUrl = getCoverUrl(coverIndex);
+
+  const handleGoogleLogin = async () => {
+      if (isLoggingIn) return;
+      setIsLoggingIn(true);
+      setLoginError(null);
+      const provider = new GoogleAuthProvider();
+      try {
+          const result = await signInWithPopup(auth, provider);
+          onLogin(result.user);
+      } catch (error) {
+          console.error("Erro no login com Google:", error);
+          setLoginError(getGoogleLoginError(error));
+      } finally {
+          setIsLoggingIn(false);
+      }
+  };
 
   return (
     <div className="w-screen h-screen flex flex-col lg:flex-row overflow-hidden font-sans bg-slate-50">
@@ -92,40 +107,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
              </div>
         </div>
 
-        {/* Barra de Controles */}
-        <div className="absolute bottom-4 lg:bottom-8 left-1/2 transform -translate-x-1/2">
-            <div className="bg-white/90 backdrop-blur-sm border border-slate-300 rounded-full px-4 py-2 lg:px-6 lg:py-3 flex items-center gap-4 lg:gap-6 shadow-xl scale-75 lg:scale-100 origin-bottom">
-                
-                {/* Votação */}
-                <div className="flex items-center gap-1.5">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                        <button 
-                            key={star}
-                            onClick={() => handleRate(star)}
-                            className="group focus:outline-none transition-transform active:scale-110"
-                        >
-                            <StarIcon 
-                                className={`w-5 h-5 transition-colors ${star <= rating ? 'text-yellow-500 drop-shadow-sm' : 'text-slate-400 group-hover:text-slate-600'}`} 
-                                filled={star <= rating} 
-                            />
-                        </button>
-                    ))}
-                </div>
-
-                <div className="h-6 w-px bg-slate-300"></div>
-
-                {/* Navegação */}
-                <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider hidden sm:inline">Próxima capa</span>
-                    <button 
-                        onClick={handleNextCover}
-                        className="flex items-center justify-center w-9 h-9 rounded-full bg-slate-100 text-slate-700 border border-slate-200 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm"
-                        title="Próxima Capa"
-                    >
-                        <ChevronRightIcon className="w-5 h-5" />
-                    </button>
-                </div>
-            </div>
+        {/* Avaliação da capa e navegação */}
+        <div className="absolute bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2">
+          <CoverRatingControls key={coverIndex} coverNumber={coverIndex} onNext={handleNextCover} imageAvailable={isImageLoaded && !imageError} />
         </div>
       </div>
 
@@ -142,15 +126,26 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
             {/* Botão de Login */}
             <button
-                onClick={onLogin}
-                className="w-full flex items-center justify-center gap-4 bg-blue-600 text-white font-bold py-3 lg:py-4 px-6 rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-blue-500/40 transform hover:-translate-y-0.5 group text-sm lg:text-base"
+                disabled={isLoggingIn}
+                onClick={handleGoogleLogin}
+                className={`w-full flex items-center justify-center gap-4 bg-blue-600 text-white font-bold py-3 lg:py-4 px-6 rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-blue-500/40 transform hover:-translate-y-0.5 group text-sm lg:text-base ${isLoggingIn ? 'opacity-70 cursor-wait' : ''}`}
             >
                 <div className="bg-white p-1 rounded-full">
-                    <GoogleIcon className="w-4 h-4 lg:w-5 lg:h-5" />
+                    {isLoggingIn ? (
+                        <div className="w-4 h-4 rounded-full border-2 border-blue-600 border-t-transparent animate-spin"></div>
+                    ) : (
+                        <GoogleIcon className="w-4 h-4 lg:w-5 lg:h-5" />
+                    )}
                 </div>
-                <span>Entrar com Google</span>
+                <span>{isLoggingIn ? 'Autenticando...' : 'Entrar com Google'}</span>
             </button>
             
+            {loginError && (
+              <p role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+                {loginError}
+              </p>
+            )}
+
             <div className="mt-8 lg:mt-10 pt-6 lg:pt-8 border-t border-slate-100 text-center">
                 <p className="text-[10px] lg:text-xs text-slate-400 font-semibold tracking-wide uppercase">Stat-AI V2.0 - Portal de Estatística</p>
             </div>

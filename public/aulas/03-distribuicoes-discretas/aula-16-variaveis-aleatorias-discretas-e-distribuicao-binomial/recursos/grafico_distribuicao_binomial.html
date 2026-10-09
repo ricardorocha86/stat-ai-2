@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador da Distribuição Binomial</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr) 1.2fr auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.75rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    select { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.82rem; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.destaque { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🎲 Simulador Interativo da Distribuição Binomial B(n, p)</span>
+        </div>
+        <span class="sim-badge">Aula 16 • Variáveis Discretas</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Ensaios (n):</span>
+                <span id="lbl_n" class="ctrl-val">10</span>
+            </div>
+            <input type="range" id="slider_n" min="2" max="40" value="10" oninput="atualizarN(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Prob. Sucesso (p):</span>
+                <span id="lbl_p" class="ctrl-val">0.30</span>
+            </div>
+            <input type="range" id="slider_p" min="0.05" max="0.95" step="0.05" value="0.30" oninput="atualizarP(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Corte (k):</span>
+                <span id="lbl_k" class="ctrl-val">k = 3</span>
+            </div>
+            <input type="range" id="slider_k" min="0" max="10" value="3" oninput="atualizarK(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Cálculo de Probabilidade:</span>
+            <select id="sel_modo" onchange="renderizar()">
+                <option value="exato">P(X = k) [Exatamente k]</option>
+                <option value="menor_igual">P(X ≤ k) [No máximo k]</option>
+                <option value="maior_igual">P(X ≥ k) [Pelo menos k]</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetar()">🔄 Padrão</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card destaque">
+            <div class="kpi-label" id="lbl_kpi_prob">Probabilidade P(X = 3)</div>
+            <div class="kpi-val" id="kpi_prob">26.68%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Média Teórica μ = n·p</div>
+            <div class="kpi-val" id="kpi_mu">3.00</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Desvio Padrão σ = √(npq)</div>
+            <div class="kpi-val" id="kpi_sigma">1.45</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Simetria da Distribuição</div>
+            <div class="kpi-val" id="kpi_simetria" style="font-size:0.85rem;">Assimétrica Direita</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Propriedade de Simetria (p. 94):</b> Quando p = 0,5, a distribuição binomial é perfeitamente simétrica em relação à média. Quando p < 0,5, ela é assimétrica à direita; quando p > 0,5, é assimétrica à esquerda.
+    </div>
+</div>
+
+<script>
+    let n = 10;
+    let p = 0.30;
+    let k = 3;
+
+    function atualizarN(val) {
+        n = parseInt(val);
+        document.getElementById('lbl_n').innerText = n;
+        let sk = document.getElementById('slider_k');
+        sk.max = n;
+        if (k > n) k = n;
+        sk.value = k;
+        document.getElementById('lbl_k').innerText = `k = ${k}`;
+        renderizar();
+    }
+
+    function atualizarP(val) {
+        p = parseFloat(val);
+        document.getElementById('lbl_p').innerText = p.toFixed(2);
+        renderizar();
+    }
+
+    function atualizarK(val) {
+        k = parseInt(val);
+        document.getElementById('lbl_k').innerText = `k = ${k}`;
+        renderizar();
+    }
+
+    function resetar() {
+        n = 10; p = 0.30; k = 3;
+        document.getElementById('slider_n').value = 10; document.getElementById('lbl_n').innerText = '10';
+        document.getElementById('slider_p').value = 0.30; document.getElementById('lbl_p').innerText = '0.30';
+        document.getElementById('slider_k').max = 10; document.getElementById('slider_k').value = 3; document.getElementById('lbl_k').innerText = 'k = 3';
+        document.getElementById('sel_modo').value = 'exato';
+        renderizar();
+    }
+
+    function logFact(num) {
+        let r = 0;
+        for(let i=2; i<=num; i++) r += Math.log(i);
+        return r;
+    }
+
+    function binomProb(n, k, p) {
+        if (k < 0 || k > n) return 0;
+        let logComb = logFact(n) - logFact(k) - logFact(n - k);
+        let logP = logComb + k * Math.log(p) + (n - k) * Math.log(1 - p);
+        return Math.exp(logP);
+    }
+
+    function renderizar() {
+        let modo = document.getElementById('sel_modo').value;
+
+        let mu = n * p;
+        let sigma = Math.sqrt(n * p * (1 - p));
+
+        document.getElementById('kpi_mu').innerText = mu.toFixed(2);
+        document.getElementById('kpi_sigma').innerText = sigma.toFixed(2);
+
+        let simetria = 'Perfeitamente Simétrica (p=0.5)';
+        if (p < 0.48) simetria = 'Assimétrica à Direita (p < 0.5)';
+        else if (p > 0.52) simetria = 'Assimétrica à Esquerda (p > 0.5)';
+        document.getElementById('kpi_simetria').innerText = simetria;
+
+        let xVals = Array.from({length: n + 1}, (_, i) => i);
+        let probs = xVals.map(x => binomProb(n, x, p));
+
+        let probCalculada = 0;
+        let cores = [];
+
+        xVals.forEach(x => {
+            let selecionado = false;
+            if (modo === 'exato' && x === k) selecionado = true;
+            else if (modo === 'menor_igual' && x <= k) selecionado = true;
+            else if (modo === 'maior_igual' && x >= k) selecionado = true;
+
+            if (selecionado) {
+                cores.push('#ea580c'); // Laranja Destaque
+                probCalculada += probs[x];
+            } else {
+                cores.push('#003485'); // Azul Base
+            }
+        });
+
+        let lblModo = `P(X = ${k})`;
+        if (modo === 'menor_igual') lblModo = `P(X ≤ ${k})`;
+        if (modo === 'maior_igual') lblModo = `P(X ≥ ${k})`;
+
+        document.getElementById('lbl_kpi_prob').innerText = `Probabilidade ${lblModo}`;
+        document.getElementById('kpi_prob').innerText = `${(probCalculada * 100).toFixed(2)}%`;
+
+        let trace = {
+            x: xVals,
+            y: probs,
+            type: 'bar',
+            marker: { color: cores, line: { color: '#0f172a', width: 1 } },
+            text: probs.map(pr => pr >= 0.01 ? `${(pr*100).toFixed(1)}%` : ''),
+            textposition: 'auto'
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            xaxis: { title: 'Número de Sucessos (k)', dtick: 1 },
+            yaxis: { title: 'Probabilidade P(X = k)', showgrid: true }
+        };
+
+        Plotly.react('chart_div', [trace], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+[
+  {
+    "id": "livro-aula-03-exercicio-2",
+    "numero": 2,
+    "numero_original": "2",
+    "categoria": "exercicio",
+    "enunciado": "O síndico de um condomínio entrevistou vinte condôminos, selecionando aleatoriamente um por andar, para saber sobre a contribuição com a coleta seletiva de lixo. Quatro perguntas foram feitas:  \n(i) Qual nota de 0 a 10 daria para a limpeza do condomínio?  \n(ii) Você contribui com a reciclagem de lixo?  \n(iii) Quantas vezes por semana retira o lixo de seu apartamento?  \n(iv) Qual é o seu nível de escolaridade?  \n(a) Identifique a população e a amostra em estudo.  \n(b) Identifique as variáveis analisadas e classifique-as quanto ao tipo.  \n(c) Qual tipo de amostragem poderia ser utilizado pelo síndico? Justifique.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+      "linha_inicial": 57,
+      "linha_final": 74,
+      "aula": 3
+    },
+    "solucao_completa": "(a) A população é formada por todos os condôminos do condomínio; a amostra contém os 20 entrevistados.\n(b) A nota de limpeza é uma avaliação numérica. Seguindo a convenção do gabarito do livro, é quantitativa contínua quando admite valores reais entre 0 e 10. Se o questionário admitir apenas notas inteiras, é quantitativa discreta; se os números funcionarem apenas como categorias de avaliação, é ordinal. O enunciado não explicita essa restrição, então a classificação deve vir acompanhada da convenção adotada. A contribuição com reciclagem (sim/não) é qualitativa nominal. A quantidade de retiradas de lixo por semana é quantitativa discreta. Escolaridade é qualitativa ordinal.\n(c) O procedimento descrito, com um sorteio dentro de cada andar, é estratificado por andar. Selecionar um entrevistado por andar não é necessariamente proporcional: depende do número de condôminos de cada andar. Também se pode propor amostragem aleatória simples ou sistemática a partir de um cadastro completo, justificando como o sorteio seria feito. Sortear moradores dentro de todos os andares não equivale a sortear conglomerados inteiros.",
+    "subitens": [
+      {
+        "id": "i",
+        "texto": "Qual nota de 0 a 10 daria para a limpeza do condomínio?  \n(ii) Você contribui com a reciclagem de lixo?  \n(iii) Quantas vezes por semana retira o lixo de seu apartamento?  \n(iv) Qual é o seu nível de escolaridade?"
+      },
+      {
+        "id": "a",
+        "texto": "Identifique a população e a amostra em estudo."
+      },
+      {
+        "id": "b",
+        "texto": "Identifique as variáveis analisadas e classifique-as quanto ao tipo."
+      },
+      {
+        "id": "c",
+        "texto": "Qual tipo de amostragem poderia ser utilizado pelo síndico? Justifique."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-03-classificacao-de-variaveis/",
+    "solucao_original": "**Resolução:**  \n(a) **População:** Todos os moradores/condôminos do condomínio. **Amostra:** Os 20 condôminos selecionados e entrevistados.  \n(b) Classificação das variáveis:  \n- *(i) Nota de 0 a 10 para limpeza:* Qualitativa ordinal (ou quantitativa discreta se tratada puramente como escala numérica discreta).  \n- *(ii) Contribuição com reciclagem (Sim/Não):* Qualitativa nominal (binária).  \n- *(iii) Frequência semanal de descarte de lixo:* Quantitativa discreta (contagem inteira).  \n- *(iv) Nível de escolaridade:* Qualitativa ordinal (Fundamental, Médio, Superior).  \n(c) Amostragem Aleatória Estratificada (ou Amostragem por Conglomerados por andar), garantindo que cada andar do edifício esteja representado de maneira justa e uniforme na amostra.",
+    "dica": "Distinga contagens, medidas e categorias. Uma seleção dentro de cada andar é diferente do sorteio de andares inteiros.",
+    "passo_inicial": "Delimite a população, identifique as quatro características observadas e verifique quais possuem ordem natural ou são obtidas por contagem.",
+    "resposta_final": "(a) Todos os condôminos; amostra de 20. (b) Limpeza: quantitativa contínua na convenção do livro, com alternativas justificadas conforme a escala; reciclagem: qualitativa nominal; retiradas semanais: quantitativa discreta; escolaridade: qualitativa ordinal. (c) No procedimento descrito, amostragem estratificada por andar.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 57,
+          "linha_final": 74
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Exercício 2",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "observacoes": "Explicita a convenção da escala da nota e corrige a identificação de conglomerados na solução antiga; preserva alternativas justificadas para a escala não especificada.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-03-multipla-escolha-4",
+    "numero": 4,
+    "numero_original": "4",
+    "categoria": "multipla_escolha",
+    "enunciado": "(IADES, 2013) A tabela a seguir apresenta os resultados de uma enquete com 1000 pessoas a respeito de satisfação no trabalho:\n\n| Conceito | Frequência |\n| :--- | :---: |\n| Não sabe ou não opina | 100 |\n| Muito insatisfeito | 62 |\n| Moderadamente insatisfeito | 108 |\n| Moderadamente satisfeito | 320 |\n| Muito satisfeito | 410 |\n\nQual o tipo de variável que está sendo estudada na tabela?  \n(a) Nominal e numérica  \n(b) Nominal e cardinal  \n(c) Cardinal e qualitativa  \n(d) Ordinal e qualitativa  \n(e) Ordinal e quantitativa",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+      "linha_inicial": 77,
+      "linha_final": 96,
+      "aula": 3
+    },
+    "solucao_completa": "A variável é o nível de satisfação no trabalho, descrito por categorias com uma ordem de intensidade. Portanto, é qualitativa ordinal. A frequência é a contagem de respostas, mas não transforma a variável investigada em quantitativa. “Não sabe ou não opina” é uma categoria de ausência de avaliação, separada da escala de satisfação.",
+    "resposta_final": "Alternativa D — ordinal e qualitativa.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Nominal e numérica"
+      },
+      {
+        "id": "b",
+        "texto": "Nominal e cardinal"
+      },
+      {
+        "id": "c",
+        "texto": "Cardinal e qualitativa"
+      },
+      {
+        "id": "d",
+        "texto": "Ordinal e qualitativa"
+      },
+      {
+        "id": "e",
+        "texto": "Ordinal e quantitativa"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-03-classificacao-de-variaveis/",
+    "solucao_original": "**Gabarito: (d)**  \n**Comentário:** A satisfação no trabalho é uma variável qualitativa que possui categorias ordenáveis segundo um gradiente de intensidade (muito insatisfeito até muito satisfeito), tratando-se portanto de uma variável qualitativa ordinal.",
+    "dica": "Pergunte se a característica é uma quantidade ou uma categoria, e se suas categorias podem ser ordenadas.",
+    "passo_inicial": "Observe que “muito insatisfeito” e “muito satisfeito” são níveis de uma mesma avaliação, e não medidas numéricas de satisfação.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 77,
+          "linha_final": 96
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 1,
+          "questao": "Questão objetiva 4",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-03-multipla-escolha-7",
+    "numero": 7,
+    "numero_original": "7",
+    "categoria": "multipla_escolha",
+    "enunciado": "(FUNRIO, 2014) Dentre as variáveis a seguir, assinale a única que é classificada como quantitativa contínua:  \n(a) Número de filhos de um casal.  \n(b) Número de carros em um estacionamento.  \n(c) Altura de um indivíduo em metros.  \n(d) Quantidade de peças defeituosas em um lote.  \n(e) Número de livros em uma estante.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+      "linha_inicial": 97,
+      "linha_final": 106,
+      "aula": 3
+    },
+    "solucao_completa": "Número de filhos, carros, peças e livros são contagens e, por isso, variáveis quantitativas discretas. A altura é uma mensuração que pode assumir valores intermediários, como 1,754 m, e é quantitativa contínua.",
+    "resposta_final": "Alternativa C — altura de um indivíduo em metros.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Número de filhos de um casal."
+      },
+      {
+        "id": "b",
+        "texto": "Número de carros em um estacionamento."
+      },
+      {
+        "id": "c",
+        "texto": "Altura de um indivíduo em metros."
+      },
+      {
+        "id": "d",
+        "texto": "Quantidade de peças defeituosas em um lote."
+      },
+      {
+        "id": "e",
+        "texto": "Número de livros em uma estante."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-03-classificacao-de-variaveis/",
+    "solucao_original": "**Gabarito: (c)**  \n**Comentário:** A altura é obtida por mensuração e pode assumir qualquer valor real em uma escala contínua (ex.: 1,754 m), ao contrário das contagens de filhos, carros, peças e livros, que são quantitativas discretas.",
+    "dica": "Contagens assumem valores inteiros; mensurações podem assumir valores intermediários.",
+    "passo_inicial": "Separe as alternativas obtidas contando objetos daquela obtida medindo uma grandeza.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 97,
+          "linha_final": 106
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-03-multipla-escolha-9",
+    "numero": 9,
+    "numero_original": "9",
+    "categoria": "multipla_escolha",
+    "enunciado": "(CETRO, 2014) Um pesquisador coletou dados sobre o peso de 50 recém-nascidos em um hospital e resumiu esses dados por meio de tabelas de frequências e de um histograma. Esse procedimento corresponde à etapa de:  \n(a) Inferência Estatística  \n(b) Planejamento Experimental  \n(c) Estatística Descritiva  \n(d) Amostragem Conglomerada  \n(e) Hipótese Nula",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+      "linha_inicial": 107,
+      "linha_final": 118,
+      "aula": 3
+    },
+    "solucao_completa": "A construção de tabelas e gráficos organiza e descreve os dados da amostra. Isso pertence à estatística descritiva. Inferência exigiria usar a amostra para estimar ou testar uma característica da população.",
+    "resposta_final": "Alternativa C — estatística descritiva.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Inferência Estatística"
+      },
+      {
+        "id": "b",
+        "texto": "Planejamento Experimental"
+      },
+      {
+        "id": "c",
+        "texto": "Estatística Descritiva"
+      },
+      {
+        "id": "d",
+        "texto": "Amostragem Conglomerada"
+      },
+      {
+        "id": "e",
+        "texto": "Hipótese Nula"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-03-classificacao-de-variaveis/",
+    "solucao_original": "**Gabarito: (c)**  \n**Comentário:** De acordo com a Definição 1.6, a estatística descritiva consiste justamente em organizar, exibir e descrever dados utilizando tabelas, gráficos e medidas resumidas.",
+    "dica": "Organizar e resumir dados observados é diferente de generalizar conclusões para uma população.",
+    "passo_inicial": "Identifique os procedimentos realizados: tabela de frequências e histograma. Pergunte se o pesquisador fez uma generalização além dos dados coletados.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 107,
+          "linha_final": 118
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-03-atividade-miniprojeto-i-fase-1",
+    "numero": 5,
+    "numero_original": "MINIPROJETO I - FASE 1",
+    "categoria": "atividade",
+    "enunciado": "Em grupos, defina uma situação problema em sua faculdade, bairro ou empresa a ser analisada por meio de uma pesquisa quantitativa. Elabore um miniprojeto, incluindo elementos teóricos e metodológicos em seu planejamento.  \nA seguir, encontram-se elencados os principais elementos que devem ser incluídos:\n\n**Referenciais teóricos:**  \n(1) Situação problema: questão não resolvida que é objeto de investigação;  \n(2) Hipóteses: afirmações provisórias a respeito do problema;  \n(3) Justificativa: relevância da pesquisa;  \n(4) Objetivo geral e específico: o que se pretende com a pesquisa e quais as metas desejadas ao final da investigação;\n\n**Referenciais metodológicos:**  \n(5) Amostragem: seleção de uma parcela representativa da população estudada;  \n(6) Coleta de dados: definição das técnicas para pesquisa de campo, como: entrevistas, observações, questionários, dentre outras;  \n(7) Organização dos dados: dispor os dados coletados em planilha Excel e, posteriormente, refinar os dados brutos, deixando-os prontos para análises estatísticas;\n\n**Referenciais complementares:**  \n(8) Cronograma de execução: planejamento das atividades a serem realizadas, distribuindo-as de acordo com o tempo disponível para realização do projeto;  \n(9) Bibliografia: material consultado durante a realização do projeto.\n\n**Exemplos de situações-problema realizadas:**  \n* Aulas aos sábados consistem no principal fator causador da evasão no curso de produção têxtil da Fatec Americana?  \n* Qual o perfil socioeconômico e os hábitos de consumo dos alunos do período noturno?",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+      "linha_inicial": 121,
+      "linha_final": 143,
+      "aula": 3
+    },
+    "titulo": "MINIPROJETO I - FASE 1",
+    "resourceBasePath": "/aulas/01-descritiva/aula-03-classificacao-de-variaveis/",
+    "dica": "Uma boa pesquisa começa com uma pergunta delimitada, uma população definida e variáveis que possam ser observadas.",
+    "passo_inicial": "Escolha uma situação do seu contexto e escreva uma pergunta investigável. Liste a população, as variáveis e uma hipótese que os dados possam apoiar ou contrariar.",
+    "solucao_completa": "Este é um roteiro de elaboração, com resultados que dependem da pesquisa do grupo.\n1. Delimite o problema, o local e o período do estudo.\n2. Apresente hipóteses como afirmações provisórias, evitando tratá-las como conclusões.\n3. Justifique a relevância e estabeleça objetivo geral e objetivos específicos coerentes com a pergunta.\n4. Defina a população, o cadastro amostral, o tamanho da amostra e o procedimento de seleção; explique possíveis limitações de representatividade.\n5. Prepare o instrumento de coleta e identifique os tipos das variáveis.\n6. Organize uma planilha com uma linha por participante e uma coluna por variável. Defina como tratar respostas ausentes e inconsistentes.\n7. Apresente cronograma e bibliografia.\nComo exemplo de planejamento, pode-se investigar a relação entre tempo de deslocamento e atrasos nas aulas. Esse exemplo é apenas um modelo de pergunta, sem dados ou conclusão pronta.",
+    "resposta_final": "Entrega esperada: miniprojeto com problema, hipóteses, justificativa, objetivos, amostragem, coleta, organização dos dados, cronograma e bibliografia. Não há uma resposta numérica única.",
+    "correcao_automatica": false,
+    "gabarito_meta": {
+      "origem": "roteiro",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+          "linha_inicial": 121,
+          "linha_final": 143
+        }
+      ],
+      "conferido_enunciado": true
+    },
+    "criterios_avaliacao": [
+      "Coerência entre problema, hipóteses e objetivos.",
+      "População e amostra delimitadas; método de seleção explicado.",
+      "Variáveis e instrumento de coleta adequados.",
+      "Plano de organização, cronograma e fontes apresentados."
+    ]
+  }
+]

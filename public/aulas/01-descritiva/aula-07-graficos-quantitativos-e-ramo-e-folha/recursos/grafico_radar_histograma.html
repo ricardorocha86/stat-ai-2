@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gráficos Quantitativos Interativos: Radar e Ogiva</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .tab-group { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tab-btn { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; color: #475569; text-align: center; }
+    .tab-btn.active { background: #003485; color: #ffffff; border-color: #003485; }
+    .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr) auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.72rem; font-weight: 600; color: #334155; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; width: 100%; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.0rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🕸️ Laboratório Multivisualização: Radar Sensorial & Ogiva de Galton</span>
+        </div>
+        <span class="sim-badge">Aula 7 • Tabela 5 & Figuras 6-9</span>
+    </div>
+
+    <div class="tab-group">
+        <button class="tab-btn active" id="tab_radar" onclick="setAba('radar')">1. Gráfico de Radar (Análise Sensorial de 3 Iogurtes)</button>
+        <button class="tab-btn" id="tab_ogiva" onclick="setAba('ogiva')">2. Histograma, Polígono e Ogiva de Galton (Estaturas)</button>
+    </div>
+
+    <div id="painel_ctrl_radar" class="controls-grid">
+        <div class="ctrl-group">
+            <span class="ctrl-label">Viscosidade: <b class="ctrl-val" id="v_visc">6.5</b></span>
+            <input type="range" id="s_visc" min="1" max="10" step="0.5" value="6.5" oninput="atualizarRadar(0, this.value, 'v_visc')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Consistência: <b class="ctrl-val" id="v_cons">7.0</b></span>
+            <input type="range" id="s_cons" min="1" max="10" step="0.5" value="7.0" oninput="atualizarRadar(1, this.value, 'v_cons')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Cremosidade: <b class="ctrl-val" id="v_crem">8.0</b></span>
+            <input type="range" id="s_crem" min="1" max="10" step="0.5" value="8.0" oninput="atualizarRadar(2, this.value, 'v_crem')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Doçura: <b class="ctrl-val" id="v_doc">7.5</b></span>
+            <input type="range" id="s_doc" min="1" max="10" step="0.5" value="7.5" oninput="atualizarRadar(3, this.value, 'v_doc')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Cor: <b class="ctrl-val" id="v_cor">7.0</b></span>
+            <input type="range" id="s_cor" min="1" max="10" step="0.5" value="7.0" oninput="atualizarRadar(4, this.value, 'v_cor')">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetarRadar()">🔄 Livro</button>
+        </div>
+    </div>
+
+    <div id="painel_ctrl_ogiva" class="controls-grid" style="display:none; grid-template-columns: 1fr 1fr auto;">
+        <div class="ctrl-group">
+            <span class="ctrl-label">Sobreposição do Polígono de Frequências:</span>
+            <select id="sel_poligono" onchange="renderizarOgiva()" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
+                <option value="ambos">Histograma + Polígono de Frequências</option>
+                <option value="apenas_hist">Apenas Histograma</option>
+                <option value="apenas_ogiva">Apenas Ogiva de Galton (fc %)</option>
+            </select>
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Tipo de Frequência no Histograma:</span>
+            <select id="sel_freq_tipo" onchange="renderizarOgiva()" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
+                <option value="fa">Frequência Absoluta (fa)</option>
+                <option value="fp">Frequência Percentual (fp %)</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn-action" onclick="renderizarOgiva()">Atualizar</button>
+        </div>
+    </div>
+
+    <div class="kpi-row" id="kpi_row_radar">
+        <div class="kpi-card">
+            <div class="kpi-label">Marca A (Livro)</div>
+            <div class="kpi-val" id="kpi_mA">7.20 / 10</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Marca B (Ajustável)</div>
+            <div class="kpi-val" id="kpi_mB">7.20 / 10</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Marca C (Livro)</div>
+            <div class="kpi-val" id="kpi_mC">6.40 / 10</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Melhor Avaliação</div>
+            <div class="kpi-val" id="kpi_vencedora" style="color:#003485;">Marca A & B</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Gráfico de Radar (Figura 9, p. 39):</b> Ideal para variáveis multivariadas com a mesma escala. Permite identificar de imediato os pontos fortes e fracos de cada concorrente nos 5 atributos avaliados pelos alunos da FATEC-Piracicaba.
+    </div>
+</div>
+
+<script>
+    let abaAtual = 'radar';
+    const quesitos = ['Viscosidade', 'Consistência', 'Cremosidade', 'Doçura', 'Cor'];
+
+    // Dados originais Tabela 5 do livro (p. 38)
+    const marcaA = [7.0, 7.5, 8.5, 6.0, 7.0]; // Média 7.20
+    let marcaB = [6.5, 7.0, 8.0, 7.5, 7.0];   // Média 7.20
+    const marcaC = [6.0, 6.0, 6.5, 7.0, 6.5]; // Média 6.40
+
+    function setAba(aba) {
+        abaAtual = aba;
+        document.getElementById('tab_radar').className = 'tab-btn ' + (aba==='radar'?'active':'');
+        document.getElementById('tab_ogiva').className = 'tab-btn ' + (aba==='ogiva'?'active':'');
+
+        if (aba === 'radar') {
+            document.getElementById('painel_ctrl_radar').style.display = 'grid';
+            document.getElementById('painel_ctrl_ogiva').style.display = 'none';
+            document.getElementById('kpi_row_radar').style.display = 'grid';
+            document.getElementById('banner_texto').innerHTML = '💡 <b>Gráfico de Radar:</b> Permite comparar visualmente perfis sensoriais de múltiplos produtos. Altere os sliders para simular novas receitas da Marca B!';
+            renderizarRadar();
+        } else {
+            document.getElementById('painel_ctrl_radar').style.display = 'none';
+            document.getElementById('painel_ctrl_ogiva').style.display = 'grid';
+            document.getElementById('kpi_row_radar').style.display = 'none';
+            document.getElementById('banner_texto').innerHTML = '💡 <b>Histograma vs Ogiva de Galton (Figuras 6 e 7):</b> O polígono une os pontos médios das classes. A Ogiva de Galton cresce monotonamente unindo as frequências acumuladas nos limites superiores!';
+            renderizarOgiva();
+        }
+    }
+
+    function atualizarRadar(idx, val, lblId) {
+        marcaB[idx] = parseFloat(val);
+        document.getElementById(lblId).innerText = val;
+        renderizarRadar();
+    }
+
+    function resetarRadar() {
+        marcaB = [6.5, 7.0, 8.0, 7.5, 7.0];
+        document.getElementById('s_visc').value = 6.5; document.getElementById('v_visc').innerText = '6.5';
+        document.getElementById('s_cons').value = 7.0; document.getElementById('v_cons').innerText = '7.0';
+        document.getElementById('s_crem').value = 8.0; document.getElementById('v_crem').innerText = '8.0';
+        document.getElementById('s_doc').value = 7.5;  document.getElementById('v_doc').innerText = '7.5';
+        document.getElementById('s_cor').value = 7.0;  document.getElementById('v_cor').innerText = '7.0';
+        renderizarRadar();
+    }
+
+    function calcMedia(arr) {
+        return (arr.reduce((a,b)=>a+b, 0) / arr.length).toFixed(2);
+    }
+
+    function renderizarRadar() {
+        let medA = calcMedia(marcaA);
+        let medB = calcMedia(marcaB);
+        let medC = calcMedia(marcaC);
+
+        document.getElementById('kpi_mA').innerText = `${medA} / 10`;
+        document.getElementById('kpi_mB').innerText = `${medB} / 10`;
+        document.getElementById('kpi_mC').innerText = `${medC} / 10`;
+
+        let best = 'Marca A';
+        if (parseFloat(medB) > parseFloat(medA) && parseFloat(medB) > parseFloat(medC)) best = 'Marca B ⭐';
+        else if (parseFloat(medA) === parseFloat(medB)) best = 'Empate A & B';
+        document.getElementById('kpi_vencedora').innerText = best;
+
+        let rA = [...marcaA, marcaA[0]];
+        let rB = [...marcaB, marcaB[0]];
+        let rC = [...marcaC, marcaC[0]];
+        let theta = [...quesitos, quesitos[0]];
+
+        let traceA = {
+            type: 'scatterpolar', r: rA, theta: theta,
+            fill: 'toself', name: 'Marca A (Tradicional)',
+            fillcolor: 'rgba(0, 52, 133, 0.25)',
+            line: { color: '#003485', width: 2.5 }
+        };
+        let traceB = {
+            type: 'scatterpolar', r: rB, theta: theta,
+            fill: 'toself', name: 'Marca B (Seu Ajuste)',
+            fillcolor: 'rgba(234, 88, 12, 0.25)',
+            line: { color: '#ea580c', width: 2.5 }
+        };
+        let traceC = {
+            type: 'scatterpolar', r: rC, theta: theta,
+            fill: 'toself', name: 'Marca C (Econômica)',
+            fillcolor: 'rgba(148, 163, 184, 0.25)',
+            line: { color: '#64748b', width: 1.5, dash: 'dot' }
+        };
+
+        let layout = {
+            margin: { t: 25, b: 25, l: 30, r: 30 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            polar: {
+                radialaxis: { visible: true, range: [0, 10], dtick: 2, tickfont: { size: 9 } },
+                angularaxis: { tickfont: { size: 11, weight: 'bold' } }
+            }
+        };
+
+        Plotly.react('chart_div', [traceA, traceB, traceC], layout, {responsive: true, displayModeBar: false});
+    }
+
+    function renderizarOgiva() {
+        let modo = document.getElementById('sel_poligono').value;
+        let freqTipo = document.getElementById('sel_freq_tipo').value;
+
+        // Dados Tabela 3 do livro (pp. 34-36)
+        let classes = ['[1.55 ⊢ 1.66)', '[1.66 ⊢ 1.77)', '[1.77 ⊢ 1.88)', '[1.88 ⊢ 1.99)'];
+        let midPoints = [1.605, 1.715, 1.825, 1.935];
+        let fa = [4, 7, 5, 2];
+        let fp = [22.2, 38.9, 27.8, 11.1];
+        let limSup = [1.55, 1.66, 1.77, 1.88, 1.99];
+        let fcPct = [0, 22.2, 61.1, 88.9, 100.0];
+
+        let traces = [];
+        let yHist = freqTipo === 'fa' ? fa : fp;
+        let yHistTitle = freqTipo === 'fa' ? 'Frequência Absoluta (fa)' : 'Frequência Percentual (fp %)';
+
+        if (modo === 'ambos' || modo === 'apenas_hist') {
+            traces.push({
+                x: classes, y: yHist, type: 'bar',
+                name: 'Histograma',
+                marker: { color: '#003485', line: { color: '#0f172a', width: 1.5 } },
+                text: yHist.map(v => `${v}`), textposition: 'auto'
+            });
+        }
+
+        if (modo === 'ambos') {
+            traces.push({
+                x: classes, y: yHist, type: 'scatter', mode: 'lines+markers',
+                name: 'Polígono de Frequências',
+                line: { color: '#ea580c', width: 3 },
+                marker: { size: 10, color: '#c2410c' }
+            });
+        }
+
+        if (modo === 'apenas_ogiva') {
+            traces.push({
+                x: limSup.map(l => `${l}m`),
+                y: fcPct,
+                type: 'scatter',
+                mode: 'lines+markers+text',
+                name: 'Ogiva de Galton (fc %)',
+                text: fcPct.map(v => `${v}%`),
+                textposition: 'top left',
+                line: { color: '#16a34a', width: 3, shape: 'spline' },
+                marker: { size: 10, color: '#15803d' }
+            });
+        }
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            bargap: 0.03, // Barras contíguas
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: modo==='apenas_ogiva'?'Limites Superiores das Classes (m)':'Intervalos de Estatura' },
+            yaxis: { title: modo==='apenas_ogiva'?'Frequência Acumulada (%)':yHistTitle, showgrid: true }
+        };
+
+        Plotly.react('chart_div', traces, layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizarRadar();
+</script>
+</body>
+</html>

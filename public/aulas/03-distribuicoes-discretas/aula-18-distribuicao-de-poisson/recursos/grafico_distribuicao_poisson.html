@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador da Distribuição de Poisson</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.75rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    select { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.82rem; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.destaque { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>⏱️ Simulador Dinâmico da Distribuição de Poisson (Taxa λ)</span>
+        </div>
+        <span class="sim-badge">Aula 18 • Eventos Raros no Tempo/Espaço</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Taxa Média (λ):</span>
+                <span id="lbl_lambda" class="ctrl-val">λ = 4.0</span>
+            </div>
+            <input type="range" id="slider_lambda" min="0.5" max="18.0" step="0.5" value="4.0" oninput="atualizarLambda(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Ponto de Corte (k):</span>
+                <span id="lbl_k" class="ctrl-val">k = 4</span>
+            </div>
+            <input type="range" id="slider_k" min="0" max="25" value="4" oninput="atualizarK(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Tipo de Cálculo:</span>
+            <select id="sel_modo" onchange="renderizar()">
+                <option value="exato">P(X = k) [Exatamente k]</option>
+                <option value="menor_igual">P(X ≤ k) [No máximo k]</option>
+                <option value="maior">P(X > k) [Mais de k]</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetar()">λ = 4.0</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card destaque">
+            <div class="kpi-label" id="lbl_kpi_prob">Probabilidade P(X = 4)</div>
+            <div class="kpi-val" id="kpi_prob">19.54%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Média Teórica μ = λ</div>
+            <div class="kpi-val" id="kpi_mu">4.00</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Variância σ² = λ</div>
+            <div class="kpi-val" id="kpi_var">4.00</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Desvio Padrão σ = √λ</div>
+            <div class="kpi-val" id="kpi_sigma">2.00</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Propriedade Notável de Poisson (p. 104):</b> Na distribuição de Poisson, a <b>Média é rigorosamente igual à Variância</b> (μ = σ² = λ). Quando λ cresce (ex: λ ≥ 10), o gráfico perde a forte assimetria inicial e se torna simétrico, aproximando-se da curva Normal!
+    </div>
+</div>
+
+<script>
+    let lambdaVal = 4.0;
+    let k = 4;
+
+    function atualizarLambda(val) {
+        lambdaVal = parseFloat(val);
+        document.getElementById('lbl_lambda').innerText = `λ = ${lambdaVal.toFixed(1)}`;
+        renderizar();
+    }
+
+    function atualizarK(val) {
+        k = parseInt(val);
+        document.getElementById('lbl_k').innerText = `k = ${k}`;
+        renderizar();
+    }
+
+    function resetar() {
+        lambdaVal = 4.0; k = 4;
+        document.getElementById('slider_lambda').value = 4.0; document.getElementById('lbl_lambda').innerText = 'λ = 4.0';
+        document.getElementById('slider_k').value = 4; document.getElementById('lbl_k').innerText = 'k = 4';
+        document.getElementById('sel_modo').value = 'exato';
+        renderizar();
+    }
+
+    function logFact(num) {
+        let r = 0;
+        for(let i=2; i<=num; i++) r += Math.log(i);
+        return r;
+    }
+
+    function poissonProb(l, x) {
+        if (x < 0) return 0;
+        return Math.exp(-l + x * Math.log(l) - logFact(x));
+    }
+
+    function renderizar() {
+        let modo = document.getElementById('sel_modo').value;
+
+        let mu = lambdaVal;
+        let variancia = lambdaVal;
+        let sigma = Math.sqrt(lambdaVal);
+
+        document.getElementById('kpi_mu').innerText = mu.toFixed(2);
+        document.getElementById('kpi_var').innerText = variancia.toFixed(2);
+        document.getElementById('kpi_sigma').innerText = sigma.toFixed(2);
+
+        let maxK = Math.max(15, Math.ceil(lambdaVal + 4 * sigma));
+        let xVals = Array.from({length: maxK + 1}, (_, i) => i);
+        let probs = xVals.map(x => poissonProb(lambdaVal, x));
+
+        let probCalculada = 0;
+        let cores = [];
+
+        xVals.forEach(x => {
+            let selecionado = false;
+            if (modo === 'exato' && x === k) selecionado = true;
+            else if (modo === 'menor_igual' && x <= k) selecionado = true;
+            else if (modo === 'maior' && x > k) selecionado = true;
+
+            if (selecionado) {
+                cores.push('#ea580c');
+                probCalculada += probs[x];
+            } else {
+                cores.push('#003485');
+            }
+        });
+
+        let lblModo = `P(X = ${k})`;
+        if (modo === 'menor_igual') lblModo = `P(X ≤ ${k})`;
+        if (modo === 'maior') lblModo = `P(X > ${k})`;
+
+        document.getElementById('lbl_kpi_prob').innerText = `Probabilidade ${lblModo}`;
+        document.getElementById('kpi_prob').innerText = `${(probCalculada * 100).toFixed(2)}%`;
+
+        let trace = {
+            x: xVals,
+            y: probs,
+            type: 'bar',
+            marker: { color: cores, line: { color: '#0f172a', width: 1 } },
+            text: probs.map(pr => pr >= 0.01 ? `${(pr*100).toFixed(1)}%` : ''),
+            textposition: 'auto'
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            xaxis: { title: 'Número de Ocorrências (k)', dtick: 1 },
+            yaxis: { title: 'Probabilidade P(X = k)', showgrid: true }
+        };
+
+        Plotly.react('chart_div', [trace], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

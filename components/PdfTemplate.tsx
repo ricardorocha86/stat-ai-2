@@ -1,7 +1,6 @@
 import React from 'react';
 import { Exercise } from '../types';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import MarkdownRenderer from './MarkdownRenderer';
 
 type PdfSolutionDetail = 'none' | 'hint' | 'guide' | 'full';
 
@@ -17,129 +16,34 @@ export const PdfTemplate: React.FC<PdfTemplateProps> = ({ title, subtitle, exerc
     const difficultyBgColorMap = { 'Fácil': '#f0fdf4', 'Médio': '#fffbeb', 'Difícil': '#fef2f2' };
 
     const styles = `
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            color: #1f2937;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            width: 515pt; /* A4 width (595pt) minus margins (40*2) */
-        }
-        .cover {
-            text-align: center;
-            page-break-after: always;
-            padding-top: 300pt;
-            padding-bottom: 300pt;
-        }
-        .cover h1 {
-            font-size: 28pt;
-            color: #1e3a8a;
-            margin: 0;
-            font-weight: bold;
-        }
-        .cover h2 {
-            font-size: 18pt;
-            color: #4b5563;
-            font-weight: normal;
-            margin-top: 15px;
-        }
-        .main-header {
-            font-size: 9pt;
-            color: #64748b;
-            border-bottom: 1px solid #d1d5db;
-            padding-bottom: 8px;
-            margin-bottom: 24px;
-        }
-        .main-header .subtitle {
-            float: left;
-        }
-        .main-header .title {
-            float: right;
-        }
-        .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
-        }
-        .exercise {
-            margin-bottom: 24px;
-            page-break-inside: avoid;
-        }
-        .exercise-header {
-            font-size: 16pt;
-            color: #1e293b;
-            margin-top: 24px;
-            margin-bottom: 8px;
-            font-weight: bold;
-            border-bottom: 1px solid #d1d5db;
-            padding-bottom: 4px;
-        }
-        .badges {
-            margin-top: 8px;
-            margin-bottom: 12px;
-        }
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            font-size: 9pt;
-            border-radius: 12px;
-            margin-right: 8px;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        .solution-block {
-            margin-top: 16px;
-            background-color: #f8f9fa;
-            border: 1px solid #e5e7eb;
-            padding: 1px 16px 12px 16px;
-            border-radius: 4px;
-        }
-        .solution-part {
-            margin-top: 12px;
-        }
-        .solution-part h4 {
-            font-size: 11pt;
-            color: #374151;
-            font-weight: bold;
-            font-style: italic;
-            margin: 0 0 4px 0;
-        }
-        /* Markdown styles */
-        p, ul, ol, pre, table { margin: 0 0 12px 0 !important; padding: 0 !important; }
-        ul, ol { padding-left: 25px !important; }
-        li { margin-bottom: 5px !important; }
-        strong, b { font-weight: bold !important; }
-        em, i { font-style: italic !important; }
-        code {
-            font-family: 'Courier New', Courier, monospace !important;
-            background-color: #e5e7eb !important;
-            padding: 2px 5px !important;
-            border-radius: 4px !important;
-            font-size: 90% !important;
-        }
-        pre {
-            background-color: #f1f3f5 !important;
-            color: #111827 !important;
-            padding: 12px !important;
-            border-radius: 6px !important;
-            white-space: pre-wrap !important;
-            word-wrap: break-word !important;
-            font-size: 10pt !important;
-        }
-        pre code { background-color: transparent !important; padding: 0 !important; }
-        table {
-            border-collapse: collapse !important;
-            width: 100% !important;
-            font-size: 10pt !important;
-        }
-        th, td {
-            border: 1px solid #d1d5db !important;
-            padding: 6px 8px !important;
-            text-align: left !important;
-        }
-        th { background-color: #f3f4f6 !important; font-weight: bold !important; }
+        .pdf-document, .pdf-document * { box-sizing: border-box; }
+        .pdf-document { width: 515.28pt; font: 12pt/1.5 Georgia, 'Times New Roman', serif; color: #1f2937; background: white; }
+        .pdf-document .cover { text-align: center; display: flex; flex-direction: column; justify-content: center; height: 660pt; }
+        .pdf-document .cover h1 { font-size: 28pt; color: #1e3a8a; font-weight: bold; margin: 0; }
+        .pdf-document .cover h2 { font-size: 18pt; color: #4b5563; font-weight: normal; margin-top: 15pt; }
+        .pdf-document .main-header { display: flex; justify-content: space-between; gap: 15pt; font-size: 9pt; color: #64748b; border-bottom: 1px solid #d1d5db; padding-bottom: 8pt; margin-bottom: 18pt; }
+        .pdf-document .exercise-header { font-size: 16pt; color: #1e293b; margin: 18pt 0 8pt; font-weight: bold; border-bottom: 1px solid #d1d5db; padding-bottom: 4pt; }
+        .pdf-document .badges { margin: 8pt 0 12pt; }
+        .pdf-document .badge { display: inline-block; padding: 2pt 10pt; font: 9pt Arial, sans-serif; border-radius: 12pt; }
+        .pdf-document .solution-part { margin-top: 12pt; }
+        .pdf-document h4 { font-size: 11pt; color: #374151; font-weight: bold; font-style: italic; margin: 12pt 0 4pt; }
+        .pdf-document p, .pdf-document ul, .pdf-document ol, .pdf-document pre, .pdf-document table { margin: 0 0 10pt !important; padding: 0; }
+        .pdf-document ul, .pdf-document ol { padding-left: 20pt; }
+        .pdf-document li { margin-bottom: 4pt; }
+        .pdf-document strong, .pdf-document b { font-weight: bold; }
+        .pdf-document em, .pdf-document i { font-style: italic; }
+        .pdf-document pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 10pt; padding: 8pt; background: #f1f5f9; }
+        .pdf-document code { font-family: 'Courier New', monospace; font-size: 90%; }
+        .pdf-document table { border-collapse: collapse; width: 100%; font-size: 10pt; }
+        .pdf-document th, .pdf-document td { border: 1px solid #d1d5db; padding: 5pt 6pt; text-align: left; }
+        .pdf-document th { background: #f3f4f6; font-weight: bold; }
+        .pdf-document .overflow-x-auto { overflow: visible !important; padding-bottom: 3pt; }
+        .pdf-document .print-resource { margin: 10pt 0; }
+        .pdf-document img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+        .pdf-document figcaption { font-size: 9pt; color: #64748b; margin-top: 4pt; }
+        .pdf-document .katex { font-size: 1em; }
+        .pdf-document .katex-display { overflow: visible; margin: 8pt 0; }
+        .pdf-document .print-block { display: flow-root; }
     `;
 
     const renderSolutions = (ex: Exercise) => {
@@ -147,35 +51,37 @@ export const PdfTemplate: React.FC<PdfTemplateProps> = ({ title, subtitle, exerc
 
         return (
              <div className="solution-block">
-                { (solutionDetail === 'hint' || solutionDetail === 'guide' || solutionDetail === 'full') && (
+                { (solutionDetail === 'hint' || solutionDetail === 'guide' || solutionDetail === 'full') && ex.dica && (
                     <div className="solution-part">
                         <h4>Dica</h4>
-                        <div className="solution-content"><ReactMarkdown remarkPlugins={[remarkGfm]}>{ex.solution.hint}</ReactMarkdown></div>
+                        <div className="solution-content"><MarkdownRenderer content={ex.dica || ''} basePath={ex.resourceBasePath} staticMode /></div>
                     </div>
                 )}
-                {(solutionDetail === 'guide' || solutionDetail === 'full') && (
+                {(solutionDetail === 'guide' || solutionDetail === 'full') && ex.passo_inicial && (
                     <div className="solution-part">
-                        <h4>Guia Inicial</h4>
-                        <div className="solution-content"><ReactMarkdown remarkPlugins={[remarkGfm]}>{ex.solution.startingGuide}</ReactMarkdown></div>
+                        <h4>Passo Inicial</h4>
+                        <div className="solution-content"><MarkdownRenderer content={ex.passo_inicial || ''} basePath={ex.resourceBasePath} staticMode /></div>
                     </div>
                 )}
-                {solutionDetail === 'full' && (
+                {solutionDetail === 'full' && ex.solucao_completa && (
                     <div className="solution-part">
                         <h4>Solução Completa</h4>
-                        <div className="solution-content"><ReactMarkdown remarkPlugins={[remarkGfm]}>{ex.solution.fullSolution}</ReactMarkdown></div>
+                        <div className="solution-content"><MarkdownRenderer content={ex.solucao_completa || ''} basePath={ex.resourceBasePath} staticMode /></div>
+                    </div>
+                )}
+                {solutionDetail === 'full' && ex.resposta_final && (
+                    <div className="solution-part">
+                        <h4>Resposta final</h4>
+                        <div className="solution-content"><MarkdownRenderer content={ex.resposta_final} basePath={ex.resourceBasePath} staticMode /></div>
                     </div>
                 )}
             </div>
         );
     };
-    
+
     return (
-        <html>
-            <head>
-                <meta charSet="UTF-8" />
+        <div className="pdf-document" lang="pt-BR">
                 <style>{styles}</style>
-            </head>
-            <body>
                 <div className="cover">
                     <h1>{title}</h1>
                     <h2>{subtitle}</h2>
@@ -188,18 +94,22 @@ export const PdfTemplate: React.FC<PdfTemplateProps> = ({ title, subtitle, exerc
 
                 {exercises.map((ex, index) => (
                     <div key={ex.id} className="exercise">
-                        <div className="exercise-header">Exercício {index + 1}</div>
+                        <div className="exercise-header">{ex.titulo || (ex.categoria === 'multipla_escolha' ? 'Questão ' : 'Exercício ') + ex.numero}</div>
                         <div className="badges">
-                           <span className="badge" style={{ color: difficultyColorMap[ex.difficulty], backgroundColor: difficultyBgColorMap[ex.difficulty], border: `1px solid ${difficultyColorMap[ex.difficulty]}` }}>{ex.difficulty}</span>
-                           <span className="badge" style={{ color: '#374151', backgroundColor: '#f3f4f6', border: '1px solid #d1d5db' }}>{ex.type}</span>
+                           {ex.dificuldade && (
+                               <span className="badge" style={{
+                                   color: difficultyColorMap[ex.dificuldade] || '#000',
+                                   backgroundColor: difficultyBgColorMap[ex.dificuldade] || '#fff',
+                                   border: `1px solid ${difficultyColorMap[ex.dificuldade] || '#000'}`
+                               }}>{ex.dificuldade}</span>
+                           )}
                         </div>
                         <div className="statement">
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{ex.problemStatement}</ReactMarkdown>
+                            <MarkdownRenderer content={ex.enunciado || ''} basePath={ex.resourceBasePath} staticMode />
                         </div>
                         {renderSolutions(ex)}
                     </div>
                 ))}
-            </body>
-        </html>
+        </div>
     );
 };

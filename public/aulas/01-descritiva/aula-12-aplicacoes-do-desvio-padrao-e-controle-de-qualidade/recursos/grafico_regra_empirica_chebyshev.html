@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Regra Empírica e Carta de Controle de Qualidade</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .tab-group { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tab-btn { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; color: #475569; text-align: center; }
+    .tab-btn.active { background: #003485; color: #ffffff; border-color: #003485; }
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.78rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.0rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🛡️ Laboratório de Controle de Qualidade & Regra Empírica</span>
+        </div>
+        <span class="sim-badge">Aula 12 • Chebyshev e Shewhart</span>
+    </div>
+
+    <div class="tab-group">
+        <button class="tab-btn active" id="tab_emp" onclick="setAba('emp')">1. Regra Empírica (68-95-99.7%) vs Chebyshev</button>
+        <button class="tab-btn" id="tab_shew" onclick="setAba('shew')">2. Carta de Controle de Shewhart (LSC, LM, LIC)</button>
+    </div>
+
+    <div id="painel_ctrl_emp" class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Número de Desvios (k):</span>
+                <span id="lbl_k" class="ctrl-val">k = 2.0 desvios</span>
+            </div>
+            <input type="range" id="slider_k" min="1.0" max="3.5" step="0.5" value="2.0" oninput="atualizarK(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Forma da Distribuição:</span>
+            </div>
+            <select id="sel_forma" onchange="renderizarEmp()" style="padding:6px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.85rem;">
+                <option value="normal">Normal / Em Forma de Sino (Regra Empírica Válida)</option>
+                <option value="qualquer">Qualquer Distribuição (Garantia de Chebyshev: ≥ 1 - 1/k²)</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn-action" onclick="atualizarK(2.0)">k = 2 (95%)</button>
+        </div>
+    </div>
+
+    <div id="painel_ctrl_shew" class="controls-grid" style="display:none;">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Desvio da Média do Processo (Shift):</span>
+                <span id="lbl_shift" class="ctrl-val">0.0 (Processo Centrado)</span>
+            </div>
+            <input type="range" id="slider_shift" min="-2.5" max="2.5" step="0.5" value="0.0" oninput="atualizarShift(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Instabilidade / Variabilidade (σ):</span>
+                <span id="lbl_sigma" class="ctrl-val">1.0 (Normal)</span>
+            </div>
+            <input type="range" id="slider_sigma" min="0.8" max="2.5" step="0.2" value="1.0" oninput="atualizarSigma(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="gerarLotes()">🎲 Produzir 25 Lotes</button>
+        </div>
+    </div>
+
+    <div class="kpi-row" id="kpi_row_emp">
+        <div class="kpi-card">
+            <div class="kpi-label">Intervalo Central</div>
+            <div class="kpi-val" id="kpi_interv">[μ - 2σ , μ + 2σ]</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Regra Empírica (Sino)</div>
+            <div class="kpi-val" id="kpi_pct_emp">95.45%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Mínimo Chebyshev</div>
+            <div class="kpi-val" id="kpi_pct_cheb">≥ 75.00%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Dados nas Caudas</div>
+            <div class="kpi-val" id="kpi_caudas">4.55%</div>
+        </div>
+    </div>
+
+    <div class="kpi-row" id="kpi_row_shew" style="display:none;">
+        <div class="kpi-card">
+            <div class="kpi-label">Limite Sup. Controle (LSC)</div>
+            <div class="kpi-val" id="kpi_lsc">μ + 3σ = 13.0</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Linha Média (LM)</div>
+            <div class="kpi-val">μ = 10.0</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Limite Inf. Controle (LIC)</div>
+            <div class="kpi-val" id="kpi_lic">μ - 3σ = 7.0</div>
+        </div>
+        <div class="kpi-card" id="card_status_qualidade">
+            <div class="kpi-label">Status do Processo</div>
+            <div class="kpi-val" id="kpi_status" style="color:#16a34a;">Sob Controle ✓</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Regra 68-95-99.7%:</b> Para dados simétricos em sino, ~68% das observações estão a até 1 desvio-padrão da média; ~95% a até 2 desvios; e 99,7% a até 3 desvios!
+    </div>
+</div>
+
+<script>
+    let abaAtual = 'emp';
+    let k = 2.0;
+    let shift = 0.0;
+    let sigmaProc = 1.0;
+    const muNominal = 10.0;
+    const sigmaNominal = 1.0;
+
+    function setAba(aba) {
+        abaAtual = aba;
+        document.getElementById('tab_emp').className = 'tab-btn ' + (aba==='emp'?'active':'');
+        document.getElementById('tab_shew').className = 'tab-btn ' + (aba==='shew'?'active':'');
+
+        if (aba === 'emp') {
+            document.getElementById('painel_ctrl_emp').style.display = 'grid';
+            document.getElementById('painel_ctrl_shew').style.display = 'none';
+            document.getElementById('kpi_row_emp').style.display = 'grid';
+            document.getElementById('kpi_row_shew').style.display = 'none';
+            document.getElementById('banner_texto').innerHTML = '💡 <b>Regra Empírica vs Teorema de Chebyshev (p. 62):</b> A Regra Empírica exige distribuição em sino e fornece valores exatos (68%, 95%, 99,7%). Chebyshev vale para <i>qualquer</i> distribuição garantindo pelo menos 1 - 1/k² dos dados!';
+            renderizarEmp();
+        } else {
+            document.getElementById('painel_ctrl_emp').style.display = 'none';
+            document.getElementById('painel_ctrl_shew').style.display = 'grid';
+            document.getElementById('kpi_row_emp').style.display = 'none';
+            document.getElementById('kpi_row_shew').style.display = 'grid';
+            document.getElementById('banner_texto').innerHTML = '💡 <b>Carta de Controle de Shewhart (Figura 11, p. 64):</b> Utiliza limites LSC e LIC a 3 desvios da média (99,7% de confiança). Pontos além dos limites indicam causas especiais de variação e exigem parada para manutenção!';
+            gerarLotes();
+        }
+    }
+
+    function atualizarK(val) {
+        k = parseFloat(val);
+        document.getElementById('slider_k').value = k;
+        document.getElementById('lbl_k').innerText = `k = ${k.toFixed(1)} desvios`;
+        renderizarEmp();
+    }
+
+    function atualizarShift(val) {
+        shift = parseFloat(val);
+        document.getElementById('lbl_shift').innerText = shift === 0 ? '0.0 (Centrado)' : `${shift > 0 ? '+' : ''}${shift.toFixed(1)} σ`;
+        gerarLotes();
+    }
+
+    function atualizarSigma(val) {
+        sigmaProc = parseFloat(val);
+        document.getElementById('lbl_sigma').innerText = `${sigmaProc.toFixed(1)} σ`;
+        gerarLotes();
+    }
+
+    function erf(x) {
+        // Aproximação numérica de Chebyshev/Abramowitz
+        let a1 =  0.254829592, a2 = -0.284496736, a3 =  1.421413741;
+        let a4 = -1.453152027, a5 =  1.061405429, p  =  0.3275911;
+        let sign = x < 0 ? -1 : 1;
+        x = Math.abs(x);
+        let t = 1.0 / (1.0 + p * x);
+        let y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        return sign * y;
+    }
+
+    function normalCdf(z) {
+        return 0.5 * (1.0 + erf(z / Math.sqrt(2.0)));
+    }
+
+    function renderizarEmp() {
+        let pctNormal = (normalCdf(k) - normalCdf(-k)) * 100;
+        let pctCheb = k > 1 ? (1.0 - 1.0 / (k * k)) * 100 : 0;
+        let cauda = 100 - pctNormal;
+
+        document.getElementById('kpi_interv').innerText = `[μ - ${k}σ , μ + ${k}σ]`;
+        document.getElementById('kpi_pct_emp').innerText = `${pctNormal.toFixed(2)}%`;
+        document.getElementById('kpi_pct_cheb').innerText = k > 1 ? `≥ ${pctCheb.toFixed(1)}%` : 'Sem cota (k ≤ 1)';
+        document.getElementById('kpi_caudas').innerText = `${cauda.toFixed(2)}%`;
+
+        let xVals = [], yVals = [], xFill = [], yFill = [];
+        for(let x = -4.0; x <= 4.0; x += 0.05) {
+            let y = (1.0 / Math.sqrt(2.0 * Math.PI)) * Math.exp(-0.5 * x * x);
+            xVals.push(x);
+            yVals.push(y);
+            if (x >= -k && x <= k) {
+                xFill.push(x);
+                yFill.push(y);
+            }
+        }
+
+        let traceCurva = {
+            x: xVals, y: yVals, type: 'scatter', mode: 'lines',
+            name: 'Distribuição Normal N(0, 1)',
+            line: { color: '#003485', width: 2.5 }
+        };
+
+        let traceArea = {
+            x: [-k, ...xFill, k],
+            y: [0, ...yFill, 0],
+            fill: 'tozeroy',
+            type: 'scatter',
+            mode: 'none',
+            name: `Área Central (${pctNormal.toFixed(1)}%)`,
+            fillcolor: 'rgba(0, 52, 133, 0.35)'
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Desvios em relação à Média (z = (x - μ)/σ)', range: [-4.2, 4.2] },
+            yaxis: { title: 'Densidade de Probabilidade', showgrid: true }
+        };
+
+        Plotly.react('chart_div', [traceArea, traceCurva], layout, {responsive: true, displayModeBar: false});
+    }
+
+    function gerarLotes() {
+        let nLotes = 25;
+        let xIndices = Array.from({length: nLotes}, (_, i) => `Lote ${i+1}`);
+        let medidas = [];
+        let cores = [];
+        let foraCount = 0;
+
+        let lsc = muNominal + 3 * sigmaNominal;
+        let lic = muNominal - 3 * sigmaNominal;
+
+        function randNorm(mu, s) {
+            let u1 = Math.random(), u2 = Math.random();
+            return mu + Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2) * s;
+        }
+
+        for(let i=0; i<nLotes; i++) {
+            let val = randNorm(muNominal + shift * sigmaNominal, sigmaProc * sigmaNominal);
+            medidas.push(parseFloat(val.toFixed(2)));
+            if (val > lsc || val < lic) {
+                cores.push('#dc2626');
+                foraCount++;
+            } else {
+                cores.push('#003485');
+            }
+        }
+
+        let cardStatus = document.getElementById('card_status_qualidade');
+        let txtStatus = document.getElementById('kpi_status');
+        if (foraCount === 0) {
+            txtStatus.innerText = 'Sob Controle ✓';
+            txtStatus.style.color = '#16a34a';
+            cardStatus.style.borderLeftColor = '#16a34a';
+        } else {
+            txtStatus.innerText = `ALERTA: ${foraCount} Lote(s) Fora!`;
+            txtStatus.style.color = '#dc2626';
+            cardStatus.style.borderLeftColor = '#dc2626';
+        }
+
+        let tracePontos = {
+            x: xIndices, y: medidas, type: 'scatter', mode: 'lines+markers',
+            name: 'Média Amostral do Lote',
+            line: { color: '#64748b', width: 1.5 },
+            marker: { size: 9, color: cores }
+        };
+
+        let layout = {
+            margin: { t: 30, b: 50, l: 45, r: 25 },
+            showlegend: false,
+            xaxis: { title: 'Subgrupos Racionais (25 Lotes de Peças)', tickangle: -45 },
+            yaxis: { title: 'Dimensão Crítica (mm)', range: [5.5, 14.5], showgrid: true },
+            shapes: [
+                // LM
+                { type: 'line', x0: 0, x1: nLotes - 1, y0: muNominal, y1: muNominal, line: { color: '#16a34a', width: 2 } },
+                // LSC
+                { type: 'line', x0: 0, x1: nLotes - 1, y0: lsc, y1: lsc, line: { color: '#dc2626', width: 2, dash: 'dash' } },
+                // LIC
+                { type: 'line', x0: 0, x1: nLotes - 1, y0: lic, y1: lic, line: { color: '#dc2626', width: 2, dash: 'dash' } }
+            ],
+            annotations: [
+                { x: nLotes - 1, y: lsc, text: 'LSC = 13.0', showarrow: false, font: { size: 10, color: '#dc2626', weight: 'bold' } },
+                { x: nLotes - 1, y: muNominal, text: 'LM = 10.0', showarrow: false, font: { size: 10, color: '#16a34a', weight: 'bold' } },
+                { x: nLotes - 1, y: lic, text: 'LIC = 7.0', showarrow: false, font: { size: 10, color: '#dc2626', weight: 'bold' } }
+            ]
+        };
+
+        Plotly.react('chart_div', [tracePontos], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizarEmp();
+</script>
+</body>
+</html>

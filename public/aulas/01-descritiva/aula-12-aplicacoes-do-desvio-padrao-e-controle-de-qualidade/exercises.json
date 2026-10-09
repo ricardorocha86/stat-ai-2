@@ -1,0 +1,167 @@
+[
+  {
+    "id": "livro-aula-12-exercicio-1",
+    "numero": 1,
+    "numero_original": "1",
+    "categoria": "exercicio",
+    "enunciado": "(Mann, 2015) O chocolate ao leite padrão da M&Ms™ vem em seis cores. As embalagens Fun Size geralmente contêm entre 16 e 20 confetes, de modo que é comum que uma embalagem do tipo Fun Size venha com algumas cores faltando. Foi fornecida uma embalagem Fun Size a cada um dentre os 14 alunos em um curso de verão de estatística e foi solicitado que eles contassem o número de cores presentes nas embalagens. Os dados a seguir correspondem ao número de cores encontradas nessas 14 embalagens:\n\n`3, 6, 5, 4, 6, 3, 2, 5, 5, 4, 5, 6, 3, 2`\n\n(a) Encontre a média aritmética, a mediana e a moda. Os valores dessas medidas resumidas representam parâmetros da população ou estatísticas da amostra? Explique.  \n(b) Calcule a amplitude, a variância e o desvio-padrão.  \n(c) Calcule o coeficiente de variação e interprete-o.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+      "linha_inicial": 49,
+      "linha_final": 68,
+      "aula": 12
+    },
+    "solucao_completa": "(a) O rol é $2,2,3,3,3,4,4,5,5,5,5,6,6,6$. Com $\\sum x_i=59$, a média é $59/14\\approx4{,}2143$ cores. A mediana é $(4+5)/2=4{,}5$ e a moda é 5. São estatísticas de uma amostra de 14 embalagens.\n(b) A amplitude é $6-2=4$ cores. Como $\\sum x_i^2=275$:\n$$s^2=\\frac{275-59^2/14}{13}\\approx2{,}0275\\text{ cores}^2,\\qquad s\\approx1{,}4239\\text{ cores}.$$\n(c) Usando os valores antes do arredondamento:\n$$CV=\\frac{1{,}423893\\ldots}{4{,}214285\\ldots}\\cdot100\\%\\approx33{,}79\\%.$$\nPela convenção de interpretação adotada na aula, o conjunto tem dispersão relativa elevada. Esse limiar é uma referência didática, não uma regra universal para qualquer contexto.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Encontre a média aritmética, a mediana e a moda. Os valores dessas medidas resumidas representam parâmetros da população ou estatísticas da amostra? Explique."
+      },
+      {
+        "id": "b",
+        "texto": "Calcule a amplitude, a variância e o desvio-padrão."
+      },
+      {
+        "id": "c",
+        "texto": "Calcule o coeficiente de variação e interprete-o."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/",
+    "solucao_original": "**Resolução:**  \n(a) Dados em rol: `2, 2, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6` ($n = 14$).  \n- Média: $\\bar{x} = \\frac{59}{14} \\cong 4{,}21$ cores.  \n- Mediana: $Md = \\frac{4 + 5}{2} = 4{,}5$ cores.  \n- Moda: $Mo = 5$ cores (aparece 4 vezes).  \nOs valores são **estatísticas/estimativas amostrais**, pois foram obtidos a partir de uma amostra de 14 embalagens.  \n(b) Amplitude: $AT = 6 - 2 = 4$.  \n- $\\Sigma x = 59$, $\\Sigma x^2 = 275$.  \n- Variância amostral: $s^2 = \\frac{275 - (59)^2/14}{13} = \\frac{275 - 248{,}64}{13} = \\frac{26{,}36}{13} \\cong 2{,}03$.  \n- Desvio-padrão: $s = \\sqrt{2{,}03} \\cong 1{,}42$ cores.  \n(c) Coeficiente de Variação: $CV = \\frac{1{,}42}{4{,}21} \\times 100\\% = 33{,}7\\%$. Indica **alta dispersão** ($CV > 30\\%$).",
+    "dica": "A variância amostral usa $n-1$; o CV compara o desvio-padrão à média.",
+    "passo_inicial": "Ordene os 14 dados para as medidas de centro. Calcule $\\sum x_i$ e $\\sum x_i^2$ para usar $s^2=[\\sum x_i^2-(\\sum x_i)^2/n]/(n-1)$.",
+    "resposta_final": "(a) Média 4,21; mediana 4,5; moda 5; estatísticas amostrais. (b) Amplitude 4; variância amostral 2,03; desvio-padrão 1,42. (c) CV aproximadamente 33,79%.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+          "linha_inicial": 49,
+          "linha_final": 68
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 3,
+          "questao": "Exercício 1",
+          "pagina_pdf": 1,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-03.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/14b304035b344d65b7ca41cf4cbc16dc/GABARITO%20-%20LIVRO%20ESTAT%C3%8DSTICA%20-%20CAP%203.pdf"
+        }
+      ],
+      "observacoes": "CV calculado com os valores sem arredondamento intermediário, concordando com 33,79% do gabarito.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-12-multipla-escolha-7",
+    "numero": 7,
+    "numero_original": "7",
+    "categoria": "multipla_escolha",
+    "enunciado": "A figura a seguir ilustra distribuições de frequências com diferentes assimetrias:\n\n![Distribuições de Frequências e Assimetria](recursos/ex07_cap3_distribuicao.html)\n\nIndique a relação correta entre a média, a mediana e a moda para uma distribuição com assimetria positiva (à direita):  \n(a) Média = Mediana = Moda  \n(b) Média < Mediana < Moda  \n(c) Moda < Mediana < Média  \n(d) Mediana < Moda < Média  \n(e) Média = Moda $\\ne$ Mediana",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+      "linha_inicial": 69,
+      "linha_final": 82,
+      "aula": 12
+    },
+    "solucao_completa": "No esquema unimodal da aula, a moda fica próxima do pico. A mediana fica à sua direita, e a média é puxada ainda mais pelos valores altos da cauda. A relação esperada é $\\text{Moda}<\\text{Mediana}<\\text{Média}$. Trata-se da relação didática para a forma ilustrada, não de uma identidade válida para toda distribuição assimétrica possível.",
+    "resposta_final": "Alternativa C — moda < mediana < média.",
+    "resourceBasePath": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Média = Mediana = Moda"
+      },
+      {
+        "id": "b",
+        "texto": "Média < Mediana < Moda"
+      },
+      {
+        "id": "c",
+        "texto": "Moda < Mediana < Média"
+      },
+      {
+        "id": "d",
+        "texto": "Mediana < Moda < Média"
+      },
+      {
+        "id": "e",
+        "texto": "Média = Moda $\\ne$ Mediana"
+      }
+    ],
+    "solucao_original": "**Gabarito: (c)**  \n**Comentário:** Em uma distribuição com assimetria positiva (cauda longa à direita), os valores extremos elevados puxam a média aritmética para a direita, resultando na ordenação: $\\text{Moda} < \\text{Mediana} < \\text{Média}$.",
+    "dica": "A cauda longa à direita influencia mais a média do que a mediana.",
+    "passo_inicial": "Observe a distribuição assimétrica à direita no esquema e imagine o efeito dos valores altos sobre a média.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+          "linha_inicial": 69,
+          "linha_final": 82
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-12-multipla-escolha-13",
+    "numero": 13,
+    "numero_original": "13",
+    "categoria": "multipla_escolha",
+    "enunciado": "Observe o boxplot comparativo a seguir:\n\n![Boxplot Comparativo de Produção](recursos/ex13_cap3_boxplot.html)\n\nCom base no gráfico, assinale a afirmação correta:  \n(a) A distribuição do Grupo B apresenta maior amplitude interquartil que a do Grupo A.  \n(b) Não há valores atípicos (*outliers*) em nenhum dos grupos.  \n(c) A mediana do Grupo A é superior ao terceiro quartil do Grupo B.  \n(d) A amplitude total do Grupo A é menor que a do Grupo B.  \n(e) O Grupo B apresenta simetria perfeita entre os quartis.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+      "linha_inicial": 83,
+      "linha_final": 95,
+      "aula": 12
+    },
+    "solucao_completa": "A caixa do Grupo B é maior, indicando maior amplitude interquartil. A é a alternativa correta. B é falsa porque há um marcador de outlier no Grupo A. C é falsa porque a mediana de A não ultrapassa o terceiro quartil de B. D é falsa: considerando os extremos, o Grupo A tem maior amplitude total no esquema, embora a caixa do Grupo B seja maior. E é falsa porque a mediana de B não está no centro da caixa. O gráfico é conceitual, portanto não permite atribuir valores observados a esses grupos.",
+    "resposta_final": "Alternativa A — o Grupo B apresenta maior amplitude interquartil.",
+    "resourceBasePath": "/aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "A distribuição do Grupo B apresenta maior amplitude interquartil que a do Grupo A."
+      },
+      {
+        "id": "b",
+        "texto": "Não há valores atípicos (*outliers*) em nenhum dos grupos."
+      },
+      {
+        "id": "c",
+        "texto": "A mediana do Grupo A é superior ao terceiro quartil do Grupo B."
+      },
+      {
+        "id": "d",
+        "texto": "A amplitude total do Grupo A é menor que a do Grupo B."
+      },
+      {
+        "id": "e",
+        "texto": "O Grupo B apresenta simetria perfeita entre os quartis."
+      }
+    ],
+    "solucao_original": "**Gabarito: (a)**  \n**Comentário:** A altura da caixa do Grupo B é visivelmente maior que a do Grupo A, indicando maior amplitude interquartil ($AIQ = Q_3 - Q_1$).",
+    "dica": "Compare o comprimento das caixas para os 50% centrais e os extremos para a amplitude total.",
+    "passo_inicial": "Identifique $Q_1$ e $Q_3$ de cada grupo no esquema. Observe também o marcador isolado do Grupo A e a posição relativa das medianas.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+          "linha_inicial": 83,
+          "linha_final": 95
+        }
+      ],
+      "observacoes": "Alternativa D especificada como amplitude total para eliminar a ambiguidade de “variabilidade geral”; a figura diferencia amplitude interquartil de amplitude total.",
+      "conferido_enunciado": true
+    },
+    "enunciado_original": "Observe o boxplot comparativo a seguir:\n\n![Boxplot Comparativo de Produção](recursos/ex13_cap3_boxplot.html)\n\nCom base no gráfico, assinale a afirmação correta:  \n(a) A distribuição do Grupo B apresenta maior amplitude interquartil que a do Grupo A.  \n(b) Não há valores atípicos (*outliers*) em nenhum dos grupos.  \n(c) A mediana do Grupo A é superior ao terceiro quartil do Grupo B.  \n(d) A variabilidade geral do Grupo A é menor que a do Grupo B.  \n(e) O Grupo B apresenta simetria perfeita entre os quartis."
+  }
+]

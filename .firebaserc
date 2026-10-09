@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "statai-app-2026-ricardo"
+  },
+  "targets": {
+    "statai-app-2026-ricardo": {
+      "hosting": {
+        "statai-site": [
+          "statai-app"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

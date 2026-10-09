@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador de Dispersão e Volatilidade</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.78rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.acaoA { border-left-color: #003485; }
+    .kpi-card.acaoB { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.0rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>📈 Simulador de Dispersão e Coeficiente de Variação (Ação A vs Ação B)</span>
+        </div>
+        <span class="sim-badge">Aula 9 • Volatilidade e Risco</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Desvio-Padrão Ação A (sA):</span>
+                <span id="lbl_sA" class="ctrl-val" style="color:#003485;">R$ 2.00 (Baixo Risco)</span>
+            </div>
+            <input type="range" id="slider_sA" min="0.5" max="8.0" step="0.25" value="2.0" oninput="atualizar('A', this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Desvio-Padrão Ação B (sB):</span>
+                <span id="lbl_sB" class="ctrl-val" style="color:#ea580c;">R$ 5.50 (Alto Risco)</span>
+            </div>
+            <input type="range" id="slider_sB" min="0.5" max="8.0" step="0.25" value="5.5" oninput="atualizar('B', this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="simularPregrao()">🎲 Simular Pregão</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card acaoA">
+            <div class="kpi-label">Ação A: CV = s/x̄</div>
+            <div class="kpi-val" id="kpi_cvA">CV = 6.7%</div>
+        </div>
+        <div class="kpi-card acaoB">
+            <div class="kpi-label">Ação B: CV = s/x̄</div>
+            <div class="kpi-val" id="kpi_cvB">CV = 18.3%</div>
+        </div>
+        <div class="kpi-card acaoA">
+            <div class="kpi-label">Ação A: Variância (s²)</div>
+            <div class="kpi-val" id="kpi_varA">4.00 R$²</div>
+        </div>
+        <div class="kpi-card acaoB">
+            <div class="kpi-label">Ação B: Variância (s²)</div>
+            <div class="kpi-val" id="kpi_varB">30.25 R$²</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Interpretação do CV (Coeficiente de Variação):</b> Mesmo que duas ações tenham a mesma média de preço (R$ 30,00), a Ação B é muito mais dispersa e volátil. O CV permite comparar a dispersão relativa e mensurar o risco financeiro!
+    </div>
+</div>
+
+<script>
+    const mediaGeral = 30.0;
+    let sA = 2.0;
+    let sB = 5.5;
+
+    function atualizar(tipo, val) {
+        if (tipo === 'A') {
+            sA = parseFloat(val);
+            document.getElementById('lbl_sA').innerText = `R$ ${sA.toFixed(2)}`;
+        } else {
+            sB = parseFloat(val);
+            document.getElementById('lbl_sB').innerText = `R$ ${sB.toFixed(2)}`;
+        }
+        renderizar();
+    }
+
+    function simularPregrao() {
+        renderizar();
+    }
+
+    function renderizar() {
+        let cvA = (sA / mediaGeral) * 100;
+        let cvB = (sB / mediaGeral) * 100;
+        let varA = sA * sA;
+        let varB = sB * sB;
+
+        document.getElementById('kpi_cvA').innerText = `CV = ${cvA.toFixed(1)}%`;
+        document.getElementById('kpi_cvB').innerText = `CV = ${cvB.toFixed(1)}%`;
+        document.getElementById('kpi_varA').innerText = `${varA.toFixed(2)} R$²`;
+        document.getElementById('kpi_varB').innerText = `${varB.toFixed(2)} R$²`;
+
+        // Simula 30 dias de cotação
+        let dias = Array.from({length: 30}, (_, i) => `Dia ${i+1}`);
+        let precosA = [];
+        let precosB = [];
+
+        function randNormal(mu, sigma) {
+            let u1 = Math.random(), u2 = Math.random();
+            return mu + Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2) * sigma;
+        }
+
+        for(let i=0; i<30; i++) {
+            precosA.push(parseFloat(randNormal(mediaGeral, sA).toFixed(2)));
+            precosB.push(parseFloat(randNormal(mediaGeral, sB).toFixed(2)));
+        }
+
+        let traceA = {
+            x: dias, y: precosA, type: 'scatter', mode: 'lines+markers',
+            name: `Ação A (s = R$ ${sA.toFixed(2)})`,
+            line: { color: '#003485', width: 2.5 },
+            marker: { size: 6 }
+        };
+
+        let traceB = {
+            x: dias, y: precosB, type: 'scatter', mode: 'lines+markers',
+            name: `Ação B (s = R$ ${sB.toFixed(2)})`,
+            line: { color: '#ea580c', width: 2.5 },
+            marker: { size: 6 }
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 20 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Pregões Diários (30 Dias de Simulação)', dtick: 4 },
+            yaxis: { title: 'Preço da Ação (R$)', range: [10, 50], showgrid: true },
+            shapes: [
+                // Linha Média
+                {
+                    type: 'line', x0: 0, x1: 29, y0: mediaGeral, y1: mediaGeral,
+                    line: { color: '#64748b', width: 1.5, dash: 'dot' }
+                }
+            ],
+            annotations: [
+                {
+                    x: 1, y: mediaGeral + 1.2, text: 'Média Compartilhada: R$ 30,00',
+                    showarrow: false, font: { size: 10, color: '#64748b' }
+                }
+            ]
+        };
+
+        Plotly.react('chart_div', [traceA, traceB], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

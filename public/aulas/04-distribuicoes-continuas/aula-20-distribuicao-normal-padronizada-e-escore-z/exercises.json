@@ -1,0 +1,98 @@
+[
+  {
+    "id": "livro-aula-20-exercicio-2",
+    "numero": 2,
+    "numero_original": "2",
+    "categoria": "exercicio",
+    "enunciado": "Os salários dos funcionários de uma multinacional seguem distribuição normal com média $\\mu = 5.000,00$ e desvio-padrão $\\sigma = 1.000,00$.  \n(a) Qual a porcentagem de funcionários que ganham entre R$ 4.000,00 e R$ 6.500,00?  \n(b) Qual o salário mínimo para estar entre os 10% mais bem pagos da empresa?",
+    "origem": {
+      "arquivo": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt",
+      "linha_inicial": 83,
+      "linha_final": 94,
+      "aula": 20
+    },
+    "solucao_completa": "(a) Para 4000, $z_1=-1$; para 6500, $z_2=1{,}5$. Na tabela de área entre 0 e $z$, as áreas são 0,3413 e 0,4332. Como os limites ficam em lados opostos da média:\n$$P(4000<X<6500)=0{,}3413+0{,}4332\\approx0{,}7745=77{,}45\\%.$$\n(b) Os 10% superiores começam no percentil 90: $P(Z<z)=0{,}90$. A área de 0 a $z$ é 0,40, levando a $z\\approx1{,}28$ na tabela. Então $x=5000+1{,}28(1000)=6280$ reais. Uma função quantil mais precisa dá $z\\approx1{,}28155$ e R$ 6.281,55; ambas as aproximações são compatíveis com o método utilizado.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Qual a porcentagem de funcionários que ganham entre R$ 4.000,00 e R$ 6.500,00?"
+      },
+      {
+        "id": "b",
+        "texto": "Qual o salário mínimo para estar entre os 10% mais bem pagos da empresa?"
+      }
+    ],
+    "resourceBasePath": "/aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/",
+    "solucao_original": "**Resolução:**  \n(a) Padronizando:  \n- Para $x_1 = 4000$: $z_1 = \\frac{4000 - 5000}{1000} = -1{,}00 \\implies \\text{Área}(0 \\text{ a } 1{,}00) = 0{,}3413$.  \n- Para $x_2 = 6500$: $z_2 = \\frac{6500 - 5000}{1000} = +1{,}50 \\implies \\text{Área}(0 \\text{ a } 1{,}50) = 0{,}4332$.  \n- $P(4000 < X < 6500) = 0{,}3413 + 0{,}4332 = 0{,}7745 \\quad (77{,}45\\%)$.  \n(b) Para os 10% superiores, a área da média até $z$ é $0{,}50 - 0{,}10 = 0{,}4000$. Na tabela, $z \\cong 1{,}28$.  \n$$x = \\mu + z \\cdot \\sigma = 5000 + 1{,}28 \\cdot 1000 = 6.280,00$$",
+    "dica": "Padronize os salários. Para o limite dos 10% superiores, procure um percentil, não uma probabilidade entre dois salários.",
+    "passo_inicial": "Use $z=(x-5000)/1000$. No item (a), obtenha os dois escores; no (b), procure o $z$ com 90% da área à esquerda.",
+    "resposta_final": "(a) Aproximadamente 77,45%. (b) Aproximadamente R$ 6.280,00 pela tabela; R$ 6.281,55 com quantil mais preciso.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt",
+          "linha_inicial": 83,
+          "linha_final": 94
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-20-multipla-escolha-4",
+    "numero": 4,
+    "numero_original": "4",
+    "categoria": "multipla_escolha",
+    "enunciado": "Em uma distribuição normal padronizada $Z \\sim N(0, 1)$, o valor de $P(-1 < Z < 1)$ é aproximadamente igual a:  \n(a) $50{,}0\\%$  \n(b) $68{,}3\\%$  \n(c) $95{,}4\\%$  \n(d) $99{,}7\\%$  \n(e) $100{,}0\\%$",
+    "origem": {
+      "arquivo": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt",
+      "linha_inicial": 97,
+      "linha_final": 105,
+      "aula": 20
+    },
+    "solucao_completa": "A tabela fornece aproximadamente 0,34134 entre 0 e 1. Por simetria,\n$$P(-1<Z<1)=2(0{,}34134)\\approx0{,}68268=68{,}268\\%.$$\nIsso coincide com a faixa de um desvio-padrão da regra empírica.",
+    "resposta_final": "Alternativa B — aproximadamente 68,3%.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "$50{,}0\\%$"
+      },
+      {
+        "id": "b",
+        "texto": "$68{,}3\\%$"
+      },
+      {
+        "id": "c",
+        "texto": "$95{,}4\\%$"
+      },
+      {
+        "id": "d",
+        "texto": "$99{,}7\\%$"
+      },
+      {
+        "id": "e",
+        "texto": "$100{,}0\\%$"
+      }
+    ],
+    "resourceBasePath": "/aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/",
+    "solucao_original": "**Gabarito: (b)**  \n**Comentário:** Pela Regra Empírica e pela tabela normal padronizada, a área entre $-1\\sigma$ e $+1\\sigma$ em torno da média é de $2 \\times 0{,}34134 = 0{,}6827 \\cong 68{,}3\\%$.",
+    "dica": "A simetria permite duplicar a área entre a média e um desvio-padrão.",
+    "passo_inicial": "Na tabela da normal padrão, obtenha a área entre 0 e 1 e multiplique por dois.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt",
+          "linha_inicial": 97,
+          "linha_final": 105
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

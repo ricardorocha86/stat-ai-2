@@ -1,0 +1,135 @@
+[
+  {
+    "id": "livro-aula-15-exercicio-8",
+    "numero": 8,
+    "numero_original": "8",
+    "categoria": "exercicio",
+    "enunciado": "Observe o diagrama de Venn a seguir para dois eventos $A$ e $B$:\n\n![Diagrama de Venn - Exercício 8](recursos/ex08_cap4_venn.svg)\n\nSabendo que $P(A) = 0{,}60$, $P(B) = 0{,}45$ e $P(A \\cap B) = 0{,}25$:  \n(a) Calcule $P(A \\cup B)$.  \n(b) Calcule $P(A|B)$.  \n(c) Os eventos $A$ e $B$ são independentes? Justifique matematicamente.",
+    "origem": {
+      "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+      "linha_inicial": 67,
+      "linha_final": 81,
+      "aula": 15
+    },
+    "solucao_completa": "(a) $P(A\\cup B)=0{,}60+0{,}45-0{,}25=0{,}80$.\n(b) $P(A\\mid B)=0{,}25/0{,}45=5/9\\approx0{,}5556$, ou 55,56%.\n(c) Para independência seria necessário $P(A\\cap B)=P(A)P(B)$. Mas $0{,}60\\cdot0{,}45=0{,}27\\ne0{,}25$. Portanto, os eventos não são independentes.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Calcule $P(A \\cup B)$."
+      },
+      {
+        "id": "b",
+        "texto": "Calcule $P(A|B)$."
+      },
+      {
+        "id": "c",
+        "texto": "Os eventos $A$ e $B$ são independentes? Justifique matematicamente."
+      }
+    ],
+    "resourceBasePath": "/aulas/02-probabilidade/aula-15-regras-de-contagem/",
+    "solucao_original": "**Resolução:**  \n(a) $P(A \\cup B) = P(A) + P(B) - P(A \\cap B) = 0{,}60 + 0{,}45 - 0{,}25 = 0{,}80$.  \n(b) $P(A|B) = \\frac{P(A \\cap B)}{P(B)} = \\frac{0{,}25}{0{,}45} = \\frac{5}{9} \\cong 0{,}5556 \\quad (55{,}56\\%)$.  \n(c) Para independência, deveríamos ter $P(A \\cap B) = P(A) \\cdot P(B)$.  \nComo $P(A) \\cdot P(B) = 0{,}60 \\times 0{,}45 = 0{,}27 \\ne 0{,}25$, os eventos **não são independentes**.",
+    "dica": "A união usa inclusão-exclusão; a condicional restringe o universo; independência exige uma igualdade específica.",
+    "passo_inicial": "Para (a), use $P(A\\cup B)=P(A)+P(B)-P(A\\cap B)$. Para (b), use $P(A\\mid B)=P(A\\cap B)/P(B)$. Para (c), compare a interseção com o produto das marginais.",
+    "resposta_final": "(a) 80%. (b) $5/9\\approx55{,}56\\%$. (c) Não são independentes.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+          "linha_inicial": 67,
+          "linha_final": 81
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-15-exercicio-10",
+    "numero": 10,
+    "numero_original": "10",
+    "categoria": "exercicio",
+    "enunciado": "Um lote contém componentes perfeitos ($P$) e defeituosos ($D$). A probabilidade de retirar um componente perfeito é $0{,}90$, e a de retirar um defeituoso é $0{,}10$. Duas retiradas são feitas ao acaso, com reposição e de modo independente.\n\nObserve a árvore de probabilidades:\n\n![Árvore de duas retiradas com reposição](recursos/ex10_arvore_probabilidades.svg)\n\nCalcule a probabilidade do caminho destacado: retirar um componente perfeito na primeira retirada e um defeituoso na segunda ($P_1\\cap D_2$).",
+    "origem": {
+      "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+      "linha_inicial": 82,
+      "linha_final": 87,
+      "aula": 15
+    },
+    "resourceBasePath": "/aulas/02-probabilidade/aula-15-regras-de-contagem/",
+    "enunciado_original": "Observe a árvore de probabilidades a seguir:\n\n![Árvore de Decisão - Exercício 10](ex10_cap4_arvore.png)\n\nCalcule a probabilidade do caminho composto destacado nos ramos da árvore.",
+    "dica": "A probabilidade de um caminho é o produto das probabilidades dos ramos que o compõem.",
+    "passo_inicial": "Identifique os dois eventos do caminho destacado e use $P(P_1\\cap D_2)=P(P_1)P(D_2\\mid P_1)$. A reposição e a independência mantêm a probabilidade do segundo evento.",
+    "solucao_completa": "O primeiro ramo do caminho destacado tem probabilidade 0,90. Como há reposição e as retiradas são independentes, o segundo ramo tem probabilidade 0,10, mesmo após sair um componente perfeito. Assim,\n$$P(P_1\\cap D_2)=0{,}90\\cdot0{,}10=0{,}09=9\\%.$$\nA soma seria usada para reunir caminhos mutuamente exclusivos; dentro de um único caminho, multiplicam-se os ramos.",
+    "resposta_final": "$P(P_1\\cap D_2)=0{,}09=9\\%$.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+          "linha_inicial": 82,
+          "linha_final": 87
+        }
+      ],
+      "observacoes": "Exemplo equivalente elaborado para substituir o enunciado sem dados e sem árvore recuperável. Usa a regra da multiplicação apresentada no material; não atribui estes números ao gabarito do autor.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-15-multipla-escolha-6",
+    "numero": 6,
+    "numero_original": "6",
+    "categoria": "multipla_escolha",
+    "enunciado": "(Cesgranrio) Uma comissão de fiscalização de obras deve ser formada por 3 engenheiros escolhidos dentre 8 disponíveis. Como todos os membros da comissão terão a mesma função, o número de comissões distintas que podem ser formadas é igual a:  \n(a) 24  \n(b) 56  \n(c) 112  \n(d) 336  \n(e) 512",
+    "origem": {
+      "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+      "linha_inicial": 90,
+      "linha_final": 99,
+      "aula": 15
+    },
+    "solucao_completa": "Uma comissão formada pelos mesmos três engenheiros continua sendo a mesma comissão, qualquer que seja a ordem de seleção. Portanto,\n$$\\binom83=\\frac{8!}{3!5!}=\\frac{8\\cdot7\\cdot6}{3\\cdot2\\cdot1}=56.$$\nO produto $8\\cdot7\\cdot6$ contaria cada comissão $3!$ vezes.",
+    "resposta_final": "Alternativa B — 56 comissões.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "24"
+      },
+      {
+        "id": "b",
+        "texto": "56"
+      },
+      {
+        "id": "c",
+        "texto": "112"
+      },
+      {
+        "id": "d",
+        "texto": "336"
+      },
+      {
+        "id": "e",
+        "texto": "512"
+      }
+    ],
+    "resourceBasePath": "/aulas/02-probabilidade/aula-15-regras-de-contagem/",
+    "solucao_original": "**Gabarito: (b)**  \n**Comentário:** Como a ordem dos membros da comissão não altera a comissão, trata-se de uma combinação simples:  \n$$C_{8, 3} = \\frac{8!}{3! \\, 5!} = \\frac{8 \\cdot 7 \\cdot 6}{3 \\cdot 2 \\cdot 1} = 56$$",
+    "dica": "A ordem em que os membros são escolhidos muda a comissão?",
+    "passo_inicial": "Como todos têm a mesma função, use combinação simples: $\\binom nr=n!/[r!(n-r)!]$, com $n=8$ e $r=3$.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+          "linha_inicial": 90,
+          "linha_final": 99
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]

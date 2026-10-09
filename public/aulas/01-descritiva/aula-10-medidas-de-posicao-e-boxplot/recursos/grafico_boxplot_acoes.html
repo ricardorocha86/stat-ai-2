@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador de Boxplot e Outliers</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.78rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 3px solid #003485; padding: 6px 8px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.outlier { border-left-color: #dc2626; }
+    .kpi-label { font-size: 0.68rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>📦 Laboratório Dinâmico de Boxplot e Detecção de Outliers</span>
+        </div>
+        <span class="sim-badge">Aula 10 • Separatrizes e Quartis</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Injetar Outlier no Topo (Acima de LS):</span>
+                <span id="lbl_outlier" class="ctrl-val">R$ 55.00</span>
+            </div>
+            <input type="range" id="slider_outlier" min="40.0" max="80.0" step="1.0" value="55.0" oninput="atualizarOutlier(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Dispersão da Caixa (IIQ = Q3 - Q1):</span>
+                <span id="lbl_disp" class="ctrl-val">Moderada</span>
+            </div>
+            <input type="range" id="slider_disp" min="2" max="10" step="1" value="5" oninput="atualizarDisp(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="sortearNovaAmostra()">🎲 Nova Amostra</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">1º Quartil (Q1)</div>
+            <div class="kpi-val" id="kpi_q1">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Mediana (Q2)</div>
+            <div class="kpi-val" id="kpi_q2">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">3º Quartil (Q3)</div>
+            <div class="kpi-val" id="kpi_q3">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">IIQ = Q3 - Q1</div>
+            <div class="kpi-val" id="kpi_iiq">--</div>
+        </div>
+        <div class="kpi-card outlier">
+            <div class="kpi-label">Limite Sup. (LS)</div>
+            <div class="kpi-val" id="kpi_ls">--</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner">
+        💡 <b>Critério de Outlier do Livro (p. 52):</b> O Limite Superior é calculado como <b>LS = Q3 + 1,5 × IIQ</b>. Qualquer ponto que ultrapasse esse patamar é marcado no boxplot com um símbolo individual isolado (ponto discrepante).
+    </div>
+</div>
+
+<script>
+    let n = 40;
+    let baseDisp = 5;
+    let outlier = 55.0;
+    let dadosPetr = [];
+    let dadosVale = [];
+
+    function randNorm(mu, s) {
+        let u1 = Math.random(), u2 = Math.random();
+        return mu + Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2) * s;
+    }
+
+    function sortearNovaAmostra() {
+        dadosPetr = [];
+        dadosVale = [];
+        for(let i=0; i<n; i++) {
+            dadosPetr.push(parseFloat(randNorm(32.0, baseDisp).toFixed(2)));
+            dadosVale.push(parseFloat(randNorm(65.0, baseDisp * 1.4).toFixed(2)));
+        }
+        // Injeta outlier no topo da Petrobras
+        dadosPetr[0] = outlier;
+        renderizar();
+    }
+
+    function atualizarOutlier(val) {
+        outlier = parseFloat(val);
+        document.getElementById('lbl_outlier').innerText = `R$ ${outlier.toFixed(2)}`;
+        dadosPetr[0] = outlier;
+        renderizar();
+    }
+
+    function atualizarDisp(val) {
+        baseDisp = parseFloat(val);
+        document.getElementById('lbl_disp').innerText = baseDisp <= 3 ? 'Baixa' : (baseDisp >= 7 ? 'Alta' : 'Moderada');
+        sortearNovaAmostra();
+    }
+
+    function quantile(arr, q) {
+        let sorted = [...arr].sort((a,b) => a - b);
+        let pos = (sorted.length - 1) * q;
+        let base = Math.floor(pos);
+        let rest = pos - base;
+        if (sorted[base + 1] !== undefined) {
+            return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+        } else {
+            return sorted[base];
+        }
+    }
+
+    function renderizar() {
+        let q1 = quantile(dadosPetr, 0.25);
+        let q2 = quantile(dadosPetr, 0.50);
+        let q3 = quantile(dadosPetr, 0.75);
+        let iiq = q3 - q1;
+        let ls = q3 + 1.5 * iiq;
+
+        document.getElementById('kpi_q1').innerText = `R$ ${q1.toFixed(2)}`;
+        document.getElementById('kpi_q2').innerText = `R$ ${q2.toFixed(2)}`;
+        document.getElementById('kpi_q3').innerText = `R$ ${q3.toFixed(2)}`;
+        document.getElementById('kpi_iiq').innerText = `R$ ${iiq.toFixed(2)}`;
+        document.getElementById('kpi_ls').innerText = `R$ ${ls.toFixed(2)}`;
+
+        let tracePetr = {
+            x: dadosPetr,
+            type: 'box',
+            name: 'PETR4 (Petrobras)',
+            marker: { color: '#003485', outliercolor: '#dc2626' },
+            boxpoints: 'outliers',
+            orientation: 'h'
+        };
+
+        let traceVale = {
+            x: dadosVale,
+            type: 'box',
+            name: 'VALE3 (Vale)',
+            marker: { color: '#059669', outliercolor: '#dc2626' },
+            boxpoints: 'outliers',
+            orientation: 'h'
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 120, r: 25 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.2, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Preço da Ação (R$)' },
+            shapes: [
+                {
+                    type: 'line', x0: ls, x1: ls, y0: -0.4, y1: 0.4,
+                    line: { color: '#dc2626', width: 2, dash: 'dash' }
+                }
+            ],
+            annotations: [
+                {
+                    x: ls, y: 0.35, text: `LS = ${ls.toFixed(2)}`,
+                    showarrow: true, arrowhead: 2, arrowcolor: '#dc2626',
+                    font: { size: 9, color: '#dc2626', weight: 'bold' },
+                    bgcolor: '#ffffff'
+                }
+            ]
+        };
+
+        Plotly.react('chart_div', [tracePetr, traceVale], layout, {responsive: true, displayModeBar: false});
+    }
+
+    sortearNovaAmostra();
+</script>
+</body>
+</html>

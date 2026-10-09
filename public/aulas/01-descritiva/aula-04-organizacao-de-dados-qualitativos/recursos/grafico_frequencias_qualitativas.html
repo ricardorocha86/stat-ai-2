@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Distribuição de Frequências Qualitativas</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .view-group { display: flex; gap: 8px; margin-bottom: 12px; }
+    .view-btn { flex: 1; padding: 7px 10px; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; color: #475569; transition: all 0.2s; text-align: center; }
+    .view-btn.active { background: #003485; color: #ffffff; border-color: #003485; }
+    .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr) auto; gap: 8px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .city-control { display: flex; flex-direction: column; gap: 3px; }
+    .city-label { font-size: 0.72rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .city-val { color: #003485; font-weight: 700; font-size: 0.82rem; }
+    input[type=range] { accent-color: #003485; cursor: pointer; width: 100%; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
+    .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .table-container { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; height: 320px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left; }
+    th { background: #f1f5f9; color: #003485; font-weight: 700; padding: 8px 10px; border-bottom: 2px solid #cbd5e1; }
+    td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; color: #334155; }
+    tr:last-child td { font-weight: 700; background: #f8fafc; border-top: 2px solid #cbd5e1; color: #003485; }
+    .sim-chart { height: 320px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>📋 Laboratório Dinâmico: Tabela e Frequências Qualitativas</span>
+        </div>
+        <span class="sim-badge">Aula 4 • Tabela 1 (FATEC Alunos)</span>
+    </div>
+
+    <div class="view-group">
+        <button class="view-btn active" id="v_fa" onclick="setView('fa')">Frequência Absoluta (fa)</button>
+        <button class="view-btn" id="v_fr" onclick="setView('fr')">Frequência Relativa (fr)</button>
+        <button class="view-btn" id="v_fp" onclick="setView('fp')">Frequência Percentual (fp %)</button>
+        <button class="view-btn" id="v_pie" onclick="setView('pie')">Gráfico de Pizza (Setores)</button>
+    </div>
+
+    <div class="controls-grid">
+        <div class="city-control">
+            <span class="city-label">Sta Bárbara: <b class="city-val" id="v_sb">8</b></span>
+            <input type="range" id="s_sb" min="0" max="25" value="8" oninput="atualizar('sb', this.value)">
+        </div>
+        <div class="city-control">
+            <span class="city-label">Americana: <b class="city-val" id="v_am">4</b></span>
+            <input type="range" id="s_am" min="0" max="25" value="4" oninput="atualizar('am', this.value)">
+        </div>
+        <div class="city-control">
+            <span class="city-label">Nova Odessa: <b class="city-val" id="v_no">4</b></span>
+            <input type="range" id="s_no" min="0" max="25" value="4" oninput="atualizar('no', this.value)">
+        </div>
+        <div class="city-control">
+            <span class="city-label">Limeira: <b class="city-val" id="v_li">1</b></span>
+            <input type="range" id="s_li" min="0" max="25" value="1" oninput="atualizar('li', this.value)">
+        </div>
+        <div class="city-control">
+            <span class="city-label">Sumaré: <b class="city-val" id="v_su">1</b></span>
+            <input type="range" id="s_su" min="0" max="25" value="1" oninput="atualizar('su', this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetarLivro()">🔄 Reset Livro</button>
+        </div>
+    </div>
+
+    <div class="split-layout">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cidade</th>
+                        <th style="text-align:right;">fa</th>
+                        <th style="text-align:right;">fr</th>
+                        <th style="text-align:right;">fp (%)</th>
+                        <th style="text-align:right;">fc (acum)</th>
+                    </tr>
+                </thead>
+                <tbody id="tb_corpo"></tbody>
+            </table>
+        </div>
+        <div id="chart_div" class="sim-chart"></div>
+    </div>
+
+    <div class="pedagogical-banner">
+        💡 <b>Propriedades das Frequências:</b> A frequência absoluta fa é a contagem direta; a relativa é fr = fa/n (cuja soma é sempre rigorosamente 1,00); a percentual é fp = fr × 100% (soma 100%).
+    </div>
+</div>
+
+<script>
+    let dados = [
+        { nome: "Santa Bárbara d'Oeste", key: "sb", val: 8 },
+        { nome: "Americana", key: "am", val: 4 },
+        { nome: "Nova Odessa", key: "no", val: 4 },
+        { nome: "Limeira", key: "li", val: 1 },
+        { nome: "Sumaré", key: "su", val: 1 }
+    ];
+    let viewMode = 'fa';
+
+    function setView(m) {
+        viewMode = m;
+        ['fa', 'fr', 'fp', 'pie'].forEach(v => {
+            document.getElementById('v_' + v).className = 'view-btn ' + (v === m ? 'active' : '');
+        });
+        renderizar();
+    }
+
+    function atualizar(key, val) {
+        let it = dados.find(d => d.key === key);
+        if (it) it.val = parseInt(val);
+        document.getElementById('v_' + key).innerText = val;
+        renderizar();
+    }
+
+    function resetarLivro() {
+        const valoresLivro = { sb: 8, am: 4, no: 4, li: 1, su: 1 };
+        dados.forEach(d => {
+            d.val = valoresLivro[d.key];
+            document.getElementById('s_' + d.key).value = d.val;
+            document.getElementById('v_' + d.key).innerText = d.val;
+        });
+        renderizar();
+    }
+
+    function renderizar() {
+        let total = dados.reduce((a,b) => a + b.val, 0);
+        let tbody = document.getElementById('tb_corpo');
+        tbody.innerHTML = '';
+
+        let fc = 0;
+        dados.forEach(d => {
+            fc += d.val;
+            let fr = total > 0 ? (d.val / total) : 0;
+            let fp = fr * 100;
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><b>${d.nome}</b></td>
+                <td style="text-align:right;">${d.val}</td>
+                <td style="text-align:right;">${fr.toFixed(4)}</td>
+                <td style="text-align:right;">${fp.toFixed(2)}%</td>
+                <td style="text-align:right;">${fc}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Linha Total
+        let trTotal = document.createElement('tr');
+        trTotal.innerHTML = `
+            <td><b>TOTAL (n)</b></td>
+            <td style="text-align:right;">${total}</td>
+            <td style="text-align:right;">1.0000</td>
+            <td style="text-align:right;">100.00%</td>
+            <td style="text-align:right;">--</td>
+        `;
+        tbody.appendChild(trTotal);
+
+        let trace;
+        let layout;
+
+        if (viewMode === 'pie') {
+            trace = {
+                labels: dados.map(d => d.nome),
+                values: dados.map(d => d.val),
+                type: 'pie',
+                hole: 0.35,
+                marker: { colors: ['#003485', '#2563eb', '#38bdf8', '#fb923c', '#94a3b8'] },
+                textinfo: 'label+percent',
+                textposition: 'outside'
+            };
+            layout = {
+                margin: { t: 20, b: 20, l: 10, r: 10 },
+                showlegend: false
+            };
+        } else {
+            let yVals, yTitle, textVals;
+            if (viewMode === 'fa') {
+                yVals = dados.map(d => d.val);
+                yTitle = 'Frequência Absoluta (fa)';
+                textVals = yVals.map(v => `${v}`);
+            } else if (viewMode === 'fr') {
+                yVals = dados.map(d => total > 0 ? d.val / total : 0);
+                yTitle = 'Frequência Relativa (fr)';
+                textVals = yVals.map(v => v.toFixed(3));
+            } else {
+                yVals = dados.map(d => total > 0 ? (d.val / total)*100 : 0);
+                yTitle = 'Frequência Percentual (fp %)';
+                textVals = yVals.map(v => `${v.toFixed(1)}%`);
+            }
+
+            trace = {
+                x: dados.map(d => d.nome),
+                y: yVals,
+                type: 'bar',
+                marker: { color: '#003485', line: { color: '#0f172a', width: 1 } },
+                text: textVals,
+                textposition: 'auto'
+            };
+            layout = {
+                margin: { t: 25, b: 65, l: 45, r: 15 },
+                xaxis: { tickangle: -20 },
+                yaxis: { title: yTitle }
+            };
+        }
+
+        Plotly.react('chart_div', [trace], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

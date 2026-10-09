@@ -1,0 +1,32 @@
+[
+  {
+    "arquivo": "review-course-23-full.pdf",
+    "paginas": 85,
+    "imagens_dentro_das_margens": true,
+    "rodapes_conferidos": true
+  },
+  {
+    "arquivo": "review-lesson-12-guide.pdf",
+    "paginas": 4,
+    "imagens_dentro_das_margens": true,
+    "rodapes_conferidos": true
+  },
+  {
+    "arquivo": "review-lesson-15-none.pdf",
+    "paginas": 3,
+    "imagens_dentro_das_margens": true,
+    "rodapes_conferidos": true
+  },
+  {
+    "arquivo": "review-lesson-5-full.pdf",
+    "paginas": 5,
+    "imagens_dentro_das_margens": true,
+    "rodapes_conferidos": true
+  },
+  {
+    "arquivo": "review-unit-23-hint.pdf",
+    "paginas": 12,
+    "imagens_dentro_das_margens": true,
+    "rodapes_conferidos": true
+  }
+]

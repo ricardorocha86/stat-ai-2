@@ -1,0 +1,300 @@
+[
+  {
+    "id": "livro-aula-06-exercicio-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "exercicio",
+    "enunciado": "Os dados a seguir fornecem o número de smartphones em 40 domicílios selecionados aleatoriamente em um conjunto residencial.\n\n| | | | | | | | | | |\n| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |\n| 2 | 1 | 3 | 1 | 3 | 4 | 0 | 1 | 2 | 2 |\n| 4 | 2 | 1 | 2 | 3 | 2 | 3 | 2 | 4 | 1 |\n| 2 | 0 | 2 | 1 | 1 | 3 | 1 | 3 | 2 | 2 |\n| 1 | 2 | 3 | 2 | 1 | 2 | 1 | 2 | 3 | 1 |\n\n(a) Construa uma tabela de distribuição de frequências para esses dados, utilizando classes de valor único e considerando as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$).  \n(b) Desenhe um gráfico apropriado para as frequências absolutas.  \n(c) Que percentagem de domicílios possui dois ou mais smartphones?",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+      "linha_inicial": 99,
+      "linha_final": 111,
+      "aula": 6
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Construa uma tabela de distribuição de frequências para esses dados, utilizando classes de valor único e considerando as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$)."
+      },
+      {
+        "id": "b",
+        "texto": "Desenhe um gráfico apropriado para as frequências absolutas."
+      },
+      {
+        "id": "c",
+        "texto": "Que percentagem de domicílios possui dois ou mais smartphones?"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/",
+    "dica": "O número de smartphones é uma contagem; cada valor pode ser uma classe.",
+    "passo_inicial": "Liste os valores 0, 1, 2, 3 e 4. Conte os domicílios de cada classe e divida por 40. Defina a frequência acumulada como a soma das contagens até a classe.",
+    "solucao_completa": "(a) A distribuição é:\n\n| Smartphones | $f_a$ | $f_r$ | $f_p$ | $F_a$ acumulada | Percentual acumulado |\n| ---: | ---: | ---: | ---: | ---: | ---: |\n| 0 | 2 | 0,050 | 5,0% | 2 | 5,0% |\n| 1 | 12 | 0,300 | 30,0% | 14 | 35,0% |\n| 2 | 15 | 0,375 | 37,5% | 29 | 72,5% |\n| 3 | 8 | 0,200 | 20,0% | 37 | 92,5% |\n| 4 | 3 | 0,075 | 7,5% | 40 | 100,0% |\n\nPara evitar ambiguidade em $f_c$, a tabela identifica separadamente contagem e percentual acumulados.\n(b) Um gráfico de barras separadas representa os valores 0 a 4, com alturas 2, 12, 15, 8 e 3 domicílios.\n(c) Dois ou mais smartphones correspondem a $15+8+3=26$ domicílios: $26/40=0{,}65=65\\%$. Os percentuais foram calculados sem arredondamento intermediário.\n\n![Smartphones nos domicílios — resolução](recursos/gabarito-ex05-smartphones.html)",
+    "resposta_final": "(a) Contagens: 2, 12, 15, 8, 3; acumuladas: 2, 14, 29, 37, 40. (b) Barras com essas contagens. (c) 65%.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 99,
+          "linha_final": 111
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 5",
+          "pagina_pdf": 2,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-06-exercicio-6",
+    "numero": 6,
+    "numero_original": "6",
+    "categoria": "exercicio",
+    "enunciado": "Um bar registrou a quantidade de chopp (em litros) de uma marca X que cada cliente consumiu em uma determinada noite. A tabela a seguir apresenta a distribuição de frequências dos dados coletados.\n\n| Qtd em litros | Qtd de clientes | $f_r$ | $f_p$ | $f_c$ |\n| :--- | :---: | :---: | :---: | :---: |\n| 0 até menos que 2 | 23 | | | |\n| 2 até menos que 4 | 64 | | | |\n| 4 até menos que 6 | 82 | | | |\n| 6 até menos que 8 | 36 | | | |\n| 8 até menos que 10 | 12 | | | |\n| 10 até menos que 12 | 3 | | | |\n| **Total** | | | | |\n\n(a) Quantos clientes foram atendidos nesse dia?  \n(b) As classes possuem a mesma amplitude? Encontre os pontos médios das classes.  \n(c) Complete as colunas das frequências relativas, percentuais e acumuladas.  \n(d) Que percentagem de clientes consumiu 8 litros ou mais de chopp?  \n(e) Por qual razão você não consegue determinar exatamente quantos clientes consumiram 5 litros ou menos?  \n(f) Estime a quantidade de clientes que consumiram 5 litros ou menos.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+      "linha_inicial": 112,
+      "linha_final": 130,
+      "aula": 6
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Quantos clientes foram atendidos nesse dia?"
+      },
+      {
+        "id": "b",
+        "texto": "As classes possuem a mesma amplitude? Encontre os pontos médios das classes."
+      },
+      {
+        "id": "c",
+        "texto": "Complete as colunas das frequências relativas, percentuais e acumuladas."
+      },
+      {
+        "id": "d",
+        "texto": "Que percentagem de clientes consumiu 8 litros ou mais de chopp?"
+      },
+      {
+        "id": "e",
+        "texto": "Por qual razão você não consegue determinar exatamente quantos clientes consumiram 5 litros ou menos?"
+      },
+      {
+        "id": "f",
+        "texto": "Estime a quantidade de clientes que consumiram 5 litros ou menos."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/",
+    "dica": "Dados agrupados informam quantos valores há em cada intervalo, sem revelar suas posições dentro dele.",
+    "passo_inicial": "Some as seis contagens. Calcule o ponto médio com $(L_i+L_s)/2$ e as proporções com $f_a/n$. Para o item (f), explicite uma hipótese sobre a distribuição dentro da classe.",
+    "solucao_completa": "(a) $n=23+64+82+36+12+3=220$ clientes.\n(b) Todas as classes têm amplitude 2 L; os pontos médios são 1, 3, 5, 7, 9 e 11 L.\n(c) A tabela é:\n\n| Litros | $f_a$ | $f_r$ | $f_p$ | $F_a$ acumulada | Percentual acumulado |\n| --- | ---: | ---: | ---: | ---: | ---: |\n| $[0;2)$ | 23 | 0,1045 | 10,45% | 23 | 10,45% |\n| $[2;4)$ | 64 | 0,2909 | 29,09% | 87 | 39,55% |\n| $[4;6)$ | 82 | 0,3727 | 37,27% | 169 | 76,82% |\n| $[6;8)$ | 36 | 0,1636 | 16,36% | 205 | 93,18% |\n| $[8;10)$ | 12 | 0,0545 | 5,45% | 217 | 98,64% |\n| $[10;12)$ | 3 | 0,0136 | 1,36% | 220 | 100,00% |\n\nPequenas diferenças na soma dos valores exibidos decorrem do arredondamento.\n(d) Consumiram pelo menos 8 L os $12+3=15$ clientes: $15/220\\cdot100\\%=6{,}818\\ldots\\%\\approx6{,}82\\%$.\n(e) O valor 5 está dentro da classe $[4;6)$. Não sabemos quantos dos 82 clientes dessa classe ficaram até 5 L.\n(f) Assumindo distribuição aproximadamente uniforme dentro dessa classe, até 5 L corresponde à metade dela: $23+64+82(5-4)/(6-4)=128$. Trata-se de uma estimativa, não de uma contagem observada.",
+    "resposta_final": "(a) 220. (b) Amplitude 2 L; pontos médios 1, 3, 5, 7, 9 e 11 L. (c) Tabela indicada. (d) Aproximadamente 6,82%. (e) A classe não revela os valores individuais. (f) Estimativa de 128 clientes, sob uniformidade na classe.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 112,
+          "linha_final": 130
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 6",
+          "pagina_pdf": 3,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "O gabarito indica 6% no item (d); a fração exata 15/220 dá 6,82%. Foi evitado somar percentuais já arredondados.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-06-exercicio-7",
+    "numero": 7,
+    "numero_original": "7",
+    "categoria": "exercicio",
+    "enunciado": "O gerente de um supermercado decidiu inspecionar as caixas de iogurte na loja, averiguando o número de dias restantes para expirar o prazo de validade de cada uma delas. Para as caixas que já estavam vencidas, mas que ainda estavam nas prateleiras, foi atribuído o valor “zero” para o número de dias restantes para expirar a validade. A tabela a seguir apresenta os resultados da pesquisa.\n\n| Dias restantes | Caixas |\n| --- | ---: |\n| 0 a 7 | 72 |\n| 8 a 15 | 288 |\n| 16 a 23 | 504 |\n| 24 a 31 | 216 |\n| 32 a 39 | 140 |\n\n(a) Quantas caixas de iogurte foram inspecionadas?  \n(b) Construa uma tabela de distribuição de frequências com as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$).",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+      "linha_inicial": 131,
+      "linha_final": 135,
+      "aula": 6
+    },
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Quantas caixas de iogurte foram inspecionadas?"
+      },
+      {
+        "id": "b",
+        "texto": "Construa uma tabela de distribuição de frequências com as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$)."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/",
+    "enunciado_original": "O gerente de um supermercado decidiu inspecionar as caixas de iogurte na loja, averiguando o número de dias restantes para expirar o prazo de validade de cada uma delas. Para as caixas que já estavam vencidas, mas que ainda estavam nas prateleiras, foi atribuído o valor “zero” para o número de dias restantes para expirar a validade. A tabela a seguir apresenta os resultados da pesquisa.\n\n(a) Quantas caixas de iogurte foram inspecionadas?  \n(b) Construa uma tabela de distribuição de frequências com as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$).",
+    "dica": "Use as contagens das classes para encontrar o total e completar as proporções.",
+    "passo_inicial": "Some as cinco quantidades. Em seguida, calcule $f_r=f_a/n$ e acumule as contagens na ordem crescente dos dias.",
+    "solucao_completa": "(a) $n=72+288+504+216+140=1220$ caixas.\n(b) A distribuição completa é:\n\n| Dias restantes | $f_a$ | $f_r$ | $f_p$ | $F_a$ acumulada | Percentual acumulado |\n| --- | ---: | ---: | ---: | ---: | ---: |\n| 0 a 7 | 72 | 0,0590 | 5,90% | 72 | 5,90% |\n| 8 a 15 | 288 | 0,2361 | 23,61% | 360 | 29,51% |\n| 16 a 23 | 504 | 0,4131 | 41,31% | 864 | 70,82% |\n| 24 a 31 | 216 | 0,1770 | 17,70% | 1080 | 88,52% |\n| 32 a 39 | 140 | 0,1148 | 11,48% | 1220 | 100,00% |\n\nAs classes abrangem valores inteiros de dias; a frequência acumulada da primeira classe não significa que todas as 72 caixas estejam vencidas. O valor zero foi agrupado junto de 1 a 7 dias.",
+    "resposta_final": "(a) 1.220 caixas. (b) Contagens 72, 288, 504, 216, 140; contagens acumuladas 72, 360, 864, 1.080, 1.220; percentuais conforme a tabela.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 131,
+          "linha_final": 135
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Exercício 7",
+          "pagina_pdf": 3,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        },
+        {
+          "tipo": "livro",
+          "arquivo": "arquivos/livro_estatistica_aplicada.pdf",
+          "pagina_pdf": 44
+        }
+      ],
+      "observacoes": "Tabela omitida na aula recuperada do livro p. 44; percentuais calculados pelas contagens originais.",
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-06-multipla-escolha-6",
+    "numero": 6,
+    "numero_original": "6",
+    "categoria": "multipla_escolha",
+    "enunciado": "(IADES, 2013) Em 20 dias de aula, um professor de estatística anotou o número de alunos ausentes. Depois, fez a seguinte tabela de frequências:\n\n| Alunos ausentes | Frequência | Percentual |\n| :---: | :---: | :---: |\n| 0 – 3 | 5 | A |\n| 4 – 7 | B | 25 |\n| 8 – 12 | C | D |\n| 12 – 16 | 2 | E |\n\nA letra B representa o número:  \n(a) 5  \n(b) 6  \n(c) 7  \n(d) 8  \n(e) 9",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+      "linha_inicial": 138,
+      "linha_final": 153,
+      "aula": 6
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "5"
+      },
+      {
+        "id": "b",
+        "texto": "6"
+      },
+      {
+        "id": "c",
+        "texto": "7"
+      },
+      {
+        "id": "d",
+        "texto": "8"
+      },
+      {
+        "id": "e",
+        "texto": "9"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/",
+    "dica": "Uma frequência percentual informa a parcela do número total de dias.",
+    "passo_inicial": "Converta 25% em 0,25 e multiplique pelo total de 20 dias observados.",
+    "solucao_completa": "A classe associada a B corresponde a 25% dos 20 dias. Logo,\n$$B=0{,}25\\cdot20=5.$$\nA frequência é uma contagem de dias, não o número de alunos ausentes.",
+    "resposta_final": "Alternativa A — 5 dias.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "autor",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 138,
+          "linha_final": 153
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Questão objetiva 6",
+          "pagina_pdf": 6,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-06-multipla-escolha-7",
+    "numero": 7,
+    "numero_original": "7",
+    "categoria": "multipla_escolha",
+    "enunciado": "(IADES, 2013) Os dados a seguir apresentam as idades de um grupo de 30 alunos de uma turma de yoga.\n\n| | | | | | |\n| :-: | :-: | :-: | :-: | :-: | :-: |\n| 30 | 41 | 39 | 38 | 33 | 35 |\n| 31 | 36 | 37 | 32 | 32 | 38 |\n| 26 | 29 | 32 | 41 | 28 | 31 |\n| 45 | 30 | 45 | 35 | 40 | 30 |\n| 31 | 40 | 37 | 33 | 28 | 36 |\n\nDeseja-se fazer uma distribuição de frequências utilizando cinco classes cujas amplitudes sejam um número inteiro, escolhido adequadamente para melhor representar os dados. Assim, a amplitude deverá ser igual a:  \n(a) 3  \n(b) 4  \n(c) 7  \n(d) 6  \n(e) 5",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+      "linha_inicial": 154,
+      "linha_final": 169,
+      "aula": 6
+    },
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "3"
+      },
+      {
+        "id": "b",
+        "texto": "4"
+      },
+      {
+        "id": "c",
+        "texto": "7"
+      },
+      {
+        "id": "d",
+        "texto": "6"
+      },
+      {
+        "id": "e",
+        "texto": "5"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/",
+    "dica": "A amplitude de classe precisa permitir que cinco classes cubram todas as idades.",
+    "passo_inicial": "Encontre mínimo e máximo, calcule a amplitude total e divida por cinco. Se necessário, arredonde a amplitude de classe para cima.",
+    "solucao_completa": "As idades vão de 26 a 45 anos, logo $AT=45-26=19$. Para cinco classes, $h\\approx19/5=3{,}8$; como a amplitude deve ser inteira, adota-se 4. Uma distribuição possível é $[26;30)$, $[30;34)$, $[34;38)$, $[38;42)$ e $[42;46)$, cobrindo todos os dados. A amplitude de 3 não cobre a faixa com apenas cinco classes.",
+    "resposta_final": "Alternativa B — amplitude de classe de 4 anos.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "recalculado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+          "linha_inicial": 154,
+          "linha_final": 169
+        },
+        {
+          "tipo": "gabarito",
+          "capitulo": 2,
+          "questao": "Questão objetiva 7",
+          "pagina_pdf": 6,
+          "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+          "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+        }
+      ],
+      "observacoes": "O gabarito online indica E (5), mas o enunciado pede cinco classes e os valores vão de 26 a 45; pelo procedimento da aula, a amplitude inteira mínima adequada é 4 (B).",
+      "conferido_enunciado": true
+    }
+  }
+]

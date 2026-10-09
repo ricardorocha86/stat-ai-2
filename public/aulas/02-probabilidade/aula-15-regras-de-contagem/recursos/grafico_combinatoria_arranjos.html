@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Calculadora Interativa de Análise Combinatória</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.78rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🔢 Calculadora Interativa: Arranjos vs Combinações</span>
+        </div>
+        <span class="sim-badge">Aula 15 • Regras de Contagem</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Total de Itens Disponíveis (n):</span>
+                <span id="lbl_n" class="ctrl-val">n = 6</span>
+            </div>
+            <input type="range" id="slider_n" min="2" max="15" value="6" oninput="atualizarN(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Itens a Agrupar (p):</span>
+                <span id="lbl_p" class="ctrl-val">p = 3</span>
+            </div>
+            <input type="range" id="slider_p" min="1" max="6" value="3" oninput="atualizarP(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetar()">n=6, p=3</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Combinação C(n, p)</div>
+            <div class="kpi-val" id="kpi_comb">20 grupos</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Arranjo A(n, p)</div>
+            <div class="kpi-val" id="kpi_arr">120 maneiras</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Permutação P(p) = p!</div>
+            <div class="kpi-val" id="kpi_perm">6 ordens</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Relação A / C</div>
+            <div class="kpi-val" id="kpi_rel">A = C × p!</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>A Ordem Importa?</b> Se a ordem das posições alterar o resultado (ex: 1º e 2º lugar no pódio, senhas), usa-se <b>Arranjo A(n, p)</b>. Se a ordem não importa (ex: comissões, sorteio de megasena, duplas), usa-se <b>Combinação C(n, p)</b>.
+    </div>
+</div>
+
+<script>
+    let n = 6;
+    let p = 3;
+
+    function fat(x) {
+        let r = 1;
+        for(let i=2; i<=x; i++) r *= i;
+        return r;
+    }
+
+    function comb(n, p) {
+        return fat(n) / (fat(p) * fat(n - p));
+    }
+
+    function arr(n, p) {
+        return fat(n) / fat(n - p);
+    }
+
+    function atualizarN(val) {
+        n = parseInt(val);
+        document.getElementById('lbl_n').innerText = `n = ${n}`;
+        let sp = document.getElementById('slider_p');
+        sp.max = n;
+        if (p > n) p = n;
+        sp.value = p;
+        document.getElementById('lbl_p').innerText = `p = ${p}`;
+        renderizar();
+    }
+
+    function atualizarP(val) {
+        p = parseInt(val);
+        document.getElementById('lbl_p').innerText = `p = ${p}`;
+        renderizar();
+    }
+
+    function resetar() {
+        n = 6; p = 3;
+        document.getElementById('slider_n').value = 6; document.getElementById('lbl_n').innerText = 'n = 6';
+        document.getElementById('slider_p').max = 6; document.getElementById('slider_p').value = 3; document.getElementById('lbl_p').innerText = 'p = 3';
+        renderizar();
+    }
+
+    function renderizar() {
+        let valC = comb(n, p);
+        let valA = arr(n, p);
+        let valP = fat(p);
+
+        document.getElementById('kpi_comb').innerText = `${valC.toLocaleString()} grupos`;
+        document.getElementById('kpi_arr').innerText = `${valA.toLocaleString()} ordens`;
+        document.getElementById('kpi_perm').innerText = `${valP} ordens`;
+
+        // Gráfico comparativo de crescimento para todos os p de 1 a n
+        let pVals = Array.from({length: n}, (_, i) => i + 1);
+        let cVals = pVals.map(pv => comb(n, pv));
+        let aVals = pVals.map(pv => arr(n, pv));
+
+        let traceC = {
+            x: pVals.map(pv => `p=${pv}`),
+            y: cVals,
+            type: 'bar',
+            name: 'Combinação C(n, p) [Sem Ordem]',
+            marker: { color: '#003485' }
+        };
+
+        let traceA = {
+            x: pVals.map(pv => `p=${pv}`),
+            y: aVals,
+            type: 'bar',
+            name: 'Arranjo A(n, p) [Com Ordem]',
+            marker: { color: '#ea580c' }
+        };
+
+        let layout = {
+            barmode: 'group',
+            margin: { t: 30, b: 40, l: 45, r: 20 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: `Tamanho do Agrupamento (p) para n = ${n}` },
+            yaxis: { title: 'Total de Resultados Possíveis', type: 'log', showgrid: true }
+        };
+
+        Plotly.react('chart_div', [traceC, traceA], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador da Curva Normal Contínua</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.75rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.destaque { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>🔔 Simulador da Curva Normal N(μ, σ) e Cálculo de Área</span>
+        </div>
+        <span class="sim-badge">Aula 19 • Variáveis Contínuas</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Média (μ):</span>
+                <span id="lbl_mu" class="ctrl-val">μ = 30.0</span>
+            </div>
+            <input type="range" id="slider_mu" min="10" max="60" value="30" oninput="atualizarMu(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Desvio-Padrão (σ):</span>
+                <span id="lbl_sigma" class="ctrl-val">σ = 5.0</span>
+            </div>
+            <input type="range" id="slider_sigma" min="1.5" max="10.0" step="0.5" value="5.0" oninput="atualizarSigma(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Limite Inferior (a):</span>
+                <span id="lbl_a" class="ctrl-val">a = 25.0</span>
+            </div>
+            <input type="range" id="slider_a" min="5" max="60" value="25" oninput="atualizarA(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Limite Superior (b):</span>
+                <span id="lbl_b" class="ctrl-val">b = 35.0</span>
+            </div>
+            <input type="range" id="slider_b" min="5" max="60" value="35" oninput="atualizarB(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetar()">μ=30, σ=5</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card destaque">
+            <div class="kpi-label">Probabilidade P(a ≤ X ≤ b)</div>
+            <div class="kpi-val" id="kpi_prob">68.27%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Ponto de Inflexão Esq.</div>
+            <div class="kpi-val" id="kpi_inflex_esq">μ - σ = 25.0</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Ponto de Inflexão Dir.</div>
+            <div class="kpi-val" id="kpi_inflex_dir">μ + σ = 35.0</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Altura Máxima f(μ)</div>
+            <div class="kpi-val" id="kpi_pico">0.0798</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Propriedades Fundamentais da Gaussiana (p. 115):</b> A média μ comanda a posição horizontal do centro; o desvio σ comanda o achatamento (curtose). Os pontos onde a curva muda de concavidade (inflexão) ocorrem com precisão matemática em μ - σ e μ + σ!
+    </div>
+</div>
+
+<script>
+    let mu = 30.0;
+    let sigma = 5.0;
+    let a = 25.0;
+    let b = 35.0;
+
+    function atualizarMu(v) {
+        mu = parseFloat(v);
+        document.getElementById('lbl_mu').innerText = `μ = ${mu.toFixed(1)}`;
+        renderizar();
+    }
+    function atualizarSigma(v) {
+        sigma = parseFloat(v);
+        document.getElementById('lbl_sigma').innerText = `σ = ${sigma.toFixed(1)}`;
+        renderizar();
+    }
+    function atualizarA(v) {
+        a = parseFloat(v);
+        if (a > b) a = b;
+        document.getElementById('lbl_a').innerText = `a = ${a.toFixed(1)}`;
+        renderizar();
+    }
+    function atualizarB(v) {
+        b = parseFloat(v);
+        if (b < a) b = a;
+        document.getElementById('lbl_b').innerText = `b = ${b.toFixed(1)}`;
+        renderizar();
+    }
+
+    function resetar() {
+        mu = 30.0; sigma = 5.0; a = 25.0; b = 35.0;
+        document.getElementById('slider_mu').value = 30; document.getElementById('lbl_mu').innerText = 'μ = 30.0';
+        document.getElementById('slider_sigma').value = 5; document.getElementById('lbl_sigma').innerText = 'σ = 5.0';
+        document.getElementById('slider_a').value = 25; document.getElementById('lbl_a').innerText = 'a = 25.0';
+        document.getElementById('slider_b').value = 35; document.getElementById('lbl_b').innerText = 'b = 35.0';
+        renderizar();
+    }
+
+    function erf(x) {
+        let a1 =  0.254829592, a2 = -0.284496736, a3 =  1.421413741;
+        let a4 = -1.453152027, a5 =  1.061405429, p  =  0.3275911;
+        let sign = x < 0 ? -1 : 1;
+        x = Math.abs(x);
+        let t = 1.0 / (1.0 + p * x);
+        let y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        return sign * y;
+    }
+
+    function cdfNormal(x, m, s) {
+        let z = (x - m) / s;
+        return 0.5 * (1.0 + erf(z / Math.sqrt(2.0)));
+    }
+
+    function pdfNormal(x, m, s) {
+        let coef = 1.0 / (s * Math.sqrt(2.0 * Math.PI));
+        let expo = -0.5 * Math.pow((x - m) / s, 2);
+        return coef * Math.exp(expo);
+    }
+
+    function renderizar() {
+        let prob = (cdfNormal(b, mu, sigma) - cdfNormal(a, mu, sigma)) * 100;
+        let pico = pdfNormal(mu, mu, sigma);
+
+        document.getElementById('kpi_prob').innerText = `${prob.toFixed(2)}%`;
+        document.getElementById('kpi_inflex_esq').innerText = `μ - σ = ${(mu - sigma).toFixed(1)}`;
+        document.getElementById('kpi_inflex_dir').innerText = `μ + σ = ${(mu + sigma).toFixed(1)}`;
+        document.getElementById('kpi_pico').innerText = pico.toFixed(4);
+
+        let minX = mu - 4.2 * sigma;
+        let maxX = mu + 4.2 * sigma;
+        let step = (maxX - minX) / 250;
+
+        let xVals = [], yVals = [], xFill = [], yFill = [];
+        for(let x = minX; x <= maxX; x += step) {
+            let y = pdfNormal(x, mu, sigma);
+            xVals.push(x);
+            yVals.push(y);
+            if (x >= a && x <= b) {
+                xFill.push(x);
+                yFill.push(y);
+            }
+        }
+
+        let traceCurva = {
+            x: xVals, y: yVals, type: 'scatter', mode: 'lines',
+            name: `N(μ=${mu.toFixed(0)}, σ=${sigma.toFixed(1)})`,
+            line: { color: '#003485', width: 2.5 }
+        };
+
+        let traceArea = {
+            x: [a, ...xFill, b],
+            y: [0, ...yFill, 0],
+            fill: 'tozeroy',
+            type: 'scatter',
+            mode: 'none',
+            name: `P(${a.toFixed(1)} ≤ X ≤ ${b.toFixed(1)}) = ${prob.toFixed(1)}%`,
+            fillcolor: 'rgba(0, 52, 133, 0.35)'
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Valores da Variável Contínua (X)', range: [minX, maxX] },
+            yaxis: { title: 'Densidade f(x)', showgrid: true },
+            shapes: [
+                // Linha Média
+                { type: 'line', x0: mu, x1: mu, y0: 0, y1: pico, line: { color: '#003485', width: 2, dash: 'dot' } },
+                // Linhas Inflexão
+                { type: 'line', x0: mu - sigma, x1: mu - sigma, y0: 0, y1: pdfNormal(mu - sigma, mu, sigma), line: { color: '#64748b', width: 1, dash: 'dash' } },
+                { type: 'line', x0: mu + sigma, x1: mu + sigma, y0: 0, y1: pdfNormal(mu + sigma, mu, sigma), line: { color: '#64748b', width: 1, dash: 'dash' } }
+            ]
+        };
+
+        Plotly.react('chart_div', [traceArea, traceCurva], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

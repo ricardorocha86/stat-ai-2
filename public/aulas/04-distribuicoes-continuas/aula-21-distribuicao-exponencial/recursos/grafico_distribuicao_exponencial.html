@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Simulador da Distribuição Exponencial</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1.2fr 1.2fr auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.78rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.destaque { border-left-color: #ea580c; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>⏳ Simulador Dinâmico da Distribuição Exponencial Exp(λ)</span>
+        </div>
+        <span class="sim-badge">Aula 21 • Tempos de Espera e Vida Útil</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Taxa de Ocorrência (λ):</span>
+                <span id="lbl_lambda" class="ctrl-val">λ = 0.50 eventos/unidade</span>
+            </div>
+            <input type="range" id="slider_lambda" min="0.10" max="2.00" step="0.10" value="0.50" oninput="atualizarLambda(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Tempo de Corte (t):</span>
+                <span id="lbl_t" class="ctrl-val">t = 2.0 unidades</span>
+            </div>
+            <input type="range" id="slider_t" min="0.2" max="8.0" step="0.2" value="2.0" oninput="atualizarT(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetar()">λ = 0.5, t = 2</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card destaque">
+            <div class="kpi-label">P(X ≤ t) [Ocorrer até t]</div>
+            <div class="kpi-val" id="kpi_falha">63.21%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">P(X > t) [Sobrevivência]</div>
+            <div class="kpi-val" id="kpi_sobrev">36.79%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Tempo Médio μ = 1/λ</div>
+            <div class="kpi-val" id="kpi_mu">2.00 unidades</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Desvio Padrão σ = 1/λ</div>
+            <div class="kpi-val" id="kpi_sigma">2.00 unidades</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Falta de Memória (p. 131):</b> P(X > s + t | X > s) = P(X > t). O fato de uma peça ou componente já ter funcionado por s horas não altera a probabilidade de ela durar mais t horas (não há desgaste cumulativo no modelo puramente exponencial).
+    </div>
+</div>
+
+<script>
+    let lambdaVal = 0.50;
+    let tVal = 2.0;
+
+    function atualizarLambda(v) {
+        lambdaVal = parseFloat(v);
+        document.getElementById('lbl_lambda').innerText = `λ = ${lambdaVal.toFixed(2)}`;
+        renderizar();
+    }
+
+    function atualizarT(v) {
+        tVal = parseFloat(v);
+        document.getElementById('lbl_t').innerText = `t = ${tVal.toFixed(1)}`;
+        renderizar();
+    }
+
+    function resetar() {
+        lambdaVal = 0.50; tVal = 2.0;
+        document.getElementById('slider_lambda').value = 0.50; document.getElementById('lbl_lambda').innerText = 'λ = 0.50';
+        document.getElementById('slider_t').value = 2.0; document.getElementById('lbl_t').innerText = 't = 2.0';
+        renderizar();
+    }
+
+    function renderizar() {
+        let mu = 1.0 / lambdaVal;
+        let sigma = 1.0 / lambdaVal;
+        let pAteT = 1.0 - Math.exp(-lambdaVal * tVal);
+        let pAposT = Math.exp(-lambdaVal * tVal);
+
+        document.getElementById('kpi_falha').innerText = `${(pAteT * 100).toFixed(2)}%`;
+        document.getElementById('kpi_sobrev').innerText = `${(pAposT * 100).toFixed(2)}%`;
+        document.getElementById('kpi_mu').innerText = `${mu.toFixed(2)} un.`;
+        document.getElementById('kpi_sigma').innerText = `${sigma.toFixed(2)} un.`;
+
+        let maxTime = Math.max(10, Math.ceil(mu * 4));
+        let step = maxTime / 200;
+
+        let xVals = [], yVals = [], xFill = [], yFill = [];
+        for(let x = 0; x <= maxTime; x += step) {
+            let y = lambdaVal * Math.exp(-lambdaVal * x);
+            xVals.push(x);
+            yVals.push(y);
+            if (x <= tVal) {
+                xFill.push(x);
+                yFill.push(y);
+            }
+        }
+
+        let traceCurva = {
+            x: xVals, y: yVals, type: 'scatter', mode: 'lines',
+            name: `f(x) = ${lambdaVal.toFixed(2)} e^(-${lambdaVal.toFixed(2)}x)`,
+            line: { color: '#003485', width: 2.5 }
+        };
+
+        let traceArea = {
+            x: [0, ...xFill, tVal],
+            y: [0, ...yFill, 0],
+            fill: 'tozeroy',
+            type: 'scatter',
+            mode: 'none',
+            name: `P(X ≤ ${tVal.toFixed(1)}) = ${(pAteT*100).toFixed(1)}%`,
+            fillcolor: 'rgba(0, 52, 133, 0.4)'
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Tempo decorrido (t)', range: [0, maxTime] },
+            yaxis: { title: 'Densidade f(t)', showgrid: true },
+            shapes: [
+                { type: 'line', x0: tVal, x1: tVal, y0: 0, y1: 1, yref: 'paper', line: { color: '#ea580c', width: 2, dash: 'dash' } }
+            ]
+        };
+
+        Plotly.react('chart_div', [traceArea, traceCurva], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

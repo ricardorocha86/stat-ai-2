@@ -1,0 +1,1646 @@
+{
+  "version": 1,
+  "contentVersion": "livro-2020-v1",
+  "description": "Ajuda progressiva revisada para os exercícios existentes; respostas do autor conferidas com os enunciados e cálculos independentes.",
+  "exercises": {
+    "livro-aula-01-exercicio-1": {
+      "dica": "Veja se foram observados todos os elementos do grupo de interesse ou apenas uma parte deles.",
+      "passo_inicial": "Para cada item, delimite o grupo de interesse. Expressões como “total” e “todas” ajudam a distinguir um levantamento completo de uma seleção.",
+      "solucao_completa": "(a) Foram observadas apenas oito unidades de um conjunto maior de unidades da FATEC: trata-se de uma amostra.\n(b) O enunciado abrange o total de itens produzidos na máquina no período delimitado: trata-se da população desse estudo.\n(c) Os 30 pacientes selecionados são uma parte do grupo de pacientes de interesse: trata-se de uma amostra.\n(d) Foram incluídos os CEOs de todas as multinacionais da cidade delimitada: trata-se da população.",
+      "resposta_final": "(a) Amostra; (b) população; (c) amostra; (d) população.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+            "linha_inicial": 37,
+            "linha_final": 48
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Exercício 1",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-01-multipla-escolha-1": {
+      "dica": "O nome do procedimento depende de ele abranger uma parte ou a totalidade da população.",
+      "passo_inicial": "Identifique no enunciado a expressão “todos os componentes”. Compare essa abrangência com a definição de amostragem.",
+      "solucao_completa": "Um levantamento que inclui todos os elementos da população é um censo. A amostragem observa um subconjunto; a estimação usa dados para aproximar um parâmetro. Correlação estuda associação entre variáveis.",
+      "resposta_final": "Alternativa C — censo.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+            "linha_inicial": 51,
+            "linha_final": 60
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Questão objetiva 1",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-01-multipla-escolha-3": {
+      "dica": "Separe três pares de conceitos: população e amostra, parâmetro e estatística, descritiva e inferencial.",
+      "passo_inicial": "Lembre que um parâmetro caracteriza a população e uma estatística caracteriza a amostra. Em seguida, procure a definição de um levantamento completo.",
+      "solucao_completa": "A alternativa A confunde parâmetro populacional com medida amostral. B atribui à descritiva uma decisão sobre a população a partir de uma amostra, que é inferência. D descreve a descritiva como inferencial. C é uma afirmação excessivamente restritiva: também se pode caracterizar uma população por estimativas amostrais. E fornece a definição de censo, pois inclui todos os membros da população.",
+      "resposta_final": "Alternativa E — censo mede as características de todos os membros da população.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 1 -  Introdução à Estatística.txt",
+            "linha_inicial": 61,
+            "linha_final": 69
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Questão objetiva 3",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-02-exercicio-3": {
+      "dica": "Para comparar dois grupos, preserve a participação de cada grupo na população.",
+      "passo_inicial": "Separe homens e mulheres em estratos e use a mesma fração amostral de $30\\%=0{,}30$ em cada estrato.",
+      "solucao_completa": "(a) A amostragem aleatória estratificada proporcional representa os dois grupos. Dentro de cada grupo, os entrevistados devem ser sorteados.\n(b) O tamanho total é $n=0{,}30\\cdot140=42$. Para os homens, $n_H=0{,}30\\cdot80=24$. Para as mulheres, $n_M=0{,}30\\cdot60=18$. A soma $24+18=42$ confirma o tamanho da amostra.",
+      "resposta_final": "(a) Amostragem aleatória estratificada proporcional. (b) 24 homens e 18 mulheres; total de 42 funcionários.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+            "linha_inicial": 31,
+            "linha_final": 34
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Exercício 3 (a, b)",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-02-exercicio-4": {
+      "dica": "Cada curso deve participar da amostra na proporção de seus alunos.",
+      "passo_inicial": "Calcule a fração $n/N=200/1600$ e multiplique-a pela quantidade de alunos de cada curso. Ao arredondar, confira se a soma continua sendo 200.",
+      "solucao_completa": "A fração amostral é $200/1600=0{,}125=12{,}5\\%$. Aplicando $n_h=(N_h/N)n$:\n\n| Curso | Cota proporcional | Alunos a selecionar |\n| --- | ---: | ---: |\n| ADS | $320\\cdot0{,}125=40$ | 40 |\n| SI | $255\\cdot0{,}125=31{,}875$ | 32 |\n| GE | $480\\cdot0{,}125=60$ | 60 |\n| LOG | $385\\cdot0{,}125=48{,}125$ | 48 |\n| TEX | $160\\cdot0{,}125=20$ | 20 |\n| Total | 200 | 200 |\n\nOs arredondamentos compensam-se. Sorteie os alunos dentro de cada curso, usando uma lista completa de matriculados.",
+      "resposta_final": "ADS: 40; SI: 32; GE: 60; LOG: 48; TEX: 20. Total: 200 alunos.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+            "linha_inicial": 35,
+            "linha_final": 42
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Tabela de cursos apresentada como item 3(c)",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ],
+        "observacoes": "O PDF do gabarito coloca a tabela deste exercício sob 3(c); a associação foi conferida pelos cursos e pelos quantitativos, não só pela numeração."
+      }
+    },
+    "livro-aula-02-exercicio-5": {
+      "dica": "Na amostragem sistemática, o intervalo entre elementos selecionados é constante.",
+      "passo_inicial": "Calcule o tamanho da amostra com $n=0{,}20\\cdot330$ e obtenha o intervalo $k=N/n$. A partir do 29º vagão, acrescente $k$ sucessivamente.",
+      "solucao_completa": "A amostra tem $n=66$ vagões, e o intervalo de seleção é $k=330/66=5$. Após o 29º vagão selecionado, os seguintes são $29+5$, $29+10$, $29+15$, $29+20$ e $29+25$. O cálculo considera o 29º como um vagão já pertencente à sequência sistemática, conforme solicitado; em um planejamento novo, o início usual seria sorteado entre 1 e 5.",
+      "resposta_final": "34º, 39º, 44º, 49º e 54º vagões.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+            "linha_inicial": 43,
+            "linha_final": 47
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Exercício 5",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-02-multipla-escolha-2": {
+      "dica": "A aleatoriedade simples exige que a seleção não favoreça indivíduos por indicação ou conveniência.",
+      "passo_inicial": "Compare as alternativas com a condição de igualdade das probabilidades de seleção no universo da pesquisa.",
+      "solucao_completa": "Na amostragem aleatória simples, cada indivíduo tem a mesma chance de ser selecionado, usando um mecanismo de sorteio. Ter conhecidos entre os entrevistadores ou receber indicações não garante essa condição. A segmentação por perfil remete a outros desenhos amostrais.",
+      "resposta_final": "Alternativa E — a mesma chance de ser abordado.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+            "linha_inicial": 50,
+            "linha_final": 56
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Questão objetiva 2",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-02-multipla-escolha-5": {
+      "dica": "Verifique se são sorteados grupos inteiros ou indivíduos dentro de cada grupo.",
+      "passo_inicial": "O enunciado informa que os grupos são mutuamente exclusivos e que há um sorteio dentro de cada um. Relacione essa estrutura à definição de estrato.",
+      "solucao_completa": "A população foi dividida em estratos, e uma amostra aleatória simples é selecionada dentro de cada estrato. Isso caracteriza amostragem aleatória estratificada. Em conglomerados, a seleção recai sobre grupos; quotas não exigem sorteio dos indivíduos.",
+      "resposta_final": "Alternativa C — amostragem aleatória estratificada.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+            "linha_inicial": 57,
+            "linha_final": 63
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Questão objetiva 5",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-02-multipla-escolha-6": {
+      "dica": "O primeiro elemento já conta como uma das mil seleções.",
+      "passo_inicial": "Use a progressão $a_j=15+(j-1)\\cdot20$. Substitua $j=1000$, cuidando do número de intervalos.",
+      "solucao_completa": "O primeiro elemento é 15 e a distância entre seleções é 20. Entre o primeiro e o milésimo elemento há 999 intervalos:\n$$a_{1000}=15+999\\cdot20=15+19980=19995.$$\nUsar mil intervalos incluiria um elemento além do tamanho solicitado.",
+      "resposta_final": "Alternativa B — 19.995º elemento.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+            "linha_inicial": 64,
+            "linha_final": 74
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Questão objetiva 6",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-02-multipla-escolha-7": {
+      "dica": "A cota da operadora depende de sua participação no total de assinantes.",
+      "passo_inicial": "Some os assinantes das três operadoras e calcule $n_M=200\\cdot N_M/N$.",
+      "solucao_completa": "O total é $15+25+30=70$ mil assinantes. A operadora M representa $15/70$ desse total. Sua cota é\n$$n_M=200\\cdot\\frac{15}{70}=42{,}857\\ldots$$\nArredondando para um número inteiro de assinantes, obtém-se 43.",
+      "resposta_final": "Alternativa A — 43 assinantes da operadora M.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+            "linha_inicial": 75,
+            "linha_final": 89
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Questão objetiva 7",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-02-multipla-escolha-8": {
+      "dica": "Na estratificação proporcional, a cota depende da quantidade de animais de cada espécie.",
+      "passo_inicial": "Calcule o efetivo total. Depois, obtenha as cotas dos bovinos e dos suínos multiplicando suas proporções pelo tamanho 15.",
+      "solucao_completa": "O efetivo total é $80+300+120+150+250=900$. Para bovinos, $15\\cdot300/900=5$. Para suínos, $15\\cdot250/900=4{,}166\\ldots$, aproximadamente 4. Uma alocação inteira que totaliza 15 é: 1 asinino, 5 bovinos, 2 caprinos, 3 equinos e 4 suínos. Assim, bovinos e suínos somam $5+4=9$.",
+      "resposta_final": "Alternativa E — 9 animais: 5 bovinos e 4 suínos.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 2 -  Amostragens Probabilísticas.txt",
+            "linha_inicial": 90,
+            "linha_final": 105
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Questão objetiva 8",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-03-exercicio-2": {
+      "dica": "Distinga contagens, medidas e categorias. Uma seleção dentro de cada andar é diferente do sorteio de andares inteiros.",
+      "passo_inicial": "Delimite a população, identifique as quatro características observadas e verifique quais possuem ordem natural ou são obtidas por contagem.",
+      "solucao_completa": "(a) A população é formada por todos os condôminos do condomínio; a amostra contém os 20 entrevistados.\n(b) A nota de limpeza é uma avaliação numérica. Seguindo a convenção do gabarito do livro, é quantitativa contínua quando admite valores reais entre 0 e 10. Se o questionário admitir apenas notas inteiras, é quantitativa discreta; se os números funcionarem apenas como categorias de avaliação, é ordinal. O enunciado não explicita essa restrição, então a classificação deve vir acompanhada da convenção adotada. A contribuição com reciclagem (sim/não) é qualitativa nominal. A quantidade de retiradas de lixo por semana é quantitativa discreta. Escolaridade é qualitativa ordinal.\n(c) O procedimento descrito, com um sorteio dentro de cada andar, é estratificado por andar. Selecionar um entrevistado por andar não é necessariamente proporcional: depende do número de condôminos de cada andar. Também se pode propor amostragem aleatória simples ou sistemática a partir de um cadastro completo, justificando como o sorteio seria feito. Sortear moradores dentro de todos os andares não equivale a sortear conglomerados inteiros.",
+      "resposta_final": "(a) Todos os condôminos; amostra de 20. (b) Limpeza: quantitativa contínua na convenção do livro, com alternativas justificadas conforme a escala; reciclagem: qualitativa nominal; retiradas semanais: quantitativa discreta; escolaridade: qualitativa ordinal. (c) No procedimento descrito, amostragem estratificada por andar.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+            "linha_inicial": 57,
+            "linha_final": 74
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Exercício 2",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ],
+        "observacoes": "Explicita a convenção da escala da nota e corrige a identificação de conglomerados na solução antiga; preserva alternativas justificadas para a escala não especificada."
+      }
+    },
+    "livro-aula-03-multipla-escolha-4": {
+      "dica": "Pergunte se a característica é uma quantidade ou uma categoria, e se suas categorias podem ser ordenadas.",
+      "passo_inicial": "Observe que “muito insatisfeito” e “muito satisfeito” são níveis de uma mesma avaliação, e não medidas numéricas de satisfação.",
+      "solucao_completa": "A variável é o nível de satisfação no trabalho, descrito por categorias com uma ordem de intensidade. Portanto, é qualitativa ordinal. A frequência é a contagem de respostas, mas não transforma a variável investigada em quantitativa. “Não sabe ou não opina” é uma categoria de ausência de avaliação, separada da escala de satisfação.",
+      "resposta_final": "Alternativa D — ordinal e qualitativa.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+            "linha_inicial": 77,
+            "linha_final": 96
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 1,
+            "questao": "Questão objetiva 4",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-03-multipla-escolha-7": {
+      "dica": "Contagens assumem valores inteiros; mensurações podem assumir valores intermediários.",
+      "passo_inicial": "Separe as alternativas obtidas contando objetos daquela obtida medindo uma grandeza.",
+      "solucao_completa": "Número de filhos, carros, peças e livros são contagens e, por isso, variáveis quantitativas discretas. A altura é uma mensuração que pode assumir valores intermediários, como 1,754 m, e é quantitativa contínua.",
+      "resposta_final": "Alternativa C — altura de um indivíduo em metros.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+            "linha_inicial": 97,
+            "linha_final": 106
+          }
+        ]
+      }
+    },
+    "livro-aula-03-multipla-escolha-9": {
+      "dica": "Organizar e resumir dados observados é diferente de generalizar conclusões para uma população.",
+      "passo_inicial": "Identifique os procedimentos realizados: tabela de frequências e histograma. Pergunte se o pesquisador fez uma generalização além dos dados coletados.",
+      "solucao_completa": "A construção de tabelas e gráficos organiza e descreve os dados da amostra. Isso pertence à estatística descritiva. Inferência exigiria usar a amostra para estimar ou testar uma característica da população.",
+      "resposta_final": "Alternativa C — estatística descritiva.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+            "linha_inicial": 107,
+            "linha_final": 118
+          }
+        ]
+      }
+    },
+    "livro-aula-03-atividade-miniprojeto-i-fase-1": {
+      "dica": "Uma boa pesquisa começa com uma pergunta delimitada, uma população definida e variáveis que possam ser observadas.",
+      "passo_inicial": "Escolha uma situação do seu contexto e escreva uma pergunta investigável. Liste a população, as variáveis e uma hipótese que os dados possam apoiar ou contrariar.",
+      "solucao_completa": "Este é um roteiro de elaboração, com resultados que dependem da pesquisa do grupo.\n1. Delimite o problema, o local e o período do estudo.\n2. Apresente hipóteses como afirmações provisórias, evitando tratá-las como conclusões.\n3. Justifique a relevância e estabeleça objetivo geral e objetivos específicos coerentes com a pergunta.\n4. Defina a população, o cadastro amostral, o tamanho da amostra e o procedimento de seleção; explique possíveis limitações de representatividade.\n5. Prepare o instrumento de coleta e identifique os tipos das variáveis.\n6. Organize uma planilha com uma linha por participante e uma coluna por variável. Defina como tratar respostas ausentes e inconsistentes.\n7. Apresente cronograma e bibliografia.\nComo exemplo de planejamento, pode-se investigar a relação entre tempo de deslocamento e atrasos nas aulas. Esse exemplo é apenas um modelo de pergunta, sem dados ou conclusão pronta.",
+      "resposta_final": "Entrega esperada: miniprojeto com problema, hipóteses, justificativa, objetivos, amostragem, coleta, organização dos dados, cronograma e bibliografia. Não há uma resposta numérica única.",
+      "correcao_automatica": false,
+      "gabarito_meta": {
+        "origem": "roteiro",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 3 -  Classificação de Variáveis.txt",
+            "linha_inicial": 121,
+            "linha_final": 143
+          }
+        ]
+      },
+      "criterios_avaliacao": [
+        "Coerência entre problema, hipóteses e objetivos.",
+        "População e amostra delimitadas; método de seleção explicado.",
+        "Variáveis e instrumento de coleta adequados.",
+        "Plano de organização, cronograma e fontes apresentados."
+      ]
+    },
+    "livro-aula-04-exercicio-1": {
+      "dica": "Conte cada sabor antes de calcular as proporções. Para estimar a produção, use a proporção sem arredondá-la antecipadamente.",
+      "passo_inicial": "Monte uma coluna para MA, CA, FC, PT e MU. Conte as 30 respostas e confira a soma; depois use $f_r=f_a/30$ e $f_p=100f_r$.",
+      "solucao_completa": "(a) A variável é sabor favorito de minipizza, qualitativa nominal.\n(b) Contando os registros exibidos:\n\n| Sabor | $f_a$ | $f_r$ | $f_p$ |\n| --- | ---: | ---: | ---: |\n| MA | 9 | 0,3000 | 30,00% |\n| CA | 10 | 0,3333 | 33,33% |\n| FC | 5 | 0,1667 | 16,67% |\n| PT | 2 | 0,0667 | 6,67% |\n| MU | 4 | 0,1333 | 13,33% |\n| Total | 30 | 1,0000 | 100,00% |\n\n(c) Um gráfico de barras tem as cinco categorias no eixo horizontal e alturas 30,00%, 33,33%, 16,67%, 6,67% e 13,33%. Também é possível um gráfico de setores, com ângulos 108°, 120°, 60°, 24° e 48°.\n(d) Multiplique cada frequência relativa exata por 120. Como $120/30=4$, basta multiplicar as contagens por 4: 36 MA, 40 CA, 20 FC, 8 PT e 16 MU.\n\nO PDF do gabarito apresenta MA=8 e PT=3; a contagem da tabela do próprio livro e desta aula é MA=9 e PT=2. Aqui se usa a tabela efetivamente apresentada.",
+      "resposta_final": "(a) Qualitativa nominal. (b) MA=9; CA=10; FC=5; PT=2; MU=4. (c) Barras ou setores com as proporções indicadas. (d) 36 MA, 40 CA, 20 FC, 8 PT e 16 MU.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+            "linha_inicial": 46,
+            "linha_final": 60
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Exercício 1",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ],
+        "observacoes": "Divergência no próprio gabarito: MA=8 e PT=3. Livro p. 41 e tabela da aula têm MA=9 e PT=2; prevalecem os dados do enunciado."
+      }
+    },
+    "livro-aula-04-exercicio-2": {
+      "dica": "As categorias são exclusivas: cada estudante escolheu um único aplicativo.",
+      "passo_inicial": "Conte cada sigla nas 30 respostas. Use o total 30 como denominador das frequências relativas e some as contagens de WA e FB para o item (b).",
+      "solucao_completa": "(a) As contagens e proporções são:\n\n| Aplicativo | $f_a$ | $f_r$ | $f_p$ |\n| --- | ---: | ---: | ---: |\n| WA | 12 | 0,4000 | 40,00% |\n| IG | 7 | 0,2333 | 23,33% |\n| FB | 6 | 0,2000 | 20,00% |\n| SC | 2 | 0,0667 | 6,67% |\n| TT | 3 | 0,1000 | 10,00% |\n| Total | 30 | 1,0000 | 100,00% |\n\n(b) WA ou FB reúne $12+6=18$ estudantes: $18/30=0{,}60=60\\%$.\n(c) O gráfico de barras deve identificar os aplicativos no eixo horizontal e usar as frequências percentuais como alturas, com eixo vertical iniciado em zero.",
+      "resposta_final": "(a) WA=12; IG=7; FB=6; SC=2; TT=3, com percentuais 40,00%; 23,33%; 20,00%; 6,67%; 10,00%. (b) 60%. (c) Barras com essas alturas.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+            "linha_inicial": 61,
+            "linha_final": 75
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Exercício 2",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-04-exercicio-3": {
+      "dica": "Para um gráfico de setores, transforme cada proporção em uma fração de 360°.",
+      "passo_inicial": "Conte DN, CQ, CC e CD nas 16 respostas. Calcule $f_r=f_a/16$, $f_p=100f_r$ e $\\theta=360^\\circ f_r$.",
+      "solucao_completa": "(a) A distribuição é:\n\n| Método | $f_a$ | $f_r$ | $f_p$ | Ângulo do setor |\n| --- | ---: | ---: | ---: | ---: |\n| DN | 3 | 0,1875 | 18,75% | 67,5° |\n| CQ | 1 | 0,0625 | 6,25% | 22,5° |\n| CC | 8 | 0,5000 | 50,00% | 180° |\n| CD | 4 | 0,2500 | 25,00% | 90° |\n| Total | 16 | 1,0000 | 100,00% | 360° |\n\n(b) No gráfico de pizza, metade do círculo corresponde ao cartão de crédito. Crédito e débito somam 75% dos pagamentos, enquanto cheque é o método menos frequente. Use os valores exatos antes de arredondar os rótulos.",
+      "resposta_final": "DN: 3 (18,75%); CQ: 1 (6,25%); CC: 8 (50%); CD: 4 (25%). Setores de 67,5°; 22,5°; 180°; 90°, respectivamente.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 4 -  Organização de Dados Qualitativos.txt",
+            "linha_inicial": 76,
+            "linha_final": 86
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Exercício 3",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-05-exercicio-4": {
+      "dica": "Pareto ordena causas por frequência e acompanha o percentual acumulado.",
+      "passo_inicial": "Divida cada contagem por 200 e multiplique por 100. Some os percentuais na ordem decrescente já apresentada.",
+      "solucao_completa": "(a) A tabela é:\n\n| Motivo | $f_a$ | $f_p$ | Percentual acumulado |\n| --- | ---: | ---: | ---: |\n| Descolamento da sola | 110 | 55% | 55% |\n| Tamanho incorreto enviado | 50 | 25% | 80% |\n| Atraso na entrega | 24 | 12% | 92% |\n| Embalagem danificada | 10 | 5% | 97% |\n| Outros defeitos menores | 6 | 3% | 100% |\n\n(b) Os dois primeiros motivos somam $110+50=160$ reclamações, ou $160/200=80\\%$. Eles devem ser priorizados na investigação das causas. Isso identifica 80% das reclamações registradas; não garante, por si só, que uma ação elimine todas elas.",
+      "resposta_final": "(a) Percentuais: 55%, 25%, 12%, 5%, 3%; acumulados: 55%, 80%, 92%, 97%, 100%. (b) Descolamento da sola e tamanho incorreto enviado.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt",
+            "linha_inicial": 43,
+            "linha_final": 66
+          }
+        ]
+      }
+    },
+    "livro-aula-05-multipla-escolha-14": {
+      "dica": "Compare a origem e a escala dos eixos antes de comparar a altura das barras.",
+      "passo_inicial": "Observe qual é o menor valor mostrado no eixo vertical de cada gráfico e se a mesma diferença numérica ocupa o mesmo espaço visual.",
+      "solucao_completa": "O segundo gráfico inicia o eixo vertical acima de zero. Com a base truncada, uma pequena diferença de faturamento ocupa uma parcela maior da altura visível das barras e parece proporcionalmente maior. Os dados são os mesmos; a distorção vem da escala.",
+      "resposta_final": "Alternativa B — escala vertical truncada, ampliando visualmente as diferenças.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt",
+            "linha_inicial": 69,
+            "linha_final": 81
+          }
+        ]
+      }
+    },
+    "livro-aula-06-exercicio-5": {
+      "dica": "O número de smartphones é uma contagem; cada valor pode ser uma classe.",
+      "passo_inicial": "Liste os valores 0, 1, 2, 3 e 4. Conte os domicílios de cada classe e divida por 40. Defina a frequência acumulada como a soma das contagens até a classe.",
+      "solucao_completa": "(a) A distribuição é:\n\n| Smartphones | $f_a$ | $f_r$ | $f_p$ | $F_a$ acumulada | Percentual acumulado |\n| ---: | ---: | ---: | ---: | ---: | ---: |\n| 0 | 2 | 0,050 | 5,0% | 2 | 5,0% |\n| 1 | 12 | 0,300 | 30,0% | 14 | 35,0% |\n| 2 | 15 | 0,375 | 37,5% | 29 | 72,5% |\n| 3 | 8 | 0,200 | 20,0% | 37 | 92,5% |\n| 4 | 3 | 0,075 | 7,5% | 40 | 100,0% |\n\nPara evitar ambiguidade em $f_c$, a tabela identifica separadamente contagem e percentual acumulados.\n(b) Um gráfico de barras separadas representa os valores 0 a 4, com alturas 2, 12, 15, 8 e 3 domicílios.\n(c) Dois ou mais smartphones correspondem a $15+8+3=26$ domicílios: $26/40=0{,}65=65\\%$. Os percentuais foram calculados sem arredondamento intermediário.",
+      "resposta_final": "(a) Contagens: 2, 12, 15, 8, 3; acumuladas: 2, 14, 29, 37, 40. (b) Barras com essas contagens. (c) 65%.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+            "linha_inicial": 99,
+            "linha_final": 111
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Exercício 5",
+            "pagina_pdf": 2,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-06-exercicio-6": {
+      "dica": "Dados agrupados informam quantos valores há em cada intervalo, sem revelar suas posições dentro dele.",
+      "passo_inicial": "Some as seis contagens. Calcule o ponto médio com $(L_i+L_s)/2$ e as proporções com $f_a/n$. Para o item (f), explicite uma hipótese sobre a distribuição dentro da classe.",
+      "solucao_completa": "(a) $n=23+64+82+36+12+3=220$ clientes.\n(b) Todas as classes têm amplitude 2 L; os pontos médios são 1, 3, 5, 7, 9 e 11 L.\n(c) A tabela é:\n\n| Litros | $f_a$ | $f_r$ | $f_p$ | $F_a$ acumulada | Percentual acumulado |\n| --- | ---: | ---: | ---: | ---: | ---: |\n| $[0;2)$ | 23 | 0,1045 | 10,45% | 23 | 10,45% |\n| $[2;4)$ | 64 | 0,2909 | 29,09% | 87 | 39,55% |\n| $[4;6)$ | 82 | 0,3727 | 37,27% | 169 | 76,82% |\n| $[6;8)$ | 36 | 0,1636 | 16,36% | 205 | 93,18% |\n| $[8;10)$ | 12 | 0,0545 | 5,45% | 217 | 98,64% |\n| $[10;12)$ | 3 | 0,0136 | 1,36% | 220 | 100,00% |\n\nPequenas diferenças na soma dos valores exibidos decorrem do arredondamento.\n(d) Consumiram pelo menos 8 L os $12+3=15$ clientes: $15/220\\cdot100\\%=6{,}818\\ldots\\%\\approx6{,}82\\%$.\n(e) O valor 5 está dentro da classe $[4;6)$. Não sabemos quantos dos 82 clientes dessa classe ficaram até 5 L.\n(f) Assumindo distribuição aproximadamente uniforme dentro dessa classe, até 5 L corresponde à metade dela: $23+64+82(5-4)/(6-4)=128$. Trata-se de uma estimativa, não de uma contagem observada.",
+      "resposta_final": "(a) 220. (b) Amplitude 2 L; pontos médios 1, 3, 5, 7, 9 e 11 L. (c) Tabela indicada. (d) Aproximadamente 6,82%. (e) A classe não revela os valores individuais. (f) Estimativa de 128 clientes, sob uniformidade na classe.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+            "linha_inicial": 112,
+            "linha_final": 130
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Exercício 6",
+            "pagina_pdf": 3,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ],
+        "observacoes": "O gabarito indica 6% no item (d); a fração exata 15/220 dá 6,82%. Foi evitado somar percentuais já arredondados."
+      }
+    },
+    "livro-aula-06-exercicio-7": {
+      "dica": "Use as contagens das classes para encontrar o total e completar as proporções.",
+      "passo_inicial": "Some as cinco quantidades. Em seguida, calcule $f_r=f_a/n$ e acumule as contagens na ordem crescente dos dias.",
+      "solucao_completa": "(a) $n=72+288+504+216+140=1220$ caixas.\n(b) A distribuição completa é:\n\n| Dias restantes | $f_a$ | $f_r$ | $f_p$ | $F_a$ acumulada | Percentual acumulado |\n| --- | ---: | ---: | ---: | ---: | ---: |\n| 0 a 7 | 72 | 0,0590 | 5,90% | 72 | 5,90% |\n| 8 a 15 | 288 | 0,2361 | 23,61% | 360 | 29,51% |\n| 16 a 23 | 504 | 0,4131 | 41,31% | 864 | 70,82% |\n| 24 a 31 | 216 | 0,1770 | 17,70% | 1080 | 88,52% |\n| 32 a 39 | 140 | 0,1148 | 11,48% | 1220 | 100,00% |\n\nAs classes abrangem valores inteiros de dias; a frequência acumulada da primeira classe não significa que todas as 72 caixas estejam vencidas. O valor zero foi agrupado junto de 1 a 7 dias.",
+      "resposta_final": "(a) 1.220 caixas. (b) Contagens 72, 288, 504, 216, 140; contagens acumuladas 72, 360, 864, 1.080, 1.220; percentuais conforme a tabela.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+            "linha_inicial": 131,
+            "linha_final": 135
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Exercício 7",
+            "pagina_pdf": 3,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ],
+        "observacoes": "Tabela omitida na aula recuperada do livro p. 44; percentuais calculados pelas contagens originais."
+      },
+      "enunciado": "O gerente de um supermercado decidiu inspecionar as caixas de iogurte na loja, averiguando o número de dias restantes para expirar o prazo de validade de cada uma delas. Para as caixas que já estavam vencidas, mas que ainda estavam nas prateleiras, foi atribuído o valor “zero” para o número de dias restantes para expirar a validade. A tabela a seguir apresenta os resultados da pesquisa.\n\n| Dias restantes | Caixas |\n| --- | ---: |\n| 0 a 7 | 72 |\n| 8 a 15 | 288 |\n| 16 a 23 | 504 |\n| 24 a 31 | 216 |\n| 32 a 39 | 140 |\n\n(a) Quantas caixas de iogurte foram inspecionadas?  \n(b) Construa uma tabela de distribuição de frequências com as frequências absoluta ($f_a$), relativa ($f_r$), percentual ($f_p$) e acumulada ($f_c$).",
+      "referencia_livro": {
+        "pagina": 44
+      }
+    },
+    "livro-aula-06-multipla-escolha-6": {
+      "dica": "Uma frequência percentual informa a parcela do número total de dias.",
+      "passo_inicial": "Converta 25% em 0,25 e multiplique pelo total de 20 dias observados.",
+      "solucao_completa": "A classe associada a B corresponde a 25% dos 20 dias. Logo,\n$$B=0{,}25\\cdot20=5.$$\nA frequência é uma contagem de dias, não o número de alunos ausentes.",
+      "resposta_final": "Alternativa A — 5 dias.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+            "linha_inicial": 138,
+            "linha_final": 153
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Questão objetiva 6",
+            "pagina_pdf": 6,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-06-multipla-escolha-7": {
+      "dica": "A amplitude de classe precisa permitir que cinco classes cubram todas as idades.",
+      "passo_inicial": "Encontre mínimo e máximo, calcule a amplitude total e divida por cinco. Se necessário, arredonde a amplitude de classe para cima.",
+      "solucao_completa": "As idades vão de 26 a 45 anos, logo $AT=45-26=19$. Para cinco classes, $h\\approx19/5=3{,}8$; como a amplitude deve ser inteira, adota-se 4. Uma distribuição possível é $[26;30)$, $[30;34)$, $[34;38)$, $[38;42)$ e $[42;46)$, cobrindo todos os dados. A amplitude de 3 não cobre a faixa com apenas cinco classes.",
+      "resposta_final": "Alternativa B — amplitude de classe de 4 anos.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 6 -  Organização de Dados Quantitativos.txt",
+            "linha_inicial": 154,
+            "linha_final": 169
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Questão objetiva 7",
+            "pagina_pdf": 6,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ],
+        "observacoes": "O gabarito online indica E (5), mas o enunciado pede cinco classes e os valores vão de 26 a 45; pelo procedimento da aula, a amplitude inteira mínima adequada é 4 (B)."
+      }
+    },
+    "livro-aula-07-exercicio-8": {
+      "dica": "Depois de escolher os intervalos, conte cada valor uma única vez e confira se todos os 40 tempos foram incluídos.",
+      "passo_inicial": "Calcule $AT=95-45$ e divida por cinco. Use classes fechadas à esquerda e abertas à direita; inclua 95 na última classe fechando sua extremidade direita.",
+      "solucao_completa": "(a) $AT=50$ min, logo $h=50/5=10$ min. A última classe inclui o valor 95.\n(b) Recontando os dados:\n\n| Classe (min) | Ponto médio | $f_a$ | $f_r$ | $f_p$ | $F_a$ acumulada | Percentual acumulado |\n| --- | ---: | ---: | ---: | ---: | ---: | ---: |\n| $[45;55)$ | 50 | 4 | 0,100 | 10,0% | 4 | 10,0% |\n| $[55;65)$ | 60 | 10 | 0,250 | 25,0% | 14 | 35,0% |\n| $[65;75)$ | 70 | 12 | 0,300 | 30,0% | 26 | 65,0% |\n| $[75;85)$ | 80 | 9 | 0,225 | 22,5% | 35 | 87,5% |\n| $[85;95]$ | 90 | 5 | 0,125 | 12,5% | 40 | 100,0% |\n\n(c) O histograma tem retângulos contíguos de largura 10, com alturas 4, 10, 12, 9 e 5. O polígono une os pontos (50;4), (60;10), (70;12), (80;9), (90;5); pode ser fechado em (40;0) e (100;0).\n(d) A ogiva das contagens une (45;0), (55;4), (65;14), (75;26), (85;35), (95;40). Para percentuais, use 0%, 10%, 35%, 65%, 87,5%, 100% nas mesmas abscissas.",
+      "resposta_final": "Amplitude 10 min. Frequências: 4, 10, 12, 9, 5. Acumuladas: 4, 14, 26, 35, 40. Histograma, polígono e ogiva conforme os pontos indicados.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+            "linha_inicial": 113,
+            "linha_final": 131
+          }
+        ],
+        "observacoes": "O exercício da aula usa tempos de 45 a 95, diferentes dos tempos de 10 a 38 no exercício 8 do livro. As contagens antigas 4,9,13,8,6 foram corrigidas para 4,10,12,9,5."
+      }
+    },
+    "livro-aula-07-exercicio-11": {
+      "dica": "Use a parte inteira como ramo e o décimo como folha. Compare centro e espalhamento, sem confundir essas duas características.",
+      "passo_inicial": "Separe os dados por parte inteira. Coloque Flying Dog à esquerda com as folhas em ordem inversa e Sierra Nevada à direita em ordem crescente.",
+      "solucao_completa": "(a) Uma disposição possível é:\n\n| Flying Dog (folhas) | Ramo | Sierra Nevada (folhas) |\n| ---: | :---: | :--- |\n| 8 7 7 | 4 | 4 |\n| 6 5 5 1 | 5 | 0 0 6 6 8 9 9 |\n| 0 | 6 | 7 8 9 |\n| 8 4 1 | 7 | 0 |\n| 3 3 | 8 | — |\n| 9 2 | 9 | 6 |\n| 2 | 10 | — |\n| 5 | 11 | — |\n\nChave: ramo 4 e folha 7 representam 4,7%, inclusive à esquerda.\n(b) As medianas são 7,1% (Flying Dog, 9º de 17 valores) e 5,9% (Sierra Nevada, 7º de 13). São medidas adequadas de teor típico neste conjunto; as médias são aproximadamente 7,15% e 6,17%.\n(c) Flying Dog tende a ter teor maior, observando as medidas de centro e a distribuição.\n(d) Flying Dog apresenta maior espalhamento: amplitude $11{,}5-4{,}7=6{,}8$ pontos percentuais, contra $9{,}6-4{,}4=5{,}2$ na Sierra Nevada. Os desvios-padrão amostrais são aproximadamente 2,15 e 1,31 pontos percentuais. As duas medidas confirmam dispersões diferentes.",
+      "resposta_final": "(a) Ramo-e-folha conforme a tabela. (b) Medianas 7,1% e 5,9%. (c) Flying Dog tende a ter teor maior. (d) Flying Dog tem maior dispersão.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+            "linha_inicial": 132,
+            "linha_final": 146
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Exercício 11",
+            "pagina_pdf": 6,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ],
+        "observacoes": "O gabarito oferece uma descrição de homogeneidade no item (b), mas o enunciado pede teor típico. Foram calculadas medianas e médias para responder diretamente."
+      }
+    },
+    "livro-aula-07-multipla-escolha-8": {
+      "dica": "Em um histograma de densidade, a frequência relativa é a área do retângulo, não sua altura isolada.",
+      "passo_inicial": "Identifique os intervalos contidos em $[4;8)$: $[4;5)$ e $[5;8)$. Multiplique cada densidade pela respectiva largura e depois pelo total de funcionários.",
+      "solucao_completa": "A classe $[4;5)$ tem largura 1 e densidade 0,25, portanto frequência relativa $1\\cdot0{,}25=0{,}25$. A classe $[5;8)$ tem largura 3 e densidade 0,15, portanto frequência relativa $3\\cdot0{,}15=0{,}45$. Somando as áreas,\n$$f_r=0{,}25+0{,}45=0{,}70.$$\nA quantidade é $200\\cdot0{,}70=140$ funcionários. Usar larguras iguais alteraria o significado do gráfico.",
+      "resposta_final": "Alternativa D — 140 funcionários.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+            "linha_inicial": 149,
+            "linha_final": 164
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 2,
+            "questao": "Questão objetiva 8",
+            "pagina_pdf": 6,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf"
+          }
+        ],
+        "observacoes": "Resposta oficial D confirmada pelo histograma original do livro p. 50; substitui a resposta E / 160 da solução antiga."
+      }
+    },
+    "livro-aula-07-atividade-miniprojeto-i-fase-2": {
+      "dica": "Escolha gráficos e tabelas compatíveis com o tipo de variável. Uma categoria nominal não tem ordem natural para acumular frequências.",
+      "passo_inicial": "Retome os dados da fase 1, selecione uma variável qualitativa e uma quantitativa e crie uma tabela separada para cada uma.",
+      "solucao_completa": "Este roteiro depende dos dados coletados pelo grupo.\n1. Identifique as variáveis e o número de respostas válidas.\n2. Para a qualitativa, conte categorias com CONT.SE (ou tabela dinâmica); calcule proporções e percentuais. Se for nominal, a frequência acumulada não tem interpretação substantiva: indique “não se aplica”. Se for ordinal, acumule na ordem da escala.\n3. Para a quantitativa, escolha valores únicos ou intervalos sem sobreposição. Use fórmulas referenciadas ao intervalo completo da planilha, incluindo contagens, proporções e acumuladas.\n4. Confira se as contagens somam o total e se as proporções somam 1.\n5. Use barras/setores para a qualitativa e barras, histograma, polígono ou ogiva conforme a quantitativa.\n6. Altere um dado para verificar a atualização automática das tabelas e gráficos.\n7. Interprete os padrões observados, identificando limitações da amostra. Não invente dados para completar a entrega.",
+      "resposta_final": "Entrega esperada: planilha com dados, duas tabelas automatizadas, gráficos adequados e interpretação. Os resultados numéricos dependem da coleta; acumuladas para variável nominal devem ser justificadas como não aplicáveis.",
+      "correcao_automatica": false,
+      "gabarito_meta": {
+        "origem": "roteiro",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+            "linha_inicial": 167,
+            "linha_final": 170
+          }
+        ]
+      },
+      "criterios_avaliacao": [
+        "Dados da fase 1 e variáveis identificados.",
+        "Fórmulas e gráficos atualizados automaticamente.",
+        "Totais, proporções e limites de classe consistentes.",
+        "Acumuladas usadas apenas quando há ordem interpretável.",
+        "Conclusões apoiadas nos dados."
+      ]
+    },
+    "livro-aula-07-atividade-miniprojeto-iii": {
+      "dica": "Tipo de transporte e tempo de deslocamento exigem tratamentos diferentes.",
+      "passo_inicial": "Crie uma linha por aluno com transporte e tempo em minutos. Identifique o total válido para cada variável antes de fazer as tabelas.",
+      "solucao_completa": "O tipo de transporte é qualitativo nominal; o tempo de deslocamento é quantitativo contínuo, ainda que registrado com arredondamento em minutos.\n1. Conte os meios de transporte e calcule proporções/percentuais. Não atribua significado a uma acumulada de categorias nominais.\n2. Organize tempos em classes coerentes, com limites claros e sem sobreposição. Calcule contagens, proporções, percentuais e acumuladas.\n3. Use barras ou setores para transporte; histograma e/ou ogiva para tempo.\n4. No relatório, identifique os meios mais frequentes e faixas típicas de tempo, cite o tamanho da amostra e descreva valores ausentes e limites de representatividade.\nOs números devem vir da coleta da turma; não existe um percentual universal de transporte ou tempo.",
+      "resposta_final": "Transporte: qualitativa nominal. Tempo: quantitativa contínua. Entrega esperada: dados coletados, duas tabelas, gráficos e relatório com resultados da turma.",
+      "correcao_automatica": false,
+      "gabarito_meta": {
+        "origem": "roteiro",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 7 -  Gráficos Quantitativos e Ramo-e-Folha.txt",
+            "linha_inicial": 171,
+            "linha_final": 177
+          }
+        ]
+      },
+      "criterios_avaliacao": [
+        "Dados e unidades de medida identificados.",
+        "Classificação das duas variáveis correta.",
+        "Tabelas e gráficos adequados a cada variável.",
+        "Relatório usa resultados reais e reconhece limites da amostra."
+      ]
+    },
+    "livro-aula-08-exercicio-1": {
+      "dica": "Ordene os dados para encontrar a mediana e conte repetições para identificar a moda.",
+      "passo_inicial": "Use as 14 observações: a média é a soma dividida por 14, e a mediana é a média entre o 7º e o 8º valores do rol.",
+      "solucao_completa": "O rol é $2,2,3,3,3,4,4,5,5,5,5,6,6,6$. A soma é 59 e $n=14$:\n$$\\bar x=\\frac{59}{14}\\approx4{,}21\\text{ cores}.$$\nOs valores centrais são 4 e 5, logo $Md=(4+5)/2=4{,}5$ cores. O número 5 aparece quatro vezes, mais que qualquer outro valor, então $Mo=5$ cores. Essas medidas são estatísticas amostrais: descrevem as 14 embalagens observadas, que não abrangem todas as embalagens da população.",
+      "resposta_final": "Média aproximadamente 4,21 cores; mediana 4,5 cores; moda 5 cores. São estatísticas da amostra.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt",
+            "linha_inicial": 108,
+            "linha_final": 115
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 3,
+            "questao": "Exercício 1(a)",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-03.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/14b304035b344d65b7ca41cf4cbc16dc/GABARITO%20-%20LIVRO%20ESTAT%C3%8DSTICA%20-%20CAP%203.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-08-exercicio-3": {
+      "dica": "A média usa todos os valores; a mediana depende dos valores centrais do rol.",
+      "passo_inicial": "Some os dez salários e ordene-os. Como há dez observações, use a média entre a 5ª e a 6ª para a mediana. Verifique se algum salário se repete.",
+      "solucao_completa": "(a) A soma é 1.344 milhões de reais. Logo, $\\bar x=1344/10=134{,}4$ milhões. No rol $94,96,100,107,120,134,148,163,185,197$, os valores centrais são 120 e 134: $Md=(120+134)/2=127$ milhões. Todos os salários são distintos; não há moda.\n(b) A média descreve o valor médio do grupo, mas é sensível aos salários mais altos. A mediana, 127 milhões, fica abaixo da média, indicando essa influência. É aceitável usar a média como resumo do grupo delimitado, desde que acompanhada de informação sobre dispersão; se o objetivo for representar o salário central, a mediana é uma escolha menos sensível aos extremos. Não se pode generalizar esse grupo dos dez mais bem pagos para todos os jogadores.",
+      "resposta_final": "(a) Média R$ 134,4 milhões; mediana R$ 127 milhões; conjunto amodal. (b) A média pode resumir o grupo, mas sofre influência dos valores altos; a mediana é uma alternativa para o salário central.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 8 -  Medidas de Tendência Central.txt",
+            "linha_inicial": 116,
+            "linha_final": 132
+          }
+        ]
+      }
+    },
+    "livro-aula-09-exercicio-4": {
+      "dica": "Compare o desvio-padrão para dispersão absoluta e o coeficiente de variação para dispersão relativa.",
+      "passo_inicial": "Use $CV=(s/\\bar x)\\cdot100\\%$ separadamente em cada setor. Não compare apenas os valores monetários para decidir a dispersão relativa.",
+      "solucao_completa": "(a) Na escala monetária, $s_A=800>s_O=540$: o setor administrativo tem maior dispersão absoluta.\n(b) Os coeficientes são\n$$CV_A=\\frac{800}{4000}\\cdot100\\%=20\\%,\\qquad CV_O=\\frac{540}{1800}\\cdot100\\%=30\\%.$$\nAssim, o setor operacional apresenta maior dispersão em relação à sua própria média salarial.",
+      "resposta_final": "(a) Administrativo. (b) Operacional: CV de 30%, contra 20% do administrativo.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 9 -  Medidas de Dispersão.txt",
+            "linha_inicial": 132,
+            "linha_final": 143
+          }
+        ]
+      }
+    },
+    "livro-aula-10-exercicio-5": {
+      "dica": "Os limites para detectar outliers dependem dos quartis e da amplitude interquartil.",
+      "passo_inicial": "O rol já está ordenado. Adote a convenção da aula: encontre a mediana e exclua-a ao dividir o conjunto ímpar em duas metades.",
+      "solucao_completa": "(a) Com 11 valores, a mediana é o 6º: $Q_2=28$. A metade inferior é $12,15,18,22,25$, cuja mediana é $Q_1=18$. A superior é $30,35,42,45,65$, cuja mediana é $Q_3=42$.\n(b) $AIQ=42-18=24$ min.\n(c) Os limites internos são $BII=18-1{,}5(24)=-18$ min e $BIS=42+1{,}5(24)=78$ min. O limite negativo é um limiar matemático de detecção, não um tempo observado.\n(d) Todos os tempos estão entre esses limites; não há outliers pelo critério de $1{,}5\\,AIQ$. Outros algoritmos de quartis podem produzir valores diferentes; nesta resposta foi usada a convenção explicitada.",
+      "resposta_final": "$Q_1=18$, $Q_2=28$, $Q_3=42$ min; $AIQ=24$ min; $BII=-18$ e $BIS=78$ min. Não há outliers.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt",
+            "linha_inicial": 87,
+            "linha_final": 104
+          }
+        ]
+      }
+    },
+    "livro-aula-10-multipla-escolha-13": {
+      "dica": "Observe quais dois quartis delimitam a caixa.",
+      "passo_inicial": "Identifique a borda inferior como $Q_1$ e a superior como $Q_3$. O comprimento é a diferença entre essas posições.",
+      "solucao_completa": "A caixa abrange os 50% centrais da distribuição. Suas bordas são $Q_1$ e $Q_3$, portanto seu comprimento é $Q_3-Q_1$, a amplitude interquartil. A amplitude total também inclui extremos externos à caixa.",
+      "resposta_final": "Alternativa C — amplitude interquartil.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 10 -  Medidas de Posição e Boxplot.txt",
+            "linha_inicial": 107,
+            "linha_final": 115
+          }
+        ]
+      }
+    },
+    "livro-aula-11-exercicio-8": {
+      "dica": "Dados agrupados substituem cada valor de uma classe pelo seu ponto médio, produzindo estimativas das medidas.",
+      "passo_inicial": "Calcule os cinco pontos médios e as somas $\\sum f_i m_i$ e $\\sum f_i m_i^2$. Para a variância amostral, use denominador $n-1$.",
+      "solucao_completa": "(a) Os pontos médios são 125, 175, 225, 275 e 325 km.\n(b) As somas ponderadas são:\n\n| $m_i$ | $f_i$ | $f_i m_i$ | $f_i m_i^2$ |\n| ---: | ---: | ---: | ---: |\n| 125 | 8 | 1000 | 125000 |\n| 175 | 14 | 2450 | 428750 |\n| 225 | 16 | 3600 | 810000 |\n| 275 | 7 | 1925 | 529375 |\n| 325 | 5 | 1625 | 528125 |\n| Total | 50 | 10600 | 2421250 |\n\nAssim, $\\bar x\\approx10600/50=212$ km.\n(c) Tratando os 50 caminhões como amostra, conforme a convenção da aula:\n$$s^2\\approx\\frac{2421250-10600^2/50}{49}=\\frac{174050}{49}\\approx3552{,}04\\text{ km}^2.$$\nLogo $s\\approx59{,}60$ km. Se os 50 constituírem toda a população de interesse, use denominador 50: $\\sigma^2\\approx3481$ km² e $\\sigma\\approx59$ km. Os valores são aproximações, pois não conhecemos as distâncias individuais dentro das classes.",
+      "resposta_final": "Pontos médios: 125, 175, 225, 275, 325 km. Média estimada: 212 km. Pela convenção amostral: variância 3.552,04 km² e desvio-padrão 59,60 km. Pela convenção populacional: 3.481 km² e 59 km.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 11 -  Medidas para Dados Agrupados.txt",
+            "linha_inicial": 91,
+            "linha_final": 104
+          }
+        ]
+      }
+    },
+    "livro-aula-12-exercicio-1": {
+      "dica": "A variância amostral usa $n-1$; o CV compara o desvio-padrão à média.",
+      "passo_inicial": "Ordene os 14 dados para as medidas de centro. Calcule $\\sum x_i$ e $\\sum x_i^2$ para usar $s^2=[\\sum x_i^2-(\\sum x_i)^2/n]/(n-1)$.",
+      "solucao_completa": "(a) O rol é $2,2,3,3,3,4,4,5,5,5,5,6,6,6$. Com $\\sum x_i=59$, a média é $59/14\\approx4{,}2143$ cores. A mediana é $(4+5)/2=4{,}5$ e a moda é 5. São estatísticas de uma amostra de 14 embalagens.\n(b) A amplitude é $6-2=4$ cores. Como $\\sum x_i^2=275$:\n$$s^2=\\frac{275-59^2/14}{13}\\approx2{,}0275\\text{ cores}^2,\\qquad s\\approx1{,}4239\\text{ cores}.$$\n(c) Usando os valores antes do arredondamento:\n$$CV=\\frac{1{,}423893\\ldots}{4{,}214285\\ldots}\\cdot100\\%\\approx33{,}79\\%.$$\nPela convenção de interpretação adotada na aula, o conjunto tem dispersão relativa elevada. Esse limiar é uma referência didática, não uma regra universal para qualquer contexto.",
+      "resposta_final": "(a) Média 4,21; mediana 4,5; moda 5; estatísticas amostrais. (b) Amplitude 4; variância amostral 2,03; desvio-padrão 1,42. (c) CV aproximadamente 33,79%.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+            "linha_inicial": 49,
+            "linha_final": 68
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 3,
+            "questao": "Exercício 1",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-03.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/14b304035b344d65b7ca41cf4cbc16dc/GABARITO%20-%20LIVRO%20ESTAT%C3%8DSTICA%20-%20CAP%203.pdf"
+          }
+        ],
+        "observacoes": "CV calculado com os valores sem arredondamento intermediário, concordando com 33,79% do gabarito."
+      }
+    },
+    "livro-aula-12-multipla-escolha-7": {
+      "dica": "A cauda longa à direita influencia mais a média do que a mediana.",
+      "passo_inicial": "Observe a distribuição assimétrica à direita no esquema e imagine o efeito dos valores altos sobre a média.",
+      "solucao_completa": "No esquema unimodal da aula, a moda fica próxima do pico. A mediana fica à sua direita, e a média é puxada ainda mais pelos valores altos da cauda. A relação esperada é $\\text{Moda}<\\text{Mediana}<\\text{Média}$. Trata-se da relação didática para a forma ilustrada, não de uma identidade válida para toda distribuição assimétrica possível.",
+      "resposta_final": "Alternativa C — moda < mediana < média.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+            "linha_inicial": 69,
+            "linha_final": 82
+          }
+        ]
+      }
+    },
+    "livro-aula-12-multipla-escolha-13": {
+      "dica": "Compare o comprimento das caixas para os 50% centrais e os extremos para a amplitude total.",
+      "passo_inicial": "Identifique $Q_1$ e $Q_3$ de cada grupo no esquema. Observe também o marcador isolado do Grupo A e a posição relativa das medianas.",
+      "solucao_completa": "A caixa do Grupo B é maior, indicando maior amplitude interquartil. A é a alternativa correta. B é falsa porque há um marcador de outlier no Grupo A. C é falsa porque a mediana de A não ultrapassa o terceiro quartil de B. D é falsa: considerando os extremos, o Grupo A tem maior amplitude total no esquema, embora a caixa do Grupo B seja maior. E é falsa porque a mediana de B não está no centro da caixa. O gráfico é conceitual, portanto não permite atribuir valores observados a esses grupos.",
+      "resposta_final": "Alternativa A — o Grupo B apresenta maior amplitude interquartil.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/1_Descritiva/Lição 12 -  Aplicações do Desvio-Padrão e Controle de Qualidade.txt",
+            "linha_inicial": 83,
+            "linha_final": 95
+          }
+        ],
+        "observacoes": "Alternativa D especificada como amplitude total para eliminar a ambiguidade de “variabilidade geral”; a figura diferencia amplitude interquartil de amplitude total."
+      },
+      "enunciado": "Observe o boxplot comparativo a seguir:\n\n![Boxplot Comparativo de Produção](recursos/ex13_cap3_boxplot.html)\n\nCom base no gráfico, assinale a afirmação correta:  \n(a) A distribuição do Grupo B apresenta maior amplitude interquartil que a do Grupo A.  \n(b) Não há valores atípicos (*outliers*) em nenhum dos grupos.  \n(c) A mediana do Grupo A é superior ao terceiro quartil do Grupo B.  \n(d) A amplitude total do Grupo A é menor que a do Grupo B.  \n(e) O Grupo B apresenta simetria perfeita entre os quartis.",
+      "alternativas": [
+        {
+          "id": "a",
+          "texto": "A distribuição do Grupo B apresenta maior amplitude interquartil que a do Grupo A."
+        },
+        {
+          "id": "b",
+          "texto": "Não há valores atípicos (*outliers*) em nenhum dos grupos."
+        },
+        {
+          "id": "c",
+          "texto": "A mediana do Grupo A é superior ao terceiro quartil do Grupo B."
+        },
+        {
+          "id": "d",
+          "texto": "A amplitude total do Grupo A é menor que a do Grupo B."
+        },
+        {
+          "id": "e",
+          "texto": "O Grupo B apresenta simetria perfeita entre os quartis."
+        }
+      ]
+    },
+    "livro-aula-13-exercicio-1": {
+      "dica": "Num dado equilibrado, todas as faces têm a mesma probabilidade. Conte os resultados favoráveis a cada evento.",
+      "passo_inicial": "Liste as seis faces no espaço amostral e escreva cada evento como um subconjunto. Depois use $P(E)=|E|/|S|$.",
+      "solucao_completa": "(a) $S=\\{1,2,3,4,5,6\\}$.\n(b) $E_1=\\{4\\}$ tem um resultado favorável: $P(E_1)=1/6\\approx16{,}67\\%$.\n(c) $E_2=\\{2,4,6\\}$ tem três: $P(E_2)=3/6=1/2=50\\%$.\n(d) $E_3=\\{5,6\\}$ tem dois: $P(E_3)=2/6=1/3\\approx33{,}33\\%$.\nA contagem usa equiprobabilidade, garantida pelo dado equilibrado.",
+      "resposta_final": "(a) $\\{1,2,3,4,5,6\\}$. (b) $\\{4\\}$; $1/6$. (c) $\\{2,4,6\\}$; $1/2$. (d) $\\{5,6\\}$; $1/3$.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt",
+            "linha_inicial": 74,
+            "linha_final": 85
+          }
+        ]
+      }
+    },
+    "livro-aula-13-multipla-escolha-1": {
+      "dica": "O evento “não ser preta” é o complemento de “ser preta”.",
+      "passo_inicial": "Some todas as bolas para encontrar o total e some brancas com vermelhas para obter o número de resultados favoráveis.",
+      "solucao_completa": "Há $12+8+5=25$ bolas. O evento desejado inclui $12+8=20$ bolas. Portanto, $P(\\text{não preta})=20/25=0{,}80$. Também se obtém $1-5/25=0{,}80$ pelo complemento.",
+      "resposta_final": "Alternativa D — 80%.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/2_Probabilidade/Lição 13 -  Conceitos Básicos e Abordagens de Probabilidade.txt",
+            "linha_inicial": 88,
+            "linha_final": 96
+          }
+        ]
+      }
+    },
+    "livro-aula-14-exercicio-4": {
+      "dica": "Sem reposição, a primeira retirada altera o total e a quantidade de defeituosas disponíveis.",
+      "passo_inicial": "Escreva $P(D_1)$ com as quantidades iniciais. Para $P(D_2\\mid D_1)$, retire uma peça defeituosa do lote antes de formar a fração.",
+      "solucao_completa": "(a) $P(D_1)=10/100=0{,}10=10\\%$.\n(b) Se a primeira foi defeituosa, restam 9 defeituosas em 99 peças: $P(D_2\\mid D_1)=9/99=1/11\\approx9{,}09\\%$.\n(c) Pela regra da multiplicação:\n$$P(D_1\\cap D_2)=P(D_1)P(D_2\\mid D_1)=\\frac{10}{100}\\frac9{99}=\\frac1{110}\\approx0{,}009091.$$\nAssim, a probabilidade conjunta é aproximadamente 0,91%. As retiradas são dependentes, por isso não se usa $0{,}10^2$.",
+      "resposta_final": "(a) 10%. (b) $1/11\\approx9{,}09\\%$. (c) $1/110\\approx0{,}91\\%$.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt",
+            "linha_inicial": 84,
+            "linha_final": 95
+          }
+        ]
+      }
+    },
+    "livro-aula-14-multipla-escolha-5": {
+      "dica": "Somar os dois grupos sem ajuste contaria duas vezes quem lê ambos.",
+      "passo_inicial": "Use $|J\\cup R|=|J|+|R|-|J\\cap R|$ e divida o total de estudantes da união por 200.",
+      "solucao_completa": "A união contém $120+80-40=160$ estudantes. A subtração elimina a dupla contagem dos 40 que leem jornais e revistas. Logo, $P(J\\cup R)=160/200=0{,}80$.",
+      "resposta_final": "Alternativa C — 80%.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/2_Probabilidade/Lição 14 -  Probabilidade Condicional e Independência.txt",
+            "linha_inicial": 98,
+            "linha_final": 106
+          }
+        ]
+      }
+    },
+    "livro-aula-15-exercicio-8": {
+      "dica": "A união usa inclusão-exclusão; a condicional restringe o universo; independência exige uma igualdade específica.",
+      "passo_inicial": "Para (a), use $P(A\\cup B)=P(A)+P(B)-P(A\\cap B)$. Para (b), use $P(A\\mid B)=P(A\\cap B)/P(B)$. Para (c), compare a interseção com o produto das marginais.",
+      "solucao_completa": "(a) $P(A\\cup B)=0{,}60+0{,}45-0{,}25=0{,}80$.\n(b) $P(A\\mid B)=0{,}25/0{,}45=5/9\\approx0{,}5556$, ou 55,56%.\n(c) Para independência seria necessário $P(A\\cap B)=P(A)P(B)$. Mas $0{,}60\\cdot0{,}45=0{,}27\\ne0{,}25$. Portanto, os eventos não são independentes.",
+      "resposta_final": "(a) 80%. (b) $5/9\\approx55{,}56\\%$. (c) Não são independentes.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+            "linha_inicial": 67,
+            "linha_final": 81
+          }
+        ]
+      }
+    },
+    "livro-aula-15-exercicio-10": {
+      "dica": "A probabilidade de um caminho é o produto das probabilidades dos ramos que o compõem.",
+      "passo_inicial": "Identifique os dois eventos do caminho destacado e use $P(P_1\\cap D_2)=P(P_1)P(D_2\\mid P_1)$. A reposição e a independência mantêm a probabilidade do segundo evento.",
+      "solucao_completa": "O primeiro ramo do caminho destacado tem probabilidade 0,90. Como há reposição e as retiradas são independentes, o segundo ramo tem probabilidade 0,10, mesmo após sair um componente perfeito. Assim,\n$$P(P_1\\cap D_2)=0{,}90\\cdot0{,}10=0{,}09=9\\%.$$\nA soma seria usada para reunir caminhos mutuamente exclusivos; dentro de um único caminho, multiplicam-se os ramos.",
+      "resposta_final": "$P(P_1\\cap D_2)=0{,}09=9\\%$.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+            "linha_inicial": 82,
+            "linha_final": 87
+          }
+        ],
+        "observacoes": "Exemplo equivalente elaborado para substituir o enunciado sem dados e sem árvore recuperável. Usa a regra da multiplicação apresentada no material; não atribui estes números ao gabarito do autor."
+      },
+      "enunciado": "Um lote contém componentes perfeitos ($P$) e defeituosos ($D$). A probabilidade de retirar um componente perfeito é $0{,}90$, e a de retirar um defeituoso é $0{,}10$. Duas retiradas são feitas ao acaso, com reposição e de modo independente.\n\nObserve a árvore de probabilidades:\n\n![Árvore de duas retiradas com reposição](recursos/ex10_arvore_probabilidades.svg)\n\nCalcule a probabilidade do caminho destacado: retirar um componente perfeito na primeira retirada e um defeituoso na segunda ($P_1\\cap D_2$)."
+    },
+    "livro-aula-15-multipla-escolha-6": {
+      "dica": "A ordem em que os membros são escolhidos muda a comissão?",
+      "passo_inicial": "Como todos têm a mesma função, use combinação simples: $\\binom nr=n!/[r!(n-r)!]$, com $n=8$ e $r=3$.",
+      "solucao_completa": "Uma comissão formada pelos mesmos três engenheiros continua sendo a mesma comissão, qualquer que seja a ordem de seleção. Portanto,\n$$\\binom83=\\frac{8!}{3!5!}=\\frac{8\\cdot7\\cdot6}{3\\cdot2\\cdot1}=56.$$\nO produto $8\\cdot7\\cdot6$ contaria cada comissão $3!$ vezes.",
+      "resposta_final": "Alternativa B — 56 comissões.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/2_Probabilidade/Lição 15 -  Regras de Contagem.txt",
+            "linha_inicial": 90,
+            "linha_final": 99
+          }
+        ]
+      }
+    },
+    "livro-aula-16-exercicio-1": {
+      "dica": "Há cinco ensaios independentes, dois resultados possíveis e probabilidade constante: use a binomial.",
+      "passo_inicial": "Defina $X$ como número de caras. Use $P(X=x)=\\binom nx p^x(1-p)^{n-x}$, com $n=5$, $x=3$ e $p=0{,}5$.",
+      "solucao_completa": "Existem $\\binom53=10$ posições possíveis para as três caras. Cada sequência com três caras e duas coroas tem probabilidade $(0{,}5)^3(0{,}5)^2=(0{,}5)^5$. Logo,\n$$P(X=3)=10(0{,}5)^5=\\frac{10}{32}=0{,}3125=31{,}25\\%.$$",
+      "resposta_final": "$P(X=3)=0{,}3125=31{,}25\\%$.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt",
+            "linha_inicial": 92,
+            "linha_final": 97
+          }
+        ]
+      }
+    },
+    "livro-aula-16-multipla-escolha-3": {
+      "dica": "Para a binomial, a média é $np$ e a variância é $np(1-p)$. O desvio-padrão exige uma raiz.",
+      "passo_inicial": "Adote o modelo binomial da aula com $n=10$ e $p=0{,}05$, supondo ensaios independentes e probabilidade constante. Calcule primeiro média e variância.",
+      "solucao_completa": "Pelo modelo binomial, $\\mu=np=10\\cdot0{,}05=0{,}5$. A variância é $10\\cdot0{,}05\\cdot0{,}95=0{,}475$; portanto,\n$$\\sigma=\\sqrt{0{,}475}\\approx0{,}6892.$$\nA média pode ser fracionária, pois é um valor esperado, não a contagem de uma amostra particular.",
+      "resposta_final": "Alternativa A — $\\mu=0{,}5$ e $\\sigma\\approx0{,}69$.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/3_Variaveis_Discretas/Lição 16 -  Variáveis Aleatórias Discretas e Distribuição Binomial.txt",
+            "linha_inicial": 100,
+            "linha_final": 109
+          }
+        ]
+      }
+    },
+    "livro-aula-17-exercicio-2": {
+      "dica": "As retiradas sem reposição de uma população finita são modeladas pela hipergeométrica.",
+      "passo_inicial": "Use $N=15$, $r=5$ defeituosas e $n=3$. Conte amostras favoráveis com $\\binom rx\\binom{N-r}{n-x}$ e divida por $\\binom Nn$.",
+      "solucao_completa": "O total de seleções não ordenadas é $\\binom{15}3=455$.\n(a) Nenhuma defeituosa significa escolher as três entre as dez perfeitas:\n$$P(X=0)=\\frac{\\binom50\\binom{10}3}{455}=\\frac{120}{455}\\approx26{,}37\\%.$$\n(b) Exatamente uma defeituosa:\n$$P(X=1)=\\frac{\\binom51\\binom{10}2}{455}=\\frac{5\\cdot45}{455}=\\frac{225}{455}\\approx49{,}45\\%.$$\n(c) O valor esperado é $\\mu=n(r/N)=3(5/15)=1$ lâmpada defeituosa. As combinações já incorporam as diferentes posições possíveis nas retiradas.",
+      "resposta_final": "(a) $120/455\\approx26{,}37\\%$. (b) $225/455\\approx49{,}45\\%$. (c) 1 lâmpada defeituosa.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/3_Variaveis_Discretas/Lição 17 -  Distribuição Hipergeométrica.txt",
+            "linha_inicial": 45,
+            "linha_final": 56
+          }
+        ]
+      }
+    },
+    "livro-aula-17-multipla-escolha-4": {
+      "dica": "Observe se a probabilidade de sucesso permanece constante ou muda após cada retirada.",
+      "passo_inicial": "Relacione ensaios independentes com probabilidade constante à binomial, e retiradas sem reposição de uma população finita à hipergeométrica.",
+      "solucao_completa": "A binomial descreve uma contagem de sucessos em ensaios independentes, com probabilidade constante; a reposição é uma forma de garantir essas condições em amostragem. Na hipergeométrica, a retirada sem reposição altera a composição da população finita e gera dependência. Ambas tratam contagens discretas.",
+      "resposta_final": "Alternativa B — binomial com ensaios independentes; hipergeométrica com amostragem sem reposição de população finita.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/3_Variaveis_Discretas/Lição 17 -  Distribuição Hipergeométrica.txt",
+            "linha_inicial": 59,
+            "linha_final": 67
+          }
+        ]
+      }
+    },
+    "livro-aula-18-exercicio-3": {
+      "dica": "“No máximo 2” reúne as contagens 0, 1 e 2, que são eventos mutuamente exclusivos.",
+      "passo_inicial": "Use $P(X=x)=e^{-\\lambda}\\lambda^x/x!$ com $\\lambda=3$ no intervalo de um minuto. Calcule cada termo necessário antes de somá-los.",
+      "solucao_completa": "Pelo modelo de Poisson do enunciado:\n(a) $P(X=0)=e^{-3}\\approx0{,}049787=4{,}98\\%$.\n(b) $P(X=2)=e^{-3}3^2/2!=4{,}5e^{-3}\\approx0{,}224042=22{,}40\\%$.\n(c) $P(X=1)=3e^{-3}\\approx0{,}149361$. Então\n$$P(X\\le2)=e^{-3}(1+3+4{,}5)=8{,}5e^{-3}\\approx0{,}423190=42{,}32\\%.$$\nMantenha as casas decimais durante a soma e arredonde apenas ao apresentar a resposta.",
+      "resposta_final": "(a) Aproximadamente 4,98%. (b) Aproximadamente 22,40%. (c) Aproximadamente 42,32%.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt",
+            "linha_inicial": 70,
+            "linha_final": 82
+          }
+        ]
+      }
+    },
+    "livro-aula-18-multipla-escolha-5": {
+      "dica": "Na Poisson, média e variância são iguais ao parâmetro $\\lambda$.",
+      "passo_inicial": "Use a variância informada para identificar $\\lambda$ e substitua $x=0$ na função de probabilidade.",
+      "solucao_completa": "Como $\\operatorname{Var}(X)=\\lambda=4$, temos\n$$P(X=0)=\\frac{e^{-4}4^0}{0!}=e^{-4},$$\npois $4^0=1$ e $0!=1$. Numericamente, isso é aproximadamente 1,83%.",
+      "resposta_final": "Alternativa B — $e^{-4}$.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/3_Variaveis_Discretas/Lição 18 -  Distribuição de Poisson.txt",
+            "linha_inicial": 85,
+            "linha_final": 93
+          }
+        ]
+      }
+    },
+    "livro-aula-19-exercicio-1": {
+      "dica": "Na distribuição contínua, probabilidades são áreas de intervalos. Um ponto isolado não tem largura.",
+      "passo_inicial": "Use as propriedades de qualquer densidade para (a) e (b). Para (c), identifique a posição 50 em relação ao centro da normal.",
+      "solucao_completa": "(a) Uma variável contínua atribui probabilidade zero a cada ponto isolado: $P(X=50)=0$.\n(b) A área total sob a densidade é 1, correspondendo à probabilidade de todos os resultados possíveis.\n(c) A normal é simétrica em torno de $\\mu=50$. Cada lado da média contém metade da área; logo $P(X<50)=0{,}5$. Incluir ou excluir o ponto 50 não altera essa probabilidade.",
+      "resposta_final": "(a) 0. (b) 1. (c) 0,50 ou 50%.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt",
+            "linha_inicial": 55,
+            "linha_final": 65
+          }
+        ]
+      }
+    },
+    "livro-aula-19-multipla-escolha-2": {
+      "dica": "Uma assíntota é uma linha da qual a curva se aproxima cada vez mais.",
+      "passo_inicial": "Observe o comportamento da densidade normal nas caudas, quando $x$ se afasta muito da média.",
+      "solucao_completa": "Para qualquer $x$ finito, a densidade normal é positiva. Quando $x$ tende a $-\\infty$ ou $+\\infty$, a densidade tende a zero, aproximando-se do eixo horizontal sem tocá-lo. Os pontos $\\mu\\pm3\\sigma$ não são extremos da distribuição.",
+      "resposta_final": "Alternativa B — as caudas aproximam-se do eixo sem tocá-lo.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/4_Variaveis_Continuas/Lição 19 -  Distribuição Normal ou Gaussiana.txt",
+            "linha_inicial": 68,
+            "linha_final": 76
+          }
+        ]
+      }
+    },
+    "livro-aula-20-exercicio-2": {
+      "dica": "Padronize os salários. Para o limite dos 10% superiores, procure um percentil, não uma probabilidade entre dois salários.",
+      "passo_inicial": "Use $z=(x-5000)/1000$. No item (a), obtenha os dois escores; no (b), procure o $z$ com 90% da área à esquerda.",
+      "solucao_completa": "(a) Para 4000, $z_1=-1$; para 6500, $z_2=1{,}5$. Na tabela de área entre 0 e $z$, as áreas são 0,3413 e 0,4332. Como os limites ficam em lados opostos da média:\n$$P(4000<X<6500)=0{,}3413+0{,}4332\\approx0{,}7745=77{,}45\\%.$$\n(b) Os 10% superiores começam no percentil 90: $P(Z<z)=0{,}90$. A área de 0 a $z$ é 0,40, levando a $z\\approx1{,}28$ na tabela. Então $x=5000+1{,}28(1000)=6280$ reais. Uma função quantil mais precisa dá $z\\approx1{,}28155$ e R$ 6.281,55; ambas as aproximações são compatíveis com o método utilizado.",
+      "resposta_final": "(a) Aproximadamente 77,45%. (b) Aproximadamente R$ 6.280,00 pela tabela; R$ 6.281,55 com quantil mais preciso.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt",
+            "linha_inicial": 83,
+            "linha_final": 94
+          }
+        ]
+      }
+    },
+    "livro-aula-20-multipla-escolha-4": {
+      "dica": "A simetria permite duplicar a área entre a média e um desvio-padrão.",
+      "passo_inicial": "Na tabela da normal padrão, obtenha a área entre 0 e 1 e multiplique por dois.",
+      "solucao_completa": "A tabela fornece aproximadamente 0,34134 entre 0 e 1. Por simetria,\n$$P(-1<Z<1)=2(0{,}34134)\\approx0{,}68268=68{,}268\\%.$$\nIsso coincide com a faixa de um desvio-padrão da regra empírica.",
+      "resposta_final": "Alternativa B — aproximadamente 68,3%.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/4_Variaveis_Continuas/Lição 20 -  Distribuição Normal Padronizada e Escore Z.txt",
+            "linha_inicial": 97,
+            "linha_final": 105
+          }
+        ]
+      }
+    },
+    "livro-aula-21-exercicio-3": {
+      "dica": "A sobrevivência exponencial fornece a probabilidade de exceder um tempo. Um intervalo é a diferença entre duas sobrevivências.",
+      "passo_inicial": "Nesta aula, $\\lambda=10$ representa o tempo médio. Use $P(X>t)=e^{-t/10}$; na parametrização por taxa, a taxa equivalente seria $1/10$ por minuto.",
+      "solucao_completa": "Usando o tempo médio de 10 min:\n(a) $P(X<5)=1-e^{-5/10}=1-e^{-0{,}5}\\approx0{,}393469=39{,}35\\%$.\n(b) $P(X>20)=e^{-20/10}=e^{-2}\\approx0{,}135335=13{,}53\\%$.\n(c) $P(5<X<15)=e^{-5/10}-e^{-15/10}=e^{-0{,}5}-e^{-1{,}5}\\approx0{,}383400=38{,}34\\%$.\nComo a variável é contínua, incluir as extremidades não altera as probabilidades. O símbolo $\\lambda$ foi interpretado como média conforme o enunciado; ele não foi usado como taxa.",
+      "resposta_final": "(a) Aproximadamente 39,35%. (b) Aproximadamente 13,53%. (c) Aproximadamente 38,34%.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt",
+            "linha_inicial": 57,
+            "linha_final": 66
+          }
+        ]
+      }
+    },
+    "livro-aula-21-multipla-escolha-5": {
+      "dica": "A propriedade compara o tempo restante depois de já se ter esperado um intervalo.",
+      "passo_inicial": "Procure a distribuição contínua cuja sobrevivência satisfaz $P(X>s+t\\mid X>s)=P(X>t)$.",
+      "solucao_completa": "Na exponencial com tempo médio $\\theta$, a sobrevivência é $e^{-t/\\theta}$. Assim,\n$$P(X>s+t\\mid X>s)=\\frac{e^{-(s+t)/\\theta}}{e^{-s/\\theta}}=e^{-t/\\theta}=P(X>t).$$\nEssa é a falta de memória. Normal, uniforme e Student não possuem essa propriedade; Poisson é discreta e modela contagens.",
+      "resposta_final": "Alternativa C — distribuição exponencial.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt",
+            "linha_inicial": 69,
+            "linha_final": 81
+          }
+        ],
+        "observacoes": "A figura normal foi retirada deste enunciado: era decorativa e não representa a distribuição cuja propriedade está sendo perguntada. O texto anterior fica preservado em enunciado_original."
+      },
+      "enunciado": "A propriedade da \"falta de memória\" é uma característica exclusiva de qual distribuição contínua?  \n(a) Distribuição Normal  \n(b) Distribuição Uniforme  \n(c) Distribuição Exponencial  \n(d) Distribuição de Student  \n(e) Distribuição de Poisson"
+    },
+    "livro-aula-22-exercicio-1": {
+      "dica": "A reta de mínimos quadrados usa somas de produtos e quadrados; preserve as unidades das variáveis.",
+      "passo_inicial": "Crie as colunas $x^2$ e $xy$. Depois use $b=[\\sum xy-(\\sum x)(\\sum y)/n]/[\\sum x^2-(\\sum x)^2/n]$ e $a=\\bar y-b\\bar x$.",
+      "solucao_completa": "(a) As somas são $\\sum x=30$, $\\sum y=55$, $\\sum xy=398$ e $\\sum x^2=220$.\n(b) Com $n=5$, $\\bar x=6$ e $\\bar y=11$:\n$$b=\\frac{398-30(55)/5}{220-30^2/5}=\\frac{68}{40}=1{,}70,$$\n$$a=11-1{,}70(6)=0{,}80.$$\nPortanto, $\\hat y=0{,}80+1{,}70x$, com $x$ em centenas de km e $\\hat y$ em centenas de reais.\n(c) Para $x=7$, $\\hat y=0{,}80+1{,}70(7)=12{,}70$ centenas de reais, equivalentes a R$ 1.270,00. A previsão é a resposta estimada pelo modelo, não uma cobrança garantida.",
+      "resposta_final": "(a) 30; 55; 398; 220. (b) $a=0{,}80$, $b=1{,}70$; $\\hat y=0{,}80+1{,}70x$. (c) R$ 1.270,00.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt",
+            "linha_inicial": 110,
+            "linha_final": 133
+          }
+        ]
+      }
+    },
+    "livro-aula-22-multipla-escolha-3": {
+      "dica": "O resíduo é a diferença vertical entre o valor observado e o valor previsto.",
+      "passo_inicial": "Escreva $e_i=y_i-\\hat y_i$ e identifique o que o critério dos mínimos quadrados minimiza.",
+      "solucao_completa": "O método escolhe os coeficientes da reta que minimizam $\\sum_i(y_i-\\hat y_i)^2$. Ele não exige passar por todos os pontos, nem determina previamente o sinal da inclinação ou um intercepto zero. As distâncias consideradas são verticais, na direção da variável dependente.",
+      "resposta_final": "Alternativa B — minimizar a soma dos quadrados dos resíduos verticais.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 22 -  Regressão Linear Simples.txt",
+            "linha_inicial": 136,
+            "linha_final": 144
+          }
+        ]
+      }
+    },
+    "livro-aula-23-exercicio-1": {
+      "dica": "Há uma parcela fixa diária e uma parcela que depende da quilometragem.",
+      "passo_inicial": "Converta 20 centavos para R$ 0,20 e escreva total = tarifa fixa + tarifa por km × quilômetros.",
+      "solucao_completa": "(a) Para um dia, $y=50+0{,}20x$.\n(b) Se $x=100$, $y=50+0{,}20(100)=70$ reais.\n(c) Sob as condições do enunciado, todos pagam a mesma tarifa ao percorrer 200 km: $50+0{,}20(200)=90$ reais. Não foram especificadas outras taxas.\n(d) A relação é exata: fixado $x$ e mantidas as condições, a fórmula determina o mesmo $y$. Não é um ajuste estatístico com resíduos aleatórios.\n\nO gabarito online omite a tarifa fixa de R$ 50 nos itens (a) e (b). A resposta aqui inclui essa parcela expressa no enunciado.",
+      "resposta_final": "(a) $y=50+0{,}20x$. (b) R$ 70,00. (c) Sim; R$ 90,00 cada. (d) Relação exata.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 83,
+            "linha_final": 88
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Exercício 1",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ],
+        "observacoes": "O gabarito escreve y=0,20x e R$20; isso omite os R$50 diários do enunciado do livro e da aula."
+      }
+    },
+    "livro-aula-23-exercicio-2": {
+      "dica": "Use horas como variável explicativa e nota como resposta. A correlação descreve associação, sem estabelecer causalidade.",
+      "passo_inicial": "Calcule $\\sum x$, $\\sum y$, $\\sum x^2$, $\\sum y^2$ e $\\sum xy$. Use as fórmulas da reta de mínimos quadrados e de Pearson.",
+      "solucao_completa": "(a) Os oito pares mostram tendência linear positiva: notas maiores aparecem, em geral, junto a mais horas.\n(b) As somas são $n=8$, $\\sum x=66$, $\\sum y=46$, $\\sum x^2=788$, $\\sum y^2=324$, $\\sum xy=496$. Logo,\n$$S_{xx}=788-\\frac{66^2}{8}=243{,}5,\\quad S_{xy}=496-\\frac{66(46)}8=116{,}5,$$\n$$b=\\frac{116{,}5}{243{,}5}\\approx0{,}478439,\\quad a=5{,}75-b(8{,}25)\\approx1{,}802875.$$\nA reta é $\\hat y\\approx1{,}802875+0{,}478439x$.\n(c) O intercepto é a nota prevista para zero hora, ligeiramente fora da faixa observada; deve ser interpretado com cautela. A inclinação indica acréscimo previsto de aproximadamente 0,478 ponto de nota por hora adicional de estudo semanal neste modelo.\n(d) Substituindo $\\hat y=6$ e isolando $x$, $x=(6-a)/b\\approx8{,}77$ h. Se forem usados os coeficientes já arredondados $1{,}80$ e $0{,}48$, obtém-se 8,75 h, como no gabarito. Esta é uma inversão da reta ajustada para nota; não garante nota 6 nem substitui um ajuste próprio de horas em função da nota.\n(e) $S_{yy}=324-46^2/8=59{,}5$. Assim,\n$$r=\\frac{116{,}5}{\\sqrt{243{,}5(59{,}5)}}\\approx0{,}9679.$$\nA associação linear é positiva e forte na amostra.",
+      "resposta_final": "(a) Associação positiva. (b) $\\hat y\\approx1{,}802875+0{,}478439x$. (c) Inclinação aproximadamente 0,478 ponto por hora. (d) Aproximadamente 8,77 h; 8,75 h com coeficientes arredondados. (e) $r\\approx0{,}9679$.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 89,
+            "linha_final": 107
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Exercício 2",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ],
+        "observacoes": "Concordância com os coeficientes e a correlação do gabarito; previsões calculadas com maior precisão antes do arredondamento."
+      }
+    },
+    "livro-aula-23-exercicio-3": {
+      "dica": "A reta resume a tendência, mas não elimina a dispersão nem permite extrapolar com segurança para qualquer quantidade de açúcar.",
+      "passo_inicial": "Use açúcar como $x$ e calorias como $y$. Monte colunas $x^2$, $xy$ e calcule os coeficientes. Para desenhar resíduos, compare cada $y_i$ com seu $\\hat y_i$.",
+      "solucao_completa": "(a) O diagrama dos 13 pares mostra associação positiva, com dispersão considerável.\n(b) As somas são $\\sum x=122$, $\\sum y=1790$, $\\sum x^2=1482$ e $\\sum xy=18530$. Aplicando mínimos quadrados,\n$$b=\\frac{18530-122(1790)/13}{1482-122^2/13}\\approx5{,}136924,$$\n$$a=\\frac{1790}{13}-b\\frac{122}{13}\\approx89{,}484254.$$\nPortanto, $\\hat y\\approx89{,}484254+5{,}136924x$.\n(c) A inclinação representa aproximadamente 5,14 kcal adicionais previstas por grama adicional de açúcar. O intercepto prevê 89,48 kcal para açúcar zero, fora da faixa observada de 2 a 20 g, e deve ser interpretado com cautela. A associação não prova que o açúcar seja a única causa da variação nas calorias.\n(d) Trace a reta sobre os pontos. Para cada $x_i$, o resíduo vertical é $e_i=y_i-\\hat y_i$, com segmento entre $(x_i;y_i)$ e $(x_i;\\hat y_i)$.\n(e) Para 16 g, $\\hat y\\approx171{,}675$ kcal, ou 172 kcal.\n(f) Para 52 g, o cálculo fornece aproximadamente 356,60 kcal, ou 357 kcal. Contudo, 52 g está muito além dos dados: é uma extrapolação sem validação nessa faixa, portanto a estimativa é pouco confiável.",
+      "resposta_final": "(a) Associação positiva com dispersão. (b) $\\hat y\\approx89{,}484254+5{,}136924x$. (c) Aproximadamente 5,14 kcal/g. (d) Resíduos verticais $y_i-\\hat y_i$. (e) Aproximadamente 172 kcal. (f) Aproximadamente 357 kcal, com extrapolação pouco confiável.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 108,
+            "linha_final": 134
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Exercício 3",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ],
+        "observacoes": "Coeficientes e previsões concordam com o gabarito; elaboradas interpretação, resíduos e ressalva de extrapolação."
+      }
+    },
+    "livro-aula-23-exercicio-4": {
+      "dica": "A variável resposta está em centenas de unidades. Converta essa escala ao apresentar a previsão final.",
+      "passo_inicial": "Calcule a reta para promoções ($x$) e vendas em centenas ($y$). Em seguida, obtenha $r$ e $r^2$, distinguindo associação de causa.",
+      "solucao_completa": "(a) Espera-se um sinal positivo: mais promoções podem acompanhar mais vendas.\n(b) As somas são $n=7$, $\\sum x=177$, $\\sum y=144$, $\\sum x^2=5285$, $\\sum y^2=3224$, $\\sum xy=4049$. Aplicando as fórmulas,\n$$b\\approx0{,}503883,\\qquad a\\approx7{,}830392,\\qquad \\hat y\\approx7{,}830392+0{,}503883x.$$\nO sinal de $b$ é positivo, como esperado.\n(c) O intercepto prevê 7,83 centenas de unidades sem anúncios, extrapolando abaixo da faixa de 12 a 42 observada. Cada anúncio adicional associa-se a aproximadamente 0,5039 centena, ou 50,39 unidades, adicionais previstas pelo modelo.\n(d) $r\\approx0{,}8861$ e $r^2\\approx0{,}7853$: a associação linear é positiva e forte; aproximadamente 78,53% da variação amostral de vendas é explicada pelo ajuste linear a promoções. Isso não demonstra causalidade nem significa que 78,53% das vendas foram causadas pelos anúncios.\n(e) Para $x=35$, $\\hat y\\approx25{,}46629$ centenas, ou 2546,63 unidades; arredondando a uma contagem, aproximadamente 2547 unidades.",
+      "resposta_final": "(a) Positivo. (b) $\\hat y\\approx7{,}830392+0{,}503883x$. (c) Cerca de 50,39 unidades adicionais previstas por anúncio. (d) $r\\approx0{,}8861$, $r^2\\approx0{,}7853$. (e) Aproximadamente 2.547 unidades.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "recalculado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 135,
+            "linha_final": 152
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Exercício 4",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ],
+        "observacoes": "Resultados concordam com o gabarito; preservada a escala de centenas e esclarecida a interpretação de r²."
+      }
+    },
+    "livro-aula-23-exercicio-5": {
+      "dica": "Uma associação forte entre duas variáveis não demonstra que uma provoque mudanças na outra.",
+      "passo_inicial": "Separe a afirmação observada, correlação de 0,93, da conclusão causal proposta por Burton. Pense em fatores que poderiam influenciar as duas variáveis.",
+      "solucao_completa": "O valor $r=0{,}93$ indica associação linear positiva forte nos registros, mas não estabelece causa. Chuva, estação do ano ou condições de crescimento poderiam influenciar tanto o crescimento da relva quanto o milho, sem que aparar a grama aumente as espigas. A estratégia de cortar todos os dias não decorre do coeficiente de correlação. Uma explicação respeitosa seria: “Seus dados mostram uma associação interessante. Para saber se cortar a grama muda o crescimento do milho, precisamos investigar outras condições e comparar tratamentos em um experimento adequado.” Essas possíveis causas são hipóteses, não fatos demonstrados pela amostra.",
+      "resposta_final": "A lógica causal de Burton não está justificada. Correlação de 0,93 não prova que aparar a relva aumente as espigas.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "elaborado",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 153,
+            "linha_final": 158
+          }
+        ]
+      }
+    },
+    "livro-aula-23-multipla-escolha-1": {
+      "dica": "Identifique a forma da relação representada por uma reta.",
+      "passo_inicial": "Observe o modelo $\\hat y=a+bx$: a variação prevista de $y$ por unidade de $x$ é constante.",
+      "solucao_completa": "O modelo linear simples representa a tendência da variável resposta por uma função afim de $x$, com intercepto e inclinação. Entre as alternativas, essa forma é denominada relação linear.",
+      "resposta_final": "Alternativa C — linear.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 161,
+            "linha_final": 167
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Questão objetiva 1",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-23-multipla-escolha-2": {
+      "dica": "A pergunta destaca intensidade e direção da associação, não a construção de uma equação de previsão.",
+      "passo_inicial": "Compare as finalidades de correlação e regressão. Procure a análise que quantifica como os valores das duas variáveis se associam.",
+      "solucao_completa": "Correlação quantifica a direção e a intensidade de uma associação; o coeficiente de Pearson faz isso para a associação linear. Regressão estima uma relação para explicar ou prever uma variável resposta. A definição do enunciado corresponde à correlação.",
+      "resposta_final": "Alternativa A — correlação.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 168,
+            "linha_final": 174
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Questão objetiva 2",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-23-multipla-escolha-3": {
+      "dica": "Observe se os pontos tendem a subir ou descer com o aumento de $x$, e se estão exatamente sobre uma reta.",
+      "passo_inicial": "Leia a nuvem de pontos da esquerda para a direita. Compare a tendência geral com a dispersão em torno dela.",
+      "solucao_completa": "Na figura, maiores tempos de experiência tendem a acompanhar maiores tempos de execução da tarefa. A tendência é ascendente, indicando associação positiva. Como os pontos não estão exatamente alinhados em uma reta, a correlação não é perfeita. A conclusão vem da figura apresentada, ainda que a direção possa contrariar uma expectativa intuitiva sobre experiência.",
+      "resposta_final": "Alternativa C — correlação positiva, sem perfeição.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 175,
+            "linha_final": 185
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Questão objetiva 3",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-23-multipla-escolha-4": {
+      "dica": "Uma função afim é determinada pela taxa de variação e por um dos pares da tabela.",
+      "passo_inicial": "Use dois pares para calcular $b=\\Delta y/\\Delta x$. Depois encontre $a=y-bx$ e confira no terceiro par.",
+      "solucao_completa": "Ao aumentar de 5 para 10 bolas, o nível sobe de 6,35 para 6,70 cm:\n$$b=\\frac{6{,}70-6{,}35}{10-5}=\\frac{0{,}35}{5}=0{,}07.$$\nUsando $(5;6{,}35)$, $a=6{,}35-0{,}07(5)=6$. Logo $y=0{,}07x+6$, que também fornece $7{,}05$ cm para 15 bolas.",
+      "resposta_final": "Alternativa E — $y=0{,}07x+6$.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 186,
+            "linha_final": 200
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Questão objetiva 4",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-23-multipla-escolha-5": {
+      "dica": "Encontre a reta de referência pelos meses em que os registros coincidem com ela e depois desconte a diferença informada.",
+      "passo_inicial": "Leia na figura os pontos da reta em 1 e 3 meses: (1;1 kg) e (3;2 kg). Calcule a inclinação e o intercepto. Converta 210 g para kg antes de subtrair.",
+      "solucao_completa": "A inclinação da tendência é $(2-1)/(3-1)=0{,}5$ kg/mês. Com o ponto (1;1), o intercepto é $1-0{,}5(1)=0{,}5$ kg. Logo, a tendência é $m(t)=0{,}5+0{,}5t$. Aos seis meses, prevê $m(6)=3{,}5$ kg. O registro experimental é 210 g, ou 0,210 kg, inferior:\n$$m_{\\text{registrada}}=3{,}5-0{,}210=3{,}29\\text{ kg}.$$",
+      "resposta_final": "Alternativa E — 3,29 kg.",
+      "correcao_automatica": true,
+      "gabarito_meta": {
+        "origem": "autor",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 201,
+            "linha_final": 213
+          },
+          {
+            "tipo": "gabarito",
+            "capitulo": 7,
+            "questao": "Questão objetiva 5",
+            "pagina_pdf": 1,
+            "arquivo": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+            "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf"
+          }
+        ]
+      }
+    },
+    "livro-aula-23-atividade-miniprojeto-viii-visitando-o-supermercado": {
+      "dica": "Registre as unidades e a porção de cada rótulo. Uma associação pode variar conforme os alimentos selecionados.",
+      "passo_inicial": "Escolha pelo menos 20 alimentos variados. Monte colunas para alimento, porção, gordura em g e sódio em mg, sempre emparelhando as informações da mesma porção.",
+      "solucao_completa": "Este roteiro orienta a análise dos dados reais da coleta.\n1. Identifique produtos, tamanhos de porção e unidades. Se padronizar porções, registre a conversão e aplique-a de modo consistente; se mantiver porções dos rótulos, discuta essa diferença na interpretação.\n2. Use $x$ para gordura (g) e $y$ para sódio (mg); verifique valores ausentes e erros de transcrição.\n3. Calcule $r=S_{xy}/\\sqrt{S_{xx}S_{yy}}$. Se uma variável não variar, o coeficiente não é definido.\n4. Desenhe os pares no diagrama de dispersão e avalie direção, forma, dispersão e pontos influentes.\n5. Quando um ajuste linear fizer sentido, calcule $b=S_{xy}/S_{xx}$ e $a=\\bar y-b\\bar x$; interprete a inclinação em mg de sódio por g de gordura e o intercepto no contexto.\n6. Se não houver tendência linear plausível, ou poucos pontos dominarem o ajuste, explique a limitação em vez de apresentar a reta como boa previsão.\n7. A conclusão deve indicar a associação observada, sem afirmar que gordura causa sódio ou generalizar uma seleção por conveniência a todos os alimentos.",
+      "resposta_final": "Entrega esperada: pelo menos 20 registros verificáveis, porções e unidades, coeficiente de correlação quando definido, gráfico de dispersão e regressão interpretada ou justificativa para não usar a reta. Os resultados dependem dos alimentos escolhidos.",
+      "correcao_automatica": false,
+      "gabarito_meta": {
+        "origem": "roteiro",
+        "referencias": [
+          {
+            "tipo": "material",
+            "arquivo": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt",
+            "linha_inicial": 216,
+            "linha_final": 222
+          }
+        ]
+      },
+      "criterios_avaliacao": [
+        "Pelo menos 20 alimentos variados e dados dos rótulos identificados.",
+        "Mesma porção para os valores emparelhados e unidades consistentes.",
+        "Cálculo de r e da reta conferível, quando definidos.",
+        "Gráfico e interpretação coerentes, com limites e pontos influentes discutidos."
+      ]
+    }
+  }
+}

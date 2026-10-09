@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function validCoverId(coverId) {
+      return coverId.matches('^capa-(00[1-9]|0[1-9][0-9]|10[0-7])$');
+    }
+
+    // Votes and aggregate must change together. Clients cannot forge a total.
+    function validCoverRatingChange(coverId) {
+      let summaryPath = /databases/$(database)/documents/coverRatings/$(coverId);
+      let votePath = /databases/$(database)/documents/coverRatings/$(coverId)/votes/$(request.auth.uid);
+      let previousCount = exists(summaryPath) ? get(summaryPath).data.count : 0;
+      let previousSum = exists(summaryPath) ? get(summaryPath).data.sum : 0;
+      let hadVote = exists(votePath);
+      let previousScore = hadVote ? get(votePath).data.score : 0;
+      let summary = getAfter(summaryPath).data;
+      let vote = getAfter(votePath).data;
+      return vote.keys().hasAll(['score', 'updatedAt'])
+        && vote.keys().hasOnly(['score', 'updatedAt'])
+        && vote.score is int && vote.score >= 1 && vote.score <= 5
+        && vote.updatedAt == request.time
+        && summary.keys().hasAll(['count', 'sum', 'updatedAt'])
+        && summary.keys().hasOnly(['count', 'sum', 'updatedAt'])
+        && summary.count is int && summary.sum is int
+        && summary.count == previousCount + (hadVote ? 0 : 1)
+        && summary.sum == previousSum - previousScore + vote.score
+        && summary.count > 0 && summary.sum >= summary.count && summary.sum <= summary.count * 5
+        && summary.updatedAt == request.time;
+    }
+
+    match /coverRatings/{coverId} {
+      allow get: if validCoverId(coverId);
+      allow create, update: if request.auth != null && validCoverId(coverId)
+        && validCoverRatingChange(coverId);
+
+      match /votes/{voterId} {
+        allow get: if request.auth != null && request.auth.uid == voterId && validCoverId(coverId);
+        allow create, update: if request.auth != null && request.auth.uid == voterId
+          && validCoverId(coverId) && validCoverRatingChange(coverId);
+      }
+    }
+
+    // Keep the existing private user data access unchanged.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      match /{allSubcollections=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}

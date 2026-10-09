@@ -1,0 +1,120 @@
+{
+  "book": "Estatística Aplicada — Renan Mercuri Pinto",
+  "sourceBook": "C:/Users/Pichau/Documents/Streamlit Apps/Stat-AI-1.0/arquivos/livro_estatistica_aplicada.pdf",
+  "bookReferencePage": 155,
+  "referencedWebsite": "http://www.sinapseexatas.com.br/nosso-material",
+  "answerKeyPage": "https://www.sinapseexatas.com.br/estatistica",
+  "downloadedAt": "2026-10-08T23:24:56.748Z",
+  "files": [
+    {
+      "label": "Gabarito - Capítulo 1",
+      "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/7471e4d64f7045f6be1ed663b3996324/CAPITULO%201.pdf",
+      "context": "Gabarito - Capítulo 1 Introdução e Conceitos Básicos",
+      "chapter": 1,
+      "localPath": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-01.pdf",
+      "bytes": 145926,
+      "sha256": "0d0f87c9d06a921b495504629ec6bcb9d37df4747f0b09dbe5b0b106b7ebd346",
+      "pages": 1,
+      "videoUrls": []
+    },
+    {
+      "label": "Gabarito - Capítulo 2",
+      "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/36fc6f9b26214642812dc77d9ed479d7/CAPITULO%202.pdf",
+      "context": "Gabarito - Capítulo 2 Organização e Apresentação de Dados",
+      "chapter": 2,
+      "localPath": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-02.pdf",
+      "bytes": 314534,
+      "sha256": "39dd63a9ae91097b808f0466faccccd7154f1316efbfd4a94162bbbf619335cf",
+      "pages": 6,
+      "videoUrls": []
+    },
+    {
+      "label": "Gabarito - Capítulo 3",
+      "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/14b304035b344d65b7ca41cf4cbc16dc/GABARITO%20-%20LIVRO%20ESTAT%C3%8DSTICA%20-%20CAP%203.pdf",
+      "context": "Gabarito - Capítulo 3 Medidas Descritivas Numéricas",
+      "chapter": 3,
+      "localPath": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-03.pdf",
+      "bytes": 131052,
+      "sha256": "3f5d47457f9fca0d71beb00d82e70e92848a4dd437b3865616bf092575dbd1fe",
+      "pages": 2,
+      "videoUrls": []
+    },
+    {
+      "label": "Gabarito - Capítulo 4",
+      "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/83e4a53eae2f4490a6a9c6747649a8d4/GABARITO%20-%20LIVRO%20ESTAT%C3%8DSTICA%20-%20CAP%204.pdf",
+      "context": "Gabarito - Capítulo 4 Introdução à Probabilidades",
+      "chapter": 4,
+      "localPath": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-04.pdf",
+      "bytes": 750223,
+      "sha256": "ac955c057690a65c71de4e9fb11a3931ca3ce10b346677509374f791c13b8347",
+      "pages": 2,
+      "videoUrls": [
+        "https://youtu.be/V8f5906rNvQ",
+        "https://youtu.be/WeiJTJv_-74",
+        "https://youtu.be/aXHZLb4W2Zo"
+      ]
+    },
+    {
+      "label": "Gabarito - Capítulo 5",
+      "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/8e801bad9160407180befcd4fe663fd2/CAPITULO%205.pdf",
+      "context": "Gabarito - Capítulo 5 Distribuições de Probabilidades de Variáveis ​Aleatórias Discretas",
+      "chapter": 5,
+      "localPath": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-05.pdf",
+      "bytes": 86651,
+      "sha256": "00c09f2ad53cfc2bf1c3727caa2e058ba96c8536641ba82eb4d387ce4fa54a22",
+      "pages": 1,
+      "videoUrls": [
+        "https://youtu.be/zmBWkxM4mmo?si=indRepLukddhNGjE"
+      ]
+    },
+    {
+      "label": "Gabarito - Capítulo 6",
+      "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/6e0bbaf15938418893b0d5ba7fa4f596/CAPITULO%206.pdf",
+      "context": "Gabarito - Capítulo 6 Distribuições de Probabilidades de Variáveis ​Aleatórias Contínuas",
+      "chapter": 6,
+      "localPath": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-06.pdf",
+      "bytes": 145618,
+      "sha256": "de934272d2ce1d4f8715dd554423d074224c9116cd13fb28c21d023df3d727a6",
+      "pages": 1,
+      "videoUrls": [
+        "https://youtu.be/QztxJvxwvuU?si=Ua1vRXcv-vwhE_AE",
+        "https://youtu.be/joFQDyCiAe4?si=cB4NOM6LQbEKfDXK"
+      ]
+    },
+    {
+      "label": "Gabarito - Capítulo 7",
+      "url": "https://storage.googleapis.com/wzukusers/user-34818776/documents/290951b401194fa9b4d030c5bb7ec4f9/CAPITULO%207.pdf",
+      "context": "Gabarito - Capítulo 7 Regressão e Correlação Linear",
+      "chapter": 7,
+      "localPath": "docs/fontes/gabaritos-estatistica-aplicada/capitulo-07.pdf",
+      "bytes": 106155,
+      "sha256": "e335c94a37e95c81c64c4d6e0ec6daa7598fc525926cd3b9a3f4ca6c9e330445",
+      "pages": 1,
+      "videoUrls": []
+    }
+  ],
+  "validation": {
+    "pdfHeadersValid": true,
+    "allFilesOpenedSuccessfully": true,
+    "chapters": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "totalPages": 14,
+    "alignment": "Títulos dos sete capítulos e referências às páginas dos exercícios correspondem ao livro fonte. A associação individual às aulas adaptadas permanece pendente.",
+    "identifiedConfirmation": {
+      "lessonExerciseId": "livro-aula-07-multipla-escolha-8",
+      "chapter": 2,
+      "question": 8,
+      "officialAnswer": "D",
+      "answerValue": 140,
+      "answerKeyPdfPage": 6,
+      "status": "Confirma a leitura do histograma original; registrado como evidência, sem alterar o exercício nesta coleta."
+    }
+  }
+}

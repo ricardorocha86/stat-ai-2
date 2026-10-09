@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Diagrama de Pareto Interativo</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr) 1fr auto; gap: 10px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.72rem; font-weight: 600; color: #334155; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; width: 100%; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-card.vital { border-left-color: #dc2626; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.0rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>📉 Diagrama de Pareto Dinâmico (Reclamações em Loja de Roupas)</span>
+        </div>
+        <span class="sim-badge">Aula 5 • Tabela 2 (Prof. Renan)</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <span class="ctrl-label">Atraso na Entrega: <b class="ctrl-val" id="v_c1">132</b></span>
+            <input type="range" id="s_c1" min="10" max="200" value="132" oninput="atualizar('Atraso Entrega', this.value, 'v_c1')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Qualidade Produto: <b class="ctrl-val" id="v_c2">18</b></span>
+            <input type="range" id="s_c2" min="2" max="60" value="18" oninput="atualizar('Qualidade Produto', this.value, 'v_c2')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Mau Atendimento: <b class="ctrl-val" id="v_c3">8</b></span>
+            <input type="range" id="s_c3" min="1" max="40" value="8" oninput="atualizar('Mau Atendimento', this.value, 'v_c3')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Outros Motivos: <b class="ctrl-val" id="v_c4">2</b></span>
+            <input type="range" id="s_c4" min="0" max="30" value="2" oninput="atualizar('Outros', this.value, 'v_c4')">
+        </div>
+        <div class="ctrl-group">
+            <span class="ctrl-label">Corte Pareto: <b class="ctrl-val" id="v_corte">80%</b></span>
+            <input type="range" id="s_corte" min="60" max="95" step="5" value="80" oninput="atualizarCorte(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetarLivro()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Total Ocorrências (n)</div>
+            <div class="kpi-val" id="kpi_total">160</div>
+        </div>
+        <div class="kpi-card vital">
+            <div class="kpi-label">Causa Principal (Vital)</div>
+            <div class="kpi-val" id="kpi_principal">Atraso Entrega (82.5%)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Causas nos 80% Vitais</div>
+            <div class="kpi-val" id="kpi_vitais">1 causa (25% do total)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Impacto Solução Causa 1</div>
+            <div class="kpi-val" id="kpi_impacto">-82.5% queixas</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Princípio de Pareto (80/20):</b> Cerca de 80% dos efeitos decorrem de apenas 20% das causas. Focar os recursos gerenciais para eliminar o "Atraso na entrega" resolverá a vasta maioria dos problemas da empresa!
+    </div>
+</div>
+
+<script>
+    let causas = [
+        { nome: "Atraso Entrega", val: 132 },
+        { nome: "Qualidade Produto", val: 18 },
+        { nome: "Mau Atendimento", val: 8 },
+        { nome: "Outros", val: 2 }
+    ];
+    let cortePct = 80;
+
+    function atualizar(nome, val, lblId) {
+        let it = causas.find(c => c.nome === nome);
+        if (it) it.val = parseInt(val);
+        document.getElementById(lblId).innerText = val;
+        renderizar();
+    }
+
+    function atualizarCorte(val) {
+        cortePct = parseInt(val);
+        document.getElementById('v_corte').innerText = cortePct + '%';
+        renderizar();
+    }
+
+    function resetarLivro() {
+        causas = [
+            { nome: "Atraso Entrega", val: 132 },
+            { nome: "Qualidade Produto", val: 18 },
+            { nome: "Mau Atendimento", val: 8 },
+            { nome: "Outros", val: 2 }
+        ];
+        document.getElementById('s_c1').value = 132; document.getElementById('v_c1').innerText = 132;
+        document.getElementById('s_c2').value = 18; document.getElementById('v_c2').innerText = 18;
+        document.getElementById('s_c3').value = 8; document.getElementById('v_c3').innerText = 8;
+        document.getElementById('s_c4').value = 2; document.getElementById('v_c4').innerText = 2;
+        document.getElementById('s_corte').value = 80; document.getElementById('v_corte').innerText = '80%';
+        cortePct = 80;
+        renderizar();
+    }
+
+    function renderizar() {
+        // Ordena causas decrescente
+        let ordenadas = [...causas].sort((a,b) => b.val - a.val);
+        let total = ordenadas.reduce((a,b) => a + b.val, 0);
+
+        let acc = 0;
+        let accPct = [];
+        let cores = [];
+        let vitaisCount = 0;
+
+        ordenadas.forEach((c, idx) => {
+            acc += c.val;
+            let p = total > 0 ? (acc / total) * 100 : 0;
+            accPct.push(p);
+
+            // Se a causa anterior ainda não tinha passado o corte
+            let prevAcc = idx > 0 ? accPct[idx-1] : 0;
+            if (prevAcc < cortePct) {
+                cores.push('#003485'); // Poucos Vitais
+                vitaisCount++;
+            } else {
+                cores.push('#94a3b8'); // Muitos Triviais
+            }
+        });
+
+        let principal = ordenadas[0];
+        let pPrincipal = total > 0 ? ((principal.val / total)*100).toFixed(1) : 0;
+
+        document.getElementById('kpi_total').innerText = `${total} queixas`;
+        document.getElementById('kpi_principal').innerText = `${principal.nome} (${pPrincipal}%)`;
+        document.getElementById('kpi_vitais').innerText = `${vitaisCount} de ${ordenadas.length} causas`;
+        document.getElementById('kpi_impacto').innerText = `-${pPrincipal}% queixas`;
+
+        let traceBarras = {
+            x: ordenadas.map(c => c.nome),
+            y: ordenadas.map(c => c.val),
+            type: 'bar',
+            name: 'Reclamações (fa)',
+            marker: { color: cores, line: { color: '#0f172a', width: 1 } },
+            text: ordenadas.map(c => `${c.val} (${((c.val/total)*100).toFixed(1)}%)`),
+            textposition: 'auto'
+        };
+
+        let traceLinha = {
+            x: ordenadas.map(c => c.nome),
+            y: accPct,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: '% Acumulada',
+            yaxis: 'y2',
+            line: { color: '#ea580c', width: 2.5 },
+            marker: { size: 8, color: '#c2410c' }
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 45 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Causas (Ordenadas da Maior para a Menor)' },
+            yaxis: { title: 'Frequência Absoluta (fa)', showgrid: true },
+            yaxis2: {
+                title: 'Porcentagem Acumulada (%)',
+                overlaying: 'y',
+                side: 'right',
+                range: [0, 105],
+                dtick: 20
+            },
+            shapes: [
+                {
+                    type: 'line',
+                    xref: 'paper', x0: 0, x1: 1,
+                    yref: 'y2', y0: cortePct, y1: cortePct,
+                    line: { color: '#dc2626', width: 1.5, dash: 'dash' }
+                }
+            ],
+            annotations: [
+                {
+                    xref: 'paper', x: 0.95,
+                    yref: 'y2', y: cortePct + 4,
+                    text: `Linha de Corte (${cortePct}%)`,
+                    showarrow: false,
+                    font: { size: 10, color: '#dc2626', weight: 'bold' }
+                }
+            ]
+        };
+
+        Plotly.react('chart_div', [traceBarras, traceLinha], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

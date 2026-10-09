@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Comparativo Hipergeométrica vs Binomial</title>
+<script src="/aulas/recursos/plotly.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #ffffff; color: #1e293b; padding: 12px; }
+    .sim-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .sim-title { font-size: 1.05rem; font-weight: 700; color: #003485; display: flex; align-items: center; gap: 8px; }
+    .sim-badge { background: #d2ddff; color: #003485; font-size: 0.75rem; font-weight: 600; padding: 3px 8px; border-radius: 12px; }
+    .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 12px; align-items: center; margin-bottom: 12px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 3px; }
+    .ctrl-label { font-size: 0.78rem; font-weight: 600; color: #334155; display: flex; justify-content: space-between; }
+    .ctrl-val { color: #003485; font-weight: 700; }
+    input[type=range] { accent-color: #003485; cursor: pointer; }
+    .btn-action { background: #003485; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #ffffff; border-left: 4px solid #003485; padding: 8px 10px; border-radius: 6px; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .kpi-val { font-size: 1.02rem; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .sim-chart { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; background: #ffffff; border: 1px solid #e2e8f0; }
+    .pedagogical-banner { margin-top: 10px; font-size: 0.82rem; color: #334155; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+</style>
+<script src="/aulas/recursos/chart-theme.js"></script></head>
+<body>
+<div class="sim-card">
+    <div class="sim-header">
+        <div class="sim-title">
+            <span>⚖️ Comparativo Dinâmico: Hipergeométrica vs Binomial</span>
+        </div>
+        <span class="sim-badge">Aula 17 • Amostragem Sem Reposição</span>
+    </div>
+
+    <div class="controls-grid">
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>População Total (N):</span>
+                <span id="lbl_N" class="ctrl-val">N = 50</span>
+            </div>
+            <input type="range" id="slider_N" min="20" max="250" step="5" value="50" oninput="atualizarN(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Sucessos na Pop. (K):</span>
+                <span id="lbl_K" class="ctrl-val">K = 15 (30%)</span>
+            </div>
+            <input type="range" id="slider_K" min="2" max="50" value="15" oninput="atualizarK(this.value)">
+        </div>
+        <div class="ctrl-group">
+            <div class="ctrl-label">
+                <span>Tamanho da Amostra (n):</span>
+                <span id="lbl_n" class="ctrl-val">n = 10</span>
+            </div>
+            <input type="range" id="slider_n" min="2" max="25" value="10" oninput="atualizarAmostra(this.value)">
+        </div>
+        <div>
+            <button class="btn-action" onclick="resetar()">N=200 (Aprox)</button>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card" id="card_frac">
+            <div class="kpi-label">Fração Amostral n/N</div>
+            <div class="kpi-val" id="kpi_frac">20.0%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Validade da Aprox. Binomial</div>
+            <div class="kpi-val" id="kpi_valida" style="font-size:0.85rem; color:#dc2626;">Inválida (n/N > 5%)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Fator Correção Pop. Finita</div>
+            <div class="kpi-val" id="kpi_fcpf">0.903</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Prob. de Sucesso p = K/N</div>
+            <div class="kpi-val" id="kpi_p">0.300 (30.0%)</div>
+        </div>
+    </div>
+
+    <div id="chart_div" class="sim-chart"></div>
+
+    <div class="pedagogical-banner" id="banner_texto">
+        💡 <b>Regra dos 5% (p. 100):</b> Quando a amostra n representa menos de 5% da população (n/N ≤ 0,05), a dependência entre os sorteios sem reposição torna-se desprezível e a distribuição Hipergeométrica pode ser perfeitamente aproximada pela Binomial!
+    </div>
+</div>
+
+<script>
+    let N = 50;
+    let K = 15;
+    let n = 10;
+
+    function atualizarN(val) {
+        N = parseInt(val);
+        document.getElementById('lbl_N').innerText = `N = ${N}`;
+        let sK = document.getElementById('slider_K');
+        sK.max = Math.floor(N * 0.8);
+        if (K > sK.max) K = sK.max;
+        sK.value = K;
+        document.getElementById('lbl_K').innerText = `K = ${K} (${((K/N)*100).toFixed(0)}%)`;
+        renderizar();
+    }
+
+    function atualizarK(val) {
+        K = parseInt(val);
+        document.getElementById('lbl_K').innerText = `K = ${K} (${((K/N)*100).toFixed(0)}%)`;
+        renderizar();
+    }
+
+    function atualizarAmostra(val) {
+        n = parseInt(val);
+        document.getElementById('lbl_n').innerText = `n = ${n}`;
+        renderizar();
+    }
+
+    function resetar() {
+        N = 200; K = 60; n = 8;
+        document.getElementById('slider_N').value = 200; document.getElementById('lbl_N').innerText = 'N = 200';
+        document.getElementById('slider_K').max = 160; document.getElementById('slider_K').value = 60; document.getElementById('lbl_K').innerText = 'K = 60 (30%)';
+        document.getElementById('slider_n').value = 8; document.getElementById('lbl_n').innerText = 'n = 8';
+        renderizar();
+    }
+
+    function logFact(num) {
+        let r = 0;
+        for(let i=2; i<=num; i++) r += Math.log(i);
+        return r;
+    }
+
+    function logComb(n, k) {
+        if (k < 0 || k > n) return -Infinity;
+        return logFact(n) - logFact(k) - logFact(n - k);
+    }
+
+    function probHiper(N, K, n, k) {
+        if (k < Math.max(0, n - (N - K)) || k > Math.min(n, K)) return 0;
+        let lNum = logComb(K, k) + logComb(N - K, n - k);
+        let lDen = logComb(N, n);
+        return Math.exp(lNum - lDen);
+    }
+
+    function probBinom(n, k, p) {
+        if (k < 0 || k > n) return 0;
+        return Math.exp(logComb(n, k) + k * Math.log(p) + (n - k) * Math.log(1 - p));
+    }
+
+    function renderizar() {
+        let p = K / N;
+        let frac = (n / N);
+        let fcpf = N > 1 ? Math.sqrt((N - n) / (N - 1)) : 1;
+
+        document.getElementById('kpi_frac').innerText = `${(frac * 100).toFixed(1)}%`;
+        document.getElementById('kpi_fcpf').innerText = fcpf.toFixed(3);
+        document.getElementById('kpi_p').innerText = `${p.toFixed(3)} (${(p*100).toFixed(1)}%)`;
+
+        let cardFrac = document.getElementById('card_frac');
+        let txtValida = document.getElementById('kpi_valida');
+        if (frac <= 0.05) {
+            txtValida.innerText = 'Válida (n/N ≤ 5%) ✓';
+            txtValida.style.color = '#16a34a';
+            cardFrac.style.borderLeftColor = '#16a34a';
+        } else {
+            txtValida.innerText = 'Inválida (n/N > 5%) ✗';
+            txtValida.style.color = '#dc2626';
+            cardFrac.style.borderLeftColor = '#dc2626';
+        }
+
+        let maxK = Math.min(n, K);
+        let xVals = Array.from({length: maxK + 1}, (_, i) => i);
+        let yHiper = xVals.map(x => probHiper(N, K, n, x));
+        let yBin = xVals.map(x => probBinom(n, x, p));
+
+        let traceHiper = {
+            x: xVals,
+            y: yHiper,
+            type: 'bar',
+            name: 'Hipergeométrica (Sem Reposição)',
+            marker: { color: '#003485' }
+        };
+
+        let traceBin = {
+            x: xVals,
+            y: yBin,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Binomial Teórica (Com Reposição)',
+            line: { color: '#ea580c', width: 2.5 },
+            marker: { size: 8, color: '#c2410c' }
+        };
+
+        let layout = {
+            margin: { t: 30, b: 40, l: 45, r: 25 },
+            showlegend: true,
+            legend: { orientation: 'h', x: 0.1, y: 1.12, font: { size: 10 } },
+            xaxis: { title: 'Número de Sucessos na Amostra (k)', dtick: 1 },
+            yaxis: { title: 'Probabilidade', showgrid: true }
+        };
+
+        Plotly.react('chart_div', [traceHiper, traceBin], layout, {responsive: true, displayModeBar: false});
+    }
+
+    renderizar();
+</script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+{
+  "checkedAt": "2026-10-09T11:16:43.313Z",
+  "site": "https://statai-app.web.app",
+  "project": "statai-app-2026-ricardo",
+  "hostingDeployed": true,
+  "desktop": {
+    "loginButton": true,
+    "coverLoaded": true,
+    "cacheControl": "no-cache"
+  },
+  "mobile": {
+    "width": 390,
+    "overflow": 0
+  },
+  "course": {
+    "lessons": 25,
+    "exerciseCount": 72,
+    "gradable": 68,
+    "activities": 4,
+    "completeHelpStages": 288,
+    "cacheControl": "no-cache"
+  },
+  "google": {
+    "authorizedOrigin": "statai-app.web.app",
+    "providerRedirectReached": true,
+    "popupHost": "accounts.google.com",
+    "popupPath": "/v3/signin/identifier",
+    "authenticatedSessionTested": false,
+    "providerEnabled": true,
+    "domainAuthorized": true
+  },
+  "htmlResources": 51,
+  "charts": [
+    {
+      "path": "aulas/01-descritiva/aula-01-introducao-a-estatistica/recursos/grafico_amostragem.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-02-amostragens-probabilisticas/recursos/grafico_tipos_amostragem.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-03-classificacao-de-variaveis/recursos/grafico_tipos_variaveis.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex01-pizzas.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex02-aplicativos.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/gabarito-ex03-pagamentos.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-04-organizacao-de-dados-qualitativos/recursos/grafico_frequencias_qualitativas.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/ex14_grafico_1_enem.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/figura_4_barras_pizza.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/figura_5_diagrama_pareto.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/recursos/grafico_diagrama_pareto.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/recursos/gabarito-ex05-smartphones.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-06-organizacao-de-dados-quantitativos/recursos/grafico_distribuicao_quantitativa.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/ex13_histograma_salarios.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_6_histograma_poligono.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_7_ogiva.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_8_grafico_linha_dolar.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/figura_9_grafico_radar_iogurte.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-histograma.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/gabarito-ex08-ogiva.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-07-graficos-quantitativos-e-ramo-e-folha/recursos/grafico_radar_histograma.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-08-medidas-de-tendencia-central/recursos/grafico_tendencia_central.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-09-medidas-de-dispersao/recursos/grafico_dispersao_acoes.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/figura_8_boxplot_petr_vale.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-10-medidas-de-posicao-e-boxplot/recursos/grafico_boxplot_acoes.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-11-medidas-para-dados-agrupados/recursos/grafico_dados_agrupados.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex07_cap3_distribuicao.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/ex13_cap3_boxplot.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/01-descritiva/aula-12-aplicacoes-do-desvio-padrao-e-controle-de-qualidade/recursos/grafico_regra_empirica_chebyshev.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/02-probabilidade/aula-13-conceitos-basicos-e-abordagens-de-probabilidade/recursos/grafico_arvore_probabilidades.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/02-probabilidade/aula-14-probabilidade-condicional-e-independencia/recursos/grafico_tabela_contingencia.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/02-probabilidade/aula-15-regras-de-contagem/recursos/grafico_combinatoria_arranjos.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/recursos/figura_10_prob_tecelagem.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/03-distribuicoes-discretas/aula-16-variaveis-aleatorias-discretas-e-distribuicao-binomial/recursos/grafico_distribuicao_binomial.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/03-distribuicoes-discretas/aula-17-distribuicao-hipergeometrica/recursos/grafico_comparativo_hiper_binomial.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/03-distribuicoes-discretas/aula-18-distribuicao-de-poisson/recursos/grafico_distribuicao_poisson.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/04-distribuicoes-continuas/aula-19-distribuicao-normal-ou-gaussiana/recursos/grafico_curva_normal.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_12_normal_padrao.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_14_padronizacao_ex622a.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_15_padronizacao_ex623a.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/figura_16_padronizacao_ex623b.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/04-distribuicoes-continuas/aula-20-distribuicao-normal-padronizada-e-escore-z/recursos/grafico_padronizacao_z.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/recursos/ex05_cap6_curva_normal.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/recursos/grafico_distribuicao_exponencial.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/figura_17_dispersao_reta.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/gabarito-ex01-regressao.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/05-regressao-e-correlacao/aula-22-regressao-linear-simples/recursos/grafico_dispersao_regressao.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex02-regressao.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex03-regressao.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/gabarito-ex04-regressao.html",
+      "plots": 1,
+      "overflow": 0
+    },
+    {
+      "path": "aulas/05-regressao-e-correlacao/aula-23-correlacao-linear-e-coeficiente-de-determinacao/recursos/grafico_correlacao_escala.html",
+      "plots": 1,
+      "overflow": 0
+    }
+  ],
+  "pageErrors": [],
+  "failedSiteResponses": [],
+  "backend": {
+    "deployed": false,
+    "reason": "Billing is not enabled. Firebase Cloud Functions and Secret Manager require Blaze/billing."
+  },
+  "finalCheckedAt": "2026-10-09T11:18:33.128Z",
+  "httpFilesMatched": 130,
+  "secretCheck": {
+    "checkedAt": "2026-10-09T11:13:07.122Z",
+    "buildFiles": 337,
+    "privateKeyLeaks": 0,
+    "secretChecks": 2
+  },
+  "headerChecks": [
+    {
+      "path": "/",
+      "cacheControl": "no-cache"
+    },
+    {
+      "path": "/index.html",
+      "cacheControl": "no-cache"
+    },
+    {
+      "path": "/aulas/catalogo.json",
+      "cacheControl": "no-cache"
+    }
+  ],
+  "release": {
+    "project": "statai-app-2026-ricardo",
+    "site": "statai-app",
+    "url": "https://statai-app.web.app",
+    "release": "projects/statai-app-2026-ricardo/sites/statai-app/channels/live/releases/1791544652055000",
+    "releaseTime": "2026-10-09T11:17:32.055Z",
+    "version": "projects/statai-app-2026-ricardo/sites/statai-app/versions/fa2b67cb287aebfb",
+    "versionStatus": "FINALIZED",
+    "billingEnabled": false
+  }
+}

@@ -1,0 +1,104 @@
+[
+  {
+    "id": "livro-aula-21-exercicio-3",
+    "numero": 3,
+    "numero_original": "3",
+    "categoria": "exercicio",
+    "enunciado": "O tempo de atendimento em uma agência bancária segue uma distribuição exponencial com tempo médio de 10 minutos ($\\lambda = 10$).  \n(a) Qual a probabilidade de um cliente ser atendido em menos de 5 minutos?  \n(b) Qual a probabilidade de um atendimento durar mais de 20 minutos?  \n(c) Qual a probabilidade de o atendimento durar entre 5 e 15 minutos?",
+    "origem": {
+      "arquivo": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt",
+      "linha_inicial": 57,
+      "linha_final": 66,
+      "aula": 21
+    },
+    "solucao_completa": "Usando o tempo médio de 10 min:\n(a) $P(X<5)=1-e^{-5/10}=1-e^{-0{,}5}\\approx0{,}393469=39{,}35\\%$.\n(b) $P(X>20)=e^{-20/10}=e^{-2}\\approx0{,}135335=13{,}53\\%$.\n(c) $P(5<X<15)=e^{-5/10}-e^{-15/10}=e^{-0{,}5}-e^{-1{,}5}\\approx0{,}383400=38{,}34\\%$.\nComo a variável é contínua, incluir as extremidades não altera as probabilidades. O símbolo $\\lambda$ foi interpretado como média conforme o enunciado; ele não foi usado como taxa.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Qual a probabilidade de um cliente ser atendido em menos de 5 minutos?"
+      },
+      {
+        "id": "b",
+        "texto": "Qual a probabilidade de um atendimento durar mais de 20 minutos?"
+      },
+      {
+        "id": "c",
+        "texto": "Qual a probabilidade de o atendimento durar entre 5 e 15 minutos?"
+      }
+    ],
+    "resourceBasePath": "/aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/",
+    "solucao_original": "**Resolução:**  \n(a) $P(X \\le 5) = 1 - e^{-5/10} = 1 - e^{-0{,}5} = 1 - 0{,}6065 = 0{,}3935 \\quad (39{,}35\\%)$.  \n(b) $P(X > 20) = e^{-20/10} = e^{-2} \\cong 0{,}1353 \\quad (13{,}53\\%)$.  \n(c) $P(5 \\le X \\le 15) = e^{-5/10} - e^{-15/10} = e^{-0{,}5} - e^{-1{,}5} = 0{,}6065 - 0{,}2231 = 0{,}3834 \\quad (38{,}34\\%)$.",
+    "dica": "A sobrevivência exponencial fornece a probabilidade de exceder um tempo. Um intervalo é a diferença entre duas sobrevivências.",
+    "passo_inicial": "Nesta aula, $\\lambda=10$ representa o tempo médio. Use $P(X>t)=e^{-t/10}$; na parametrização por taxa, a taxa equivalente seria $1/10$ por minuto.",
+    "resposta_final": "(a) Aproximadamente 39,35%. (b) Aproximadamente 13,53%. (c) Aproximadamente 38,34%.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt",
+          "linha_inicial": 57,
+          "linha_final": 66
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-21-multipla-escolha-5",
+    "numero": 5,
+    "numero_original": "5",
+    "categoria": "multipla_escolha",
+    "enunciado": "A propriedade da \"falta de memória\" é uma característica exclusiva de qual distribuição contínua?  \n(a) Distribuição Normal  \n(b) Distribuição Uniforme  \n(c) Distribuição Exponencial  \n(d) Distribuição de Student  \n(e) Distribuição de Poisson",
+    "origem": {
+      "arquivo": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt",
+      "linha_inicial": 69,
+      "linha_final": 81,
+      "aula": 21
+    },
+    "solucao_completa": "Na exponencial com tempo médio $\\theta$, a sobrevivência é $e^{-t/\\theta}$. Assim,\n$$P(X>s+t\\mid X>s)=\\frac{e^{-(s+t)/\\theta}}{e^{-s/\\theta}}=e^{-t/\\theta}=P(X>t).$$\nEssa é a falta de memória. Normal, uniforme e Student não possuem essa propriedade; Poisson é discreta e modela contagens.",
+    "resposta_final": "Alternativa C — distribuição exponencial.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Distribuição Normal"
+      },
+      {
+        "id": "b",
+        "texto": "Distribuição Uniforme"
+      },
+      {
+        "id": "c",
+        "texto": "Distribuição Exponencial"
+      },
+      {
+        "id": "d",
+        "texto": "Distribuição de Student"
+      },
+      {
+        "id": "e",
+        "texto": "Distribuição de Poisson"
+      }
+    ],
+    "resourceBasePath": "/aulas/04-distribuicoes-continuas/aula-21-distribuicao-exponencial/",
+    "solucao_original": "**Gabarito: (c)**  \n**Comentário:** A distribuição exponencial é a única distribuição de probabilidades contínua que possui a propriedade da falta de memória, isto é, $P(X > s + t \\mid X > s) = P(X > t)$, o que significa que a probabilidade de um equipamento funcionar por mais $t$ horas independe do tempo $s$ que ele já operou.",
+    "dica": "A propriedade compara o tempo restante depois de já se ter esperado um intervalo.",
+    "passo_inicial": "Procure a distribuição contínua cuja sobrevivência satisfaz $P(X>s+t\\mid X>s)=P(X>t)$.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/4_Variaveis_Continuas/Lição 21 -  Distribuição Exponencial.txt",
+          "linha_inicial": 69,
+          "linha_final": 81
+        }
+      ],
+      "observacoes": "A figura normal foi retirada deste enunciado: era decorativa e não representa a distribuição cuja propriedade está sendo perguntada. O texto anterior fica preservado em enunciado_original.",
+      "conferido_enunciado": true
+    },
+    "enunciado_original": "Observe o gráfico a seguir referente a uma distribuição contínua:\n\n![Distribuição Contínua - Exercício 5](recursos/ex05_cap6_curva_normal.html)\n\nA propriedade da \"falta de memória\" é uma característica exclusiva de qual distribuição contínua?  \n(a) Distribuição Normal  \n(b) Distribuição Uniforme  \n(c) Distribuição Exponencial  \n(d) Distribuição de Student  \n(e) Distribuição de Poisson"
+  }
+]

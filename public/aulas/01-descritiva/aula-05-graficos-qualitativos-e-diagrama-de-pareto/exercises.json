@@ -1,0 +1,98 @@
+[
+  {
+    "id": "livro-aula-05-exercicio-4",
+    "numero": 4,
+    "numero_original": "4",
+    "categoria": "exercicio",
+    "enunciado": "Uma loja de calçados esportivos registrou 200 reclamações de clientes no último trimestre e as agrupou em 5 motivos principais para aplicar a metodologia de Pareto:\n\n| Motivo de Reclamação | Frequência Absoluta ($f_a$) |\n| :--- | :---: |\n| Descolamento da sola | 110 |\n| Tamanho incorreto enviado | 50 |\n| Atraso na entrega | 24 |\n| Embalagem danificada | 10 |\n| Outros defeitos menores | 6 |\n| **Total** | **200** |\n\n(a) Construa a tabela de frequências contendo a frequência percentual ($f_p$) e a frequência percentual acumulada ($f_c$).  \n(b) Quais motivos compõem aproximadamente 80% dos problemas que exigem ação corretiva prioritária pela gerência?",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt",
+      "linha_inicial": 43,
+      "linha_final": 66,
+      "aula": 5
+    },
+    "solucao_completa": "(a) A tabela é:\n\n| Motivo | $f_a$ | $f_p$ | Percentual acumulado |\n| --- | ---: | ---: | ---: |\n| Descolamento da sola | 110 | 55% | 55% |\n| Tamanho incorreto enviado | 50 | 25% | 80% |\n| Atraso na entrega | 24 | 12% | 92% |\n| Embalagem danificada | 10 | 5% | 97% |\n| Outros defeitos menores | 6 | 3% | 100% |\n\n(b) Os dois primeiros motivos somam $110+50=160$ reclamações, ou $160/200=80\\%$. Eles devem ser priorizados na investigação das causas. Isso identifica 80% das reclamações registradas; não garante, por si só, que uma ação elimine todas elas.",
+    "subitens": [
+      {
+        "id": "a",
+        "texto": "Construa a tabela de frequências contendo a frequência percentual ($f_p$) e a frequência percentual acumulada ($f_c$)."
+      },
+      {
+        "id": "b",
+        "texto": "Quais motivos compõem aproximadamente 80% dos problemas que exigem ação corretiva prioritária pela gerência?"
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/",
+    "solucao_original": "**Resolução:**  \n(a) Tabela de Pareto:  \n- *Descolamento da sola:* $f_p = \\frac{110}{200} \\times 100\\% = 55{,}0\\%$; $f_c = 55{,}0\\%$  \n- *Tamanho incorreto:* $f_p = \\frac{50}{200} \\times 100\\% = 25{,}0\\%$; $f_c = 80{,}0\\%$  \n- *Atraso na entrega:* $f_p = \\frac{24}{200} \\times 100\\% = 12{,}0\\%$; $f_c = 92{,}0\\%$  \n- *Embalagem danificada:* $f_p = \\frac{10}{200} \\times 100\\% = 5{,}0\\%$; $f_c = 97{,}0\\%$  \n- *Outros defeitos:* $f_p = \\frac{6}{200} \\times 100\\% = 3{,}0\\%$; $f_c = 100{,}0\\%$  \n\n(b) Os motivos **\"Descolamento da sola\"** e **\"Tamanho incorreto enviado\"** totalizam juntos exatamente **80%** das ocorrências ($55\\% + 25\\% = 80\\%$). Portanto, resolver as causas desses dois quesitos elimina 80% de todas as insatisfações da loja.",
+    "dica": "Pareto ordena causas por frequência e acompanha o percentual acumulado.",
+    "passo_inicial": "Divida cada contagem por 200 e multiplique por 100. Some os percentuais na ordem decrescente já apresentada.",
+    "resposta_final": "(a) Percentuais: 55%, 25%, 12%, 5%, 3%; acumulados: 55%, 80%, 92%, 97%, 100%. (b) Descolamento da sola e tamanho incorreto enviado.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt",
+          "linha_inicial": 43,
+          "linha_final": 66
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  },
+  {
+    "id": "livro-aula-05-multipla-escolha-14",
+    "numero": 14,
+    "numero_original": "14",
+    "categoria": "multipla_escolha",
+    "enunciado": "(ENEM, 2017) Um gráfico de barras ou colunas pode induzir o leitor ao erro caso o eixo vertical não comece do zero ou possua escalas desproporcionais. Observe a comparação entre dois gráficos com os mesmos dados de faturamento:\n\n![Questão ENEM 2017 - Gráficos](recursos/ex14_grafico_1_enem.html)\n\nA representação visual distorcida no segundo gráfico ocorre porque:  \n(a) Os rótulos das categorias foram invertidos.  \n(b) A escala vertical foi truncada (não inicia no valor zero), ampliando artificialmente a diferença visual entre as colunas.  \n(c) As cores das barras alteram os valores das frequências.  \n(d) O número de classes foi superestimado pela fórmula de Sturges.  \n(e) O gráfico de pizza deveria ter sido obrigatoriamente utilizado.",
+    "origem": {
+      "arquivo": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt",
+      "linha_inicial": 69,
+      "linha_final": 81,
+      "aula": 5
+    },
+    "solucao_completa": "O segundo gráfico inicia o eixo vertical acima de zero. Com a base truncada, uma pequena diferença de faturamento ocupa uma parcela maior da altura visível das barras e parece proporcionalmente maior. Os dados são os mesmos; a distorção vem da escala.",
+    "resposta_final": "Alternativa B — escala vertical truncada, ampliando visualmente as diferenças.",
+    "alternativas": [
+      {
+        "id": "a",
+        "texto": "Os rótulos das categorias foram invertidos."
+      },
+      {
+        "id": "b",
+        "texto": "A escala vertical foi truncada (não inicia no valor zero), ampliando artificialmente a diferença visual entre as colunas."
+      },
+      {
+        "id": "c",
+        "texto": "As cores das barras alteram os valores das frequências."
+      },
+      {
+        "id": "d",
+        "texto": "O número de classes foi superestimado pela fórmula de Sturges."
+      },
+      {
+        "id": "e",
+        "texto": "O gráfico de pizza deveria ter sido obrigatoriamente utilizado."
+      }
+    ],
+    "resourceBasePath": "/aulas/01-descritiva/aula-05-graficos-qualitativos-e-diagrama-de-pareto/",
+    "solucao_original": "**Gabarito: (b)**  \n**Comentário:** Quando o eixo vertical não tem origem no ponto zero (eixo truncado), as diferenças relativas de tamanho entre as barras tornam-se visualmente infladas, violando o princípio da honestidade e fidedignidade da representação estatística descritiva.",
+    "dica": "Compare a origem e a escala dos eixos antes de comparar a altura das barras.",
+    "passo_inicial": "Observe qual é o menor valor mostrado no eixo vertical de cada gráfico e se a mesma diferença numérica ocupa o mesmo espaço visual.",
+    "correcao_automatica": true,
+    "gabarito_meta": {
+      "origem": "elaborado",
+      "referencias": [
+        {
+          "tipo": "material",
+          "arquivo": "aulas/1_Descritiva/Lição 5 -  Gráficos Qualitativos e Diagrama de Pareto.txt",
+          "linha_inicial": 69,
+          "linha_final": 81
+        }
+      ],
+      "conferido_enunciado": true
+    }
+  }
+]
