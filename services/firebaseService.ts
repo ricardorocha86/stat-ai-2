@@ -62,18 +62,6 @@ export const fetchStudentProgress = async (userId: string): Promise<StudentProgr
 
 // --- Achievements & Storage ---
 
-export const uploadAchievementImage = async (userId: string, milestone: number, base64Image: string): Promise<string> => {
-    const storageRef = ref(storage, `users/${userId}/achievements/${milestone}.png`);
-    try {
-        await uploadString(storageRef, base64Image, 'base64');
-        const downloadURL = await getDownloadURL(storageRef);
-        return downloadURL;
-    } catch (error) {
-        console.error("Error uploading achievement image:", error);
-        throw error;
-    }
-};
-
 export const uploadAchievementAudio = async (userId: string, milestone: number, wavBase64: string): Promise<string> => {
     const storageRef = ref(storage, `users/${userId}/achievements/${milestone}.wav`);
     try {
@@ -134,7 +122,6 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
 export const syncUserProfile = async (userId: string, profile: UserProfile) => {
     const userRef = doc(db, "users", userId);
     try {
-        console.log(`Syncing profile for user ${userId}...`);
         
         // Firestore doesn't accept undefined values. Clean the object.
         const cleanProfile = Object.fromEntries(
@@ -145,7 +132,6 @@ export const syncUserProfile = async (userId: string, profile: UserProfile) => {
             ...cleanProfile,
             lastLogin: serverTimestamp()
         }, { merge: true });
-        console.log(`Profile synced successfully for ${userId}`);
     } catch (error) {
         console.error("Error syncing user profile:", error);
         throw error; // Throwing so App.tsx knows it failed

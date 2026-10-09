@@ -39,8 +39,10 @@ const HomePage: React.FC<HomePageProps> = ({ course, onSelectLesson, studentProg
                 <div className="flex items-center gap-6">
                     <div className="relative w-24 h-24">
                         <svg className="w-full h-full" viewBox="0 0 36 36">
-                            <path className="text-slate-200" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path className="text-blue-500 transition-all duration-500" strokeWidth="3" strokeDasharray={`${overallPercentage}, 100`} strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path className="text-slate-200" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            {overallPercentage > 0 && (
+                                <path className="text-blue-500 transition-all duration-500" stroke="currentColor" strokeWidth="3" strokeDasharray={`${overallPercentage}, 100`} strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            )}
                         </svg>
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-700">{overallPercentage}%</div>
                     </div>

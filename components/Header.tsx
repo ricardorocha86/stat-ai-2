@@ -1,19 +1,16 @@
 import React from 'react';
-import { Page, Lesson, Unit, ViewMode } from '../types';
-import ViewSwitcher from './ViewSwitcher';
+import { Page, Lesson, Unit } from '../types';
 import { Bars3Icon } from './Icons';
 
 interface HeaderProps {
     page: Page;
     lesson: Lesson | null;
     unit: Unit | null;
-    viewMode: ViewMode;
-    setViewMode: (mode: ViewMode) => void;
     onToggleSidebar: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ page, lesson, unit, viewMode, setViewMode, onToggleSidebar }) => {
-    
+const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar }) => {
+
     const getTitle = () => {
         switch(page) {
             case 'home':
@@ -44,9 +41,6 @@ const Header: React.FC<HeaderProps> = ({ page, lesson, unit, viewMode, setViewMo
                     <p className="text-xs md:text-sm text-slate-400 truncate">{breadcrumb}</p>
                     <h1 className="text-lg md:text-xl font-bold text-white truncate">{main}</h1>
                 </div>
-            </div>
-            <div className="flex-shrink-0">
-                <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
             </div>
         </header>
     );

@@ -27,7 +27,7 @@ As regras permitem a leitura pública do agregado de uma capa e a leitura indivi
 
 ## Configuração e manutenção
 
-O provedor anônimo foi habilitado no Firebase; o provedor Google continua habilitado. Foram publicados o Hosting e as regras do Firestore. Este recurso não depende das Cloud Functions do tutor/corretor.
+O provedor anônimo foi habilitado no Firebase; o provedor Google continua habilitado. Foram publicados o Hosting e as regras do Firestore. Este recurso não depende das Firebase Functions do tutor/corretor.
 
 Arquivos principais:
 

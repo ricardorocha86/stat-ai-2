@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { getCourseProgress, getLessonProgress } from '../services/progressService';
 import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, Achievements, AchievementMilestone, UserProfile } from '../types';
-import { BookOpenIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, CameraIcon, XMarkIcon, PencilSquareIcon } from './Icons';
+import { BookOpenIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
 
 interface SidebarProps {
   course: Course;
@@ -16,8 +16,9 @@ interface SidebarProps {
   onClaimAchievement: (milestone: AchievementMilestone) => void;
   allExercisesCount: number;
   userProfile: UserProfile;
-  onProfileChange: (profile: UserProfile) => void;
   isAchievementTestMode: boolean;
+  canUseAchievementTestMode: boolean;
+  areNewRewardsPaused: boolean;
   onToggleAchievementTestMode: () => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
@@ -26,38 +27,12 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ 
   course, selectedLesson, onSelectLesson, page, setPage, onLogout, 
   studentProgress, viewMode, achievements, onClaimAchievement, allExercisesCount,
-  userProfile, onProfileChange, isAchievementTestMode, onToggleAchievementTestMode,
+  userProfile, isAchievementTestMode, canUseAchievementTestMode, areNewRewardsPaused, onToggleAchievementTestMode,
   isSidebarOpen, setIsSidebarOpen
 }) => {
-  const [openUnits, setOpenUnits] = React.useState<Set<string>>(() => 
+  const [openUnits, setOpenUnits] = React.useState<Set<string>>(() =>
     new Set(course.units.map(u => u.id))
   );
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleAvatarClick = () => {
-    if (viewMode === 'aluno') {
-        fileInputRef.current?.click();
-    }
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            if (typeof reader.result === 'string') {
-                const base64String = reader.result.split(',')[1];
-                onProfileChange({
-                    ...userProfile,
-                    photoBase64: base64String,
-                    photoMimeType: file.type,
-                });
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-  };
-
 
   const handleSelectLesson = (lesson: Lesson) => {
     onSelectLesson(lesson);
@@ -176,16 +151,18 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
             </div>
             
-            <button
-                onClick={onToggleAchievementTestMode}
-                className={`w-full text-xs py-1.5 rounded-md font-semibold transition-colors ${
-                    isAchievementTestMode
-                        ? 'bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30'
-                        : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-                }`}
-            >
-                {isAchievementTestMode ? 'Desativar Modo de Teste' : 'Ativar Modo de Teste'}
-            </button>
+            {canUseAchievementTestMode && (
+                <button
+                    onClick={onToggleAchievementTestMode}
+                    className={`w-full text-xs py-1.5 rounded-md font-semibold transition-colors ${
+                        isAchievementTestMode
+                            ? 'bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30'
+                            : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                    }`}
+                >
+                    {isAchievementTestMode ? 'Desativar Modo de Teste' : 'Ativar Modo de Teste'}
+                </button>
+            )}
 
             {MILESTONES.length > 0 && (
                  <div>
@@ -196,12 +173,17 @@ const Sidebar: React.FC<SidebarProps> = ({
                         {MILESTONES.map(milestone => {
                             const isUnlocked = isAchievementTestMode || overallProgress.totalCompleted >= milestone;
                             const hasReward = !!achievements[milestone];
+                            const canOpen = isUnlocked && (hasReward || !areNewRewardsPaused);
 
                             let buttonClass = 'bg-slate-700 text-slate-500 cursor-not-allowed';
                             let title = `${milestone} exercícios para desbloquear`;
                             let animationClass = '';
 
-                            if (isUnlocked) {
+                            if (isUnlocked && !canOpen) {
+                                // Milestone reached while new rewards are paused.
+                                buttonClass = 'bg-slate-700 text-amber-300/70 cursor-not-allowed';
+                                title = `Marco de ${milestone} exercícios alcançado. Os prêmios voltam em breve.`;
+                            } else if (isUnlocked) {
                                 if (hasReward) {
                                     // Claimed state
                                     buttonClass = 'bg-amber-400/20 hover:bg-amber-400/40 text-amber-300 cursor-pointer';
@@ -217,7 +199,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                             return (
                                 <button
                                     key={milestone}
-                                    disabled={!isUnlocked}
+                                    disabled={!canOpen}
                                     onClick={() => onClaimAchievement(milestone)}
                                     className={`relative flex flex-col items-center justify-center p-2 rounded-lg aspect-square transition-all duration-200 ${buttonClass} ${animationClass}`}
                                     title={title}

@@ -17,6 +17,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
         return `data:${userProfile.photoMimeType || 'image/png'};base64,${userProfile.photoBase64}`;
     });
     const [isSaving, setIsSaving] = useState(false);
+    const [saveStatus, setSaveStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
     const [photoFile, setPhotoFile] = useState<File | undefined>();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -34,18 +35,21 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
 
     const handleSave = async () => {
         setIsSaving(true);
+        setSaveStatus(null);
         try {
             const updatedProfile: UserProfile = {
                 ...userProfile,
                 name,
                 chatbotStyle,
-                photoBase64: photoUrl
+                // A new photo is uploaded as a file; otherwise keep the stored one, never the local preview.
+                photoBase64: photoFile ? undefined : userProfile.photoBase64
             };
             await onUpdateProfile(updatedProfile, photoFile);
-            alert('Perfil atualizado com sucesso!');
+            setPhotoFile(undefined);
+            setSaveStatus({ type: 'success', message: 'Perfil atualizado.' });
         } catch (error) {
             console.error("Error saving profile:", error);
-            alert('Erro ao salvar perfil.');
+            setSaveStatus({ type: 'error', message: 'Não foi possível salvar o perfil. Tente novamente.' });
         } finally {
             setIsSaving(false);
         }
@@ -54,16 +58,16 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
     return (
         <div className="max-w-4xl mx-auto p-4 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <header className="mb-10 text-center sm:text-left">
-                <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Meu Perfil</h1>
-                <p className="text-slate-500 dark:text-slate-400">Gerencie sua identidade e preferências no portal.</p>
+                <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Meu Perfil</h1>
+                <p className="text-slate-500">Gerencie sua identidade e preferências no portal.</p>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Profile Pic Card */}
                 <div className="lg:col-span-1">
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col items-center">
+                    <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col items-center">
                         <div className="relative group mb-6">
-                            <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-blue-50 dark:border-blue-900/30 shadow-lg bg-slate-50 flex items-center justify-center">
+                            <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-blue-50 shadow-lg bg-slate-50 flex items-center justify-center">
                                 {photoUrl ? (
                                     <img src={photoUrl} alt="Avatar" className="w-full h-full object-cover" />
                                 ) : (
@@ -84,12 +88,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
                                 onChange={handlePhotoChange} 
                             />
                         </div>
-                        <h2 className="text-xl font-bold text-slate-900 dark:text-white text-center mb-1">{name}</h2>
+                        <h2 className="text-xl font-bold text-slate-900 text-center mb-1">{name}</h2>
                         <p className="text-sm text-slate-500 mb-4">{userProfile.email}</p>
                         
-                        <div className="w-full pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
+                        <div className="w-full pt-6 mt-6 border-t border-slate-100">
                              <div className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">TIPO DE USUÁRIO</div>
-                             <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                             <div className="flex items-center gap-2 text-slate-700">
                                  <span className="capitalize font-medium">{userProfile.userType}</span>
                              </div>
                         </div>
@@ -98,28 +102,28 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
 
                 {/* Settings Card */}
                 <div className="lg:col-span-2 space-y-8">
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none">
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Dados Pessoais</h3>
+                    <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
+                        <h3 className="text-xl font-bold text-slate-900 mb-6">Dados Pessoais</h3>
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Como devemos te chamar?</label>
+                                <label className="text-sm font-semibold text-slate-700 ml-1">Como devemos te chamar?</label>
                                 <input 
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900"
                                     placeholder="Seu nome"
                                 />
                             </div>
                             
                             {userProfile.userType === 'nutrição' && (
                                 <div className="space-y-2 opacity-60">
-                                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Número de Matrícula</label>
+                                    <label className="text-sm font-semibold text-slate-700 ml-1">Número de Matrícula</label>
                                     <input 
                                         type="text"
                                         value={userProfile.registrationNumber || ''}
                                         disabled
-                                        className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 border-none rounded-2xl text-slate-700 dark:text-slate-300 cursor-not-allowed"
+                                        className="w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-700 cursor-not-allowed"
                                     />
                                     <p className="text-[10px] text-slate-500 ml-1">A matrícula não pode ser alterada manualmente.</p>
                                 </div>
@@ -127,18 +131,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none">
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Preferências da IA</h3>
+                    <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
+                        <h3 className="text-xl font-bold text-slate-900 mb-6">Preferências da IA</h3>
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Personalidade do Oráculo</label>
+                            <label className="text-sm font-semibold text-slate-700 ml-1">Personalidade do Oráculo</label>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {(['Padrão', 'Xarope', 'Amiguinho'] as ChatbotStyle[]).map((style) => (
                                     <button 
                                         key={style}
                                         onClick={() => setChatbotStyle(style)}
-                                        className={`p-4 rounded-2xl border-2 transition-all text-left ${chatbotStyle === style ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800'}`}
+                                        className={`p-4 rounded-2xl border-2 transition-all text-left ${chatbotStyle === style ? 'border-blue-600 bg-blue-50' : 'border-slate-100 hover:border-blue-200'}`}
                                     >
-                                        <div className="font-bold text-slate-900 dark:text-white">{style}</div>
+                                        <div className="font-bold text-slate-900">{style}</div>
                                         <div className="text-[10px] text-slate-500 mt-1">
                                             {style === 'Padrão' && 'Equilibrado e didático.'}
                                             {style === 'Xarope' && 'Rabugento e minimalista.'}
@@ -150,8 +154,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
                         </div>
                     </div>
 
-                    <div className="flex justify-end">
-                        <button 
+                    <div className="flex flex-wrap items-center justify-end gap-4">
+                        {saveStatus && (
+                            <p role="status" className={`text-sm font-medium ${saveStatus.type === 'success' ? 'text-green-700' : 'text-red-700'}`}>
+                                {saveStatus.message}
+                            </p>
+                        )}
+                        <button
                             onClick={handleSave}
                             disabled={isSaving}
                             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-2xl shadow-lg shadow-blue-500/30 transition-all active:scale-95 disabled:opacity-50"

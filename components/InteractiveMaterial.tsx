@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Lesson, GenerationOptions, QAMessage, StructuredLesson } from '../types';
-import { generateInteractiveLesson, answerQuestionAboutLesson } from '../services/geminiService';
-import { SparklesIcon, PaperAirplaneIcon, UserIcon, QuestionMarkCircleIcon, ExclamationTriangleIcon, DownloadIcon, OwlIcon, XMarkIcon } from './Icons';
-import MarkdownRenderer from './MarkdownRenderer';
+import React, { useState, useEffect } from 'react';
+import { Lesson, GenerationOptions, StructuredLesson } from '../types';
+import { generateInteractiveLesson } from '../services/aiService';
+import { SparklesIcon, ExclamationTriangleIcon, DownloadIcon } from './Icons';
 
 interface InteractiveMaterialProps {
   lesson: Lesson;
@@ -57,18 +56,10 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
   const [timer, setTimer] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState('');
 
-  const [qaMessages, setQaMessages] = useState<QAMessage[]>([]);
-  const [userQuestion, setUserQuestion] = useState('');
-  const [isAnswering, setIsAnswering] = useState(false);
-  const qaChatContainerRef = useRef<HTMLDivElement>(null);
-  const [isQaChatOpen, setIsQaChatOpen] = useState(false);
-
   useEffect(() => {
-    // When the lesson changes, reset error and close chat, but don't clear content
+    // When the lesson changes, reset error, but don't clear content
     // The parent component (`App.tsx`) controls the content persistence.
     setError(null);
-    setIsQaChatOpen(false);
-    setUserQuestion('');
   }, [lesson]);
 
   useEffect(() => {
@@ -119,20 +110,11 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
             </html>
         `;
         setGeneratedHtml(finalHtml);
-        setQaMessages([
-          { role: 'model', content: `Ora, ora... parece que você gerou um material sobre **${lesson.title}**. Se sua mente pequena tiver alguma dúvida sobre o que eu preparei, pode perguntar. Mas seja breve.` }
-        ]);
     } else {
         setGeneratedHtml(null);
     }
   }, [interactiveMaterial, lesson.title]);
   
-  useEffect(() => {
-    if (qaChatContainerRef.current) {
-        qaChatContainerRef.current.scrollTop = qaChatContainerRef.current.scrollHeight;
-    }
-  }, [qaMessages]);
-
   useEffect(() => {
     let timerInterval: number;
     let messageInterval: number;
@@ -200,26 +182,6 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
     URL.revokeObjectURL(url);
   };
   
-  const handleAskQuestion = async () => {
-    if (!userQuestion.trim() || !interactiveMaterial) return;
-    const fullLessonText = Object.values(interactiveMaterial).join('\n\n');
-
-    const newMessages: QAMessage[] = [...qaMessages, { role: 'user', content: userQuestion }];
-    setQaMessages(newMessages);
-    setUserQuestion('');
-    setIsAnswering(true);
-
-    try {
-      const answer = await answerQuestionAboutLesson(fullLessonText, userQuestion);
-      setQaMessages([...newMessages, { role: 'model', content: answer }]);
-    } catch (e) {
-      setQaMessages([...newMessages, { role: 'model', content: "Francamente, até meus circuitos se confundiram com sua pergunta. Tente de novo, talvez com mais clareza." }]);
-      console.error(e);
-    } finally {
-      setIsAnswering(false);
-    }
-  };
-
   const renderGenerationForm = () => (
     <div className="max-w-3xl mx-auto p-8">
         <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
@@ -291,9 +253,9 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
     <div className="flex flex-1 flex-col overflow-hidden h-full bg-slate-100 relative">
         {/* Main content: iframe */}
         <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex-shrink-0 p-4 border-b border-slate-200 bg-white flex items-center justify-between">
+            <div className="flex-shrink-0 p-4 border-b border-slate-200 bg-white flex flex-wrap items-center justify-between gap-3">
                 <h3 className="text-lg font-bold text-slate-800">Seu Material de Aula Personalizado</h3>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                      <button
                         onClick={onClearInteractiveMaterial}
                         className="flex items-center gap-2 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 transition-colors text-sm font-medium shadow-sm"
@@ -308,93 +270,14 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
                     </button>
                 </div>
             </div>
+            {/* AI-generated HTML: render without scripts. */}
             <iframe
                 srcDoc={generatedHtml || ''}
                 title="Material de Aula"
+                sandbox=""
                 className="flex-1 w-full h-full border-0 bg-white"
             />
         </div>
-
-        {/* FAB to open chat */}
-        <button
-            onClick={() => setIsQaChatOpen(true)}
-            className="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-xl z-20 hover:bg-blue-700 transition-transform transform hover:scale-110"
-            aria-label="Abrir chat com tutor"
-        >
-            <OwlIcon className="w-8 h-8"/>
-        </button>
-
-        {/* Chat Modal/Overlay */}
-        {isQaChatOpen && (
-            <div 
-                className="fixed inset-0 bg-black/60 z-40 flex flex-col justify-end"
-                onClick={() => setIsQaChatOpen(false)}
-            >
-                <div 
-                    className="bg-slate-50 w-full h-[80vh] rounded-t-2xl shadow-2xl flex flex-col animate-slide-up"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <div className="p-4 border-b border-slate-200 flex items-center justify-between gap-3 bg-slate-50 flex-shrink-0">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 flex-shrink-0 bg-slate-200 text-slate-600 rounded-full flex items-center justify-center">
-                                <OwlIcon className="w-8 h-8"/>
-                            </div>
-                            <div>
-                                <h2 className="font-bold text-slate-800">StatChat</h2>
-                                <p className="text-xs text-slate-600">Dúvidas sobre o material gerado? Pergunte ao StatChat.</p>
-                            </div>
-                        </div>
-                        <button onClick={() => setIsQaChatOpen(false)} className="p-1 text-slate-500 hover:text-slate-800">
-                           <XMarkIcon className="w-6 h-6" />
-                        </button>
-                    </div>
-                    <div ref={qaChatContainerRef} className="flex-1 p-4 space-y-4 overflow-y-auto bg-slate-100">
-                        {qaMessages.map((msg, index) => (
-                            <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-                                {msg.role === 'model' && <div className="w-8 h-8 rounded-full bg-[--accent] text-white flex items-center justify-center flex-shrink-0 shadow-sm"><SparklesIcon className="w-5 h-5"/></div>}
-                                <div className={`w-full max-w-md p-3 rounded-xl shadow-sm ${msg.role === 'user' ? 'bg-[--bg-user-message] text-[--text-user-message]' : 'bg-[--bg-card] border border-[--border-color]'}`}>
-                                    <MarkdownRenderer content={msg.content} className="prose prose-sm prose-p:my-0.5" />
-                                </div>
-                                {msg.role === 'user' && <div className="w-8 h-8 rounded-full bg-slate-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm"><UserIcon className="w-5 h-5"/></div>}
-                            </div>
-                        ))}
-                        {isAnswering && (
-                            <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-full bg-[--accent] text-white flex items-center justify-center flex-shrink-0 shadow-sm"><SparklesIcon className="w-5 h-5"/></div>
-                                <div className="max-w-md p-3 rounded-xl bg-white border border-slate-200 flex items-center space-x-2">
-                                    <div className="w-2 h-2 rounded-full bg-slate-400 animate-pulse [animation-delay:-0.3s]"></div>
-                                    <div className="w-2 h-2 rounded-full bg-slate-400 animate-pulse [animation-delay:-0.15s]"></div>
-                                    <div className="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    <div className="p-4 border-t border-slate-200 bg-white flex-shrink-0">
-                        <div className="relative flex-1">
-                            <input
-                                type="text"
-                                value={userQuestion}
-                                onChange={(e) => setUserQuestion(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleAskQuestion()}
-                                placeholder="Faça uma pergunta..."
-                                disabled={isAnswering}
-                                className="w-full pl-4 pr-10 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-                            />
-                            <button onClick={handleAskQuestion} disabled={isAnswering || !userQuestion.trim()} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-blue-600 disabled:text-slate-300">
-                                <PaperAirplaneIcon className="w-5 h-5"/>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <style>{`
-                  @keyframes slide-up {
-                    from { transform: translateY(100%); }
-                    to { transform: translateY(0); }
-                  }
-                  .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
-                `}</style>
-            </div>
-        )}
     </div>
   );
   

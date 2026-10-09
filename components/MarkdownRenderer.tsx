@@ -20,6 +20,10 @@ export const resolveLessonResource = (source: string, basePath?: string): string
   return new URL(source, 'https://lesson.local' + basePath).pathname;
 };
 
+// remark-math reads "R$ 3,75 ... R$ 4,10" as inline math; escape the currency sign.
+const escapeCurrency = (text: string): string =>
+  text.replace(/(^|[^\w$\\])R\$(?=[\s\d)])/g, (_, before) => before + 'R\\$');
+
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   content, className, components, basePath, staticMode = false,
 }) => (
@@ -48,7 +52,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       a: ({ href, children }) => <a href={resolveLessonResource(href || '', basePath)}>{children}</a>,
       ...components,
     }}
-  >{content || ''}</ReactMarkdown>
+  >{escapeCurrency(content || '')}</ReactMarkdown>
 );
 
 export default MarkdownRenderer;

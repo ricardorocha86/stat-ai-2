@@ -1,5 +1,5 @@
 import React from 'react';
-import { BriefcaseIcon, GraduationCapIcon, SparklesIcon, DownloadIcon, CheckCircleIcon } from './Icons';
+import { GraduationCapIcon, SparklesIcon, CheckCircleIcon, OwlIcon, TrophyIcon } from './Icons';
 
 const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; children: React.ReactNode }> = ({ icon, title, children }) => (
     <div className="bg-[--bg-card] p-6 rounded-lg border border-[--border-color] shadow-sm">
@@ -18,42 +18,33 @@ const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; children: Re
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="flex-1 p-6 lg:p-8 bg-[--bg-main] overflow-y-auto h-screen">
+    <div className="p-6 lg:p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-extrabold text-[--text-primary] tracking-tight">Sobre o Aplicativo</h1>
         <p className="mt-2 text-lg text-[--text-secondary]">
-            Este é um assistente de IA projetado para otimizar o ensino e o aprendizado da estatística.
+            O Stat-AI reúne o material do curso, exercícios com correção e um tutor de IA para apoiar seu estudo de estatística.
         </p>
 
         <div className="mt-10">
             <h2 className="text-2xl font-bold text-[--text-primary] flex items-center gap-2 mb-6">
-                <BriefcaseIcon className="w-7 h-7 text-[--accent]" />
-                Modo Professor
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-                <FeatureCard icon={<SparklesIcon className="w-6 h-6" />} title="Geração Inteligente">
-                    Use o painel de chat para gerar exercícios de estatística sobre qualquer tópico do curso. Peça variações de dificuldade, tipo ou formato, e a IA criará conteúdo original e relevante em segundos.
-                </FeatureCard>
-                 <FeatureCard icon={<DownloadIcon className="w-6 h-6" />} title="Exportação para PDF">
-                    Exporte listas de exercícios para PDFs com aparência profissional. Você pode customizar a exportação para incluir apenas a aula atual, a unidade inteira ou o curso completo, com diferentes níveis de detalhe no gabarito.
-                </FeatureCard>
-            </div>
-        </div>
-
-        <div className="mt-12">
-            <h2 className="text-2xl font-bold text-[--text-primary] flex items-center gap-2 mb-6">
                 <GraduationCapIcon className="w-7 h-7 text-[--accent]" />
-                Modo Aluno
+                Como estudar no portal
             </h2>
              <div className="grid md:grid-cols-2 gap-6">
                 <FeatureCard icon={<CheckCircleIcon className="w-6 h-6" />} title="Verificação com IA">
-                    Digite suas respostas para os exercícios e receba feedback instantâneo de uma IA. O sistema avalia se sua resposta está correta, incorreta ou parcial e fornece dicas construtivas para te guiar.
+                    Digite suas respostas para os exercícios e receba um retorno imediato. O sistema avalia se sua resposta está correta, incorreta ou parcial e explica o que revisar, sem entregar a resposta.
                 </FeatureCard>
-                 <FeatureCard icon={<SparklesIcon className="w-6 h-6" />} title="Gabarito em Etapas">
-                    Não fique preso! Em vez de ver a resposta completa de uma vez, você pode solicitar ajuda gradualmente: comece com uma dica, peça um guia inicial e, só se necessário, veja a solução completa.
+                 <FeatureCard icon={<SparklesIcon className="w-6 h-6" />} title="Ajuda em Etapas">
+                    Travou em um exercício? Abra a ajuda aos poucos: primeiro uma dica, depois como começar e, só se precisar, a resolução completa e a resposta final.
                 </FeatureCard>
-                 <FeatureCard icon={<SparklesIcon className="w-6 h-6" />} title="Assistente de Dúvidas">
-                    Converse com o "Oráculo Estatístico", um chatbot especialista e mal-humorado que responde a qualquer dúvida sobre a matéria. Suas explicações são sempre precisas, criativas e direto ao ponto.
+                 <FeatureCard icon={<OwlIcon className="w-6 h-6" />} title="Tutor de Dúvidas">
+                    Converse com o tutor pelo botão da coruja. Ele responde com base nas aulas do curso, e você escolhe a personalidade dele no seu perfil: padrão, rabugento ou amiguinho.
+                </FeatureCard>
+                 <FeatureCard icon={<SparklesIcon className="w-6 h-6" />} title="Material Interativo">
+                    Gere uma versão da aula com exemplos da área que você preferir, no nível de linguagem e tamanho que escolher, e tire dúvidas sobre esse material.
+                </FeatureCard>
+                 <FeatureCard icon={<TrophyIcon className="w-6 h-6" />} title="Conquistas">
+                    A cada 10 exercícios verificados você alcança um novo marco no curso. Os prêmios desses marcos estão sendo renovados e voltam em breve.
                 </FeatureCard>
             </div>
         </div>

@@ -10,7 +10,7 @@ import initialCourseData from './data/courseData';
 import { loadCourseExercises } from './services/courseService';
 import { getCourseProgress } from './services/progressService';
 import LoginPage from './components/LoginPage';
-import { generateAchievementReward } from './services/geminiService';
+import { generateAchievementReward } from './services/aiService';
 import AchievementModal from './components/AchievementModal';
 import OnboardingModal from './components/OnboardingModal';
 import ProfilePage from './components/ProfilePage';
@@ -28,11 +28,16 @@ import {
     uploadProfilePicture
  } from './services/firebaseService';
 
+// Test mode unlocks every reward and calls the AI, so only the course owner sees it.
+const ACHIEVEMENT_TEST_EMAILS = ['ricardo8610@gmail.com'];
+// New rewards are paused while the prizes are redesigned; rewards already earned stay viewable.
+const ACHIEVEMENT_REWARDS_PAUSED = true;
 
 const App: React.FC = () => {
   const [course, setCourse] = useState<Course>(initialCourseData);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('aluno');
+  // Professor mode stays in the code but is not offered in the interface.
+  const [viewMode] = useState<ViewMode>('aluno');
   const [page, setPage] = useState<Page>('home');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
@@ -58,16 +63,16 @@ const App: React.FC = () => {
     return getCourseProgress(course, {}).totalCount;
   }, [course]);
 
+  const canUseAchievementTestMode = Boolean(currentUser?.email && ACHIEVEMENT_TEST_EMAILS.includes(currentUser.email));
+
   // Auth Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log("App: User logged in", user.uid);
         setCurrentUser(user);
         
         try {
           const existingProfile = await getUserProfile(user.uid);
-          console.log("App: existingProfile fetched:", existingProfile);
           
           if (!existingProfile || !existingProfile.isOnboarded) {
              const profile: UserProfile = {
@@ -75,11 +80,9 @@ const App: React.FC = () => {
                 email: user.email || '',
                 photoBase64: user.photoURL || undefined
             };
-            console.log("App: No existing profile or not onboarded, showing modal");
             setUserProfile(profile);
             setShowOnboarding(true);
           } else {
-            console.log("App: Profile found, updating state and syncing last login");
             setUserProfile(existingProfile);
             setShowOnboarding(false);
             await loadUserData(user.uid);
@@ -101,6 +104,8 @@ const App: React.FC = () => {
         setCurrentUser(null);
         setStudentProgress({});
         setAchievements({});
+        setIsAchievementTestMode(false);
+        setTestAchievements({});
         setShowOnboarding(false);
       }
       setIsAuthLoading(false);
@@ -124,7 +129,6 @@ const App: React.FC = () => {
           isOnboarded: true,
           chatbotStyle: profile.chatbotStyle || 'Padrão'
         };
-        console.log("App: Saving final onboarding profile:", finalProfile);
         await syncUserProfile(currentUser.uid, finalProfile);
         setUserProfile(finalProfile);
         setShowOnboarding(false);
@@ -148,11 +152,6 @@ const App: React.FC = () => {
       }
   };
 
-  const handleLogin = (firebaseUser: User) => {
-    // onAuthStateChanged handle the rest
-  };
-
-
   useEffect(() => {
     let active = true;
     setIsLoadingExercises(true);
@@ -174,23 +173,20 @@ const App: React.FC = () => {
     setSelectedLesson(lesson);
   };
 
+  // No guard on selectedLesson here: the sidebar selects a lesson and switches page in the
+  // same click, so this closure still sees the previous lesson. renderContent already falls
+  // back to the home page when 'lesson' has no lesson.
   const handleSetPage = (newPage: Page) => {
-    if (newPage === 'lesson' && !selectedLesson) {
-      setPage('home');
-    } else {
-      setPage(newPage);
-    }
+    setPage(newPage);
   };
 
   const handleProfileUpdate = async (updatedProfile: UserProfile, photoFile?: File) => {
     if (!currentUser) return;
     
     try {
-        console.log("App: Updating profile:", updatedProfile);
         let finalPhotoUrl = updatedProfile.photoBase64;
         
         if (photoFile) {
-            console.log("App: Uploading new profile picture...");
             finalPhotoUrl = await uploadProfilePicture(currentUser.uid, photoFile);
         }
         
@@ -205,7 +201,6 @@ const App: React.FC = () => {
 
         await syncUserProfile(currentUser.uid, finalProfile);
         setUserProfile(finalProfile);
-        console.log("App: Profile update successful");
     } catch (error) {
         console.error("App: Profile update error:", error);
         throw error;
@@ -221,28 +216,11 @@ const App: React.FC = () => {
         setUserProfile({ name: 'Visitante', email: '', photoBase64: undefined });
         setStudentProgress({});
         setAchievements({});
-        console.log("App: Logged out successfully");
     } catch (error) {
         console.error("App: Erro ao sair:", error);
     }
   };
 
-  const handleProfileChange = async (newProfile: UserProfile) => {
-    // Optimistic update
-    const prevProfile = userProfile;
-    setUserProfile(newProfile);
-    
-    if (currentUser) {
-        try {
-            await syncUserProfile(currentUser.uid, newProfile);
-        } catch (error) {
-            console.error("App: Falha ao sincronizar perfil:", error);
-            // Rollback on failure? Maybe better to notify
-            // For now, at least it's being awaited and logged
-        }
-    }
-  };
-  
   const handleToggleAchievementTestMode = () => {
     setIsAchievementTestMode(prev => {
         const next = !prev;
@@ -325,7 +303,7 @@ const App: React.FC = () => {
         return;
     }
 
-    if (isGeneratingAchievement || !currentUser) return;
+    if (ACHIEVEMENT_REWARDS_PAUSED || isGeneratingAchievement || !currentUser) return;
 
     setIsGeneratingAchievement(true);
     setAchievementToDisplay({ milestone, isLoading: true });
@@ -354,7 +332,7 @@ const App: React.FC = () => {
 }, [isGeneratingAchievement, achievements, testAchievements, isAchievementTestMode, currentUser, generateAndStoreReward]);
 
   const handleRegenerateAchievement = useCallback(async () => {
-      if (!achievementToDisplay || !currentUser || isGeneratingAchievement) return;
+      if (ACHIEVEMENT_REWARDS_PAUSED || !achievementToDisplay || !currentUser || isGeneratingAchievement) return;
       const milestone = achievementToDisplay.milestone;
       const activeAchievements = isAchievementTestMode ? testAchievements : achievements;
       const existing = activeAchievements[milestone];
@@ -509,7 +487,7 @@ const App: React.FC = () => {
   }
 
   if (!currentUser) {
-    return <LoginPage onLogin={handleLogin} />;
+    return <LoginPage />;
   }
 
   return (
@@ -527,8 +505,9 @@ const App: React.FC = () => {
         onClaimAchievement={handleClaimAchievement}
         allExercisesCount={allExercisesCount}
         userProfile={userProfile}
-        onProfileChange={handleProfileChange}
         isAchievementTestMode={isAchievementTestMode}
+        canUseAchievementTestMode={canUseAchievementTestMode}
+        areNewRewardsPaused={ACHIEVEMENT_REWARDS_PAUSED}
         onToggleAchievementTestMode={handleToggleAchievementTestMode}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
@@ -538,8 +517,6 @@ const App: React.FC = () => {
           page={page}
           lesson={selectedLesson}
           unit={selectedUnit}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
         <main className="flex-1 overflow-y-auto">
@@ -559,7 +536,7 @@ const App: React.FC = () => {
              achievements={isAchievementTestMode ? testAchievements : achievements}
              onClose={() => setAchievementToDisplay(null)}
              onRetry={() => handleClaimAchievement(achievementToDisplay.milestone)}
-             onRegenerate={handleRegenerateAchievement}
+             onRegenerate={ACHIEVEMENT_REWARDS_PAUSED ? undefined : handleRegenerateAchievement}
              userProfile={userProfile}
           />
         )}

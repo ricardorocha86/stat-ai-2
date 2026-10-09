@@ -28,7 +28,8 @@ interface AchievementModalProps {
   onClose: () => void;
   achievements: Achievements;
   onRetry: () => void;
-  onRegenerate: () => void;
+  // Omitted while new rewards are paused.
+  onRegenerate?: () => void;
   userProfile: UserProfile;
 }
 
@@ -324,7 +325,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
         className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-4xl text-white relative transform animate-scale-in flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <button onClick={onClose} className="absolute -top-3 -right-3 text-slate-400 hover:text-white transition-colors z-10">
+        <button onClick={onClose} aria-label="Fechar" className="absolute -top-3 -right-3 text-slate-400 hover:text-white transition-colors z-10">
           <XCircleIcon className="w-9 h-9 bg-slate-800 rounded-full" />
         </button>
 
@@ -411,13 +412,15 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
                     Baixar diploma (PDF)
                   </button>
                 )}
-                <button
-                  onClick={onRegenerate}
-                  disabled={achievementData.isRegenerating}
-                  className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-900 text-sm font-bold py-2 px-4 rounded-lg transition-colors"
-                >
-                  {achievementData.isRegenerating ? 'Gerando outra versão…' : 'Gerar outra versão'}
-                </button>
+                {onRegenerate && (
+                  <button
+                    onClick={onRegenerate}
+                    disabled={achievementData.isRegenerating}
+                    className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-900 text-sm font-bold py-2 px-4 rounded-lg transition-colors"
+                  >
+                    {achievementData.isRegenerating ? 'Gerando outra versão…' : 'Gerar outra versão'}
+                  </button>
+                )}
               </div>
             </div>
           ) : null}

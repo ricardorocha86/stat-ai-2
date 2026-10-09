@@ -1,5 +1,5 @@
 {
   "name": "Stat-AI 2.0",
-  "description": "Um aplicativo para professores de estatística gerarem listas de exercícios personalizadas para seus alunos, usando um assistente de IA interativo para criar e refinar problemas em várias lições.",
+  "description": "Portal do aluno de Estatística Aplicada: material das aulas, exercícios com correção por IA e ajuda em etapas, tutor baseado nas aulas, material interativo e conquistas.",
   "requestFramePermissions": []
 }

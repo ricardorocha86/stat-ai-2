@@ -209,11 +209,6 @@ export interface GenerationOptions {
     useEmojis: boolean;
 }
 
-export interface QAMessage {
-    role: 'user' | 'model';
-    content: string;
-}
-
 export interface StructuredLesson {
     introducao: string;
     teoria: string;

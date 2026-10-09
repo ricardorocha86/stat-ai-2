@@ -13,6 +13,10 @@ import {
   UserProfile,
 } from "../types";
 
+// The model reasons before answering; allow more than the 70 s callable default.
+const AI_TIMEOUT_MS = 180_000;
+const LONG_AI_TIMEOUT_MS = 330_000;
+
 export interface AchievementRewardResponse {
   milestone: number;
   kind: ArtifactKind;
@@ -34,12 +38,12 @@ export const generateExercise = async (
   userPrompt: string
 ): Promise<Omit<Exercise, "id" | "numero"> | string> => {
   try {
-    const generateExerciseWithGemini = httpsCallable<
+    const generateExerciseCallable = httpsCallable<
       { lessonTitle: string; userPrompt: string; existingExercises: Exercise[] },
       { exercise: Omit<Exercise, "id" | "numero"> }
-    >(functions, "generateExerciseWithGemini");
+    >(functions, "generateExercise", { timeout: AI_TIMEOUT_MS });
 
-    const result = await generateExerciseWithGemini({
+    const result = await generateExerciseCallable({
       lessonTitle,
       userPrompt,
       existingExercises,
@@ -55,7 +59,7 @@ export const generateExercise = async (
   }
 };
 
-export const createStudentChatSession = (style: ChatbotStyle = "Xarope"): AiChatSession => ({
+export const createStudentChatSession = (style: ChatbotStyle = "Padrão"): AiChatSession => ({
   kind: "student",
   style,
   history: [],
@@ -63,14 +67,14 @@ export const createStudentChatSession = (style: ChatbotStyle = "Xarope"): AiChat
 
 export const sendStudentChatMessage = async (chat: AiChatSession, message: string): Promise<string> => {
   try {
-    const sendStudentChatWithGemini = httpsCallable<
+    const sendStudentChat = httpsCallable<
       { message: string; style: ChatbotStyle; history: any[] },
       { text: string }
-    >(functions, "sendStudentChatWithGemini");
+    >(functions, "sendStudentChat", { timeout: AI_TIMEOUT_MS });
 
-    const result = await sendStudentChatWithGemini({
+    const result = await sendStudentChat({
       message,
-      style: chat.style || "Xarope",
+      style: chat.style || "Padrão",
       history: chat.history,
     });
 
@@ -80,18 +84,18 @@ export const sendStudentChatMessage = async (chat: AiChatSession, message: strin
     return text;
   } catch (error) {
     console.error("Error in student chat:", error);
-    return "Erro. Tente de novo.";
+    return "Não consegui responder agora. Tente novamente em instantes.";
   }
 };
 
 export const evaluateStudentAnswer = async (studentAnswer: string, exercise: Exercise): Promise<string> => {
   try {
-    const evaluateStudentAnswerWithGemini = httpsCallable<
+    const evaluateStudentAnswerCallable = httpsCallable<
       { studentAnswer: string; exercise: Exercise },
       { text: string }
-    >(functions, "evaluateStudentAnswerWithGemini");
+    >(functions, "evaluateStudentAnswer", { timeout: AI_TIMEOUT_MS });
 
-    const result = await evaluateStudentAnswerWithGemini({
+    const result = await evaluateStudentAnswerCallable({
       studentAnswer,
       exercise,
     });
@@ -103,6 +107,7 @@ export const evaluateStudentAnswer = async (studentAnswer: string, exercise: Exe
   }
 };
 
+// Paused: the reward function is not deployed while the prizes are being redesigned.
 export const generateAchievementReward = async (
   milestone: number,
   userProfile?: UserProfile | null,
@@ -140,12 +145,12 @@ export const generateInteractiveLesson = async (
   options: GenerationOptions
 ): Promise<StructuredLesson | string> => {
   try {
-    const generateInteractiveLessonWithGemini = httpsCallable<
+    const generateInteractiveLessonCallable = httpsCallable<
       { lessonTitle: string; lessonContent: string; options: GenerationOptions },
       { lesson: StructuredLesson }
-    >(functions, "generateInteractiveLessonWithGemini");
+    >(functions, "generateInteractiveLesson", { timeout: LONG_AI_TIMEOUT_MS });
 
-    const result = await generateInteractiveLessonWithGemini({
+    const result = await generateInteractiveLessonCallable({
       lessonTitle,
       lessonContent,
       options,
@@ -155,24 +160,5 @@ export const generateInteractiveLesson = async (
   } catch (error) {
     console.error("Error generating interactive lesson:", error);
     return "Desculpe, ocorreu um erro ao gerar o material de aula. Por favor, tente novamente.";
-  }
-};
-
-export const answerQuestionAboutLesson = async (lessonContent: string, question: string): Promise<string> => {
-  try {
-    const answerLessonQuestionWithGemini = httpsCallable<
-      { lessonContent: string; question: string },
-      { text: string }
-    >(functions, "answerLessonQuestionWithGemini");
-
-    const result = await answerLessonQuestionWithGemini({
-      lessonContent,
-      question,
-    });
-
-    return result.data.text;
-  } catch (error) {
-    console.error("Error answering question:", error);
-    return "Desculpe, não consegui processar sua pergunta agora. Tente novamente.";
   }
 };

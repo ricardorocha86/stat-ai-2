@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Lesson, Exercise, ChatMessage, ChatSessionCache, AiChatSession } from '../types';
-import { createChatSession, generateExercise } from '../services/geminiService';
+import { createChatSession, generateExercise } from '../services/aiService';
 import Loader from './Loader';
 import { CheckCircleIcon, PaperAirplaneIcon, SparklesIcon, UserIcon } from './Icons';
 import ReactMarkdown from 'react-markdown';

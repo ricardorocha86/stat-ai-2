@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Course, Lesson, Unit, ViewMode, Exercise, StudentProgress, StructuredLesson } from '../types';
 import ExerciseList from './ExerciseList';
 import ChatPanel from './ChatPanel';

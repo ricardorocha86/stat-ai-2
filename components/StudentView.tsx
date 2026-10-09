@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Lesson, Exercise, StudentProgress, StructuredLesson } from '../types';
-import { evaluateStudentAnswer } from '../services/geminiService';
+import { evaluateStudentAnswer } from '../services/aiService';
 import { BookOpenIcon, SparklesIcon, CheckCircleIcon, PencilSquareIcon } from './Icons';
 import Loader from './Loader';
 import MarkdownRenderer from './MarkdownRenderer';
@@ -116,18 +116,18 @@ const StudentView: React.FC<StudentViewProps> = ({ lesson, studentProgress, onCo
 
   if (!lesson) {
     return (
-      <main className="flex flex-1 overflow-hidden items-center justify-center text-center p-8">
+      <section className="flex flex-1 overflow-hidden items-center justify-center text-center p-8">
          <div>
             <BookOpenIcon className="mx-auto h-16 w-16 text-gray-400" />
             <h2 className="text-2xl font-bold text-[--text-primary] mt-4">Selecione uma aula</h2>
             <p className="text-[--text-secondary] mt-1 max-w-md">Escolha uma aula na barra lateral para começar a praticar e aprimorar seus conhecimentos em estatística.</p>
         </div>
-      </main>
+      </section>
     );
   }
 
   return (
-    <main className="flex flex-1 flex-col overflow-hidden h-full bg-[--bg-main]">
+    <section className="flex flex-1 flex-col overflow-hidden h-full bg-[--bg-main]">
         <div className="flex-shrink-0 px-6 lg:px-8 py-3 border-b border-slate-200 bg-white shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
                 <button
@@ -189,8 +189,8 @@ const StudentView: React.FC<StudentViewProps> = ({ lesson, studentProgress, onCo
                           </div>
                       ) : (
                           <div className="text-center py-20 border-2 border-dashed border-slate-300 rounded-lg bg-white/50">
-                              <h3 className="text-lg font-medium text-[--text-primary]">Ainda não há exercícios.</h3>
-                              <p className="mt-1 text-sm text-[--text-secondary]">Peça ao seu professor para gerar alguns exercícios para esta aula.</p>
+                              <h3 className="text-lg font-medium text-[--text-primary]">Esta aula não tem exercícios.</h3>
+                              <p className="mt-1 text-sm text-[--text-secondary]">Use o material do professor e o material interativo para estudar este conteúdo.</p>
                           </div>
                       )}
                   </div>
@@ -205,7 +205,7 @@ const StudentView: React.FC<StudentViewProps> = ({ lesson, studentProgress, onCo
           />
         )}
       </div>
-    </main>
+    </section>
   );
 };
 

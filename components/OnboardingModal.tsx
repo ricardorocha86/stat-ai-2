@@ -16,6 +16,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
     const [photoUrl, setPhotoUrl] = useState(initialProfile.photoBase64 || '');
     const [photoFile, setPhotoFile] = useState<File | undefined>();
     const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
     const [step, setStep] = useState(1);
     
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,17 +47,10 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
     };
 
     const handleSubmit = async () => {
-        // Alerta imediato para sabermos se o clique funciona
-        window.alert("CLIQUE DETECTADO! Iniciando processamento...");
-        
-        console.log("OnboardingModal: handleSubmit attempt", { userType, registrationNumber, origin });
-        
-        if (!userType || !isStep3Valid) {
-            alert("Por favor, preencha todos os campos corretamente.");
-            return;
-        }
-        
+        if (!userType || !isStep3Valid) return;
+
         setIsSaving(true);
+        setSaveError(null);
         try {
             // OTIMIZAÇÃO: Se temos o arquivo da foto, não enviamos o base64 (que é pesado) 
             // no objeto do perfil inicial para evitar travar a memória.
@@ -69,21 +63,18 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                 isOnboarded: true,
                 photoBase64: photoFile ? undefined : photoUrl // Limpa se for subir arquivo
             };
-            
-            console.log("OnboardingModal: Enviando para o App...");
+
             await onComplete(updatedProfile, photoFile);
-            console.log("OnboardingModal: Sucesso total!");
-            window.alert("Cadastro finalizado com sucesso!");
-        } catch (error: any) {
-            console.error("OnboardingModal: Erro fatal:", error);
-            alert("ERRO NO FIREBASE: " + (error.message || "Verifique sua conexão"));
+        } catch (error) {
+            console.error("OnboardingModal: Erro ao salvar cadastro:", error);
+            setSaveError("Não foi possível salvar seu cadastro. Confira sua conexão e tente novamente.");
             setIsSaving(false);
         }
     };
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 border border-white/20">
+            <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 border border-white/20">
                 
                 {/* Header/Progress */}
                 <div className="relative h-32 bg-gradient-to-r from-blue-600 to-indigo-700 p-8 flex flex-col justify-end">
@@ -126,19 +117,19 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                                     onChange={handlePhotoChange} 
                                 />
                                 <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl max-w-[320px]">
-                                    <p className="text-sm text-yellow-600 dark:text-yellow-400 font-medium text-center">
+                                    <p className="text-sm text-yellow-600 font-medium text-center">
                                         ⚠️ A foto do Google tem baixa resolução. Para as recompensas ficarem épicas, troque por uma foto de alta qualidade agora!
                                     </p>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Como devemos te chamar?</label>
+                                <label className="text-sm font-semibold text-slate-700 ml-1">Como devemos te chamar?</label>
                                 <input 
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 placeholder:text-slate-400"
                                     placeholder="Seu nome completo"
                                 />
                             </div>
@@ -148,32 +139,32 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                     {/* Step 2: Role Selection */}
                     {step === 2 && (
                         <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
-                            <h3 className="text-center font-medium text-slate-600 dark:text-slate-400 mb-2">Qual o seu perfil de acesso?</h3>
+                            <h3 className="text-center font-medium text-slate-600 mb-2">Qual o seu perfil de acesso?</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <button 
                                     onClick={() => setUserType('nutrição')}
-                                    className={`relative p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${userType === 'nutrição' ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800'}`}
+                                    className={`relative p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${userType === 'nutrição' ? 'border-blue-600 bg-blue-50' : 'border-slate-100 hover:border-blue-200'}`}
                                 >
                                     {userType === 'nutrição' && <CheckIcon className="absolute top-3 right-3 w-5 h-5 text-blue-600" />}
-                                    <div className={`p-4 rounded-xl ${userType === 'nutrição' ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                                    <div className={`p-4 rounded-xl ${userType === 'nutrição' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
                                         <GraduationCapIcon className="w-8 h-8" />
                                     </div>
                                     <div className="text-center">
-                                        <div className="font-bold text-slate-900 dark:text-white">Aluno Nutrição</div>
+                                        <div className="font-bold text-slate-900">Aluno Nutrição</div>
                                         <div className="text-xs text-slate-500">Acesso completo ao currículo</div>
                                     </div>
                                 </button>
 
                                 <button 
                                     onClick={() => setUserType('convidado')}
-                                    className={`relative p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${userType === 'convidado' ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800'}`}
+                                    className={`relative p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${userType === 'convidado' ? 'border-blue-600 bg-blue-50' : 'border-slate-100 hover:border-blue-200'}`}
                                 >
                                     {userType === 'convidado' && <CheckIcon className="absolute top-3 right-3 w-5 h-5 text-blue-600" />}
-                                    <div className={`p-4 rounded-xl ${userType === 'convidado' ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                                    <div className={`p-4 rounded-xl ${userType === 'convidado' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
                                         <UserIcon className="w-8 h-8" />
                                     </div>
                                     <div className="text-center">
-                                        <div className="font-bold text-slate-900 dark:text-white">Convidado</div>
+                                        <div className="font-bold text-slate-900">Convidado</div>
                                         <div className="text-xs text-slate-500">Explorar funcionalidades</div>
                                     </div>
                                 </button>
@@ -186,19 +177,19 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                         <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                              {userType === 'nutrição' ? (
                                 <div className="space-y-4">
-                                     <div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-blue-700 dark:text-blue-300 text-sm">
+                                     <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl text-blue-700 text-sm">
                                         <div className="flex-shrink-0 bg-blue-600 text-white p-1 rounded-md">
                                             <GraduationCapIcon className="w-4 h-4" />
                                         </div>
                                         <p>Precisamos da sua matrícula para validar seu progresso nas turmas oficiais.</p>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Número de Matrícula</label>
+                                        <label className="text-sm font-semibold text-slate-700 ml-1">Número de Matrícula</label>
                                         <input 
                                             type="text"
                                             value={registrationNumber}
                                             onChange={(e) => setRegistrationNumber(e.target.value)}
-                                            className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 placeholder:text-slate-400"
                                             placeholder="Ex. 21321232"
                                             autoFocus
                                         />
@@ -206,19 +197,19 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                                 </div>
                              ) : (
                                 <div className="space-y-4">
-                                     <div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-blue-700 dark:text-blue-300 text-sm">
+                                     <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl text-blue-700 text-sm">
                                         <div className="flex-shrink-0 bg-blue-600 text-white p-1 rounded-md">
                                             <UserIcon className="w-4 h-4" />
                                         </div>
                                         <p>É um prazer ter você aqui! Gostaríamos de saber um pouco mais sobre você.</p>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">De onde você veio?</label>
+                                        <label className="text-sm font-semibold text-slate-700 ml-1">De onde você veio?</label>
                                         <input 
                                             type="text"
                                             value={origin}
                                             onChange={(e) => setOrigin(e.target.value)}
-                                            className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 placeholder:text-slate-400"
                                             placeholder="Ex: LinkedIn, Indicação, etc."
                                             autoFocus
                                         />
@@ -228,13 +219,19 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                         </div>
                     )}
 
+                    {saveError && (
+                        <p role="alert" className="mt-6 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+                            {saveError}
+                        </p>
+                    )}
+
                     {/* Footer Buttons */}
                     <div className="mt-10 flex gap-4">
                         {step > 1 && (
                             <button 
                                 onClick={handleBack}
                                 disabled={isSaving}
-                                className="flex-1 py-4 px-6 rounded-2xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all disabled:opacity-50"
+                                className="flex-1 py-4 px-6 rounded-2xl font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all disabled:opacity-50"
                             >
                                 Voltar
                             </button>

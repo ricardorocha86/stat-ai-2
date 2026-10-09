@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AiChatSession, StudentChatMessage, UserProfile, ChatbotStyle } from '../types';
-import { createStudentChatSession, sendStudentChatMessage } from '../services/geminiService';
+import { createStudentChatSession, sendStudentChatMessage } from '../services/aiService';
 import { OwlIcon, SparklesIcon, XMarkIcon, PaperAirplaneIcon } from './Icons';
 import Loader from './Loader';
 import MarkdownRenderer from './MarkdownRenderer';
@@ -15,6 +15,12 @@ interface GlobalChatProps {
     userProfile?: UserProfile | null;
 }
 
+const WELCOME_MESSAGES: Record<ChatbotStyle, string> = {
+    'Padrão': 'Olá! Sou o Stat, seu assistente de estatística. Qual é a sua dúvida?',
+    'Xarope': 'StatChat na escuta. Mande sua dúvida de estatística, e seja direto.',
+    'Amiguinho': 'Oi! Que bom te ver por aqui! ✨ Qual dúvida de estatística vamos resolver juntos?',
+};
+
 const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<StudentChatMessage[]>([]);
@@ -23,21 +29,17 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile }) => {
     const chatSession = useRef<AiChatSession | null>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
-    const chatbotStyle: ChatbotStyle = userProfile?.chatbotStyle || 'Xarope';
+    const chatbotStyle: ChatbotStyle = userProfile?.chatbotStyle || 'Padrão';
+
+    // The greeting is local; the AI is called only for the student's questions.
+    const startConversation = useCallback(() => {
+        chatSession.current = createStudentChatSession(chatbotStyle);
+        setMessages([{ role: 'model', content: WELCOME_MESSAGES[chatbotStyle], timestamp: Date.now() }]);
+    }, [chatbotStyle]);
 
     useEffect(() => {
-        if (isOpen && !chatSession.current) {
-            const initChat = async () => {
-                setIsLoading(true);
-                const session = createStudentChatSession(chatbotStyle);
-                chatSession.current = session;
-                const welcomeMessage = await sendStudentChatMessage(session, "Olá, qual sua dúvida?");
-                setMessages([{ role: 'model', content: welcomeMessage, timestamp: Date.now() }]);
-                setIsLoading(false);
-            };
-            initChat();
-        }
-    }, [isOpen, chatbotStyle]);
+        startConversation();
+    }, [startConversation]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -45,14 +47,8 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile }) => {
         }
     }, [messages, isOpen]);
 
-    const handleResetChat = async () => {
-        setIsLoading(true);
-        setMessages([]);
-        const session = createStudentChatSession(chatbotStyle);
-        chatSession.current = session;
-        const welcomeMessage = await sendStudentChatMessage(session, "Olá novamente! Em que mais posso te ajudar?");
-        setMessages([{ role: 'model', content: welcomeMessage, timestamp: Date.now() }]);
-        setIsLoading(false);
+    const handleResetChat = () => {
+        startConversation();
     };
 
     const handleSendMessage = async () => {
@@ -133,7 +129,7 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile }) => {
                                 >
                                     <ArrowPathIcon className="w-5 h-5" />
                                 </button>
-                                <button onClick={() => setIsOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+                                <button onClick={() => setIsOpen(false)} aria-label="Fechar chat" className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
                                     <XMarkIcon className="w-6 h-6" />
                                 </button>
                             </div>

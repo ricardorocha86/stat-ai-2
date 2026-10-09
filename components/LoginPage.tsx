@@ -3,15 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { GoogleIcon, StatAiIcon, ExclamationTriangleIcon } from './Icons';
 import CoverRatingControls from './CoverRatingControls';
 import { TOTAL_COVERS } from '../services/coverRatingService';
-import { signInWithPopup, GoogleAuthProvider, type User } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../services/firebaseConfig";
 import { getGoogleLoginError } from "../services/authError";
 
-interface LoginPageProps {
-  onLogin: (user: User) => void;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+// App's onAuthStateChanged listener takes over after a successful sign-in.
+const LoginPage: React.FC = () => {
   const [coverIndex, setCoverIndex] = useState<number>(1);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -54,8 +51,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       setLoginError(null);
       const provider = new GoogleAuthProvider();
       try {
-          const result = await signInWithPopup(auth, provider);
-          onLogin(result.user);
+          await signInWithPopup(auth, provider);
       } catch (error) {
           console.error("Erro no login com Google:", error);
           setLoginError(getGoogleLoginError(error));
@@ -69,11 +65,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       
       {/* LADO ESQUERDO (Topo no mobile): Área da Imagem */}
       <div className="relative w-full lg:w-[65%] h-[40%] lg:h-full flex items-center justify-center p-4 lg:p-16 bg-slate-100 flex-shrink-0">
-        
-        {/* Número da imagem (Temporário) */}
-        <div className="absolute top-2 right-2 text-[10px] text-slate-400 opacity-60 font-mono select-none pointer-events-none">
-            #{coverIndex}
-        </div>
 
         {/* Moldura da Imagem */}
         <div className="relative flex items-center justify-center w-full h-full max-h-[90%] lg:max-h-[75vh] max-w-[90%]">
