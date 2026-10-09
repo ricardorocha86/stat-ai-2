@@ -39,13 +39,17 @@ const StudentExerciseCard: React.FC<StudentExerciseCardProps> = ({ exercise, isC
       const type = normalized === 'correto' ? 'correct'
         : normalized.startsWith('parcialmente') ? 'partial'
         : normalized === 'incorreto' ? 'incorrect' : 'error';
-      setFeedback({ type, message: rest.join('\n') || result });
+      const message = rest.join('\n') || result;
+      setFeedback({ type, message });
       if (type === 'correct' && !isCompleted) {
-        await onComplete();
-        fireConfetti();
+        try {
+          await onComplete();
+          fireConfetti();
+        } catch {
+          // Keep the AI feedback; only saving the progress failed.
+          setFeedback({ type, message: message + '\n\n**Não foi possível salvar seu progresso agora.** Confira sua conexão e clique em Verificar resposta de novo.' });
+        }
       }
-    } catch {
-      setFeedback({ type: 'error', message: 'Não foi possível registrar a resposta. Tente novamente.' });
     } finally {
       setIsChecking(false);
     }

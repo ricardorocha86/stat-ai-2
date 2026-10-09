@@ -112,6 +112,9 @@ const extractLessonReferences = (response: OpenAI.Responses.Response): string[] 
   return [...titles];
 };
 
+// file_search can leave private-use citation markers (U+E200 … U+E201) in the text; the lessons are listed separately.
+const stripCitationMarkers = (text: string) => text.replace(/[ \t]*\uE200[^\uE201]*\uE201/g, "");
+
 const appendLessonReferences = (text: string, references: string[]) => {
   if (!references.length) {
     return text;
@@ -218,7 +221,7 @@ ${FORMATTING_RULES}`,
         input: historyToInput(history, message),
       });
 
-      return { text: appendLessonReferences(response.output_text, extractLessonReferences(response)) };
+      return { text: appendLessonReferences(stripCitationMarkers(response.output_text), extractLessonReferences(response)) };
     } catch (error) {
       console.error("Erro no chat do aluno:", error);
       throw new HttpsError("internal", "Erro ao responder chat.");
@@ -290,8 +293,13 @@ Regras:
 5. Linguagem: ${levelMap[options.level] || levelMap["intermediário"]}.
 6. Tamanho: ${lengthMap[options.length] || lengthMap["médio"]}.
 7. Emojis: ${options.useEmojis ? "use de forma didática e moderada" : "não use emojis"}.
+8. Fórmulas: mantenha em LaTeX como no original, entre $...$ (na linha) ou $$...$$ (em destaque). Nunca coloque fórmulas dentro de <code> ou <pre>. Escreva valores em reais como R$ 10,00, fora das fórmulas.
 
-Retorne JSON com as chaves: introducao, teoria, exemplos, questionamentos.
+Retorne JSON com quatro chaves, todas preenchidas:
+- introducao: apresentação curta do tema no contexto do aluno;
+- teoria: conceitos, definições e fórmulas;
+- exemplos: os exemplos e aplicações numéricas do material, adaptados ao contexto (se o original misturar exemplos com a teoria, traga-os para cá);
+- questionamentos: de 3 a 5 perguntas para reflexão, em <ul>.
 Cada valor deve ser HTML usando apenas: <h3>, <p>, <ul>, <ol>, <li>, <strong>, <em>, <code>, <pre>, <blockquote>, <img>.
 `;
 
@@ -321,7 +329,13 @@ Cada valor deve ser HTML usando apenas: <h3>, <p>, <ul>, <ol>, <li>, <strong>, <
       });
 
       const lesson = parseJsonOutput(response.output_text);
-      if (!lesson.introducao || !lesson.teoria || !lesson.exemplos || !lesson.questionamentos) {
+      const sectionSizes = Object.entries(lesson).map(([key, value]) => `${key}=${String(value || "").trim().length}`).join(" ");
+      if (Object.values(lesson).some((value) => !String(value || "").trim())) {
+        console.warn("Material interativo com seção vazia:", sectionSizes);
+      }
+      // The app hides an empty section; without the theory there is no material to show.
+      if (!String(lesson.teoria || "").trim()) {
+        console.error("Material interativo incompleto:", response.status, response.incomplete_details, sectionSizes);
         throw new HttpsError("internal", "A IA retornou um material incompleto. Tente novamente.");
       }
       return { lesson };

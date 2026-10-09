@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import katex from 'katex';
 import { Lesson, GenerationOptions, StructuredLesson } from '../types';
 import { generateInteractiveLesson } from '../services/aiService';
 import { SparklesIcon, ExclamationTriangleIcon, DownloadIcon } from './Icons';
@@ -17,6 +18,35 @@ const loadingMessages = [
     "Calibrando os algoritmos de aprendizado...",
     "Destilando sabedoria em formato digital...",
     "Quase lá! Preparando os questionamentos para reflexão...",
+];
+
+const escapeHtml = (text: string) =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const decodeEntities = (text: string) => text
+  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
+
+const renderTex = (tex: string, displayMode: boolean) =>
+  katex.renderToString(decodeEntities(tex), { displayMode, output: 'mathml', throwOnError: false });
+
+// The material runs in a script-less iframe and is also downloaded, so formulas become MathML here
+// and the lesson's interactive charts (HTML pages that need scripts) become a pointer to the lesson.
+const prepareSection = (html: string) => html
+  .replace(/<img\b[^>]*\bsrc=["'][^"']+\.html(?:[?#][^"']*)?["'][^>]*>/gi, tag => {
+    const alt = tag.match(/\balt=["']([^"']*)["']/i)?.[1];
+    return `<p class="chart-note">📊 <strong>Gráfico interativo${alt ? ': ' + escapeHtml(decodeEntities(alt)) : ''}</strong><br>Abra a aba Material do Professor para usar este gráfico.</p>`;
+  })
+  .replace(/(^|[^\w$\\])R\$(?=[\s\d)])/g, '$1R&#36;')
+  .replace(/\$\$([^$<]+?)\$\$/g, (_, tex) => renderTex(tex, true))
+  .replace(/\$([^$<\n]+?)\$/g, (_, tex) => renderTex(tex, false));
+
+// An empty section is left out of the page.
+const sections: { key: keyof StructuredLesson; title: string }[] = [
+  { key: 'introducao', title: '✨ Introdução' },
+  { key: 'teoria', title: '📚 Teoria' },
+  { key: 'exemplos', title: '💡 Exemplos' },
+  { key: 'questionamentos', title: '🤔 Questionamentos para Reflexão' },
 ];
 
 const CustomLoader: React.FC<{ time: number, message: string }> = ({ time, message }) => (
@@ -71,7 +101,7 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>${lesson.title}</title>
-                <base href="/${lesson.filePath.substring(0, lesson.filePath.lastIndexOf('/') + 1)}">
+                <base href="${window.location.origin}/${lesson.filePath.substring(0, lesson.filePath.lastIndexOf('/') + 1)}">
                 <style>
                     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #374151; max-width: 800px; margin: 20px auto; padding: 0 20px; background-color: #ffffff; }
                     h1, h2, h3 { color: #1e293b; } 
@@ -86,26 +116,20 @@ const InteractiveMaterial: React.FC<InteractiveMaterialProps> = ({ lesson, inter
                     #questionamentos-section ul { list-style-type: none; padding-left: 0; }
                     #questionamentos-section li { background-color: #eff6ff; border-left: 5px solid #3b82f6; margin-bottom: 10px; padding: 15px; border-radius: 0 5px 5px 0; }
                     img { max-width: 100%; height: auto; border-radius: 8px; margin: 1.5rem 0; display: block; }
+                    math { font-family: math, "Cambria Math", "STIX Two Math", "Latin Modern Math", serif; }
+                    math[display="block"] { margin: 1em 0; font-size: 1.15em; overflow-x: auto; }
+                    .chart-note { background-color: #f8fafc; border: 1px dashed #94a3b8; border-radius: 8px; padding: 12px 16px; color: #475569; }
                 </style>
             </head>
             <body>
                 <h1>${lesson.title}</h1>
-                <div class="section">
-                    <h2>✨ Introdução</h2>
-                    ${interactiveMaterial.introducao}
-                </div>
-                <div class="section">
-                    <h2>📚 Teoria</h2>
-                    ${interactiveMaterial.teoria}
-                </div>
-                <div class="section">
-                    <h2>💡 Exemplos</h2>
-                    ${interactiveMaterial.exemplos}
-                </div>
-                <div id="questionamentos-section" class="section">
-                    <h2>🤔 Questionamentos para Reflexão</h2>
-                    ${interactiveMaterial.questionamentos}
-                </div>
+                ${sections
+                  .filter(section => interactiveMaterial[section.key]?.trim())
+                  .map(section => `
+                <div ${section.key === 'questionamentos' ? 'id="questionamentos-section" ' : ''}class="section">
+                    <h2>${section.title}</h2>
+                    ${prepareSection(interactiveMaterial[section.key])}
+                </div>`).join('')}
             </body>
             </html>
         `;

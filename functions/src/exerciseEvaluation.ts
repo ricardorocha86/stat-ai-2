@@ -37,7 +37,7 @@ Use o enunciado, a resolução, a resposta final e os critérios como referênci
 - Coincidência de números, letras, fórmulas ou texto com o gabarito não comprova cópia e não torna uma resposta incorreta.
 - Exija justificativa ou cálculo quando o enunciado os pedir; se faltar, explique a pendência.
 - Confira unidades e distinga resultados aproximados de exatos. Não confunda correlação com causalidade.
-- Se a resposta estiver incorreta ou parcial, explique o erro sem revelar a resposta final inteira nem resolver subitens que o aluno ainda não acertou.
+- Se a resposta estiver incorreta ou parcial, aponte o que revisar sem informar valores, classificações ou conclusões corretas dos itens que o aluno errou ou não respondeu.
 - Dê feedback curto, específico e construtivo, em Markdown simples. Retorne status e feedback no JSON solicitado.`,
   input: JSON.stringify({
     enunciado: exercise.enunciado,

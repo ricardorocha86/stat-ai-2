@@ -12,7 +12,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-// The SDK is a dependency of the Cloud Functions package.
+// The SDK is a dependency of the Firebase Functions package.
 const { OpenAI, toFile } = createRequire(path.join(root, 'functions/package.json'))('openai');
 
 const readLocalSecret = () => {
