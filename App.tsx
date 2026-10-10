@@ -15,6 +15,7 @@ import AchievementModal from './components/AchievementModal';
 import OnboardingModal from './components/OnboardingModal';
 import ProfilePage from './components/ProfilePage';
 import GlobalChat from './components/GlobalChat';
+import ProbabilityToolsPage, { getCalculatorName } from './components/tools/ProbabilityToolsPage';
 import { auth } from './services/firebaseConfig';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
@@ -40,6 +41,8 @@ const App: React.FC = () => {
   // Professor mode stays in the code but is not offered in the interface.
   const [viewMode] = useState<ViewMode>('aluno');
   const [page, setPage] = useState<Page>('home');
+  // Open probability calculator on the tools page; null shows all of them.
+  const [calculatorId, setCalculatorId] = useState<string | null>(null);
   // A question typed on the home page, handed to the tutor chat.
   const [tutorQuestion, setTutorQuestion] = useState<{ text: string; id: number } | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -186,6 +189,7 @@ const App: React.FC = () => {
   // back to the home page when 'lesson' has no lesson.
   const handleSetPage = (newPage: Page) => {
     setPage(newPage);
+    if (newPage === 'tools') setCalculatorId(null);
   };
 
   const handleProfileUpdate = async (updatedProfile: UserProfile, photoFile?: File) => {
@@ -481,6 +485,15 @@ const App: React.FC = () => {
           );
         }
         return renderHome();
+      case 'tools':
+        return (
+          <ProbabilityToolsPage
+            calculatorId={calculatorId}
+            onSelectCalculator={setCalculatorId}
+            course={course}
+            onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
+          />
+        );
       case 'profile':
         return <ProfilePage userProfile={userProfile} onUpdateProfile={handleProfileUpdate} />;
       default:
@@ -533,6 +546,7 @@ const App: React.FC = () => {
           unit={selectedUnit}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           onGoHome={() => setPage('home')}
+          toolName={page === 'tools' ? getCalculatorName(calculatorId) : null}
         />
         <main className="flex-1 overflow-y-auto">
           {renderContent()}
@@ -568,7 +582,7 @@ const App: React.FC = () => {
           course={course}
           onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
           question={tutorQuestion}
-          wideContent={page === 'home'}
+          wideContent={page === 'home' || page === 'tools'}
         />
     </div>
   );

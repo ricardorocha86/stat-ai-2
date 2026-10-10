@@ -1,7 +1,7 @@
 import React from 'react';
 import { getCourseProgress, getLessonProgress, getLessonStars } from '../services/progressService';
 import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, Achievements, AchievementMilestone, UserProfile } from '../types';
-import { BookOpenIcon, ChevronRightIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
+import { BookOpenIcon, CalculatorIcon, ChevronRightIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
 
 const ACCOUNT_LINKS: { target: Page; label: string; ariaLabel: string; Icon: React.FC<{ className?: string }> }[] = [
   { target: 'home', label: 'Início', ariaLabel: 'Início', Icon: HomeIcon },
@@ -225,7 +225,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="border-t border-white/10 mb-4 -mx-4"></div>
 
       <p className="text-xs font-semibold uppercase text-slate-400 mb-2 px-2">Conteúdo do Curso</p>
-      <nav className="space-y-2 flex-1 px-2">
+      <nav className="space-y-2 px-2">
         {course.units.map((unit: Unit) => (
           <div key={unit.id}>
             <button
@@ -276,7 +276,23 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         ))}
       </nav>
-      
+
+      <div className="border-t border-white/10 my-4 -mx-4"></div>
+
+      <p className="text-xs font-semibold uppercase text-slate-400 mb-2 px-2">Ferramentas</p>
+      <nav aria-label="Ferramentas" className="px-2 pb-2">
+        <button
+          onClick={() => handleSelectPage('tools')}
+          aria-current={page === 'tools' ? 'page' : undefined}
+          className={`w-full text-left flex items-center gap-3 p-2 rounded-md transition-colors text-sm ${
+            page === 'tools' ? 'bg-[--accent] text-white font-medium' : 'text-slate-300 hover:bg-white/10'
+          }`}
+        >
+          <CalculatorIcon className="w-5 h-5 flex-shrink-0" />
+          <span className="flex-1">Calculadoras de probabilidade</span>
+        </button>
+      </nav>
+
     </aside>
   );
 };

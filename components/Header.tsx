@@ -8,9 +8,11 @@ interface HeaderProps {
     unit: Unit | null;
     onToggleSidebar: () => void;
     onGoHome: () => void;
+    // Name of the open probability calculator, if any.
+    toolName?: string | null;
 }
 
-const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, onGoHome }) => {
+const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, onGoHome, toolName }) => {
 
     const getTitle = () => {
         switch(page) {
@@ -20,6 +22,10 @@ const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, on
                 return { main: "Sobre o Stat-AI 2.0", breadcrumb: "Informações" };
             case 'profile':
                 return { main: "Meu Perfil", breadcrumb: "Configurações" };
+            case 'tools':
+                return toolName
+                    ? { main: toolName, breadcrumb: "Ferramentas · Calculadoras de probabilidade" }
+                    : { main: "Calculadoras de Probabilidade", breadcrumb: "Ferramentas" };
             case 'lesson':
                 if (lesson) {
                     const lessonNumber = lesson.kind !== 'reference' && lesson.number !== undefined

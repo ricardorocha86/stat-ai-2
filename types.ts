@@ -102,7 +102,7 @@ export interface ChatSessionCache {
 
 export type ViewMode = 'professor' | 'aluno';
 
-export type Page = 'home' | 'lesson' | 'about' | 'profile';
+export type Page = 'home' | 'lesson' | 'about' | 'profile' | 'tools';
 
 export type StudentProgress = {
   [lessonId: string]: Set<string>; // Set of completed exercise IDs for each lesson

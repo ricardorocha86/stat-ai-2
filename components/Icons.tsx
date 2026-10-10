@@ -18,6 +18,14 @@ export const ChevronRightIcon: React.FC<{ className?: string }> = ({ className =
   </svg>
 );
 
+export const CalculatorIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+    <rect x="4.5" y="2.25" width="15" height="19.5" rx="2.25" />
+    <path strokeLinejoin="round" d="M8.25 5.25h7.5v3h-7.5z" />
+    <path strokeLinecap="round" strokeWidth={2} d="M8.25 12h.01M12 12h.01M15.75 12h.01M8.25 15h.01M12 15h.01M15.75 15h.01M8.25 18h.01M12 18h.01M15.75 18h.01" />
+  </svg>
+);
+
 export const BookOpenIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
