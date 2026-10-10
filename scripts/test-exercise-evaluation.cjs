@@ -57,6 +57,10 @@ const handler = require('../functions/lib/index').evaluateStudentAnswer;
   delete process.env.OPENAI_API_KEY;
   await assert.rejects(() => handler.run({ data: { studentAnswer: 'A', exercise: {} } }), error => error.code === 'unauthenticated');
   handlerCases++;
+  // The anonymous sign-in used by the cover votes must not reach the AI.
+  const anonymous = { uid: 'cover-visitor', token: { firebase: { sign_in_provider: 'anonymous' } } };
+  await assert.rejects(() => handler.run({ auth: anonymous, data: { studentAnswer: 'A', exercise: {} } }), error => error.code === 'unauthenticated');
+  handlerCases++;
   for (const lesson of catalog.units.flatMap(unit => unit.lessons)) {
     for (const exercise of JSON.parse(fs.readFileSync(path.join(root, 'public', lesson.exercisesPath), 'utf8'))) {
       const request = { auth: { uid: 'local-review' }, data: { studentAnswer: 'A', exercise } };

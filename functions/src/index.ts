@@ -1,4 +1,4 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onCall, HttpsError, type CallableRequest } from "firebase-functions/v2/https";
 import { initializeApp } from "firebase-admin/app";
 import OpenAI from "openai";
 import { canEvaluateExercise, createEvaluationRequest, evaluateChoiceAnswer, formatEvaluationResponse } from "./exerciseEvaluation";
@@ -22,8 +22,9 @@ const getAi = () => {
   return new OpenAI({ apiKey });
 };
 
-const requireAuth = (request: { auth?: unknown }) => {
-  if (!request.auth) {
+const requireAuth = (request: CallableRequest) => {
+  // Anonymous sign-in exists only for the cover votes; the AI needs a student's Google account.
+  if (!request.auth || request.auth.token?.firebase?.sign_in_provider === "anonymous") {
     throw new HttpsError("unauthenticated", "Apenas usuários logados podem solicitar IA.");
   }
 };
