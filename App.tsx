@@ -568,6 +568,7 @@ const App: React.FC = () => {
           course={course}
           onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
           question={tutorQuestion}
+          wideContent={page === 'home'}
         />
     </div>
   );

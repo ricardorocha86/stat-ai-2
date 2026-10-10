@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { UserProfile, ChatbotStyle } from '../types';
+import { UserProfile, ChatbotStyle, USER_TYPE_LABELS } from '../types';
 import { UserIcon, CameraIcon, CheckIcon, SaveIcon } from './Icons';
 
 interface ProfilePageProps {
@@ -94,7 +94,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
                         <div className="w-full pt-6 mt-6 border-t border-slate-100">
                              <div className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">TIPO DE USUÁRIO</div>
                              <div className="flex items-center gap-2 text-slate-700">
-                                 <span className="capitalize font-medium">{userProfile.userType}</span>
+                                 <span className="font-medium">{userProfile.userType ? USER_TYPE_LABELS[userProfile.userType] : '—'}</span>
                              </div>
                         </div>
                     </div>
@@ -116,7 +116,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
                                 />
                             </div>
                             
-                            {userProfile.userType === 'nutrição' && (
+                            {(userProfile.userType === 'nutrição' || userProfile.userType === 'secretariado') && (
                                 <div className="space-y-2 opacity-60">
                                     <label className="text-sm font-semibold text-slate-700 ml-1">Número de Matrícula</label>
                                     <input 

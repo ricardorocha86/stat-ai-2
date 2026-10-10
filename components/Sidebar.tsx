@@ -1,7 +1,13 @@
 import React from 'react';
 import { getCourseProgress, getLessonProgress, getLessonStars } from '../services/progressService';
 import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, Achievements, AchievementMilestone, UserProfile } from '../types';
-import { BookOpenIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
+import { BookOpenIcon, ChevronRightIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
+
+const ACCOUNT_LINKS: { target: Page; label: string; ariaLabel: string; Icon: React.FC<{ className?: string }> }[] = [
+  { target: 'home', label: 'Início', ariaLabel: 'Início', Icon: HomeIcon },
+  { target: 'profile', label: 'Perfil', ariaLabel: 'Meu perfil', Icon: UserIcon },
+  { target: 'about', label: 'Sobre', ariaLabel: 'Sobre o App', Icon: QuestionMarkCircleIcon },
+];
 
 interface SidebarProps {
   course: Course;
@@ -45,25 +51,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     setIsSidebarOpen(false); // Close sidebar on mobile after selection
   };
 
-  const NavLink: React.FC<{
-    icon: React.ReactNode,
-    label: string,
-    isActive: boolean,
-    onClick: () => void,
-  }> = ({ icon, label, isActive, onClick }) => (
-     <button
-        onClick={onClick}
-        className={`w-full text-left flex items-center gap-3 p-2.5 rounded-lg transition-colors text-sm font-medium ${
-          isActive
-            ? 'bg-[--accent] text-white'
-            : 'text-slate-300 hover:bg-white/10 hover:text-white'
-        }`}
-      >
-        {icon}
-        <span>{label}</span>
-      </button>
-  );
-
   const calculateLessonProgress = (lesson: Lesson) => ({
       ...getLessonProgress(lesson, studentProgress),
       stars: getLessonStars(lesson, studentProgress),
@@ -100,38 +87,58 @@ const Sidebar: React.FC<SidebarProps> = ({
         </p>
       </div>
 
+      {/* Account card: who is signed in, the profile shortcut and the app navigation in one block */}
       <div className="mb-6 px-2">
-        <NavLink icon={<HomeIcon className="w-5 h-5" />} label="Início" isActive={page === 'home'} onClick={() => handleSelectPage('home')} />
-      </div>
-
-      {/* Profile Section */}
-      <div className="mb-8 px-2 group cursor-pointer" onClick={() => handleSelectPage('profile')}>
-        <div className="relative p-4 rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 shadow-2xl transition-all duration-300 group-hover:bg-white/[0.08] group-hover:border-white/20">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-16 h-16 rounded-2xl bg-slate-700 border-2 border-white/10 overflow-hidden shadow-inner ring-4 ring-white/5 transition-transform group-hover:scale-105 duration-300">
+        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] shadow-2xl">
+          <button
+            onClick={() => handleSelectPage('profile')}
+            className="group flex w-full items-center gap-4 rounded-t-3xl p-4 text-left transition-colors hover:bg-white/[0.06]"
+            aria-label="Editar meu perfil"
+            title="Editar meu perfil"
+          >
+            <div className="relative flex-shrink-0">
+              <div className="relative h-14 w-14 overflow-hidden rounded-2xl border-2 border-white/10 bg-slate-700 shadow-inner ring-4 ring-white/5 transition-transform duration-300 group-hover:scale-105">
                 {userProfile.photoBase64 ? (
-                  <img src={userProfile.photoBase64.startsWith('http') || userProfile.photoBase64.startsWith('data:') ? userProfile.photoBase64 : `data:${userProfile.photoMimeType || 'image/png'};base64,${userProfile.photoBase64}`} alt="Avatar" className="w-full h-full object-cover" />
+                  <img src={userProfile.photoBase64.startsWith('http') || userProfile.photoBase64.startsWith('data:') ? userProfile.photoBase64 : `data:${userProfile.photoMimeType || 'image/png'};base64,${userProfile.photoBase64}`} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <UserIcon className="w-8 h-8 text-slate-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  <UserIcon className="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 text-slate-400" />
                 )}
               </div>
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg bg-[--accent] flex items-center justify-center shadow-lg border-2 border-slate-900">
-                <PencilSquareIcon className="w-3.5 h-3.5 text-white" />
+              <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg border-2 border-slate-900 bg-[--accent] shadow-lg">
+                <PencilSquareIcon className="h-3.5 w-3.5 text-white" />
               </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-lg font-bold text-white truncate leading-tight">{userProfile.name}</p>
-              <p className="text-xs text-slate-400 truncate mb-2">{userProfile.email}</p>
-              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-white/5 text-[10px] uppercase font-bold text-slate-500 tracking-wider group-hover:text-[--accent] group-hover:border-[--accent]/30 transition-colors">
-                 <span className="w-1 h-1 rounded-full bg-[--accent] animate-pulse"></span>
-                 Meu Perfil
-              </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-lg font-bold leading-tight text-white">{userProfile.name}</p>
+              <p className="truncate text-xs text-slate-400">{userProfile.email}</p>
             </div>
-          </div>
+          </button>
+          <nav aria-label="Navegação do portal" className="grid grid-cols-4 gap-1 border-t border-white/10 p-2">
+            {ACCOUNT_LINKS.map(({ target, label, ariaLabel, Icon }) => (
+              <button
+                key={target}
+                onClick={() => handleSelectPage(target)}
+                aria-label={ariaLabel}
+                aria-current={page === target ? 'page' : undefined}
+                className={`flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold transition-colors ${
+                  page === target ? 'bg-[--accent] text-white' : 'text-slate-400 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <Icon className="h-5 w-5" />
+                {label}
+              </button>
+            ))}
+            <button
+              onClick={onLogout}
+              aria-label="Sair"
+              className="flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold text-slate-400 transition-colors hover:bg-red-500/20 hover:text-red-200"
+            >
+              <LogoutIcon className="h-5 w-5" />
+              Sair
+            </button>
+          </nav>
         </div>
       </div>
-
 
       <div className="border-t border-white/10 mb-6 mx-2"></div>
 
@@ -227,9 +234,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 openUnits.has(unit.id) ? newSet.delete(unit.id) : newSet.add(unit.id);
                 setOpenUnits(newSet);
               }}
-              className="w-full flex justify-between items-center text-left py-2"
+              aria-expanded={openUnits.has(unit.id)}
+              className="group w-full flex items-center gap-2 text-left py-2"
             >
-              <h2 className="text-base font-semibold text-slate-200">{unit.title}</h2>
+              <ChevronRightIcon className={`h-4 w-4 flex-shrink-0 text-slate-400 transition-transform duration-200 group-hover:text-white ${openUnits.has(unit.id) ? 'rotate-90' : ''}`} />
+              <h2 className="text-base font-semibold text-slate-200 group-hover:text-white">{unit.title}</h2>
             </button>
             {openUnits.has(unit.id) && (
               <ul className="mt-1 space-y-1 pl-2 border-l border-white/10">
@@ -245,7 +254,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                             : 'text-slate-300 hover:bg-white/10'
                         }`}
                       >
-                        <BookOpenIcon className="w-4 h-4 flex-shrink-0" />
+                        {lesson.kind === 'reference' || lesson.number === undefined ? (
+                          <BookOpenIcon className="w-4 h-4 flex-shrink-0" />
+                        ) : (
+                          <span className="w-5 flex-shrink-0 text-xs font-semibold tabular-nums opacity-60">
+                            <span className="sr-only">Aula </span>{String(lesson.number).padStart(2, '0')}
+                          </span>
+                        )}
                         <span className="flex-1">{lesson.title}</span>
                          {viewMode === 'aluno' && totalCount > 0 && (
                             <div className="ml-auto flex items-center" title={`${completedCount} de ${totalCount} exercícios verificados`}>
@@ -262,23 +277,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         ))}
       </nav>
       
-      <div className="mt-auto pt-4 border-t border-white/10 space-y-1">
-          <NavLink 
-            icon={<QuestionMarkCircleIcon className="w-5 h-5" />} 
-            label="Sobre o App" 
-            isActive={page === 'about'} 
-            onClick={() => handleSelectPage('about')} 
-          />
-          <button 
-            onClick={onLogout} 
-            className="w-full flex items-center justify-center gap-2 p-2.5 text-slate-400 hover:text-white hover:bg-red-500/20 rounded-lg transition-colors text-sm font-medium" 
-            title="Sair"
-            aria-label="Sair"
-          >
-            <LogoutIcon className="w-5 h-5" />
-            <span>Sair</span>
-          </button>
-      </div>
     </aside>
   );
 };

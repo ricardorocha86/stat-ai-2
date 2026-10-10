@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { AiChatSession, StudentChatMessage, UserProfile, ChatbotStyle, Course, Lesson } from '../types';
 import { createStudentChatSession, sendStudentChatMessage } from '../services/aiService';
-import { OwlIcon, SparklesIcon, XMarkIcon, PaperAirplaneIcon, BookOpenIcon } from './Icons';
+import { OwlIcon, XMarkIcon, PaperAirplaneIcon, BookOpenIcon } from './Icons';
 import Loader from './Loader';
 import MarkdownRenderer from './MarkdownRenderer';
 
@@ -17,6 +17,8 @@ interface GlobalChatProps {
     onOpenLesson: (lesson: Lesson) => void;
     // A question asked elsewhere in the app (home page); the chat opens and sends it.
     question?: { text: string; id: number } | null;
+    // The home page content is wider than the other pages; the button sits next to it.
+    wideContent?: boolean;
 }
 
 const WELCOME_MESSAGES: Record<ChatbotStyle, string> = {
@@ -32,7 +34,15 @@ const TONES: { style: ChatbotStyle; emoji: string; label: string }[] = [
     { style: 'Amiguinho', emoji: '🤩', label: 'Amiguinho (bajulador)' },
 ];
 
-const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLesson, question }) => {
+const TONE_EMOJI = Object.fromEntries(TONES.map(tone => [tone.style, tone.emoji])) as Record<ChatbotStyle, string>;
+
+const ToneAvatar: React.FC<{ tone: ChatbotStyle }> = ({ tone }) => (
+    <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center flex-shrink-0 shadow-sm mt-1 text-lg leading-none" aria-hidden="true">
+        {TONE_EMOJI[tone]}
+    </div>
+);
+
+const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLesson, question, wideContent = false }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<StudentChatMessage[]>([]);
     const [input, setInput] = useState('');
@@ -52,7 +62,7 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
     // The greeting is local; the AI is called only for the student's questions.
     const startConversation = () => {
         chatSession.current = createStudentChatSession(style);
-        setMessages([{ role: 'model', content: WELCOME_MESSAGES[style], timestamp: Date.now() }]);
+        setMessages([{ role: 'model', content: WELCOME_MESSAGES[style], tone: style, timestamp: Date.now() }]);
     };
 
     useEffect(() => {
@@ -67,7 +77,7 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
     useEffect(() => {
         if (chatSession.current) chatSession.current.style = style;
         setMessages(prev => prev.length === 1 && prev[0].role === 'model'
-            ? [{ ...prev[0], content: WELCOME_MESSAGES[style] }]
+            ? [{ ...prev[0], content: WELCOME_MESSAGES[style], tone: style }]
             : prev);
     }, [style]);
 
@@ -89,8 +99,9 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
         setInput('');
         setIsLoading(true);
 
+        const tone = chatSession.current.style || 'Padrão';
         const { text: answer, lessons } = await sendStudentChatMessage(chatSession.current, text);
-        const modelMessage: StudentChatMessage = { role: 'model', content: answer, lessons, timestamp: Date.now() + 1 };
+        const modelMessage: StudentChatMessage = { role: 'model', content: answer, lessons, tone, timestamp: Date.now() + 1 };
         setMessages(prev => [...prev, modelMessage]);
         setIsLoading(false);
     };
@@ -131,14 +142,19 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
 
     return (
         <>
-            {/* FAB Button */}
-            <button
-                onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-xl z-50 hover:bg-blue-700 transition-transform transform hover:scale-110 flex items-center justify-center"
-                aria-label="Abrir chat com tutor"
-            >
-                <OwlIcon className="w-8 h-8"/>
-            </button>
+            {/* Floating button: right next to the page content (56rem, 64rem on home), or the corner on narrow screens */}
+            <div className="pointer-events-none fixed bottom-6 left-0 right-0 z-50 px-6 md:left-80 lg:left-96">
+                <div className={`mx-auto flex justify-end ${wideContent ? 'max-w-[72.5rem]' : 'max-w-[64.5rem]'}`}>
+                    <button
+                        onClick={() => setIsOpen(true)}
+                        className="chat-fab pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-3xl leading-none shadow-xl hover:bg-blue-700"
+                        aria-label="Abrir chat com tutor"
+                        title={'Conversar com o tutor (' + (TONES.find(tone => tone.style === style)?.label || style) + ')'}
+                    >
+                        <span aria-hidden="true">{TONE_EMOJI[style]}</span>
+                    </button>
+                </div>
+            </div>
 
             {/* Chat Modal/Overlay */}
             {isOpen && (
@@ -197,11 +213,7 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
                         <div ref={chatContainerRef} className="flex-1 p-4 space-y-4 overflow-y-auto bg-slate-50">
                             {messages.map((msg, index) => (
                                 <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-                                    {msg.role === 'model' && (
-                                        <div className="w-8 h-8 rounded-full bg-[--accent] text-white flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
-                                            <SparklesIcon className="w-5 h-5"/>
-                                        </div>
-                                    )}
+                                    {msg.role === 'model' && <ToneAvatar tone={msg.tone || style} />}
                                     <div className={`w-full max-w-[85%] p-3.5 rounded-2xl shadow-sm text-sm ${
                                         msg.role === 'user'
                                             ? 'bg-blue-600 text-white rounded-tr-none'
@@ -238,9 +250,7 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
                             ))}
                             {isLoading && (
                                 <div className="flex items-start gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-[--accent] text-white flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
-                                        <SparklesIcon className="w-5 h-5"/>
-                                    </div>
+                                    <ToneAvatar tone={style} />
                                     <div className="max-w-[85%] p-3.5 rounded-2xl bg-white border border-slate-200 rounded-tl-none">
                                         <Loader />
                                     </div>
@@ -281,6 +291,15 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
                     to { transform: translateY(0); }
                 }
                 .animate-slide-up { animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+                /* A short pulse every 5 seconds draws attention to the tutor. */
+                @keyframes chat-fab-pulse {
+                    0%, 82%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35); }
+                    87% { transform: scale(1.18); box-shadow: 0 0 0 12px rgba(37, 99, 235, 0.15); }
+                    92% { transform: scale(0.96); }
+                    96% { transform: scale(1.06); }
+                }
+                .chat-fab { animation: chat-fab-pulse 5s ease-in-out infinite; }
+                @media (prefers-reduced-motion: reduce) { .chat-fab { animation: none; } }
             `}</style>
         </>
     );

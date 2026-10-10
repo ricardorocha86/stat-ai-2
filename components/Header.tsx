@@ -22,7 +22,9 @@ const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, on
                 return { main: "Meu Perfil", breadcrumb: "Configurações" };
             case 'lesson':
                 if (lesson) {
-                    return { main: lesson.title, breadcrumb: unit?.title || 'Curso' };
+                    const lessonNumber = lesson.kind !== 'reference' && lesson.number !== undefined
+                        ? ' · Aula ' + String(lesson.number).padStart(2, '0') : '';
+                    return { main: lesson.title, breadcrumb: (unit?.title || 'Curso') + lessonNumber };
                 }
                 return { main: "Lição", breadcrumb: "Curso" };
             default:

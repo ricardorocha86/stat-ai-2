@@ -85,6 +85,8 @@ export type StudentChatMessage = {
   content: string;
   timestamp: number;
   lessons?: LessonReference[];
+  // Tone the tutor used for this message; the chat shows its emoji as the avatar.
+  tone?: ChatbotStyle;
 }
 
 export interface AiChatSession {
@@ -199,12 +201,21 @@ export const MILESTONE_KIND: Record<AchievementMilestone, ArtifactKind> = {
 
 export type ChatbotStyle = 'Padrão' | 'Xarope' | 'Amiguinho';
 
+export type UserType = 'nutrição' | 'secretariado' | 'convidado';
+
+export const USER_TYPE_LABELS: Record<UserType, string> = {
+  'nutrição': 'Aluno de Nutrição',
+  'secretariado': 'Aluno de Secretariado',
+  'convidado': 'Visitante',
+};
+
 export interface UserProfile {
   name: string;
   email: string;
   photoBase64?: string;
   photoMimeType?: string;
-  userType?: 'nutrição' | 'convidado';
+  // 'convidado' is shown as "Visitante".
+  userType?: UserType;
   registrationNumber?: string;
   origin?: string;
   isOnboarded?: boolean;

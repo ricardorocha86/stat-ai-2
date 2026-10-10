@@ -1,7 +1,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { UserIcon, CameraIcon, CheckIcon, GraduationCapIcon, UserGroupIcon, StatAiIcon } from './Icons';
-import { UserProfile } from '../types';
+import { UserIcon, CameraIcon, CheckIcon, GraduationCapIcon, BriefcaseIcon, StatAiIcon } from './Icons';
+import { UserProfile, UserType, USER_TYPE_LABELS } from '../types';
+
+const USER_TYPE_OPTIONS: { type: UserType; description: string; Icon: React.FC<{ className?: string }> }[] = [
+    { type: 'nutrição', description: 'Curso de Nutrição', Icon: GraduationCapIcon },
+    { type: 'secretariado', description: 'Curso de Secretariado', Icon: BriefcaseIcon },
+    { type: 'convidado', description: 'Conhecer a plataforma', Icon: UserIcon },
+];
 
 interface OnboardingModalProps {
     initialProfile: UserProfile;
@@ -10,7 +16,9 @@ interface OnboardingModalProps {
 
 const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onComplete }) => {
     const [name, setName] = useState(initialProfile.name);
-    const [userType, setUserType] = useState<'nutrição' | 'convidado' | null>(null);
+    const [userType, setUserType] = useState<UserType | null>(null);
+    // Students of both courses give their registration number; visitants say where they came from.
+    const isStudent = userType === 'nutrição' || userType === 'secretariado';
     const [registrationNumber, setRegistrationNumber] = useState('');
     const [origin, setOrigin] = useState('');
     const [photoUrl, setPhotoUrl] = useState(initialProfile.photoBase64 || '');
@@ -35,7 +43,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
 
     const isStep1Valid = name.trim().length >= 2;
     const isStep2Valid = userType !== null;
-    const isStep3Valid = (userType === 'nutrição' && registrationNumber.trim().length > 0) || 
+    const isStep3Valid = (isStudent && registrationNumber.trim().length > 0) ||
                          (userType === 'convidado' && origin.trim().length > 0);
 
     const handleNext = () => {
@@ -57,8 +65,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
             const updatedProfile: UserProfile = {
                 ...initialProfile,
                 name,
-                userType: userType as any,
-                registrationNumber: userType === 'nutrição' ? registrationNumber : undefined,
+                userType,
+                registrationNumber: isStudent ? registrationNumber : undefined,
                 origin: userType === 'convidado' ? origin : undefined,
                 isOnboarded: true,
                 photoBase64: photoFile ? undefined : photoUrl // Limpa se for subir arquivo
@@ -118,7 +126,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                                 />
                                 <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl max-w-[320px]">
                                     <p className="text-sm text-yellow-600 font-medium text-center">
-                                        ⚠️ A foto do Google tem baixa resolução. Para as recompensas ficarem épicas, troque por uma foto de alta qualidade agora!
+                                        ⚠️ A foto do Google costuma ter baixa resolução. Se quiser, troque por uma foto melhor agora.
                                     </p>
                                 </div>
                             </div>
@@ -140,34 +148,23 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                     {step === 2 && (
                         <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                             <h3 className="text-center font-medium text-slate-600 mb-2">Qual o seu perfil de acesso?</h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <button 
-                                    onClick={() => setUserType('nutrição')}
-                                    className={`relative p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${userType === 'nutrição' ? 'border-blue-600 bg-blue-50' : 'border-slate-100 hover:border-blue-200'}`}
-                                >
-                                    {userType === 'nutrição' && <CheckIcon className="absolute top-3 right-3 w-5 h-5 text-blue-600" />}
-                                    <div className={`p-4 rounded-xl ${userType === 'nutrição' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
-                                        <GraduationCapIcon className="w-8 h-8" />
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="font-bold text-slate-900">Aluno Nutrição</div>
-                                        <div className="text-xs text-slate-500">Acesso completo ao currículo</div>
-                                    </div>
-                                </button>
-
-                                <button 
-                                    onClick={() => setUserType('convidado')}
-                                    className={`relative p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${userType === 'convidado' ? 'border-blue-600 bg-blue-50' : 'border-slate-100 hover:border-blue-200'}`}
-                                >
-                                    {userType === 'convidado' && <CheckIcon className="absolute top-3 right-3 w-5 h-5 text-blue-600" />}
-                                    <div className={`p-4 rounded-xl ${userType === 'convidado' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
-                                        <UserIcon className="w-8 h-8" />
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="font-bold text-slate-900">Convidado</div>
-                                        <div className="text-xs text-slate-500">Explorar funcionalidades</div>
-                                    </div>
-                                </button>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {USER_TYPE_OPTIONS.map(({ type, description, Icon }) => (
+                                    <button
+                                        key={type}
+                                        onClick={() => setUserType(type)}
+                                        className={`relative p-5 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${userType === type ? 'border-blue-600 bg-blue-50' : 'border-slate-100 hover:border-blue-200'}`}
+                                    >
+                                        {userType === type && <CheckIcon className="absolute top-3 right-3 w-5 h-5 text-blue-600" />}
+                                        <div className={`p-4 rounded-xl ${userType === type ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                            <Icon className="w-8 h-8" />
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="font-bold text-slate-900">{USER_TYPE_LABELS[type]}</div>
+                                            <div className="text-xs text-slate-500">{description}</div>
+                                        </div>
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     )}
@@ -175,7 +172,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                     {/* Step 3: Specific Info */}
                     {step === 3 && (
                         <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
-                             {userType === 'nutrição' ? (
+                             {isStudent ? (
                                 <div className="space-y-4">
                                      <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl text-blue-700 text-sm">
                                         <div className="flex-shrink-0 bg-blue-600 text-white p-1 rounded-md">
@@ -217,6 +214,12 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ initialProfile, onCom
                                 </div>
                              )}
                         </div>
+                    )}
+
+                    {step === 3 && (
+                        <p className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                            🧪 <strong>Os recursos de IA estão em fase de testes:</strong> o tutor, a correção de respostas e o material interativo ainda estão sendo ajustados. Feedbacks são muito bem-vindos!
+                        </p>
                     )}
 
                     {saveError && (
