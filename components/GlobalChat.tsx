@@ -15,22 +15,24 @@ interface GlobalChatProps {
     userProfile?: UserProfile | null;
     course: Course;
     onOpenLesson: (lesson: Lesson) => void;
+    // A question asked elsewhere in the app (home page); the chat opens and sends it.
+    question?: { text: string; id: number } | null;
 }
 
 const WELCOME_MESSAGES: Record<ChatbotStyle, string> = {
     'Padrão': 'Olá! Sou o Stat, seu assistente de estatística. Qual é a sua dúvida?',
-    'Xarope': 'StatChat na escuta. Mande sua dúvida de estatística, e seja direto.',
-    'Amiguinho': 'Oi! Que bom te ver por aqui! ✨ Qual dúvida de estatística vamos resolver juntos?',
+    'Xarope': 'Ah, mais um. Manda logo essa dúvida de estatística, criatura, que meu café está esfriando.',
+    'Amiguinho': 'Oiii, estrela mais brilhante do universo! 🥰✨🌟 Que alegria imensa te ver aqui! Qual dúvida maravilhosa vamos resolver juntinhos? 💖',
 };
 
 // The student can switch the tutor's tone at any moment of the conversation.
 const TONES: { style: ChatbotStyle; emoji: string; label: string }[] = [
-    { style: 'Xarope', emoji: '😤', label: 'Xarope (sarcástico)' },
+    { style: 'Xarope', emoji: '😤', label: 'Xarope (mal-humorado e sem filtro)' },
     { style: 'Padrão', emoji: '🙂', label: 'Padrão' },
-    { style: 'Amiguinho', emoji: '🤩', label: 'Amiguinho (animado)' },
+    { style: 'Amiguinho', emoji: '🤩', label: 'Amiguinho (bajulador)' },
 ];
 
-const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLesson }) => {
+const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLesson, question }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<StudentChatMessage[]>([]);
     const [input, setInput] = useState('');
@@ -79,19 +81,25 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
         startConversation();
     };
 
-    const handleSendMessage = async () => {
-        if (!input.trim() || !chatSession.current) return;
+    const handleSendMessage = async (text = input) => {
+        if (!text.trim() || !chatSession.current || isLoading) return;
 
-        const userMessage: StudentChatMessage = { role: 'user', content: input, timestamp: Date.now() };
+        const userMessage: StudentChatMessage = { role: 'user', content: text, timestamp: Date.now() };
         setMessages(prev => [...prev, userMessage]);
         setInput('');
         setIsLoading(true);
 
-        const { text, lessons } = await sendStudentChatMessage(chatSession.current, input);
-        const modelMessage: StudentChatMessage = { role: 'model', content: text, lessons, timestamp: Date.now() + 1 };
+        const { text: answer, lessons } = await sendStudentChatMessage(chatSession.current, text);
+        const modelMessage: StudentChatMessage = { role: 'model', content: answer, lessons, timestamp: Date.now() + 1 };
         setMessages(prev => [...prev, modelMessage]);
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        if (!question) return;
+        setIsOpen(true);
+        handleSendMessage(question.text);
+    }, [question?.id]);
 
     const handleOpenLesson = (lesson: Lesson) => {
         onOpenLesson(lesson);
@@ -102,13 +110,13 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
         if (style === 'Amiguinho') {
             return {
                 title: 'Stat, o Tutor Amiguinho',
-                subtitle: 'Sempre aqui para te ajudar com um sorriso! ✨',
+                subtitle: 'Fofo, meloso e seu fã número um! 🥰✨',
                 iconBg: 'bg-yellow-100 text-yellow-600'
             };
         } else if (style === 'Xarope') {
             return {
                 title: 'StatChat',
-                subtitle: 'Seu tutor de estatística. Sarcástico e brilhante.',
+                subtitle: 'Mal-humorado, impaciente e sem filtro.',
                 iconBg: 'bg-slate-200 text-slate-600'
             };
         }
@@ -254,7 +262,7 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
                                         className="w-full pl-4 pr-12 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm disabled:bg-slate-50 shadow-inner"
                                     />
                                     <button
-                                        onClick={handleSendMessage}
+                                        onClick={() => handleSendMessage()}
                                         disabled={isLoading || !input.trim()}
                                         aria-label="Enviar"
                                         className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg disabled:text-slate-300 disabled:hover:bg-transparent transition-colors"

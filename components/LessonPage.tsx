@@ -4,6 +4,7 @@ import ExerciseList from './ExerciseList';
 import ChatPanel from './ChatPanel';
 import StudentView from './StudentView';
 import LessonViewer from './LessonViewer';
+import ReferencesPage from './ReferencesPage';
 
 interface LessonPageProps {
   lesson: Lesson;
@@ -48,6 +49,8 @@ const LessonPage: React.FC<LessonPageProps> = ({
       />
     );
   };
+
+  if (lesson.kind === 'reference') return <ReferencesPage />;
 
   return (
     <div className="h-full">

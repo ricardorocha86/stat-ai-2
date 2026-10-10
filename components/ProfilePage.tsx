@@ -145,8 +145,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
                                         <div className="font-bold text-slate-900">{style}</div>
                                         <div className="text-[10px] text-slate-500 mt-1">
                                             {style === 'Padrão' && 'Equilibrado e didático.'}
-                                            {style === 'Xarope' && 'Rabugento e minimalista.'}
-                                            {style === 'Amiguinho' && 'Entusiasmado e amigável.'}
+                                            {style === 'Xarope' && 'Mal-humorado, debochado e sem filtro.'}
+                                            {style === 'Amiguinho' && 'Fofo, meloso e bajulador.'}
                                         </div>
                                     </button>
                                 ))}

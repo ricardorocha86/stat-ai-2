@@ -152,3 +152,7 @@ export const uploadProfilePicture = async (userId: string, file: File | string):
         throw error;
     }
 };
+
+export const saveLastLesson = async (userId: string, lessonId: string) => {
+    await setDoc(doc(db, "users", userId), { lastLessonId: lessonId, lastLessonAt: serverTimestamp() }, { merge: true });
+};

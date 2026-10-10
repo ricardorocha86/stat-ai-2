@@ -1,7 +1,7 @@
 import React from 'react';
-import { getCourseProgress, getLessonProgress } from '../services/progressService';
+import { getCourseProgress, getLessonProgress, getLessonStars } from '../services/progressService';
 import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, Achievements, AchievementMilestone, UserProfile } from '../types';
-import { BookOpenIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
+import { BookOpenIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
 
 interface SidebarProps {
   course: Course;
@@ -64,16 +64,10 @@ const Sidebar: React.FC<SidebarProps> = ({
       </button>
   );
 
-  const calculateLessonProgress = (lesson: Lesson) => {
-      const { completedCount, totalCount } = getLessonProgress(lesson, studentProgress);
-      if (totalCount === 0) return { completedCount: 0, totalCount: 0, stars: 0 };
-      const percentage = completedCount / totalCount;
-      let stars = 0;
-      if (percentage > 0) stars = 1;
-      if (percentage >= 0.5) stars = 2;
-      if (percentage === 1) stars = 3;
-      return { completedCount, totalCount, stars };
-  };
+  const calculateLessonProgress = (lesson: Lesson) => ({
+      ...getLessonProgress(lesson, studentProgress),
+      stars: getLessonStars(lesson, studentProgress),
+  });
 
   const { completedCount, totalCount } = getCourseProgress(course, studentProgress);
   const overallProgress = { totalCompleted: completedCount, totalExercises: totalCount };
@@ -95,15 +89,19 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={`fixed inset-y-0 left-0 z-40 w-80 lg:w-96 bg-gradient-to-b from-slate-900 to-slate-800 p-4 flex-shrink-0 h-screen overflow-y-auto flex flex-col text-[--text-inverted] transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}>
       {/* Header Section */}
-      <div className="mb-8 px-2">
-        <div className="flex items-center gap-3 mb-1">
+      <div className="mb-6 px-2">
+        <button onClick={() => handleSelectPage('home')} className="flex items-center gap-3 mb-1" aria-label="Ir para o início">
           <StatAiIcon className="text-[--accent] w-9 h-9 drop-shadow-glow" />
-          <h1 className="text-2xl font-black text-white tracking-tight">Stat-AI 2.0</h1>
-        </div>
+          <span className="text-2xl font-black text-white tracking-tight">Stat-AI 2.0</span>
+        </button>
         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 pl-12 flex items-center gap-2">
           <span className="w-4 h-[1px] bg-slate-700"></span>
           Portal do Aluno
         </p>
+      </div>
+
+      <div className="mb-6 px-2">
+        <NavLink icon={<HomeIcon className="w-5 h-5" />} label="Início" isActive={page === 'home'} onClick={() => handleSelectPage('home')} />
       </div>
 
       {/* Profile Section */}

@@ -1,15 +1,16 @@
 import React from 'react';
 import { Page, Lesson, Unit } from '../types';
-import { Bars3Icon } from './Icons';
+import { Bars3Icon, HomeIcon } from './Icons';
 
 interface HeaderProps {
     page: Page;
     lesson: Lesson | null;
     unit: Unit | null;
     onToggleSidebar: () => void;
+    onGoHome: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar }) => {
+const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, onGoHome }) => {
 
     const getTitle = () => {
         switch(page) {
@@ -37,6 +38,11 @@ const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar }) 
                 <button onClick={onToggleSidebar} className="p-1 text-slate-300 hover:text-white md:hidden flex-shrink-0" aria-label="Abrir menu">
                     <Bars3Icon className="w-6 h-6"/>
                 </button>
+                {page !== 'home' && (
+                    <button onClick={onGoHome} className="flex-shrink-0 rounded-lg p-1.5 text-slate-300 hover:bg-white/10 hover:text-white" aria-label="Voltar ao início" title="Voltar ao início">
+                        <HomeIcon className="w-6 h-6" />
+                    </button>
+                )}
                 <div className="min-w-0">
                     <p className="text-xs md:text-sm text-slate-400 truncate">{breadcrumb}</p>
                     <h1 className="text-lg md:text-xl font-bold text-white truncate">{main}</h1>

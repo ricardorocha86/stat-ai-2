@@ -38,7 +38,7 @@ const AboutPage: React.FC = () => {
                     Travou em um exercício? Abra a ajuda aos poucos: primeiro uma dica, depois como começar e, só se precisar, a resolução completa e a resposta final.
                 </FeatureCard>
                  <FeatureCard icon={<OwlIcon className="w-6 h-6" />} title="Tutor de Dúvidas">
-                    Converse com o tutor pelo botão da coruja. Ele responde com base nas aulas do curso, e você escolhe a personalidade dele no seu perfil: padrão, rabugento ou amiguinho.
+                    Converse com o tutor pelo botão da coruja. Ele responde com base nas aulas do curso, e você escolhe a personalidade dele nos botões do próprio chat ou no seu perfil: padrão, xarope (mal-humorado e sem filtro) ou amiguinho (bajulador).
                 </FeatureCard>
                  <FeatureCard icon={<SparklesIcon className="w-6 h-6" />} title="Material Interativo">
                     Gere uma versão da aula com exemplos da área que você preferir, no nível de linguagem e tamanho que escolher, e tire dúvidas sobre esse material.

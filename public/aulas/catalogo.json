@@ -8,7 +8,8 @@
       "lessons": [
         {
           "id": "livro-aula-00",
-          "title": "Apresentação e Sumário",
+          "title": "Referências do Material",
+          "kind": "reference",
           "number": 0,
           "filePath": "aulas/00-apresentacao/aula-00-apresentacao-e-sumario/material.md",
           "exercisesPath": "aulas/00-apresentacao/aula-00-apresentacao-e-sumario/exercises.json",

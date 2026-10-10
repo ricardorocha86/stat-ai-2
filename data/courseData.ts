@@ -7,7 +7,11 @@ const course: Course = {
   units: catalog.units.map(unit => ({
     id: unit.id,
     title: unit.title,
-    lessons: unit.lessons.map(lesson => ({ ...lesson, exercises: [] })),
+    lessons: unit.lessons.map(lesson => ({
+      ...lesson,
+      kind: lesson.kind === 'reference' ? 'reference' as const : undefined,
+      exercises: [],
+    })),
   })),
 };
 

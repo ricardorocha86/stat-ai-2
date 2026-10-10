@@ -46,6 +46,8 @@ export interface Lesson {
   number?: number;
   exerciseCount?: number;
   sourcePath?: string;
+  // 'reference': the page about the book the course is based on, shown without lesson tabs.
+  kind?: 'reference';
 }
 
 export interface Unit {
@@ -207,6 +209,8 @@ export interface UserProfile {
   origin?: string;
   isOnboarded?: boolean;
   chatbotStyle?: ChatbotStyle;
+  // Last lesson the student opened, for "continue where you left off" on the home page.
+  lastLessonId?: string;
 }
 
 export interface GenerationOptions {

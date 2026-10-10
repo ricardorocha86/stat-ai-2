@@ -25,6 +25,7 @@ import {
     fetchStudentProgress,
     fetchAchievements,
     getUserProfile,
+    saveLastLesson,
     uploadProfilePicture
  } from './services/firebaseService';
 
@@ -39,6 +40,8 @@ const App: React.FC = () => {
   // Professor mode stays in the code but is not offered in the interface.
   const [viewMode] = useState<ViewMode>('aluno');
   const [page, setPage] = useState<Page>('home');
+  // A question typed on the home page, handed to the tutor chat.
+  const [tutorQuestion, setTutorQuestion] = useState<{ text: string; id: number } | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const [isAchievementTestMode, setIsAchievementTestMode] = useState<boolean>(false);
@@ -171,6 +174,11 @@ const App: React.FC = () => {
 
   const handleSelectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
+    // Remember where the student stopped; the reference page is not a lesson.
+    if (currentUser && lesson.kind !== 'reference') {
+      setUserProfile(profile => profile ? { ...profile, lastLessonId: lesson.id } : profile);
+      saveLastLesson(currentUser.uid, lesson.id).catch(error => console.error('Erro ao salvar a última aula:', error));
+    }
   };
 
   // No guard on selectedLesson here: the sidebar selects a lesson and switches page in the
@@ -431,6 +439,16 @@ const App: React.FC = () => {
 
   const selectedUnit = selectedLesson ? course.units.find(u => u.lessons.some(l => l.id === selectedLesson.id)) || null : null;
 
+  const renderHome = () => (
+    <HomePage
+      onSelectLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
+      course={course}
+      studentProgress={studentProgress}
+      userProfile={userProfile}
+      onAskTutor={(text) => setTutorQuestion({ text, id: Date.now() })}
+    />
+  );
+
   const renderContent = () => {
     if (isLoadingExercises) return <div role="status" className="p-8 text-slate-600">Carregando aulas e exercícios…</div>;
     if (courseLoadingError) return (
@@ -441,11 +459,7 @@ const App: React.FC = () => {
     );
     switch(page) {
       case 'home':
-        return <HomePage 
-            onSelectLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }} 
-            course={course} 
-            studentProgress={studentProgress}
-        />;
+        return renderHome();
       case 'about':
         return <AboutPage />;
       case 'lesson':
@@ -466,11 +480,11 @@ const App: React.FC = () => {
             />
           );
         }
-        return <HomePage onSelectLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }} course={course} studentProgress={studentProgress} />;
+        return renderHome();
       case 'profile':
         return <ProfilePage userProfile={userProfile} onUpdateProfile={handleProfileUpdate} />;
       default:
-        return <HomePage onSelectLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }} course={course} studentProgress={studentProgress} />;
+        return renderHome();
     }
   }
   
@@ -518,6 +532,7 @@ const App: React.FC = () => {
           lesson={selectedLesson}
           unit={selectedUnit}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          onGoHome={() => setPage('home')}
         />
         <main className="flex-1 overflow-y-auto">
           {renderContent()}
@@ -552,6 +567,7 @@ const App: React.FC = () => {
           userProfile={userProfile}
           course={course}
           onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
+          question={tutorQuestion}
         />
     </div>
   );
