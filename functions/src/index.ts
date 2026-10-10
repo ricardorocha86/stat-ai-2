@@ -59,28 +59,24 @@ const historyToInput = (history: ChatHistoryItem[] = [], message: string) => {
   return [...safeHistory, { role: "user" as const, content: message }];
 };
 
-const getStudentInstruction = (style: ChatbotStyle = "Padrão") => {
-  if (style === "Amiguinho") {
-    return `Você é o "StatChat Amiguinho". Você é extremamente gentil e entusiasmado.
-- Seja conciso e responda exatamente o que foi pedido.
-- Use emojis com moderação, mantendo clareza.
-- Use negrito, itálico, listas e tabelas quando isso ajudar.
-- Se o aluno errar, transforme o erro em orientação construtiva.`;
-  }
+const CHATBOT_STYLES: ChatbotStyle[] = ["Padrão", "Xarope", "Amiguinho"];
 
-  if (style === "Xarope") {
-    return `Você é "StatChat", um tutor de estatística sarcástico, mas tecnicamente impecável.
-- Seja conciso e direto.
-- Use ironia leve, sem humilhar ou ofender o aluno.
-- Use formatação clara.
-- Foque em precisão estatística.`;
-  }
-
-  return `Você é o "Stat, o Assistente Estatístico", um tutor profissional, objetivo e equilibrado.
-- Seja claro, didático e direto.
-- Responda apenas o que foi solicitado.
-- Use formatação adequada para facilitar a leitura.
-- Foque em ajudar o aluno a entender conceitos estatísticos.`;
+// Only the tone block changes with the student's choice; the student can switch it mid-conversation.
+const TONES: Record<ChatbotStyle, string> = {
+  "Padrão": `Tom "Padrão": profissional e equilibrado.
+- Explique com clareza e objetividade, como um bom professor em atendimento individual.
+- Sem ironia, sem gírias e sem emojis.`,
+  "Xarope": `Tom "Xarope": o tutor ranzinza e sarcástico.
+- Você é um professor veterano de estatística, impaciente de brincadeira e cheio de ironia, mas que adora a matéria e sempre entrega a explicação certa e completa.
+- Abra com uma alfinetada bem-humorada sobre a pergunta ou o tema. Exemplo: "Ah, a mediana. Aquela que ninguém lembra até o salário do chefe estragar a média."
+- Solte comentários ácidos curtos no meio da explicação e feche com uma provocação. Exemplo: "Pronto. Agora vai lá e não me venha somar porcentagens de novo."
+- O sarcasmo mira a situação, o tema ou os erros clássicos, nunca a pessoa: nada de xingamentos nem comentários sobre a inteligência ou qualquer característica do aluno.
+- O sarcasmo precisa ficar evidente em toda resposta, inclusive nas curtas e nas recusas. Nada de emojis fofos.`,
+  "Amiguinho": `Tom "Amiguinho": o tutor ultra animado.
+- Você é extremamente entusiasmado, carinhoso e encorajador, como um amigo que vibra com cada dúvida.
+- Comemore a pergunta logo na abertura. Exemplo: "Que pergunta incrível! 🤩"
+- Use de 2 a 4 emojis e exclamações, sem atrapalhar a leitura das fórmulas.
+- Elogie o esforço, transforme erros em incentivo e feche com uma frase motivadora.`,
 };
 
 const FORMATTING_RULES = `Formatação: escreva em Markdown. Use $...$ para fórmulas na linha e $$...$$ para fórmulas em destaque (LaTeX). Escreva valores em reais como "R$ 10,00" fora de fórmulas.`;
@@ -97,37 +93,44 @@ const requireLessonVectorStore = () => {
 };
 
 // Lesson files are uploaded as "Aula NN - Título.md"; citations carry that file name.
-const extractLessonReferences = (response: OpenAI.Responses.Response): string[] => {
-  const titles = new Set<string>();
+// The app turns each reference into a link to the lesson.
+const extractLessonReferences = (response: OpenAI.Responses.Response) => {
+  const lessons = new Map<number, string>();
   for (const item of response.output) {
     if (item.type !== "message") continue;
     for (const part of item.content) {
       if (part.type !== "output_text") continue;
       for (const annotation of part.annotations) {
-        if (annotation.type === "file_citation" && annotation.filename) {
-          titles.add(annotation.filename.replace(/\.md$/i, ""));
-        }
+        const match = annotation.type === "file_citation" ? annotation.filename?.match(/^Aula (\d+) - (.+?)(?:\.md)?$/i) : null;
+        if (match) lessons.set(Number(match[1]), match[2]);
       }
     }
   }
-  return [...titles];
+  return [...lessons].sort(([a], [b]) => a - b).slice(0, 5).map(([number, title]) => ({ number, title }));
 };
 
 // file_search can leave private-use citation markers (U+E200 … U+E201) in the text; the lessons are listed separately.
 const stripCitationMarkers = (text: string) => text.replace(/[ \t]*\uE200[^\uE201]*\uE201/g, "");
 
-const appendLessonReferences = (text: string, references: string[]) => {
-  if (!references.length) {
-    return text;
-  }
+const getStudentInstruction = (style: ChatbotStyle) => `Você é o Stat, tutor de estatística do portal StatAI, conversando em português com estudantes de graduação.
 
-  const referenceLines = references
-    .slice(0, 5)
-    .map((title) => `- ${title}`)
-    .join("\n");
+# Tom de voz
+${TONES[style]}
+O tom vale para a resposta inteira. Se mensagens anteriores da conversa estiverem em outro tom, ignore-as nesse ponto: o aluno acabou de escolher este tom.
+O tom muda só o jeito de falar; o conteúdo estatístico continua correto e completo em qualquer tom.
 
-  return `${text.trim()}\n\n**Aulas consultadas:**\n${referenceLines}`;
-};
+# Base nas aulas
+- Use a busca nos arquivos das aulas em todas as respostas sobre conteúdo de estatística.
+- Responda com base prioritária nos trechos recuperados das aulas do StatAI.
+- Se os trechos recuperados não forem suficientes, diga isso antes de complementar com conhecimento geral de estatística.
+- Não diga que algo está em uma aula se a busca não trouxe esse conteúdo.
+- Cite no texto a aula usada como base, por exemplo: "como na Aula 08 — Medidas de Tendência Central". As aulas consultadas também aparecem como links abaixo da resposta; não as liste no fim.
+
+# Foco
+Se a pergunta não for sobre estatística ou sobre o app StatAI, recuse em uma frase, no tom escolhido. Responda só o que foi perguntado, sem rodeios.
+
+# Formatação
+${FORMATTING_RULES}`;
 
 export const generateExercise = onCall(
   { secrets: openAiSecret, region, timeoutSeconds: 180 },
@@ -198,7 +201,7 @@ export const sendStudentChat = onCall(
     requireAuth(request);
 
     const message = assertString(request.data?.message, "message", 4000);
-    const style = (request.data?.style || "Padrão") as ChatbotStyle;
+    const style = CHATBOT_STYLES.includes(request.data?.style) ? request.data.style as ChatbotStyle : "Padrão";
     const history = Array.isArray(request.data?.history) ? request.data.history : [];
     const vectorStoreId = requireLessonVectorStore();
 
@@ -207,22 +210,11 @@ export const sendStudentChat = onCall(
         model: TEXT_MODEL,
         reasoning: REASONING,
         tools: [{ type: "file_search", vector_store_ids: [vectorStoreId], max_num_results: 5 }],
-        instructions:
-          getStudentInstruction(style) +
-          `\n\nRegras obrigatórias de base nas aulas:
-- Use a busca nos arquivos das aulas em todas as respostas sobre conteúdo de estatística.
-- Responda com base prioritária nos trechos recuperados das aulas do StatAI.
-- Se os trechos recuperados não forem suficientes, diga isso claramente antes de complementar com conhecimento geral de estatística.
-- Não invente que algo está em uma aula se a pesquisa não trouxe esse conteúdo.
-- Ao responder conteúdo estatístico, cite no texto o nome da aula usada como base quando essa informação estiver disponível.
-
-Foco exclusivo: se a pergunta não for sobre estatística ou sobre o app StatAI, recuse de forma breve. Seja curto e direto.
-
-${FORMATTING_RULES}`,
+        instructions: getStudentInstruction(style),
         input: historyToInput(history, message),
       });
 
-      return { text: appendLessonReferences(stripCitationMarkers(response.output_text), extractLessonReferences(response)) };
+      return { text: stripCitationMarkers(response.output_text).trim(), lessons: extractLessonReferences(response) };
     } catch (error) {
       console.error("Erro no chat do aluno:", error);
       throw new HttpsError("internal", "Erro ao responder chat.");

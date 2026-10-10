@@ -548,7 +548,11 @@ const App: React.FC = () => {
         )}
         
         {/* Chatbot Global */}
-        <GlobalChat userProfile={userProfile} />
+        <GlobalChat
+          userProfile={userProfile}
+          course={course}
+          onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
+        />
     </div>
   );
 };

@@ -72,10 +72,17 @@ export type ChatMessage = {
   actions?: ChatAction[];
 };
 
+// A lesson the tutor consulted to answer, from the lesson index.
+export type LessonReference = {
+  number: number;
+  title: string;
+};
+
 export type StudentChatMessage = {
   role: 'user' | 'model';
   content: string;
   timestamp: number;
+  lessons?: LessonReference[];
 }
 
 export interface AiChatSession {

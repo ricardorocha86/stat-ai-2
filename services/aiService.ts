@@ -9,6 +9,7 @@ import {
   ChatbotStyle,
   Exercise,
   GenerationOptions,
+  LessonReference,
   StructuredLesson,
   UserProfile,
 } from "../types";
@@ -65,26 +66,29 @@ export const createStudentChatSession = (style: ChatbotStyle = "Padrão"): AiCha
   history: [],
 });
 
-export const sendStudentChatMessage = async (chat: AiChatSession, message: string): Promise<string> => {
+export const sendStudentChatMessage = async (
+  chat: AiChatSession,
+  message: string
+): Promise<{ text: string; lessons: LessonReference[] }> => {
   try {
     const sendStudentChat = httpsCallable<
-      { message: string; style: ChatbotStyle; history: any[] },
-      { text: string }
+      { message: string; style: ChatbotStyle; history: { role: string; content: string }[] },
+      { text: string; lessons?: LessonReference[] }
     >(functions, "sendStudentChat", { timeout: AI_TIMEOUT_MS });
 
     const result = await sendStudentChat({
       message,
       style: chat.style || "Padrão",
-      history: chat.history,
+      history: chat.history.map(({ role, content }) => ({ role, content })),
     });
 
-    const text = result.data.text;
+    const { text, lessons = [] } = result.data;
     chat.history.push({ role: "user", content: message, timestamp: Date.now() });
     chat.history.push({ role: "model", content: text, timestamp: Date.now() + 1 });
-    return text;
+    return { text, lessons };
   } catch (error) {
     console.error("Error in student chat:", error);
-    return "Não consegui responder agora. Tente novamente em instantes.";
+    return { text: "Não consegui responder agora. Tente novamente em instantes.", lessons: [] };
   }
 };
 
