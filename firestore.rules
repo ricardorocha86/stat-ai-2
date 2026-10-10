@@ -40,6 +40,34 @@ service cloud.firestore {
       }
     }
 
+    // The course owner, also named in App.tsx.
+    function isProfessor() {
+      return request.auth != null
+        && request.auth.token.email == 'ricardo8610@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    // One document per opened prize, id "<uid>_<rewardId>". Students create their own claim once;
+    // only the professor lists every claim and marks physical prizes and the grade bonus as delivered.
+    match /rewardClaims/{claimId} {
+      allow read: if request.auth != null
+        && (resource.data.uid == request.auth.uid || isProfessor());
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && claimId == request.auth.uid + '_' + request.resource.data.rewardId
+        && request.resource.data.rewardId in ['xarope', 'foto', 'bombom', 'bonus', 'kitkat']
+        && request.resource.data.keys().hasAll(['uid', 'rewardId', 'name', 'openedAt', 'delivered'])
+        && request.resource.data.keys().hasOnly(['uid', 'rewardId', 'name', 'email', 'userType', 'openedAt', 'delivered'])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 200
+        && (!('email' in request.resource.data) || request.resource.data.email is string)
+        && (!('userType' in request.resource.data) || request.resource.data.userType is string)
+        && request.resource.data.openedAt == request.time
+        && request.resource.data.delivered == false;
+      allow update: if isProfessor()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['delivered', 'deliveredAt'])
+        && request.resource.data.delivered is bool;
+    }
+
     // Keep the existing private user data access unchanged.
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;

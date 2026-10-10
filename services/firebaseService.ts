@@ -6,7 +6,10 @@ import {
     updateDoc, 
     arrayUnion,
     serverTimestamp,
-    collection
+    collection,
+    query,
+    where,
+    QueryDocumentSnapshot
 } from "firebase/firestore";
 import { 
     ref, 
@@ -16,7 +19,7 @@ import {
 } from "firebase/storage";
 
 import { db, storage } from "./firebaseConfig";
-import { StudentProgress, Achievements, Achievement, UserProfile } from "../types";
+import { StudentProgress, RewardClaim, RewardId, UserProfile } from "../types";
 
 // --- Progress Management ---
 
@@ -60,52 +63,49 @@ export const fetchStudentProgress = async (userId: string): Promise<StudentProgr
     }
 };
 
-// --- Achievements & Storage ---
+// --- Rewards ---
 
-export const uploadAchievementAudio = async (userId: string, milestone: number, wavBase64: string): Promise<string> => {
-    const storageRef = ref(storage, `users/${userId}/achievements/${milestone}.wav`);
-    try {
-        await uploadString(storageRef, wavBase64, 'base64', { contentType: 'audio/wav' });
-        return await getDownloadURL(storageRef);
-    } catch (error) {
-        console.error("Error uploading achievement audio:", error);
-        throw error;
-    }
+// One document per opened prize, id "<uid>_<rewardId>". Students only create their own;
+// the professor lists them all and marks physical prizes as delivered.
+const toRewardClaim = (snapshot: QueryDocumentSnapshot): RewardClaim => {
+    const data = snapshot.data();
+    return {
+        id: snapshot.id,
+        uid: data.uid,
+        rewardId: data.rewardId,
+        name: data.name,
+        email: data.email,
+        userType: data.userType,
+        openedAt: data.openedAt?.toDate(),
+        delivered: Boolean(data.delivered),
+    };
 };
 
-export const saveAchievementMetadata = async (userId: string, achievement: Achievement) => {
-    const achievementRef = doc(db, "users", userId, "achievements", String(achievement.milestone));
-    try {
-        await setDoc(achievementRef, {
-            ...achievement,
-            unlockedAt: serverTimestamp()
-        });
-        
-        // Use setDoc with merge for profile updates during achievements to avoid failure if doc was just deleted
-        const userRef = doc(db, "users", userId);
-        await setDoc(userRef, {
-            totalExercisesCompleted: achievement.milestone
-        }, { merge: true });
-    } catch (error) {
-        console.error("Error saving achievement metadata:", error);
-        throw error;
-    }
+export const fetchOpenedRewards = async (userId: string): Promise<Set<RewardId>> => {
+    const snapshot = await getDocs(query(collection(db, "rewardClaims"), where("uid", "==", userId)));
+    return new Set(snapshot.docs.map(claim => claim.data().rewardId as RewardId));
 };
 
-export const fetchAchievements = async (userId: string): Promise<Achievements> => {
-    const achievements: Achievements = {};
-    const achievementsRef = collection(db, "users", userId, "achievements");
-    try {
-        const querySnapshot = await getDocs(achievementsRef);
-        querySnapshot.forEach((doc) => {
-            const data = doc.data() as Achievement;
-            achievements[data.milestone] = data;
-        });
-        return achievements;
-    } catch (error) {
-        console.error("Error fetching achievements:", error);
-        return achievements;
-    }
+export const saveRewardClaim = async (userId: string, rewardId: RewardId, profile: UserProfile) => {
+    const claim: Record<string, unknown> = {
+        uid: userId,
+        rewardId,
+        name: profile.name,
+        openedAt: serverTimestamp(),
+        delivered: false,
+    };
+    if (profile.email) claim.email = profile.email;
+    if (profile.userType) claim.userType = profile.userType;
+    await setDoc(doc(db, "rewardClaims", `${userId}_${rewardId}`), claim);
+};
+
+export const fetchAllRewardClaims = async (): Promise<RewardClaim[]> => {
+    const snapshot = await getDocs(collection(db, "rewardClaims"));
+    return snapshot.docs.map(toRewardClaim);
+};
+
+export const setRewardClaimDelivered = async (claimId: string, delivered: boolean) => {
+    await updateDoc(doc(db, "rewardClaims", claimId), { delivered, deliveredAt: serverTimestamp() });
 };
 
 // --- User Profile ---

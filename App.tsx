@@ -1,17 +1,17 @@
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import HomePage from './components/HomePage';
 import AboutPage from './components/AboutPage';
 import LessonPage from './components/LessonPage';
 import Header from './components/Header';
-import { Course, Lesson, Unit, Exercise, ViewMode, Page, StudentProgress, Achievements, Achievement, AchievementMilestone, AchievementDisplayState, AchievementVersion, UserProfile, StructuredLesson } from './types';
+import { Course, Lesson, Unit, Exercise, ViewMode, Page, StudentProgress, RewardId, ChatbotStyle, UserProfile, StructuredLesson } from './types';
 import initialCourseData from './data/courseData';
 import { loadCourseExercises } from './services/courseService';
 import { getCourseProgress } from './services/progressService';
 import LoginPage from './components/LoginPage';
-import { generateAchievementReward } from './services/aiService';
-import AchievementModal from './components/AchievementModal';
+import RewardsModal from './components/RewardsModal';
+import { REWARDS, XAROPE_REWARD, rewardThreshold } from './data/rewards';
 import OnboardingModal from './components/OnboardingModal';
 import ProfilePage from './components/ProfilePage';
 import GlobalChat from './components/GlobalChat';
@@ -20,20 +20,18 @@ import { auth } from './services/firebaseConfig';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
     saveStudentProgress,
-    uploadAchievementAudio,
-    saveAchievementMetadata,
     syncUserProfile,
     fetchStudentProgress,
-    fetchAchievements,
+    fetchOpenedRewards,
+    saveRewardClaim,
     getUserProfile,
     saveLastLesson,
     uploadProfilePicture
  } from './services/firebaseService';
 
-// Test mode unlocks every reward and calls the AI, so only the course owner sees it.
-const ACHIEVEMENT_TEST_EMAILS = ['ricardo8610@gmail.com'];
-// New rewards are paused while the prizes are redesigned; rewards already earned stay viewable.
-const ACHIEVEMENT_REWARDS_PAUSED = true;
+// The course owner: sees the prize test mode and the list of who opened the prizes.
+// The same email is checked in firestore.rules.
+const PROFESSOR_EMAILS = ['ricardo8610@gmail.com'];
 
 const App: React.FC = () => {
   const [course, setCourse] = useState<Course>(initialCourseData);
@@ -59,17 +57,12 @@ const App: React.FC = () => {
 
   const [studentProgress, setStudentProgress] = useState<StudentProgress>({});
 
-  const [achievements, setAchievements] = useState<Achievements>({});
-  const [testAchievements, setTestAchievements] = useState<Achievements>({});
-  
-  const [achievementToDisplay, setAchievementToDisplay] = useState<AchievementDisplayState | null>(null);
-  const [isGeneratingAchievement, setIsGeneratingAchievement] = useState(false);
+  const [openedRewards, setOpenedRewards] = useState<Set<RewardId>>(new Set());
+  // Test mode reaches every mark and keeps the opened prizes only in memory.
+  const [testOpenedRewards, setTestOpenedRewards] = useState<Set<RewardId>>(new Set());
+  const [isRewardsOpen, setIsRewardsOpen] = useState(false);
 
-  const allExercisesCount = useMemo(() => {
-    return getCourseProgress(course, {}).totalCount;
-  }, [course]);
-
-  const canUseAchievementTestMode = Boolean(currentUser?.email && ACHIEVEMENT_TEST_EMAILS.includes(currentUser.email));
+  const isProfessor = Boolean(currentUser?.email && PROFESSOR_EMAILS.includes(currentUser.email));
 
   // Auth Listener
   useEffect(() => {
@@ -109,9 +102,9 @@ const App: React.FC = () => {
       } else {
         setCurrentUser(null);
         setStudentProgress({});
-        setAchievements({});
+        setOpenedRewards(new Set());
         setIsAchievementTestMode(false);
-        setTestAchievements({});
+        setTestOpenedRewards(new Set());
         setShowOnboarding(false);
       }
       setIsAuthLoading(false);
@@ -146,16 +139,16 @@ const App: React.FC = () => {
   };
 
   const loadUserData = async (userId: string) => {
-      try {
-          const [progress, userAchievements] = await Promise.all([
-              fetchStudentProgress(userId),
-              fetchAchievements(userId)
-          ]);
-          setStudentProgress(progress);
-          setAchievements(userAchievements);
-      } catch (error) {
-          console.error("Erro ao carregar dados do usuário:", error);
-      }
+      // A failure loading the prizes must not hide the progress.
+      const [progress, rewards] = await Promise.all([
+          fetchStudentProgress(userId),
+          fetchOpenedRewards(userId).catch(error => {
+              console.error("Erro ao carregar os prêmios abertos:", error);
+              return new Set<RewardId>();
+          })
+      ]);
+      setStudentProgress(progress);
+      setOpenedRewards(rewards);
   };
 
   useEffect(() => {
@@ -227,7 +220,7 @@ const App: React.FC = () => {
         // Clear user-specific state
         setUserProfile({ name: 'Visitante', email: '', photoBase64: undefined });
         setStudentProgress({});
-        setAchievements({});
+        setOpenedRewards(new Set());
     } catch (error) {
         console.error("App: Erro ao sair:", error);
     }
@@ -238,145 +231,29 @@ const App: React.FC = () => {
         const next = !prev;
         if (next) {
             // Se estiver ativando, limpa a sessão de teste anterior
-            setTestAchievements({});
+            setTestOpenedRewards(new Set());
         }
         return next;
     });
   };
 
-  const generateAndStoreReward = useCallback(async (
-      milestone: AchievementMilestone,
-      isRegen: boolean,
-      existing?: Achievement
-  ) => {
-      if (!currentUser) return;
-      const activeAchievements = isAchievementTestMode ? testAchievements : achievements;
-      const previousVersions: AchievementVersion[] = isRegen && existing
-          ? [...(existing.previousVersions || []), {
-              artifact: existing.artifact,
-              transcricao: existing.transcricao,
-              audioUrl: existing.audioUrl,
-              generatedAt: existing.unlockedAt,
-          }]
-          : [];
-
-      const result = await generateAchievementReward(
-          milestone,
-          userProfile,
-          activeAchievements,
-          previousVersions
-      );
-
-      if ('error' in result) {
-          throw new Error(result.error);
-      }
-
-      let audioUrl = '';
-      if (!isAchievementTestMode) {
-          audioUrl = await uploadAchievementAudio(currentUser.uid, milestone, result.audioWavBase64);
-      } else {
-          audioUrl = `data:audio/wav;base64,${result.audioWavBase64}`;
-      }
-
-      const newAchievement: Achievement = {
-          milestone: milestone,
-          unlockedAt: Date.now(),
-          kind: result.kind,
-          artifact: result.artifact,
-          transcricao: result.transcricao,
-          audioUrl,
-          previousVersions,
-      };
-
-      if (isAchievementTestMode) {
-          setTestAchievements(prev => ({ ...prev, [milestone]: newAchievement }));
-      } else {
-          await saveAchievementMetadata(currentUser.uid, newAchievement);
-          setAchievements(prev => ({ ...prev, [milestone]: newAchievement }));
-      }
-
-      return newAchievement;
-  }, [currentUser, isAchievementTestMode, achievements, testAchievements, userProfile]);
-
-  const handleClaimAchievement = useCallback(async (milestone: AchievementMilestone) => {
-    const activeAchievements = isAchievementTestMode ? testAchievements : achievements;
-
-    const existing = activeAchievements[milestone];
-    const hasNewShape = existing && existing.kind && existing.artifact;
-    if (existing && hasNewShape) {
-        setAchievementToDisplay({
-            milestone: existing.milestone,
-            isLoading: false,
-            kind: existing.kind,
-            artifact: existing.artifact,
-            transcricao: existing.transcricao,
-            audioUrl: existing.audioUrl,
-        });
-        return;
+  const handleOpenReward = useCallback(async (rewardId: RewardId) => {
+    if (isAchievementTestMode) {
+      setTestOpenedRewards(previous => new Set(previous).add(rewardId));
+      return;
     }
+    if (!currentUser) return;
+    await saveRewardClaim(currentUser.uid, rewardId, userProfile);
+    setOpenedRewards(previous => new Set(previous).add(rewardId));
+  }, [isAchievementTestMode, currentUser, userProfile]);
 
-    if (ACHIEVEMENT_REWARDS_PAUSED || isGeneratingAchievement || !currentUser) return;
-
-    setIsGeneratingAchievement(true);
-    setAchievementToDisplay({ milestone, isLoading: true });
-
-    try {
-        const created = await generateAndStoreReward(milestone, false);
-        if (!created) return;
-        setAchievementToDisplay({
-            milestone,
-            isLoading: false,
-            kind: created.kind,
-            artifact: created.artifact,
-            transcricao: created.transcricao,
-            audioUrl: created.audioUrl,
-        });
-    } catch (error: any) {
-        console.error(`Falha ao gerar recompensa para ${milestone} exercícios`, error);
-        setAchievementToDisplay(prev => prev ? {
-            ...prev,
-            isLoading: false,
-            error: `Falha ao gerar a recompensa: ${error.message}. Tente novamente.`
-        } : null);
-    } finally {
-        setIsGeneratingAchievement(false);
-    }
-}, [isGeneratingAchievement, achievements, testAchievements, isAchievementTestMode, currentUser, generateAndStoreReward]);
-
-  const handleRegenerateAchievement = useCallback(async () => {
-      if (ACHIEVEMENT_REWARDS_PAUSED || !achievementToDisplay || !currentUser || isGeneratingAchievement) return;
-      const milestone = achievementToDisplay.milestone;
-      const activeAchievements = isAchievementTestMode ? testAchievements : achievements;
-      const existing = activeAchievements[milestone];
-      if (!existing) {
-          handleClaimAchievement(milestone);
-          return;
-      }
-      setIsGeneratingAchievement(true);
-      setAchievementToDisplay(prev => prev ? { ...prev, isRegenerating: true, error: undefined } : null);
-      try {
-          const updated = await generateAndStoreReward(milestone, true, existing);
-          if (!updated) return;
-          setAchievementToDisplay({
-              milestone,
-              isLoading: false,
-              isRegenerating: false,
-              kind: updated.kind,
-              artifact: updated.artifact,
-              transcricao: updated.transcricao,
-              audioUrl: updated.audioUrl,
-          });
-      } catch (error: any) {
-          console.error(`Falha ao regenerar recompensa do marco ${milestone}`, error);
-          setAchievementToDisplay(prev => prev ? {
-              ...prev,
-              isRegenerating: false,
-              error: `Falha ao regenerar: ${error.message}.`,
-          } : null);
-      } finally {
-          setIsGeneratingAchievement(false);
-      }
-  }, [achievementToDisplay, currentUser, isGeneratingAchievement, achievements, testAchievements, isAchievementTestMode, generateAndStoreReward, handleClaimAchievement]);
+  const { completedCount, totalCount } = getCourseProgress(course, studentProgress);
+  const rewardProgress = isAchievementTestMode ? totalCount : completedCount;
+  const activeOpenedRewards = isAchievementTestMode ? testOpenedRewards : openedRewards;
+  // totalCount is 0 until the exercises load; no mark is reached then.
+  const hasNewReward = totalCount > 0 && REWARDS.some(reward =>
+    reward.ready && !activeOpenedRewards.has(reward.id) && rewardProgress >= rewardThreshold(reward, totalCount));
+  const lockedStyles: ChatbotStyle[] = activeOpenedRewards.has(XAROPE_REWARD.id) ? [] : ['Xarope'];
 
   const handleCompleteExercise = async (lessonId: string, exerciseId: string) => {
     if (currentUser) {
@@ -495,7 +372,7 @@ const App: React.FC = () => {
           />
         );
       case 'profile':
-        return <ProfilePage userProfile={userProfile} onUpdateProfile={handleProfileUpdate} />;
+        return <ProfilePage userProfile={userProfile} onUpdateProfile={handleProfileUpdate} lockedStyles={lockedStyles} />;
       default:
         return renderHome();
     }
@@ -528,13 +405,11 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         studentProgress={studentProgress}
         viewMode={viewMode}
-        achievements={isAchievementTestMode ? testAchievements : achievements}
-        onClaimAchievement={handleClaimAchievement}
-        allExercisesCount={allExercisesCount}
+        hasNewReward={hasNewReward}
+        onOpenRewards={() => setIsRewardsOpen(true)}
         userProfile={userProfile}
         isAchievementTestMode={isAchievementTestMode}
-        canUseAchievementTestMode={canUseAchievementTestMode}
-        areNewRewardsPaused={ACHIEVEMENT_REWARDS_PAUSED}
+        canUseAchievementTestMode={isProfessor}
         onToggleAchievementTestMode={handleToggleAchievementTestMode}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
@@ -559,14 +434,15 @@ const App: React.FC = () => {
             aria-hidden="true"
           ></div>
         )}
-       {achievementToDisplay && (
-          <AchievementModal
-             achievementData={achievementToDisplay}
-             achievements={isAchievementTestMode ? testAchievements : achievements}
-             onClose={() => setAchievementToDisplay(null)}
-             onRetry={() => handleClaimAchievement(achievementToDisplay.milestone)}
-             onRegenerate={ACHIEVEMENT_REWARDS_PAUSED ? undefined : handleRegenerateAchievement}
-             userProfile={userProfile}
+       {isRewardsOpen && totalCount > 0 && (
+          <RewardsModal
+             completedCount={rewardProgress}
+             totalCount={totalCount}
+             openedRewards={activeOpenedRewards}
+             onOpenReward={handleOpenReward}
+             onClose={() => setIsRewardsOpen(false)}
+             studentName={userProfile.name}
+             showClaimsList={isProfessor && !isAchievementTestMode}
           />
         )}
         {showOnboarding && (
@@ -583,6 +459,7 @@ const App: React.FC = () => {
           onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
           question={tutorQuestion}
           wideContent={page === 'home' || page === 'tools'}
+          lockedStyles={lockedStyles}
         />
     </div>
   );

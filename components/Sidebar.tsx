@@ -1,6 +1,7 @@
 import React from 'react';
 import { getCourseProgress, getLessonProgress, getLessonStars } from '../services/progressService';
-import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, Achievements, AchievementMilestone, UserProfile } from '../types';
+import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, UserProfile } from '../types';
+import { REWARDS } from '../data/rewards';
 import { BookOpenIcon, CalculatorIcon, ChevronRightIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
 
 const ACCOUNT_LINKS: { target: Page; label: string; ariaLabel: string; Icon: React.FC<{ className?: string }> }[] = [
@@ -18,13 +19,12 @@ interface SidebarProps {
   onLogout: () => void;
   studentProgress: StudentProgress;
   viewMode: ViewMode;
-  achievements: Achievements;
-  onClaimAchievement: (milestone: AchievementMilestone) => void;
-  allExercisesCount: number;
+  // A reached prize the student has not opened yet.
+  hasNewReward: boolean;
+  onOpenRewards: () => void;
   userProfile: UserProfile;
   isAchievementTestMode: boolean;
   canUseAchievementTestMode: boolean;
-  areNewRewardsPaused: boolean;
   onToggleAchievementTestMode: () => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
@@ -32,8 +32,8 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ 
   course, selectedLesson, onSelectLesson, page, setPage, onLogout, 
-  studentProgress, viewMode, achievements, onClaimAchievement, allExercisesCount,
-  userProfile, isAchievementTestMode, canUseAchievementTestMode, areNewRewardsPaused, onToggleAchievementTestMode,
+  studentProgress, viewMode, hasNewReward, onOpenRewards,
+  userProfile, isAchievementTestMode, canUseAchievementTestMode, onToggleAchievementTestMode,
   isSidebarOpen, setIsSidebarOpen
 }) => {
   const [openUnits, setOpenUnits] = React.useState<Set<string>>(() =>
@@ -59,11 +59,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { completedCount, totalCount } = getCourseProgress(course, studentProgress);
   const overallProgress = { totalCompleted: completedCount, totalExercises: totalCount };
   const overallPercentage = overallProgress.totalExercises > 0 ? (overallProgress.totalCompleted / overallProgress.totalExercises) * 100 : 0;
-
-  const MILESTONES = React.useMemo(() => 
-    [10, 20, 30, 40, 50].filter(m => m <= allExercisesCount) as AchievementMilestone[],
-    [allExercisesCount]
-  );
 
   const StarDisplay: React.FC<{ stars: number }> = ({ stars }) => (
     <div className="flex items-center">
@@ -146,14 +141,33 @@ const Sidebar: React.FC<SidebarProps> = ({
       {viewMode === 'aluno' && (
         <div className="px-2 space-y-4 mb-6">
             <p className="text-xs font-semibold uppercase text-slate-400 flex items-center gap-2"><TrophyIcon className="w-4 h-4" /> Minhas Conquistas 🏆</p>
-            <div>
-                <div className="flex justify-between items-center text-xs mb-1">
-                    <span className="font-medium text-slate-300">Exercícios verificados</span>
-                    <span className="font-mono text-white">{overallProgress.totalCompleted} / {overallProgress.totalExercises}</span>
+            <div className="flex items-center gap-3">
+                <div className="min-w-0 flex-1">
+                    <div className="flex justify-between items-center text-xs mb-1">
+                        <span className="font-medium text-slate-300">Exercícios verificados</span>
+                        <span className="font-mono text-white">{overallProgress.totalCompleted} / {overallProgress.totalExercises}</span>
+                    </div>
+                    <div className="relative w-full bg-slate-700 rounded-full h-2.5 shadow-inner">
+                        <div className="bg-gradient-to-r from-green-400 to-blue-500 h-2.5 rounded-full transition-all duration-500" style={{ width: `${overallPercentage}%` }}></div>
+                        {/* One tick per prize mark */}
+                        {REWARDS.filter(reward => reward.percent < 100).map(reward => (
+                            <span key={reward.id} className="absolute top-0 h-full w-0.5 bg-slate-900/70" style={{ left: `${reward.percent}%` }} aria-hidden="true" />
+                        ))}
+                    </div>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-2.5 shadow-inner">
-                    <div className="bg-gradient-to-r from-green-400 to-blue-500 h-2.5 rounded-full transition-all duration-500" style={{ width: `${overallPercentage}%` }}></div>
-                </div>
+                <button
+                    onClick={onOpenRewards}
+                    aria-label={hasNewReward ? 'Ver prêmios: há um prêmio novo para revelar' : 'Ver prêmios'}
+                    title={hasNewReward ? 'Você tem um prêmio para revelar!' : 'Ver os prêmios'}
+                    className={`relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl transition-colors ${
+                        hasNewReward
+                            ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white animate-pulse-glow'
+                            : 'bg-slate-700 text-amber-300 hover:bg-slate-600'
+                    }`}
+                >
+                    <GiftIcon className="h-6 w-6" />
+                    {hasNewReward && <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full bg-rose-500 ring-2 ring-slate-900" aria-hidden="true" />}
+                </button>
             </div>
             
             {canUseAchievementTestMode && (
@@ -167,55 +181,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 >
                     {isAchievementTestMode ? 'Desativar Modo de Teste' : 'Ativar Modo de Teste'}
                 </button>
-            )}
-
-            {MILESTONES.length > 0 && (
-                 <div>
-                    <div className="flex justify-between items-center text-xs mb-2">
-                        <span className="font-medium text-slate-300">Prêmios Parciais</span>
-                    </div>
-                    <div className="grid grid-cols-5 gap-2">
-                        {MILESTONES.map(milestone => {
-                            const isUnlocked = isAchievementTestMode || overallProgress.totalCompleted >= milestone;
-                            const hasReward = !!achievements[milestone];
-                            const canOpen = isUnlocked && (hasReward || !areNewRewardsPaused);
-
-                            let buttonClass = 'bg-slate-700 text-slate-500 cursor-not-allowed';
-                            let title = `${milestone} exercícios para desbloquear`;
-                            let animationClass = '';
-
-                            if (isUnlocked && !canOpen) {
-                                // Milestone reached while new rewards are paused.
-                                buttonClass = 'bg-slate-700 text-amber-300/70 cursor-not-allowed';
-                                title = `Marco de ${milestone} exercícios alcançado. Os prêmios voltam em breve.`;
-                            } else if (isUnlocked) {
-                                if (hasReward) {
-                                    // Claimed state
-                                    buttonClass = 'bg-amber-400/20 hover:bg-amber-400/40 text-amber-300 cursor-pointer';
-                                    title = `Prêmio por ${milestone} exercícios! Clique para ver.`;
-                                } else {
-                                    // Ready to be claimed state
-                                    buttonClass = 'bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white cursor-pointer';
-                                    title = `Parabéns! Clique para resgatar seu prêmio por ${milestone} exercícios!`;
-                                    animationClass = 'animate-pulse-glow';
-                                }
-                            }
-                            
-                            return (
-                                <button
-                                    key={milestone}
-                                    disabled={!canOpen}
-                                    onClick={() => onClaimAchievement(milestone)}
-                                    className={`relative flex flex-col items-center justify-center p-2 rounded-lg aspect-square transition-all duration-200 ${buttonClass} ${animationClass}`}
-                                    title={title}
-                                >
-                                    <GiftIcon className="w-6 h-6"/>
-                                    <span className="text-xs font-bold mt-1">{milestone}</span>
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
             )}
         </div>
       )}

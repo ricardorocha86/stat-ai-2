@@ -108,96 +108,19 @@ export type StudentProgress = {
   [lessonId: string]: Set<string>; // Set of completed exercise IDs for each lesson
 };
 
-export type AchievementMilestone = 10 | 20 | 30 | 40 | 50;
+export type RewardId = 'xarope' | 'foto' | 'bombom' | 'bonus' | 'kitkat';
 
-export type ArtifactKind = 'card_marco' | 'selo' | 'anotacao' | 'carta' | 'diploma';
-
-export interface CardMarcoArtifact {
-  kind: 'card_marco';
-  titulo: string;
-  reconhecimento: string;
-  corpo: string;
-  projecao: string;
+// Written when the student opens a prize; the professor marks physical prizes as delivered.
+export interface RewardClaim {
+  id: string;
+  uid: string;
+  rewardId: RewardId;
+  name: string;
+  email?: string;
+  userType?: UserType;
+  openedAt?: Date;
+  delivered: boolean;
 }
-
-export interface SeloArtifact {
-  kind: 'selo';
-  titulo_selo: string;
-  virtude_reconhecida: string;
-  principio: string;
-  convite: string;
-}
-
-export interface AnotacaoArtifact {
-  kind: 'anotacao';
-  data_simbolica: string;
-  abertura: string;
-  observacao: string;
-  fechamento: string;
-}
-
-export interface CartaArtifact {
-  kind: 'carta';
-  saudacao: string;
-  paragrafos: string[];
-  fecho: string;
-  assinatura: string;
-}
-
-export interface DiplomaArtifact {
-  kind: 'diploma';
-  titulo_concedido: string;
-  considerando: string;
-  outorga: string;
-  data_simbolica: string;
-}
-
-export type ArtifactData =
-  | CardMarcoArtifact
-  | SeloArtifact
-  | AnotacaoArtifact
-  | CartaArtifact
-  | DiplomaArtifact;
-
-export interface AchievementVersion {
-  artifact: ArtifactData;
-  transcricao: string;
-  audioUrl: string;
-  generatedAt: number;
-}
-
-export interface Achievement {
-  milestone: AchievementMilestone;
-  unlockedAt: number;
-  kind: ArtifactKind;
-  artifact: ArtifactData;
-  transcricao: string;
-  audioUrl: string;
-  previousVersions?: AchievementVersion[];
-}
-
-export interface AchievementDisplayState {
-  milestone: AchievementMilestone;
-  isLoading: boolean;
-  isRegenerating?: boolean;
-  kind?: ArtifactKind;
-  artifact?: ArtifactData;
-  transcricao?: string;
-  audioUrl?: string;
-  error?: string;
-}
-
-export interface Achievements {
-  [milestone: number]: Achievement;
-}
-
-export const MILESTONE_KIND: Record<AchievementMilestone, ArtifactKind> = {
-  10: 'card_marco',
-  20: 'selo',
-  30: 'anotacao',
-  40: 'carta',
-  50: 'diploma',
-};
 
 export type ChatbotStyle = 'Padrão' | 'Xarope' | 'Amiguinho';
 

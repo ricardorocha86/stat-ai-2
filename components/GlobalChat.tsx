@@ -3,6 +3,7 @@ import { AiChatSession, StudentChatMessage, UserProfile, ChatbotStyle, Course, L
 import { createStudentChatSession, sendStudentChatMessage } from '../services/aiService';
 import { OwlIcon, XMarkIcon, PaperAirplaneIcon, BookOpenIcon } from './Icons';
 import Loader from './Loader';
+import { XAROPE_REWARD } from '../data/rewards';
 import MarkdownRenderer from './MarkdownRenderer';
 
 const ArrowPathIcon: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }) => (
@@ -19,6 +20,8 @@ interface GlobalChatProps {
     question?: { text: string; id: number } | null;
     // The home page content is wider than the other pages; the button sits next to it.
     wideContent?: boolean;
+    // Tones the student has not unlocked yet; they show a lock instead.
+    lockedStyles?: ChatbotStyle[];
 }
 
 const WELCOME_MESSAGES: Record<ChatbotStyle, string> = {
@@ -42,7 +45,7 @@ const ToneAvatar: React.FC<{ tone: ChatbotStyle }> = ({ tone }) => (
     </div>
 );
 
-const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLesson, question, wideContent = false }) => {
+const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLesson, question, wideContent = false, lockedStyles = [] }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<StudentChatMessage[]>([]);
     const [input, setInput] = useState('');
@@ -50,7 +53,8 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
     const chatSession = useRef<AiChatSession | null>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
-    const profileStyle: ChatbotStyle = userProfile?.chatbotStyle || 'Padrão';
+    const savedStyle: ChatbotStyle = userProfile?.chatbotStyle || 'Padrão';
+    const profileStyle: ChatbotStyle = lockedStyles.includes(savedStyle) ? 'Padrão' : savedStyle;
     const [style, setStyle] = useState<ChatbotStyle>(profileStyle);
 
     const lessonsByNumber = useMemo(() => new Map(
@@ -77,6 +81,11 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
     useEffect(() => {
         setStyle(profileStyle);
     }, [profileStyle]);
+
+    // Leaving the prize test mode can lock the tone in use again.
+    useEffect(() => {
+        if (lockedStyles.includes(style)) setStyle('Padrão');
+    }, [lockedStyles, style]);
 
     // A new tone applies to the next answers; the history stays.
     useEffect(() => {
@@ -184,20 +193,32 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
                             </div>
                             <div className="flex flex-shrink-0 items-center gap-1">
                                 <div role="group" aria-label="Tom do tutor" className="flex items-center gap-0.5 rounded-full bg-slate-100 p-0.5">
-                                    {TONES.map(tone => (
-                                        <button
-                                            key={tone.style}
-                                            onClick={() => setStyle(tone.style)}
-                                            aria-pressed={style === tone.style}
-                                            aria-label={'Tom: ' + tone.label}
-                                            title={'Tom: ' + tone.label}
-                                            className={`h-8 w-8 rounded-full text-lg leading-none transition-all ${
-                                                style === tone.style
-                                                    ? 'bg-white shadow ring-2 ring-blue-500'
-                                                    : 'opacity-50 grayscale hover:opacity-100 hover:grayscale-0'
-                                            }`}
-                                        >{tone.emoji}</button>
-                                    ))}
+                                    {TONES.map(tone => {
+                                        const isLocked = lockedStyles.includes(tone.style);
+                                        const hint = isLocked
+                                            ? `Tom ${tone.style}: desbloqueie com ${XAROPE_REWARD.percent}% dos exercícios, em Minhas Conquistas`
+                                            : 'Tom: ' + tone.label;
+                                        return (
+                                            <button
+                                                key={tone.style}
+                                                onClick={() => setStyle(tone.style)}
+                                                disabled={isLocked}
+                                                aria-pressed={style === tone.style}
+                                                aria-label={hint}
+                                                title={hint}
+                                                className={`relative h-8 w-8 rounded-full text-lg leading-none transition-all ${
+                                                    style === tone.style
+                                                        ? 'bg-white shadow ring-2 ring-blue-500'
+                                                        : isLocked
+                                                            ? 'cursor-not-allowed opacity-40 grayscale'
+                                                            : 'opacity-50 grayscale hover:opacity-100 hover:grayscale-0'
+                                                }`}
+                                            >
+                                                {tone.emoji}
+                                                {isLocked && <span className="absolute -bottom-1 -right-1 text-[10px]" aria-hidden="true">🔒</span>}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                                 <button
                                     onClick={handleResetChat}

@@ -2,15 +2,21 @@
 import React, { useState, useRef } from 'react';
 import { UserProfile, ChatbotStyle, USER_TYPE_LABELS } from '../types';
 import { UserIcon, CameraIcon, CheckIcon, SaveIcon } from './Icons';
+import { XAROPE_REWARD } from '../data/rewards';
 
 interface ProfilePageProps {
     userProfile: UserProfile;
     onUpdateProfile: (updatedProfile: UserProfile, photoFile?: File) => Promise<void>;
+    // Tones the student has not unlocked yet.
+    lockedStyles?: ChatbotStyle[];
 }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile, lockedStyles = [] }) => {
     const [name, setName] = useState(userProfile.name);
-    const [chatbotStyle, setChatbotStyle] = useState<ChatbotStyle>(userProfile.chatbotStyle || 'Padrão');
+    const [chatbotStyle, setChatbotStyle] = useState<ChatbotStyle>(() => {
+        const saved = userProfile.chatbotStyle || 'Padrão';
+        return lockedStyles.includes(saved) ? 'Padrão' : saved;
+    });
     const [photoUrl, setPhotoUrl] = useState(() => {
         if (!userProfile.photoBase64) return '';
         if (userProfile.photoBase64.startsWith('http') || userProfile.photoBase64.startsWith('data:')) return userProfile.photoBase64;
@@ -136,20 +142,26 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, onUpdateProfile 
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-700 ml-1">Personalidade do Oráculo</label>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                {(['Padrão', 'Xarope', 'Amiguinho'] as ChatbotStyle[]).map((style) => (
-                                    <button 
+                                {(['Padrão', 'Xarope', 'Amiguinho'] as ChatbotStyle[]).map((style) => {
+                                    const isLocked = lockedStyles.includes(style);
+                                    return (
+                                    <button
                                         key={style}
                                         onClick={() => setChatbotStyle(style)}
-                                        className={`p-4 rounded-2xl border-2 transition-all text-left ${chatbotStyle === style ? 'border-blue-600 bg-blue-50' : 'border-slate-100 hover:border-blue-200'}`}
+                                        disabled={isLocked}
+                                        className={`p-4 rounded-2xl border-2 transition-all text-left ${chatbotStyle === style ? 'border-blue-600 bg-blue-50' : isLocked ? 'border-slate-100 bg-slate-50 cursor-not-allowed opacity-60' : 'border-slate-100 hover:border-blue-200'}`}
                                     >
-                                        <div className="font-bold text-slate-900">{style}</div>
+                                        <div className="font-bold text-slate-900">{style}{isLocked && ' 🔒'}</div>
                                         <div className="text-[10px] text-slate-500 mt-1">
+                                            {isLocked ? `Desbloqueie com ${XAROPE_REWARD.percent}% dos exercícios, em Minhas Conquistas.` : <>
                                             {style === 'Padrão' && 'Equilibrado e didático.'}
                                             {style === 'Xarope' && 'Mal-humorado, debochado e sem filtro.'}
                                             {style === 'Amiguinho' && 'Fofo, meloso e bajulador.'}
+                                            </>}
                                         </div>
                                     </button>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>

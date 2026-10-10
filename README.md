@@ -1,6 +1,6 @@
 # Stat-AI 2.0 — Portal do Aluno de Estatística
 
-Student portal for the *Estatística Aplicada* course: lesson material, exercises with AI grading and staged help, an AI tutor grounded in the lessons, an adapted-lesson generator and milestone rewards (currently paused). React + Vite frontend on Firebase Hosting; OpenAI calls run in Firebase Functions.
+Student portal for the *Estatística Aplicada* course: lesson material, exercises with AI grading and staged help, an AI tutor grounded in the lessons, an adapted-lesson generator and milestone prizes. React + Vite frontend on Firebase Hosting; OpenAI calls run in Firebase Functions.
 
 Course content lives in `public/aulas` (`catalogo.json` lists units and lessons; each lesson folder has `material.md`, `exercises.json` and `recursos/`).
 
@@ -61,7 +61,7 @@ node scripts/build-lesson-vector-store.mjs --write-env
 
 The script uploads each `public/aulas/**/material.md` as "Aula NN - Título.md" (25 lessons from `public/aulas/catalogo.json`) and reads the key from the `OPENAI_API_KEY` environment variable or from `functions/.secret.local`. Re-run it whenever lesson material changes: it creates a new store, and old stores can be deleted in the OpenAI dashboard.
 
-**Milestone rewards are paused** while the owner redesigns them. The code is kept in `functions/src/achievementRewards.ts` (still Gemini-based, not exported, so it is not deployed). The UI shows reached milestones as "em breve" and keeps previously earned rewards viewable.
+**Milestone prizes.** Five prizes unlock at 20, 40, 60, 80 and 100% of the verified exercises (`data/rewards.ts`): the Xarope tutor tone, a photo with the professor (not ready yet), a Sonho de Valsa, +0.2 on the final grade and a KitKat. The sidebar gift button opens them as silhouettes, revealed when the mark is reached (`components/RewardsModal.tsx`, drawings in `components/RewardArt.tsx`). Opening a prize writes `rewardClaims/<uid>_<rewardId>` in Firestore; the professor account sees the list in the same window and marks prizes as delivered. The professor email is set in `App.tsx` and `firestore.rules`.
 
 **Tests.** The evaluation tests make no external AI calls:
 

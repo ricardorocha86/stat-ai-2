@@ -1,9 +1,10 @@
 import confetti from 'canvas-confetti';
 
-export const fireConfetti = () => {
+// zIndex: raise it when the confetti must show above a modal.
+export const fireConfetti = (zIndex = 0) => {
     const duration = 2 * 1000;
     const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex };
 
     function randomInRange(min: number, max: number) {
         return Math.random() * (max - min) + min;
