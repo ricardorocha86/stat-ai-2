@@ -49,7 +49,7 @@ A ativação do faturamento fica a cargo do usuário ou depende de autorização
    node scripts/build-lesson-vector-store.mjs --write-env
    ```
 
-   O script envia cada `public/aulas/**/material.md` como "Aula NN - Título.md" (25 aulas de `public/aulas/catalogo.json`), lê a chave da variável de ambiente `OPENAI_API_KEY` ou de `functions/.secret.local` e grava `OPENAI_VECTOR_STORE_ID` em `functions/.env` (ignorado pelo Git; modelo em `functions/.env.example`). Repetir sempre que o material das aulas mudar: o script cria um novo store, e os antigos podem ser apagados no painel da OpenAI.
+   O script envia cada `public/aulas/**/material.md` como "Aula NN - Título.md" (24 aulas de `public/aulas/catalogo.json`), lê a chave da variável de ambiente `OPENAI_API_KEY` ou de `functions/.secret.local` e grava `OPENAI_VECTOR_STORE_ID` em `functions/.env` (ignorado pelo Git; modelo em `functions/.env.example`). Repetir sempre que o material das aulas mudar: o script cria um novo store, e os antigos podem ser apagados no painel da OpenAI.
 
 4. Compilar as funções e rodar os testes de correção (não fazem chamadas externas de IA):
 

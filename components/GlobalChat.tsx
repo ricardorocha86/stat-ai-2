@@ -59,6 +59,11 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
             .map(lesson => [lesson.number as number, lesson])
     ), [course]);
 
+    // The lesson index can still hold lessons removed from the course; only link the ones the student can open.
+    const consultedLessons = (message: StudentChatMessage) => (message.lessons || [])
+        .map(reference => lessonsByNumber.get(reference.number))
+        .filter((lesson): lesson is Lesson => lesson !== undefined);
+
     // The greeting is local; the AI is called only for the student's questions.
     const startConversation = () => {
         chatSession.current = createStudentChatSession(style);
@@ -223,25 +228,20 @@ const GlobalChat: React.FC<GlobalChatProps> = ({ userProfile, course, onOpenLess
                                             content={msg.content}
                                             className={`prose prose-sm prose-p:my-0.5 prose-headings:my-1 ${msg.role === 'user' ? 'prose-invert' : ''}`}
                                         />
-                                        {Boolean(msg.lessons?.length) && (
+                                        {consultedLessons(msg).length > 0 && (
                                             <div className="mt-3 border-t border-slate-100 pt-2">
                                                 <p className="mb-1.5 text-xs font-semibold text-slate-500">Aulas consultadas</p>
                                                 <div className="flex flex-wrap gap-1.5">
-                                                    {msg.lessons?.map(reference => {
-                                                        const lesson = lessonsByNumber.get(reference.number);
-                                                        const label = `Aula ${String(reference.number).padStart(2, '0')} — ${lesson?.title || reference.title}`;
-                                                        return lesson ? (
-                                                            <button
-                                                                key={reference.number}
-                                                                onClick={() => handleOpenLesson(lesson)}
-                                                                className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-left text-xs font-medium text-blue-700 hover:bg-blue-100"
-                                                            >
-                                                                <BookOpenIcon className="h-3.5 w-3.5 flex-shrink-0" />{label}
-                                                            </button>
-                                                        ) : (
-                                                            <span key={reference.number} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600">{label}</span>
-                                                        );
-                                                    })}
+                                                    {consultedLessons(msg).map(lesson => (
+                                                        <button
+                                                            key={lesson.id}
+                                                            onClick={() => handleOpenLesson(lesson)}
+                                                            className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-left text-xs font-medium text-blue-700 hover:bg-blue-100"
+                                                        >
+                                                            <BookOpenIcon className="h-3.5 w-3.5 flex-shrink-0" />
+                                                            Aula {String(lesson.number).padStart(2, '0')} — {lesson.title}
+                                                        </button>
+                                                    ))}
                                                 </div>
                                             </div>
                                         )}

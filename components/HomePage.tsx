@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { getCourseProgress, getCourseStars, getLessonProgress, getLessonStars } from '../services/progressService';
 import { Course, Lesson, StudentProgress, UserProfile } from '../types';
-import { BookOpenIcon, OwlIcon, PaperAirplaneIcon, StarIcon } from './Icons';
+import CoverShowcase from './CoverShowcase';
+import { OwlIcon, PaperAirplaneIcon, StarIcon } from './Icons';
 
 interface HomePageProps {
   course: Course;
@@ -29,7 +30,6 @@ const HomePage: React.FC<HomePageProps> = ({ course, onSelectLesson, studentProg
   const [question, setQuestion] = useState('');
 
   const lessons = course.units.flatMap(unit => unit.lessons).filter(lesson => lesson.kind !== 'reference');
-  const referenceLesson = course.units.flatMap(unit => unit.lessons).find(lesson => lesson.kind === 'reference');
   const lastLesson = lessons.find(lesson => lesson.id === userProfile?.lastLessonId);
   const currentLesson = lastLesson || lessons[0];
   const nextLesson = lastLesson ? lessons[lessons.indexOf(lastLesson) + 1] : undefined;
@@ -156,39 +156,39 @@ const HomePage: React.FC<HomePageProps> = ({ course, onSelectLesson, studentProg
           </form>
         </section>
 
-        {unitSummaries.length > 0 && (
-          <section>
-            <h2 className="mb-4 text-xl font-bold text-[--text-primary]">Seu progresso por unidade</h2>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {unitSummaries.map(summary => (
-                <div key={summary.unit.id} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-semibold text-slate-800">{summary.unit.title}</h3>
-                    <span className="flex flex-shrink-0 items-center gap-1 text-sm font-medium text-slate-600">
-                      <StarIcon filled className="h-4 w-4 text-yellow-400" />{summary.stars}/{summary.maxStars}
-                    </span>
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+          {unitSummaries.length > 0 && (
+            <section>
+              <h2 className="mb-4 text-xl font-bold text-[--text-primary]">Seu progresso por unidade</h2>
+              <div className="space-y-3">
+                {unitSummaries.map(summary => (
+                  <div key={summary.unit.id} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="font-semibold text-slate-800">{summary.unit.title}</h3>
+                      <span className="flex flex-shrink-0 items-center gap-1 text-sm font-medium text-slate-600">
+                        <StarIcon filled className="h-4 w-4 text-yellow-400" />{summary.stars}/{summary.maxStars}
+                      </span>
+                    </div>
+                    <div className="mt-3 h-2 w-full rounded-full bg-slate-100">
+                      <div className="h-2 rounded-full bg-blue-500" style={{ width: `${Math.round((summary.completed / summary.total) * 100)}%` }} />
+                    </div>
+                    <p className="mt-1.5 text-xs text-slate-500">{verifiedLabel(summary.completed, summary.total)}</p>
                   </div>
-                  <div className="mt-3 h-2 w-full rounded-full bg-slate-100">
-                    <div className="h-2 rounded-full bg-blue-500" style={{ width: `${Math.round((summary.completed / summary.total) * 100)}%` }} />
-                  </div>
-                  <p className="mt-1.5 text-xs text-slate-500">{verifiedLabel(summary.completed, summary.total)}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section className="flex flex-col lg:col-span-2">
+            <h2 className="mb-4 flex flex-wrap items-baseline gap-x-2 text-xl font-bold text-[--text-primary]">
+              Galeria de capas
+              <span className="text-sm font-normal text-slate-500">dê sua nota e passe para a próxima</span>
+            </h2>
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 rounded-2xl border border-slate-200 bg-slate-100 p-4 shadow-sm sm:p-6">
+              <CoverShowcase frameClassName="aspect-[1264/848] w-full" />
             </div>
           </section>
-        )}
-
-        {referenceLesson && (
-          <section className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:items-center sm:justify-between">
-            <p className="flex items-center gap-3 text-sm text-slate-600">
-              <BookOpenIcon className="h-6 w-6 flex-shrink-0 text-slate-400" />
-              <span>O curso é baseado no livro <strong>Estatística Aplicada</strong>, de Renan Mercuri Pinto.</span>
-            </p>
-            <button onClick={() => onSelectLesson(referenceLesson)} className="flex-shrink-0 text-sm font-semibold text-blue-700 hover:text-blue-900">
-              Ver referências →
-            </button>
-          </section>
-        )}
+        </div>
       </div>
     </div>
   );

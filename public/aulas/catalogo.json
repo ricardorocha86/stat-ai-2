@@ -254,21 +254,6 @@
           "sourcePath": "aulas/5_Regressao_e_Correlacao/Lição 23 -  Correlação Linear e Coeficiente de Determinação.txt"
         }
       ]
-    },
-    {
-      "id": "livro-06-apendice",
-      "title": "Apêndice e referências",
-      "lessons": [
-        {
-          "id": "livro-aula-24",
-          "title": "Apêndice, Referências e Formulário",
-          "number": 24,
-          "filePath": "aulas/06-apendice/aula-24-apendice-referencias-e-formulario/material.md",
-          "exercisesPath": "aulas/06-apendice/aula-24-apendice-referencias-e-formulario/exercises.json",
-          "exerciseCount": 0,
-          "sourcePath": "aulas/6_Apendice_e_Referencias/Lição 24 - Apêndice, Referências e Formulário.txt"
-        }
-      ]
     }
   ]
 }

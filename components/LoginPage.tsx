@@ -1,49 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
-import { GoogleIcon, StatAiIcon, ExclamationTriangleIcon } from './Icons';
-import CoverRatingControls from './CoverRatingControls';
-import { TOTAL_COVERS } from '../services/coverRatingService';
+import React, { useState } from 'react';
+import { GoogleIcon, StatAiIcon } from './Icons';
+import CoverShowcase from './CoverShowcase';
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../services/firebaseConfig";
 import { getGoogleLoginError } from "../services/authError";
 
 // App's onAuthStateChanged listener takes over after a successful sign-in.
 const LoginPage: React.FC = () => {
-  const [coverIndex, setCoverIndex] = useState<number>(1);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-
-  // Função auxiliar para gerar URL
-  const getCoverUrl = (index: number) => {
-    const paddedIndex = String(index).padStart(3, '0');
-    return `capas/capa_statai_${paddedIndex}.jpg`;
-  };
-
-  // Inicializa com capa aleatória
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * TOTAL_COVERS) + 1;
-    setCoverIndex(randomIndex);
-  }, []);
-
-  // PRECARREGAMENTO (Preloading)
-  useEffect(() => {
-    const imgCurrent = new Image();
-    imgCurrent.src = getCoverUrl(coverIndex);
-
-    const nextIndex = coverIndex >= TOTAL_COVERS ? 1 : coverIndex + 1;
-    const imgNext = new Image();
-    imgNext.src = getCoverUrl(nextIndex);
-  }, [coverIndex]);
-
-  const handleNextCover = () => {
-    setIsImageLoaded(false);
-    setImageError(false);
-    setCoverIndex((prev) => (prev >= TOTAL_COVERS ? 1 : prev + 1));
-  };
-
-  const currentCoverUrl = getCoverUrl(coverIndex);
 
   const handleGoogleLogin = async () => {
       if (isLoggingIn) return;
@@ -66,27 +32,10 @@ const LoginPage: React.FC = () => {
       {/* LADO ESQUERDO (Topo no mobile): Área da Imagem */}
       <div className="relative w-full lg:w-[65%] h-[40%] lg:h-full flex items-center justify-center p-4 lg:p-16 bg-slate-100 flex-shrink-0">
 
-        {/* Moldura da Imagem */}
-        <div className="relative flex items-center justify-center w-full h-full max-h-[90%] lg:max-h-[75vh] max-w-[90%]">
-            {!imageError ? (
-                <img 
-                    key={currentCoverUrl}
-                    src={currentCoverUrl}
-                    alt="Capa Artística"
-                    className={`w-auto h-auto max-w-full max-h-full object-contain shadow-2xl rounded-lg transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-                    onLoad={() => setIsImageLoaded(true)}
-                    onError={() => {
-                        setImageError(true);
-                        setIsImageLoaded(true); 
-                    }}
-                />
-            ) : (
-                <div className="flex flex-col items-center justify-center text-slate-400 bg-slate-200 w-full h-full rounded-lg">
-                    <ExclamationTriangleIcon className="w-12 h-12 mb-2" />
-                    <p className="text-sm">Imagem indisponível</p>
-                </div>
-            )}
-        </div>
+        <CoverShowcase
+          frameClassName="h-full max-h-[90%] w-full max-w-[90%] lg:max-h-[75vh]"
+          controlsClassName="absolute bottom-4 left-1/2 -translate-x-1/2 lg:bottom-8"
+        />
 
         {/* Logo discreto no topo - Escondido em telas pequenas para economizar espaço */}
         <div className="absolute top-4 left-4 lg:top-8 lg:left-8 hidden lg:block">
@@ -96,11 +45,6 @@ const LoginPage: React.FC = () => {
                 </div>
                 <span className="text-slate-700 font-bold tracking-tight text-lg">Stat-AI</span>
              </div>
-        </div>
-
-        {/* Avaliação da capa e navegação */}
-        <div className="absolute bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2">
-          <CoverRatingControls key={coverIndex} coverNumber={coverIndex} onNext={handleNextCover} imageAvailable={isImageLoaded && !imageError} />
         </div>
       </div>
 
