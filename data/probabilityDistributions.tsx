@@ -1,6 +1,5 @@
 import React from 'react';
 import * as M from '../services/probability/mathLib';
-import { fmt, fmtPrecise } from '../services/probability/format';
 
 // Catalog of the probability calculators, ported from the course's standalone calculators.
 // The Normal has its own calculator (CALCULATORS lists it); the others share the generic one.
@@ -20,10 +19,6 @@ export interface DistributionParam {
 export interface Moments {
   mean: MomentValue;
   variance: MomentValue;
-  mode: MomentValue;
-  median: MomentValue;
-  skewness: MomentValue;
-  kurtosis: MomentValue;
 }
 
 interface DistributionBase {
@@ -35,7 +30,6 @@ interface DistributionBase {
   cdf: (params: Params, x: number) => number;
   quantile: (params: Params, p: number) => number;
   moments: (params: Params) => Moments;
-  relations: (params: Params) => React.ReactNode[];
   // Message shown instead of the results while the parameters do not define a distribution.
   validate?: (params: Params) => string | null;
 }
@@ -56,10 +50,6 @@ export interface ContinuousDistribution extends DistributionBase {
 
 export type Distribution = DiscreteDistribution | ContinuousDistribution;
 
-const Ok: React.FC<{ children: React.ReactNode }> = ({ children }) => <span className="font-semibold text-green-700">✓ {children}</span>;
-const No: React.FC<{ children: React.ReactNode }> = ({ children }) => <span className="font-semibold text-amber-700">✗ {children}</span>;
-const Warn: React.FC<{ children: React.ReactNode }> = ({ children }) => <span className="font-semibold text-amber-700">{children}</span>;
-
 /* ============================================================
    DISCRETAS
    ============================================================ */
@@ -79,16 +69,7 @@ const bernoulli: DiscreteDistribution = {
   moments: ({ p }) => ({
     mean: p,
     variance: p * (1 - p),
-    mode: p > 0.5 ? 1 : (p < 0.5 ? 0 : '0 ou 1'),
-    median: p < 0.5 ? 0 : (p > 0.5 ? 1 : '0 ou 1'),
-    skewness: p === 0 || p === 1 ? NaN : (1 - 2 * p) / Math.sqrt(p * (1 - p)),
-    kurtosis: p === 0 || p === 1 ? NaN : (1 - 6 * p * (1 - p)) / (p * (1 - p)),
   }),
-  relations: ({ p }) => [
-    'Bern(p) = Bin(1, p) — caso especial da Binomial com n = 1.',
-    'A soma X₁ + X₂ + … + Xₙ de Bernoullis i.i.d. com parâmetro p é Bin(n, p).',
-    `Entropia: H(X) = −p log p − (1−p) log(1−p) = ${p === 0 || p === 1 ? '0' : fmtPrecise(-p * Math.log(p) - (1 - p) * Math.log(1 - p), 4)} nats.`,
-  ],
 };
 
 const binomial: DiscreteDistribution = {
@@ -109,25 +90,7 @@ const binomial: DiscreteDistribution = {
   moments: ({ n, p }) => ({
     mean: n * p,
     variance: n * p * (1 - p),
-    mode: Math.floor((n + 1) * p),
-    median: '≈ ⌊np⌋ ou ⌈np⌉',
-    skewness: n * p * (1 - p) > 0 ? (1 - 2 * p) / Math.sqrt(n * p * (1 - p)) : NaN,
-    kurtosis: n * p * (1 - p) > 0 ? (1 - 6 * p * (1 - p)) / (n * p * (1 - p)) : NaN,
   }),
-  relations: ({ n, p }) => {
-    const np = n * p;
-    const nq = n * (1 - p);
-    return [
-      <><b>Aproximação Normal:</b> Bin(n, p) ≈ N(np, np(1−p)) = N({fmtPrecise(np, 2)}; {fmtPrecise(np * (1 - p), 2)}) quando np ≥ 5 e n(1−p) ≥ 5.{' '}
-        {np >= 5 && nq >= 5
-          ? <Ok>Aplicável (np = {fmtPrecise(np, 1)}; n(1−p) = {fmtPrecise(nq, 1)})</Ok>
-          : <No>Não recomendável (np = {fmtPrecise(np, 2)}; n(1−p) = {fmtPrecise(nq, 2)})</No>}</>,
-      <><b>Aproximação de Poisson:</b> Bin(n, p) ≈ Pois(np) = Pois({fmtPrecise(np, 2)}) quando n grande e p pequeno (regra prática: n ≥ 30 e p ≤ 0,05).{' '}
-        {n >= 30 && p <= 0.05 ? <Ok>Aplicável</Ok> : <No>Não recomendável</No>}</>,
-      'Soma de Bernoullis: se X₁, …, Xₙ são Bern(p) i.i.d., então ΣXᵢ ~ Bin(n, p).',
-      'Soma de Binomiais: Bin(n₁, p) + Bin(n₂, p) = Bin(n₁ + n₂, p) (mesmo p).',
-    ];
-  },
 };
 
 const poisson: DiscreteDistribution = {
@@ -146,17 +109,7 @@ const poisson: DiscreteDistribution = {
   moments: ({ lambda }) => ({
     mean: lambda,
     variance: lambda,
-    mode: lambda >= 1 ? Math.floor(lambda) : 0,
-    median: '≈ ⌊λ + 1/3 − 0,02/λ⌋',
-    skewness: 1 / Math.sqrt(lambda),
-    kurtosis: 1 / lambda,
   }),
-  relations: ({ lambda }) => [
-    <><b>Aproximação Normal:</b> Pois(λ) ≈ N(λ, λ) quando λ ≥ 10 (regra prática). {lambda >= 10 ? <Ok>Aplicável</Ok> : <No>Use λ ≥ 10</No>}</>,
-    <><b>Relação com a Exponencial:</b> se o número de eventos num intervalo é Pois(λt), o tempo entre eventos é Exp(λ).</>,
-    'Soma: Pois(λ₁) + Pois(λ₂) = Pois(λ₁ + λ₂) (variáveis independentes).',
-    'Limite da Binomial: Bin(n, p) → Pois(λ) quando n → ∞ e p → 0 com np = λ.',
-  ],
 };
 
 const geometrica: DiscreteDistribution = {
@@ -174,17 +127,7 @@ const geometrica: DiscreteDistribution = {
   moments: ({ p }) => ({
     mean: 1 / p,
     variance: (1 - p) / (p * p),
-    mode: 1,
-    median: Math.ceil(-Math.log(2) / Math.log(1 - p)),
-    skewness: (2 - p) / Math.sqrt(1 - p),
-    kurtosis: 6 + (p * p) / (1 - p),
   }),
-  relations: () => [
-    <><b>Falta de memória:</b> P(X &gt; a + b | X &gt; a) = P(X &gt; b). Única distribuição discreta com essa propriedade.</>,
-    'Caso particular da Binomial Negativa: Geom(p) = NB(r = 1, p).',
-    'Análogo discreto da Exponencial: Exp(λ) é a versão contínua da Geom.',
-    'Tem outra convenção comum (Y = X − 1, k ∈ {0, 1, 2, …} = falhas antes do sucesso). Aqui usamos X ∈ {1, 2, …}.',
-  ],
 };
 
 const binomialneg: DiscreteDistribution = {
@@ -205,17 +148,7 @@ const binomialneg: DiscreteDistribution = {
   moments: ({ r, p }) => ({
     mean: r / p,
     variance: r * (1 - p) / (p * p),
-    mode: r >= 1 ? Math.floor(r + (r - 1) * (1 - p) / p) : '—',
-    median: '—',
-    skewness: (2 - p) / Math.sqrt(r * (1 - p)),
-    kurtosis: 6 / r + (p * p) / (r * (1 - p)),
   }),
-  relations: () => [
-    'Caso especial: NB(1, p) = Geom(p) — primeiro sucesso.',
-    'Soma de Geométricas: a soma de r Geom(p) independentes é NB(r, p).',
-    'CDF via Beta regularizada: P(X ≤ k) = I_p(r, k − r + 1).',
-    'Existe convenção alternativa contando apenas os fracassos (Y = X − r, k ∈ {0, 1, 2, …}). Aqui contamos o número total de tentativas.',
-  ],
 };
 
 const hipergeometrica: DiscreteDistribution = {
@@ -238,19 +171,7 @@ const hipergeometrica: DiscreteDistribution = {
   moments: ({ N, K, n }) => ({
     mean: n * K / N,
     variance: N > 1 ? n * (K / N) * ((N - K) / N) * ((N - n) / (N - 1)) : 0,
-    mode: Math.floor((n + 1) * (K + 1) / (N + 2)),
-    median: '—',
-    skewness: '—',
-    kurtosis: '—',
   }),
-  relations: ({ N, K, n }) => [
-    <><b>Aproximação Binomial:</b> HG(N, K, n) ≈ Bin(n, K/N) = Bin(n; {fmtPrecise(K / N, 3)}) quando n/N ≤ 0,05.{' '}
-      {n / N <= 0.05
-        ? <Ok>Aplicável (n/N = {fmtPrecise(n / N, 3)})</Ok>
-        : <No>Razão n/N = {fmtPrecise(n / N, 3)} alta — sem reposição importa</No>}</>,
-    'Fator de correção populacional finita: Var(HG) = Var(Bin) · (N − n)/(N − 1).',
-    'Modela amostragem sem reposição: cartas, controle de qualidade em lotes pequenos, captura-recaptura.',
-  ],
 };
 
 const uniformedisc: DiscreteDistribution = {
@@ -274,17 +195,8 @@ const uniformedisc: DiscreteDistribution = {
     return {
       mean: (a + b) / 2,
       variance: (n * n - 1) / 12,
-      mode: 'todos os valores',
-      median: (a + b) / 2,
-      skewness: 0,
-      kurtosis: -(6 * (n * n + 1)) / (5 * (n * n - 1)),
     };
   },
-  relations: () => [
-    'Exemplo clássico: lançamento de um dado justo (a = 1, b = 6).',
-    'Análogo discreto da Uniforme Contínua U(a, b).',
-    'Soma de Uniformes Discretas tende à Normal pelo TCL.',
-  ],
 };
 
 /* ============================================================
@@ -313,16 +225,7 @@ const uniforme: ContinuousDistribution = {
   moments: ({ a, b }) => ({
     mean: (a + b) / 2,
     variance: (b - a) * (b - a) / 12,
-    mode: 'qualquer valor em [a, b]',
-    median: (a + b) / 2,
-    skewness: 0,
-    kurtosis: -6 / 5,
   }),
-  relations: () => [
-    'Toda variável aleatória pode ser gerada de U(0, 1) usando F⁻¹(U) (método da transformação inversa).',
-    'Soma de uniformes independentes tende à Normal pelo TCL — a soma de 12 U(0, 1) tem média 6 e variância 1.',
-    'Caso especial: U(0, 1) é a Beta(1, 1).',
-  ],
 };
 
 const exponencial: ContinuousDistribution = {
@@ -340,17 +243,7 @@ const exponencial: ContinuousDistribution = {
   moments: ({ lambda }) => ({
     mean: 1 / lambda,
     variance: 1 / (lambda * lambda),
-    mode: 0,
-    median: Math.log(2) / lambda,
-    skewness: 2,
-    kurtosis: 6,
   }),
-  relations: ({ lambda }) => [
-    <><b>Falta de memória:</b> P(X &gt; s + t | X &gt; s) = P(X &gt; t). Única contínua com essa propriedade.</>,
-    <><b>Relação com Poisson:</b> se o número de eventos é Pois(λt), o tempo entre eventos é Exp(λ).</>,
-    'Soma de n Exp(λ) i.i.d. é Gama(n, λ) (Erlang).',
-    `Função de hazard constante: h(x) = λ = ${fmt(lambda)}. Útil para modelar tempo até falha em sistemas sem envelhecimento.`,
-  ],
 };
 
 const gama: ContinuousDistribution = {
@@ -371,17 +264,7 @@ const gama: ContinuousDistribution = {
   moments: ({ alpha, beta }) => ({
     mean: alpha / beta,
     variance: alpha / (beta * beta),
-    mode: alpha >= 1 ? (alpha - 1) / beta : 0,
-    median: '—',
-    skewness: 2 / Math.sqrt(alpha),
-    kurtosis: 6 / alpha,
   }),
-  relations: ({ alpha }) => [
-    <><b>Casos especiais:</b> Γ(1, β) = Exp(β); Γ(ν/2, 1/2) = χ²(ν); Γ(k, β) com k inteiro = Erlang.</>,
-    <><b>Soma:</b> X₁ ~ Γ(α₁, β) e X₂ ~ Γ(α₂, β) ⇒ X₁ + X₂ ~ Γ(α₁ + α₂, β).</>,
-    <><b>Escala:</b> se X ~ Γ(α, β), então cX ~ Γ(α, β/c).</>,
-    <><b>Aproximação Normal:</b> Γ(α, β) ≈ N(α/β, α/β²) para α grande. {alpha >= 30 ? <Ok>Aplicável</Ok> : <No>Use α ≥ 30</No>}</>,
-  ],
 };
 
 const beta: ContinuousDistribution = {
@@ -404,18 +287,8 @@ const beta: ContinuousDistribution = {
     return {
       mean: alpha / sum,
       variance: alpha * b / (sum * sum * (sum + 1)),
-      mode: alpha > 1 && b > 1 ? (alpha - 1) / (sum - 2) : (alpha < 1 && b < 1 ? 'bimodal em 0 e 1' : (alpha <= 1 ? '0' : '1')),
-      median: alpha > 1 && b > 1 ? (alpha - 1 / 3) / (sum - 2 / 3) : '—',
-      skewness: 2 * (b - alpha) * Math.sqrt(sum + 1) / ((sum + 2) * Math.sqrt(alpha * b)),
-      kurtosis: 6 * ((alpha - b) ** 2 * (sum + 1) - alpha * b * (sum + 2)) / (alpha * b * (sum + 2) * (sum + 3)),
     };
   },
-  relations: () => [
-    'Caso especial: Beta(1, 1) = U(0, 1).',
-    <><b>Conjugada da Binomial:</b> se a priori é Beta(α, β) e observamos x sucessos em n ensaios, a posteriori é Beta(α + x, β + n − x). Base do aprendizado bayesiano.</>,
-    'Relação com Gama: se U ~ Γ(α, 1) e V ~ Γ(β, 1) independentes, então U/(U+V) ~ Beta(α, β).',
-    <><b>Estatística de ordem:</b> em uma amostra de n U(0, 1), a k-ésima estatística de ordem segue Beta(k, n−k+1).</>,
-  ],
 };
 
 const lognormal: ContinuousDistribution = {
@@ -438,18 +311,8 @@ const lognormal: ContinuousDistribution = {
     return {
       mean: Math.exp(mu + s2 / 2),
       variance: (Math.exp(s2) - 1) * Math.exp(2 * mu + s2),
-      mode: Math.exp(mu - s2),
-      median: Math.exp(mu),
-      skewness: (Math.exp(s2) + 2) * Math.sqrt(Math.exp(s2) - 1),
-      kurtosis: Math.exp(4 * s2) + 2 * Math.exp(3 * s2) + 3 * Math.exp(2 * s2) - 6,
     };
   },
-  relations: () => [
-    <><b>Definição:</b> se Y ~ N(μ, σ²), então X = exp(Y) ~ LogN(μ, σ²).</>,
-    'Produto de lognormais independentes é lognormal: LogN(μ₁, σ₁²) · LogN(μ₂, σ₂²) = LogN(μ₁+μ₂, σ₁²+σ₂²).',
-    'Pelo TCL multiplicativo, produtos de muitas variáveis positivas independentes tendem à lognormal.',
-    'Em finanças: o modelo de Black-Scholes assume preços lognormais (retornos log-normalmente distribuídos).',
-  ],
 };
 
 const weibull: ContinuousDistribution = {
@@ -469,32 +332,8 @@ const weibull: ContinuousDistribution = {
   plotRange: ({ k, lambda }) => ({ xMin: 0, xMax: M.weibullQuantile(0.995, k, lambda) * 1.05 }),
   moments: ({ k, lambda }) => {
     const g1 = M.gamma(1 + 1 / k);
-    const g2 = M.gamma(1 + 2 / k);
-    const g3 = M.gamma(1 + 3 / k);
-    const g4 = M.gamma(1 + 4 / k);
-    const mean = lambda * g1;
-    const variance = lambda * lambda * (g2 - g1 * g1);
-    const sigma = Math.sqrt(variance);
-    return {
-      mean,
-      variance,
-      mode: k > 1 ? lambda * Math.pow((k - 1) / k, 1 / k) : 0,
-      median: lambda * Math.pow(Math.log(2), 1 / k),
-      skewness: variance > 0 ? (g3 * lambda ** 3 - 3 * mean * variance - mean ** 3) / (sigma ** 3) : NaN,
-      kurtosis: variance > 0 ? (lambda ** 4 * g4 - 4 * (lambda * g1) * (g3 * lambda ** 3) + 6 * (lambda * g1) ** 2 * (g2 * lambda ** 2) - 3 * (lambda * g1) ** 4) / (variance * variance) - 3 : NaN,
-    };
+    return { mean: lambda * g1, variance: lambda * lambda * (M.gamma(1 + 2 / k) - g1 * g1) };
   },
-  relations: ({ k }) => [
-    <><b>Casos especiais:</b> Weibull(1, λ) = Exp(1/λ); Weibull(2, λ) é a distribuição de Rayleigh com σ = λ/√2.</>,
-    <><b>Hazard:</b> h(x) = (k/λ)·(x/λ)^(k−1). k = {fmtPrecise(k, 2)} ⇒{' '}
-      {k < 1
-        ? <><span className="font-semibold text-red-700">decrescente</span> (mortalidade infantil, falhas iniciais)</>
-        : k > 1
-          ? <><span className="font-semibold text-red-700">crescente</span> (envelhecimento, fadiga)</>
-          : <><span className="font-semibold text-green-700">constante</span> (sem memória)</>}.</>,
-    'Usada em análise de confiabilidade, distribuição de velocidade do vento, tamanho de partículas.',
-    'Transformação: se X ~ Weibull(k, λ), então (X/λ)^k ~ Exp(1).',
-  ],
 };
 
 const t: ContinuousDistribution = {
@@ -515,20 +354,7 @@ const t: ContinuousDistribution = {
   moments: ({ df }) => ({
     mean: df > 1 ? 0 : 'indefinida',
     variance: df > 2 ? df / (df - 2) : (df > 1 ? '∞' : 'indefinida'),
-    mode: 0,
-    median: 0,
-    skewness: df > 3 ? 0 : 'indefinida',
-    kurtosis: df > 4 ? 6 / (df - 4) : (df > 2 ? '∞' : 'indefinida'),
   }),
-  relations: ({ df }) => [
-    <><b>Aproximação Normal:</b> t(ν) → N(0, 1) quando ν → ∞.{' '}
-      {df >= 30
-        ? <Ok>Para ν = {df}, praticamente indistinguível da Normal</Ok>
-        : <Warn>Caudas notavelmente mais pesadas que a Normal para ν = {df}</Warn>}</>,
-    <><b>Construção:</b> se Z ~ N(0, 1) e Y ~ χ²(ν) independentes, então T = Z/√(Y/ν) ~ t(ν).</>,
-    <><b>Aplicações:</b> teste t para média (σ desconhecido), intervalo de confiança para média, comparação de duas amostras.</>,
-    <><b>Caso especial:</b> t(1) = Cauchy padrão (sem média!). t(∞) = N(0, 1).</>,
-  ],
 };
 
 const chi2: ContinuousDistribution = {
@@ -546,18 +372,7 @@ const chi2: ContinuousDistribution = {
   moments: ({ df }) => ({
     mean: df,
     variance: 2 * df,
-    mode: Math.max(df - 2, 0),
-    median: df * Math.pow(1 - 2 / (9 * df), 3),
-    skewness: Math.sqrt(8 / df),
-    kurtosis: 12 / df,
   }),
-  relations: ({ df }) => [
-    <><b>Caso especial da Gama:</b> χ²(ν) = Γ(ν/2, 1/2).</>,
-    <><b>Construção:</b> se Z₁, …, Zᵥ ~ N(0, 1) i.i.d., então ΣZᵢ² ~ χ²(ν).</>,
-    <><b>Aditividade:</b> χ²(ν₁) + χ²(ν₂) = χ²(ν₁ + ν₂) (independentes).</>,
-    <><b>Aproximação Normal:</b> χ²(ν) ≈ N(ν, 2ν) para ν grande. {df >= 30 ? <Ok>Aplicável</Ok> : <Warn>Use ν ≥ 30 ou Wilson-Hilferty</Warn>}</>,
-    <><b>Inferência:</b> (n−1)S²/σ² ~ χ²(n−1) para amostras de população normal.</>,
-  ],
 };
 
 const f: ContinuousDistribution = {
@@ -578,18 +393,7 @@ const f: ContinuousDistribution = {
   moments: ({ df1, df2 }) => ({
     mean: df2 > 2 ? df2 / (df2 - 2) : 'indefinida',
     variance: df2 > 4 ? 2 * df2 * df2 * (df1 + df2 - 2) / (df1 * (df2 - 2) * (df2 - 2) * (df2 - 4)) : (df2 > 2 ? '∞' : 'indefinida'),
-    mode: df1 > 2 ? ((df1 - 2) / df1) * (df2 / (df2 + 2)) : 0,
-    median: '—',
-    skewness: df2 > 6 ? ((2 * df1 + df2 - 2) * Math.sqrt(8 * (df2 - 4))) / ((df2 - 6) * Math.sqrt(df1 * (df1 + df2 - 2))) : 'indefinida',
-    kurtosis: '—',
   }),
-  relations: () => [
-    <><b>Construção:</b> se U ~ χ²(ν₁) e V ~ χ²(ν₂) independentes, então F = (U/ν₁)/(V/ν₂) ~ F(ν₁, ν₂).</>,
-    <><b>Reciprocidade:</b> se F ~ F(ν₁, ν₂), então 1/F ~ F(ν₂, ν₁). Logo F<sub>α</sub>(ν₁, ν₂) = 1/F<sub>1−α</sub>(ν₂, ν₁).</>,
-    <><b>Relação com t:</b> se T ~ t(ν), então T² ~ F(1, ν).</>,
-    <><b>ANOVA:</b> razão entre quadrados médios entre grupos / dentro de grupos.</>,
-    'Quando ν₂ → ∞: ν₁ · F(ν₁, ν₂) → χ²(ν₁).',
-  ],
 };
 
 export const DISTRIBUTIONS: Record<string, Distribution> = {
@@ -627,22 +431,23 @@ const sticks = (points: [number, number][]) => (
 
 export const NORMAL_ID = 'normal';
 
+// Most used in introductory statistics first: the ones the course teaches, then the inference ones.
 export const CALCULATORS: CalculatorCard[] = [
-  { id: 'bernoulli', kind: 'discrete', name: 'Bernoulli', notation: 'X ~ Bern(p)', summary: 'Um único ensaio com dois resultados (0 = fracasso, 1 = sucesso).', preview: sticks([[30, 22], [70, 14]]) },
+  { id: NORMAL_ID, kind: 'continuous', name: 'Normal', notation: 'X ~ N(μ, σ²)', summary: 'A mais célebre. Teorema Central do Limite, intervalos de confiança, testes z.', lessonNumbers: [19, 20], tag: '8 abas', preview: curve('M2,46 C20,46 28,8 50,8 C72,8 80,46 98,46') },
   { id: 'binomial', kind: 'discrete', name: 'Binomial', notation: 'X ~ Bin(n, p)', summary: 'Número de sucessos em n ensaios de Bernoulli independentes.', lessonNumbers: [16], preview: sticks([[14, 42], [28, 32], [42, 14], [56, 10], [70, 22], [84, 40]]) },
   { id: 'poisson', kind: 'discrete', name: 'Poisson', notation: 'X ~ Pois(λ)', summary: 'Número de eventos raros num intervalo fixo de tempo ou espaço.', lessonNumbers: [18], preview: sticks([[12, 26], [24, 10], [36, 14], [48, 22], [60, 32], [72, 40], [84, 44]]) },
-  { id: 'geometrica', kind: 'discrete', name: 'Geométrica', notation: 'X ~ Geom(p)', summary: 'Número de tentativas até o primeiro sucesso. Também sem memória.', preview: sticks([[14, 8], [28, 20], [42, 28], [56, 34], [70, 40], [84, 43]]) },
-  { id: 'binomialneg', kind: 'discrete', name: 'Binomial Negativa', notation: 'X ~ NB(r, p)', summary: 'Tentativas até obter r sucessos. Generaliza a Geométrica.', preview: sticks([[12, 36], [24, 22], [36, 10], [48, 12], [60, 20], [72, 30], [84, 40]]) },
-  { id: 'hipergeometrica', kind: 'discrete', name: 'Hipergeométrica', notation: 'X ~ HG(N, K, n)', summary: 'Amostragem sem reposição. Sucessos em n retiradas de uma população finita.', lessonNumbers: [17], preview: sticks([[14, 40], [28, 28], [42, 12], [56, 14], [70, 30], [84, 42]]) },
-  { id: 'uniformedisc', kind: 'discrete', name: 'Uniforme Discreta', notation: 'X ~ U{a, …, b}', summary: 'Cada inteiro entre a e b tem a mesma probabilidade 1/(b−a+1).', preview: sticks([[18, 14], [34, 14], [50, 14], [66, 14], [82, 14]]) },
-  { id: NORMAL_ID, kind: 'continuous', name: 'Normal', notation: 'X ~ N(μ, σ²)', summary: 'A mais célebre. Teorema Central do Limite, intervalos de confiança, testes z.', lessonNumbers: [19, 20], tag: '8 abas', preview: curve('M2,46 C20,46 28,8 50,8 C72,8 80,46 98,46') },
-  { id: 'uniforme', kind: 'continuous', name: 'Uniforme Contínua', notation: 'X ~ U(a, b)', summary: 'Todos os valores no intervalo [a, b] são igualmente prováveis.', preview: curve('M2,46 L20,46 L20,12 L80,12 L80,46 L98,46') },
-  { id: 'exponencial', kind: 'continuous', name: 'Exponencial', notation: 'X ~ Exp(λ)', summary: 'Tempo entre eventos de Poisson. Propriedade da falta de memória.', preview: curve('M2,6 C12,18 22,32 40,40 C60,46 80,46 98,46') },
-  { id: 'gama', kind: 'continuous', name: 'Gama', notation: 'X ~ Γ(α, β)', summary: 'Soma de α exponenciais. Tempos de espera, modelagem de filas.', preview: curve('M2,46 C12,30 20,12 35,8 C55,4 70,30 98,46') },
-  { id: 'beta', kind: 'continuous', name: 'Beta', notation: 'X ~ Beta(α, β)', summary: 'Suporte em [0, 1]. Distribuição de probabilidades; uso em Bayes.', preview: curve('M2,46 C10,40 20,10 50,8 C80,10 90,40 98,46') },
-  { id: 'lognormal', kind: 'continuous', name: 'Lognormal', notation: 'X ~ LogN(μ, σ²)', summary: 'log(X) é Normal. Modelos multiplicativos: finanças, biologia, rendas.', preview: curve('M2,46 C12,40 18,14 26,10 C40,8 58,38 98,46') },
-  { id: 'weibull', kind: 'continuous', name: 'Weibull', notation: 'X ~ Weibull(k, λ)', summary: 'Análise de confiabilidade e tempo até falha em engenharia.', preview: curve('M2,46 C14,40 24,16 36,10 C50,10 68,36 98,46') },
   { id: 't', kind: 'continuous', name: 't de Student', notation: 'T ~ t(ν)', summary: 'Inferência sobre média quando σ é desconhecido. Caudas mais pesadas.', preview: curve('M2,44 C20,42 30,8 50,8 C70,8 80,42 98,44') },
   { id: 'chi2', kind: 'continuous', name: 'Qui-quadrado', notation: 'X ~ χ²(ν)', summary: 'Soma de Z² independentes. Testes de aderência e independência.', preview: curve('M2,46 C10,28 18,12 30,10 C50,12 70,38 98,46') },
+  { id: 'exponencial', kind: 'continuous', name: 'Exponencial', notation: 'X ~ Exp(λ)', summary: 'Tempo entre eventos de Poisson. Propriedade da falta de memória.', preview: curve('M2,6 C12,18 22,32 40,40 C60,46 80,46 98,46') },
+  { id: 'uniforme', kind: 'continuous', name: 'Uniforme Contínua', notation: 'X ~ U(a, b)', summary: 'Todos os valores no intervalo [a, b] são igualmente prováveis.', preview: curve('M2,46 L20,46 L20,12 L80,12 L80,46 L98,46') },
+  { id: 'hipergeometrica', kind: 'discrete', name: 'Hipergeométrica', notation: 'X ~ HG(N, K, n)', summary: 'Amostragem sem reposição. Sucessos em n retiradas de uma população finita.', lessonNumbers: [17], preview: sticks([[14, 40], [28, 28], [42, 12], [56, 14], [70, 30], [84, 42]]) },
+  { id: 'bernoulli', kind: 'discrete', name: 'Bernoulli', notation: 'X ~ Bern(p)', summary: 'Um único ensaio com dois resultados (0 = fracasso, 1 = sucesso).', preview: sticks([[30, 22], [70, 14]]) },
   { id: 'f', kind: 'continuous', name: 'F de Snedecor', notation: 'F ~ F(ν₁, ν₂)', summary: 'Razão de variâncias. Estatística-chave da ANOVA.', preview: curve('M2,46 C10,30 16,10 22,8 C40,12 64,40 98,46') },
+  { id: 'geometrica', kind: 'discrete', name: 'Geométrica', notation: 'X ~ Geom(p)', summary: 'Número de tentativas até o primeiro sucesso. Também sem memória.', preview: sticks([[14, 8], [28, 20], [42, 28], [56, 34], [70, 40], [84, 43]]) },
+  { id: 'uniformedisc', kind: 'discrete', name: 'Uniforme Discreta', notation: 'X ~ U{a, …, b}', summary: 'Cada inteiro entre a e b tem a mesma probabilidade 1/(b−a+1).', preview: sticks([[18, 14], [34, 14], [50, 14], [66, 14], [82, 14]]) },
+  { id: 'lognormal', kind: 'continuous', name: 'Lognormal', notation: 'X ~ LogN(μ, σ²)', summary: 'log(X) é Normal. Modelos multiplicativos: finanças, biologia, rendas.', preview: curve('M2,46 C12,40 18,14 26,10 C40,8 58,38 98,46') },
+  { id: 'gama', kind: 'continuous', name: 'Gama', notation: 'X ~ Γ(α, β)', summary: 'Soma de α exponenciais. Tempos de espera, modelagem de filas.', preview: curve('M2,46 C12,30 20,12 35,8 C55,4 70,30 98,46') },
+  { id: 'binomialneg', kind: 'discrete', name: 'Binomial Negativa', notation: 'X ~ NB(r, p)', summary: 'Tentativas até obter r sucessos. Generaliza a Geométrica.', preview: sticks([[12, 36], [24, 22], [36, 10], [48, 12], [60, 20], [72, 30], [84, 40]]) },
+  { id: 'beta', kind: 'continuous', name: 'Beta', notation: 'X ~ Beta(α, β)', summary: 'Suporte em [0, 1]. Distribuição de probabilidades; uso em Bayes.', preview: curve('M2,46 C10,40 20,10 50,8 C80,10 90,40 98,46') },
+  { id: 'weibull', kind: 'continuous', name: 'Weibull', notation: 'X ~ Weibull(k, λ)', summary: 'Análise de confiabilidade e tempo até falha em engenharia.', preview: curve('M2,46 C14,40 24,16 36,10 C50,10 68,36 98,46') },
 ];

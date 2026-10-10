@@ -4,15 +4,13 @@ import { fmt, fmtOdds, fmtPct, fmtPrecise, fmtSci } from '../../services/probabi
 import { ContinuousChart, ChartMark, ChartShade, DiscreteChart } from './ProbabilityCharts';
 import { Card, FieldRow, FormCard, Legend, NumberField, ResultGrid, ResultMain, Segmented, SplitLayout, TabBar } from './CalculatorUI';
 
-// Generic calculator for every distribution except the Normal: probabilities, quantiles,
-// moments and relations, all driven by the same parameters.
+// Generic calculator for every distribution except the Normal: probabilities and quantiles,
+// both driven by the same parameters.
 
-type Tab = 'prob' | 'quantile' | 'moments' | 'relations';
+type Tab = 'prob' | 'quantile';
 const TABS: { id: Tab; label: string }[] = [
   { id: 'prob', label: 'Probabilidades' },
   { id: 'quantile', label: 'Quantis (inverso)' },
-  { id: 'moments', label: 'Parâmetros & Momentos' },
-  { id: 'relations', label: 'Relações' },
 ];
 
 type ProbMode = 'eq' | 'lt' | 'gt' | 'between' | 'outside';
@@ -40,15 +38,6 @@ const QUANTILE_MODES: { value: QuantileMode; label: string }[] = [
 const MAX_STICKS = 400;
 
 const fmtMoment = (value: MomentValue, digits = 6) => typeof value === 'string' ? value : fmt(value, digits);
-
-const describeSupport = (dist: Distribution, params: Params) => {
-  if (dist.type === 'discrete') {
-    const { kMin, kMax } = dist.support(params);
-    return `${kMin} ≤ k ≤ ${kMax === Infinity ? '∞' : kMax} (inteiros)`;
-  }
-  const { xMin, xMax } = dist.support(params);
-  return `${xMin === -Infinity ? '−∞' : fmt(xMin, 3)} < x < ${xMax === Infinity ? '∞' : fmt(xMax, 3)}`;
-};
 
 const DistributionCalculator: React.FC<{ distribution: Distribution }> = ({ distribution: dist }) => {
   const isDisc = dist.type === 'discrete';
@@ -97,7 +86,7 @@ const DistributionCalculator: React.FC<{ distribution: Distribution }> = ({ dist
   );
 
   // One chart for every tab: the shaded event, marks and reference lines change per tab.
-  const renderChart = (options: { shades?: ChartShade[]; shadeKs?: number[]; marks?: ChartMark[]; references?: ChartMark[]; info: string[] }) => {
+  const renderChart = (options: { shades?: ChartShade[]; shadeKs?: number[]; marks?: ChartMark[]; info: string[] }) => {
     const info = options.info.map((t, i) => ({ t, soft: i > 0 }));
     if (dist.type === 'discrete') {
       return (
@@ -108,7 +97,6 @@ const DistributionCalculator: React.FC<{ distribution: Distribution }> = ({ dist
           kMax={discreteRange.kMax}
           shadeKs={options.shadeKs ? new Set(options.shadeKs) : null}
           marks={(options.marks ?? []).map(mark => ({ k: mark.x, label: mark.label }))}
-          referenceLines={options.references}
           info={info}
         />
       );
@@ -124,7 +112,6 @@ const DistributionCalculator: React.FC<{ distribution: Distribution }> = ({ dist
         supportMax={support.xMax}
         shades={options.shades}
         marks={options.marks}
-        referenceLines={options.references}
         info={info}
       />
     );
@@ -307,76 +294,6 @@ const DistributionCalculator: React.FC<{ distribution: Distribution }> = ({ dist
     );
   };
 
-  /* ---------- Momentos ---------- */
-  const renderMoments = () => {
-    const moments = dist.moments(params);
-    const sd = typeof moments.variance === 'number' && Number.isFinite(moments.variance) && moments.variance >= 0
-      ? Math.sqrt(moments.variance) : moments.variance;
-    const cv = typeof moments.mean === 'number' && typeof sd === 'number' && moments.mean !== 0 && Number.isFinite(moments.mean) && Number.isFinite(sd)
-      ? fmt(sd / Math.abs(moments.mean), 4) : '—';
-    const references = ([['mean', 'E[X]'], ['median', 'med'], ['mode', 'moda']] as const)
-      .filter(([key]) => typeof moments[key] === 'number' && Number.isFinite(moments[key]))
-      .map(([key, label]) => ({ x: moments[key] as number, label }));
-
-    return (
-      <SplitLayout
-        form={
-          <FormCard title="Parâmetros e Momentos" description="Resumo descritivo da distribuição: medidas de centralidade, dispersão e forma — todas calculadas dos parâmetros (fórmulas analíticas).">
-            {paramFields}
-          </FormCard>
-        }
-        chart={
-          <Card>
-            {renderChart({ references, info: [paramSummary] })}
-            <Legend items={[{ label: 'Distribuição' }, { label: 'Média · Mediana · Moda (tracejado)' }]} />
-          </Card>
-        }
-        results={
-          <Card>
-            <ResultGrid large items={[
-              ['Média E[X]', fmtMoment(moments.mean)],
-              ['Variância Var[X]', fmtMoment(moments.variance)],
-              ['Desvio padrão σ', fmtMoment(sd)],
-              ['Coef. de variação', cv],
-              ['Moda', fmtMoment(moments.mode)],
-              ['Mediana', fmtMoment(moments.median)],
-              ['Assimetria', fmtMoment(moments.skewness)],
-              ['Curtose (excesso)', fmtMoment(moments.kurtosis)],
-              ['Suporte', describeSupport(dist, params)],
-              ['Tipo de distribuição', isDisc ? 'Discreta' : 'Contínua'],
-            ]} />
-          </Card>
-        }
-      />
-    );
-  };
-
-  /* ---------- Relações ---------- */
-  const renderRelations = () => (
-    <SplitLayout
-      form={
-        <FormCard title="Relações e Aproximações" description="Conexões importantes com outras distribuições, transformações úteis e quando aproximações são válidas (com indicadores em tempo real conforme você altera os parâmetros).">
-          {paramFields}
-        </FormCard>
-      }
-      chart={
-        <Card>
-          {renderChart({ info: [paramSummary] })}
-          <Legend items={[{ label: 'Distribuição' }]} />
-        </Card>
-      }
-      results={
-        <Card>
-          <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate-700">
-            {dist.relations(params).map((relation, i) => (
-              <li key={i} className={i > 0 ? 'border-t border-dashed border-slate-200 pt-2' : ''}>{relation}</li>
-            ))}
-          </ul>
-        </Card>
-      }
-    />
-  );
-
   return (
     <div>
       <TabBar tabs={TABS} active={tab} onChange={setTab} />
@@ -389,10 +306,7 @@ const DistributionCalculator: React.FC<{ distribution: Distribution }> = ({ dist
           }
           chart={null}
         />
-      ) : tab === 'prob' ? renderProbability()
-        : tab === 'quantile' ? renderQuantile()
-          : tab === 'moments' ? renderMoments()
-            : renderRelations()}
+      ) : tab === 'prob' ? renderProbability() : renderQuantile()}
     </div>
   );
 };
