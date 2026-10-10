@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BookOpenIcon } from './Icons';
 
 // Data from the book's cataloguing page (CIP) and its store page on Clube de Autores.
+// The cover was copied from the store page so it is served by Firebase Hosting with the site.
 const BOOK = {
   title: 'Estatística Aplicada',
   author: 'Renan Mercuri Pinto',
@@ -9,7 +10,7 @@ const BOOK = {
   publisher: 'Edição do Autor, Americana–SP',
   pages: '162 páginas',
   isbn: '978-85-540942-4-9',
-  coverUrl: 'https://dxkck1miuebqc.cloudfront.net/books/312422/preview/cover_front_big.jpg',
+  coverUrl: '/aulas/00-apresentacao/aula-00-apresentacao-e-sumario/recursos/capa-estatistica-aplicada.jpg',
   storeUrl: 'https://clubedeautores.com.br/livro/estatistica-aplicada-3',
 };
 
