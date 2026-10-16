@@ -2,7 +2,7 @@ import React from 'react';
 import { getCourseProgress, getLessonProgress, getLessonStars } from '../services/progressService';
 import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, UserProfile } from '../types';
 import { REWARDS } from '../data/rewards';
-import { BookOpenIcon, CalculatorIcon, ChevronRightIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon } from './Icons';
+import { BookOpenIcon, CalculatorIcon, ChevronRightIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon, VennIcon } from './Icons';
 
 const ACCOUNT_LINKS: { target: Page; label: string; ariaLabel: string; Icon: React.FC<{ className?: string }> }[] = [
   { target: 'home', label: 'Início', ariaLabel: 'Início', Icon: HomeIcon },
@@ -255,6 +255,16 @@ const Sidebar: React.FC<SidebarProps> = ({
         >
           <CalculatorIcon className="w-5 h-5 flex-shrink-0" />
           <span className="flex-1">Calculadoras de probabilidade</span>
+        </button>
+        <button
+          onClick={() => handleSelectPage('playground')}
+          aria-current={page === 'playground' ? 'page' : undefined}
+          className={`mt-1 w-full text-left flex items-center gap-3 p-2 rounded-md transition-colors text-sm ${
+            page === 'playground' ? 'bg-[--accent] text-white font-medium' : 'text-slate-300 hover:bg-white/10'
+          }`}
+        >
+          <VennIcon className="w-5 h-5 flex-shrink-0" />
+          <span className="flex-1">Playground de Probabilidade</span>
         </button>
       </nav>
 

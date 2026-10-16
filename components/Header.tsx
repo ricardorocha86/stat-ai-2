@@ -26,6 +26,8 @@ const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, on
                 return toolName
                     ? { main: toolName, breadcrumb: "Ferramentas · Calculadoras de probabilidade" }
                     : { main: "Calculadoras de Probabilidade", breadcrumb: "Ferramentas" };
+            case 'playground':
+                return { main: "Playground de Probabilidade", breadcrumb: "Ferramentas" };
             case 'lesson':
                 if (lesson) {
                     const lessonNumber = lesson.kind !== 'reference' && lesson.number !== undefined

@@ -16,6 +16,7 @@ import OnboardingModal from './components/OnboardingModal';
 import ProfilePage from './components/ProfilePage';
 import GlobalChat from './components/GlobalChat';
 import ProbabilityToolsPage, { getCalculatorName } from './components/tools/ProbabilityToolsPage';
+import ProbabilityPlaygroundPage from './components/tools/ProbabilityPlaygroundPage';
 import { auth } from './services/firebaseConfig';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
@@ -371,6 +372,8 @@ const App: React.FC = () => {
             onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
           />
         );
+      case 'playground':
+        return <ProbabilityPlaygroundPage course={course} onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }} />;
       case 'profile':
         return <ProfilePage userProfile={userProfile} onUpdateProfile={handleProfileUpdate} lockedStyles={lockedStyles} />;
       default:
@@ -458,7 +461,7 @@ const App: React.FC = () => {
           course={course}
           onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
           question={tutorQuestion}
-          wideContent={page === 'home' || page === 'tools'}
+          wideContent={page === 'home' || page === 'tools' || page === 'playground'}
           lockedStyles={lockedStyles}
         />
     </div>
