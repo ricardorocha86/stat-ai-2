@@ -1,0 +1,54 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const ts = require('typescript');
+const Module = require('node:module');
+const path = require('node:path');
+const filename = path.resolve(__dirname, '../services/gameSaveSession.ts');
+const compiled = ts.transpileModule(fs.readFileSync(filename, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+const moduleUnderTest = new Module(filename, module);
+moduleUnderTest._compile(compiled, filename);
+const { createGameSaveSession, validGameSnapshot } = moduleUnderTest.exports;
+const progress = n => JSON.stringify({ hp: 12, maxHp: 12, items: {}, flags: {}, stats: {}, crystals: [], coins: n });
+const state = n => ({ progress: progress(n), settings: null });
+const data = new Map();
+const storage = { getItem: k => data.get(k) || null, setItem: (k, v) => data.set(k, v) };
+const sessions = [];
+const open = async (userId, options = {}) => {
+  const session = await createGameSaveSession({ userId, storage, read: async () => null, write: async () => {}, onStatus: () => {}, ...options });
+  sessions.push(session);
+  return session;
+};
+(async () => {
+  try {
+    assert.equal(validGameSnapshot({ progress: '{broken', settings: null }), false);
+    assert.equal(validGameSnapshot({ progress: '{}', settings: null }), false);
+    assert.equal(validGameSnapshot(state(1)), true);
+    const statuses = [], writes = [];
+    let release;
+    const a = await open('player-a', { onStatus: s => statuses.push(s), write: save => { writes.push(save); return writes.length === 1 ? new Promise(r => { release = r; }) : Promise.resolve(); } });
+    a.update(state(1));
+    const first = a.flush();
+    a.update(state(2));
+    assert.equal(writes.length, 1, 'overlapping writes must queue');
+    release(); await first; await a.flush();
+    assert.equal(writes.length, 2);
+    assert.equal(JSON.parse(writes[1].progress).coins, 2, 'the latest state wins');
+    assert.equal(statuses.at(-1), 'saved');
+    const b = await open('player-b');
+    assert.equal(b.initial.progress, null, 'another user must never load the first user backup');
+    const failed = await open('offline-player', { write: async () => { throw new Error('offline'); } });
+    failed.update(state(7)); await failed.flush(); failed.dispose();
+    const recovered = await open('offline-player', { read: async () => { throw new Error('offline'); } });
+    assert.equal(JSON.parse(recovered.initial.progress).coins, 7, 'pending state survives a reload without network');
+    let restored;
+    const retry = await open('offline-player', { write: async save => { restored = save; } });
+    await retry.flush(); assert.equal(JSON.parse(restored.progress).coins, 7);
+    retry.update({ progress: null, settings: null }); await retry.flush();
+    assert.equal(restored.progress, null, 'confirmed new game clears the cloud save as well');
+    await assert.rejects(() => open('no-cache', { read: async () => { throw new Error('unavailable'); } }), /unavailable/, 'failed reads must not create an empty cloud save');
+    const newerCloud = { ...state(50), schemaVersion: 1, modifiedAt: Date.now() + 10000, revision: 'remote-newer' };
+    const newer = await open('player-a', { read: async () => newerCloud });
+    assert.equal(JSON.parse(newer.initial.progress).coins, 50, 'the server wins over a clean old local cache');
+    console.log('Game save checks passed: validation, ordered writes, account isolation, offline recovery, retry, reset, failed-read protection, cloud reload.');
+  } finally { sessions.forEach(session => session.dispose()); }
+})().catch(error => { console.error(error); process.exitCode = 1; });

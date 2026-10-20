@@ -4,6 +4,8 @@ Student portal for the *Estatística Aplicada* course: lesson material, exercise
 
 Course content lives in `public/aulas` (`catalogo.json` lists units and lessons; each lesson folder has `material.md`, `exercises.json` and `recursos/`).
 
+The **Jogos** section, below **Ferramentas**, includes the 2D adventure **A Lenda de Sigma**. Progress is saved to each signed-in student's Firestore account, with a local recovery copy for connection failures; see [game integration and verification](docs/JOGOS.md). The small sidebar button at the top left of the header hides or restores the desktop navigation for teaching, and remembers the preference in the browser.
+
 ## Run Locally
 
 **Prerequisites:**  Node.js

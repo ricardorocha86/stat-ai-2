@@ -17,6 +17,7 @@ import ProfilePage from './components/ProfilePage';
 import GlobalChat from './components/GlobalChat';
 import ProbabilityToolsPage, { getCalculatorName } from './components/tools/ProbabilityToolsPage';
 import ProbabilityPlaygroundPage from './components/tools/ProbabilityPlaygroundPage';
+import SigmaGamePage from './components/games/SigmaGamePage';
 import { auth } from './services/firebaseConfig';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
@@ -48,6 +49,10 @@ const App: React.FC = () => {
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const [isAchievementTestMode, setIsAchievementTestMode] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try { return localStorage.getItem('statai:sidebar-collapsed') === 'true'; }
+    catch { return false; }
+  });
   const [interactiveMaterials, setInteractiveMaterials] = useState<{ [lessonId: string]: StructuredLesson }>({});
   const [isLoadingExercises, setIsLoadingExercises] = useState<boolean>(true);
   const [courseLoadingError, setCourseLoadingError] = useState<string | null>(null);
@@ -64,6 +69,11 @@ const App: React.FC = () => {
   const [isRewardsOpen, setIsRewardsOpen] = useState(false);
 
   const isProfessor = Boolean(currentUser?.email && PROFESSOR_EMAILS.includes(currentUser.email));
+
+  useEffect(() => {
+    try { localStorage.setItem('statai:sidebar-collapsed', String(isSidebarCollapsed)); }
+    catch { /* The toggle still works when browser storage is unavailable. */ }
+  }, [isSidebarCollapsed]);
 
   // Auth Listener
   useEffect(() => {
@@ -374,6 +384,8 @@ const App: React.FC = () => {
         );
       case 'playground':
         return <ProbabilityPlaygroundPage course={course} onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }} />;
+      case 'sigma-game':
+        return currentUser ? <SigmaGamePage key={currentUser.uid} userId={currentUser.uid} /> : null;
       case 'profile':
         return <ProfilePage userProfile={userProfile} onUpdateProfile={handleProfileUpdate} lockedStyles={lockedStyles} />;
       default:
@@ -415,6 +427,7 @@ const App: React.FC = () => {
         canUseAchievementTestMode={isProfessor}
         onToggleAchievementTestMode={handleToggleAchievementTestMode}
         isSidebarOpen={isSidebarOpen}
+        isSidebarCollapsed={isSidebarCollapsed}
         setIsSidebarOpen={setIsSidebarOpen}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -423,6 +436,9 @@ const App: React.FC = () => {
           lesson={selectedLesson}
           unit={selectedUnit}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          isSidebarOpen={isSidebarOpen}
+          isSidebarCollapsed={isSidebarCollapsed}
+          onToggleDesktopSidebar={() => setIsSidebarCollapsed(collapsed => !collapsed)}
           onGoHome={() => setPage('home')}
           toolName={page === 'tools' ? getCalculatorName(calculatorId) : null}
         />
@@ -456,14 +472,14 @@ const App: React.FC = () => {
         )}
         
         {/* Chatbot Global */}
-        <GlobalChat
+        {page !== 'sigma-game' && <GlobalChat
           userProfile={userProfile}
           course={course}
           onOpenLesson={(lesson) => { handleSelectLesson(lesson); setPage('lesson'); }}
           question={tutorQuestion}
           wideContent={page === 'home' || page === 'tools' || page === 'playground'}
           lockedStyles={lockedStyles}
-        />
+        />}
     </div>
   );
 };

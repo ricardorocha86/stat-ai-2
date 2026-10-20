@@ -69,6 +69,15 @@
         ]
       },
       {
+        "source": "/games/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
         "source": "/aulas/**",
         "headers": [
           {

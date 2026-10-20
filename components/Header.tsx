@@ -7,12 +7,15 @@ interface HeaderProps {
     lesson: Lesson | null;
     unit: Unit | null;
     onToggleSidebar: () => void;
+    isSidebarOpen?: boolean;
+    isSidebarCollapsed?: boolean;
+    onToggleDesktopSidebar?: () => void;
     onGoHome: () => void;
     // Name of the open probability calculator, if any.
     toolName?: string | null;
 }
 
-const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, onGoHome, toolName }) => {
+const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, onGoHome, toolName, isSidebarOpen = false, isSidebarCollapsed = false, onToggleDesktopSidebar }) => {
 
     const getTitle = () => {
         switch(page) {
@@ -28,6 +31,8 @@ const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, on
                     : { main: "Calculadoras de Probabilidade", breadcrumb: "Ferramentas" };
             case 'playground':
                 return { main: "Playground de Probabilidade", breadcrumb: "Ferramentas" };
+            case 'sigma-game':
+                return { main: "A Lenda de Sigma", breadcrumb: "Jogos" };
             case 'lesson':
                 if (lesson) {
                     const lessonNumber = lesson.kind !== 'reference' && lesson.number !== undefined
@@ -45,9 +50,26 @@ const Header: React.FC<HeaderProps> = ({ page, lesson, unit, onToggleSidebar, on
     return (
         <header className="flex-shrink-0 bg-slate-900 border-b border-white/10 px-4 md:px-6 h-[65px] flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
-                <button onClick={onToggleSidebar} className="p-1 text-slate-300 hover:text-white md:hidden flex-shrink-0" aria-label="Abrir menu">
+                <button onClick={onToggleSidebar} className="p-1 text-slate-300 hover:text-white md:hidden flex-shrink-0" aria-label={isSidebarOpen ? 'Fechar menu' : 'Abrir menu'} aria-expanded={isSidebarOpen} aria-controls="portal-sidebar">
                     <Bars3Icon className="w-6 h-6"/>
                 </button>
+                {onToggleDesktopSidebar && (
+                    <button
+                        type="button"
+                        onClick={onToggleDesktopSidebar}
+                        aria-label={isSidebarCollapsed ? 'Mostrar barra lateral' : 'Recolher barra lateral'}
+                        title={isSidebarCollapsed ? 'Mostrar barra lateral' : 'Recolher barra lateral'}
+                        aria-expanded={!isSidebarCollapsed}
+                        aria-controls="portal-sidebar"
+                        className="hidden md:flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-5 w-5" aria-hidden="true">
+                            <rect x="3" y="4" width="18" height="16" rx="2" />
+                            <path d="M9 4v16" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d={isSidebarCollapsed ? 'm13 9 3 3-3 3' : 'm16 9-3 3 3 3'} />
+                        </svg>
+                    </button>
+                )}
                 {page !== 'home' && (
                     <button onClick={onGoHome} className="flex-shrink-0 rounded-lg p-1.5 text-slate-300 hover:bg-white/10 hover:text-white" aria-label="Voltar ao início" title="Voltar ao início">
                         <HomeIcon className="w-6 h-6" />

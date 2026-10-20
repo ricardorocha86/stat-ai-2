@@ -3,6 +3,7 @@ import { getCourseProgress, getLessonProgress, getLessonStars } from '../service
 import { Course, Lesson, Unit, Page, StudentProgress, ViewMode, UserProfile } from '../types';
 import { REWARDS } from '../data/rewards';
 import { BookOpenIcon, CalculatorIcon, ChevronRightIcon, HomeIcon, QuestionMarkCircleIcon, StatAiIcon, LogoutIcon, StarIcon, TrophyIcon, GiftIcon, UserIcon, PencilSquareIcon, VennIcon } from './Icons';
+import GamepadIcon from './games/GamepadIcon';
 
 const ACCOUNT_LINKS: { target: Page; label: string; ariaLabel: string; Icon: React.FC<{ className?: string }> }[] = [
   { target: 'home', label: 'Início', ariaLabel: 'Início', Icon: HomeIcon },
@@ -27,6 +28,7 @@ interface SidebarProps {
   canUseAchievementTestMode: boolean;
   onToggleAchievementTestMode: () => void;
   isSidebarOpen: boolean;
+  isSidebarCollapsed?: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }
 
@@ -34,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   course, selectedLesson, onSelectLesson, page, setPage, onLogout, 
   studentProgress, viewMode, hasNewReward, onOpenRewards,
   userProfile, isAchievementTestMode, canUseAchievementTestMode, onToggleAchievementTestMode,
-  isSidebarOpen, setIsSidebarOpen
+  isSidebarOpen, setIsSidebarOpen, isSidebarCollapsed = false
 }) => {
   const [openUnits, setOpenUnits] = React.useState<Set<string>>(() =>
     new Set(course.units.map(u => u.id))
@@ -69,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   return (
-    <aside className={`fixed inset-y-0 left-0 z-40 w-80 lg:w-96 bg-gradient-to-b from-slate-900 to-slate-800 p-4 flex-shrink-0 h-screen overflow-y-auto flex flex-col text-[--text-inverted] transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0`}>
+    <aside id="portal-sidebar" className={`fixed inset-y-0 left-0 z-40 w-80 lg:w-96 bg-gradient-to-b from-slate-900 to-slate-800 p-4 flex-shrink-0 h-screen overflow-y-auto flex flex-col text-[--text-inverted] transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isSidebarCollapsed ? 'md:hidden' : 'md:relative md:translate-x-0'}`}>
       {/* Header Section */}
       <div className="mb-6 px-2">
         <button onClick={() => handleSelectPage('home')} className="flex items-center gap-3 mb-1" aria-label="Ir para o início">
@@ -268,6 +270,20 @@ const Sidebar: React.FC<SidebarProps> = ({
         </button>
       </nav>
 
+      <div className="border-t border-white/10 my-4 -mx-4"></div>
+      <p className="text-xs font-semibold uppercase text-slate-400 mb-2 px-2">Jogos</p>
+      <nav aria-label="Jogos" className="px-2 pb-2">
+        <button
+          onClick={() => handleSelectPage('sigma-game')}
+          aria-current={page === 'sigma-game' ? 'page' : undefined}
+          className={`w-full text-left flex items-center gap-3 p-2 rounded-md transition-colors text-sm ${
+            page === 'sigma-game' ? 'bg-[--accent] text-white font-medium' : 'text-slate-300 hover:bg-white/10'
+          }`}
+        >
+          <GamepadIcon className="w-5 h-5 flex-shrink-0" />
+          <span className="flex-1">A Lenda de Sigma</span>
+        </button>
+      </nav>
     </aside>
   );
 };
