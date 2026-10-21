@@ -77,8 +77,8 @@
       return s;
     } catch (e) { return null; }
   };
-  G.saveSettings = () => { try { G.storage.setItem(SET_KEY, JSON.stringify({ m: G.audio.musicVol, s: G.audio.sfxVol, t: G.touch ? G.touch.mode : 'auto' })); } catch (e) { } };
-  function loadSettings() { try { const s = JSON.parse(G.storage.getItem(SET_KEY)); if (s) G.audio.setVol(s.m, s.s); if (s && s.t && G.touch) G.touch.mode = s.t; } catch (e) { } }
+  G.saveSettings = () => { try { G.storage.setItem(SET_KEY, JSON.stringify({ m: G.audio.musicVol, s: G.audio.sfxVol, t: G.touch ? G.touch.mode : 'auto', muted: G.audio.muted })); } catch (e) { } };
+  function loadSettings() { try { const s = JSON.parse(G.storage.getItem(SET_KEY)); if (s) { G.audio.setVol(s.m, s.s); G.audio.setMuted(s.muted); } if (s && s.t && G.touch) G.touch.mode = s.t; } catch (e) { } }
 
   // posição inicial (na frente da casa do Mestre Gauss)
   function startPos() { const ox = 48, oy = 32; return { x: (ox + 18) * 16 + 3, y: (oy + 11) * 16 + 2 }; }

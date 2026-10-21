@@ -9,7 +9,12 @@
   let resolveInit;
   const hydrated = new Promise(resolve => { resolveInit = resolve; });
   const snapshot = () => ({ progress: values.get(SAVE) || null, settings: values.get(SETTINGS) || null });
-  const send = type => parent.postMessage({ channel, type, snapshot: snapshot() }, location.origin);
+  const send = type => parent.postMessage({ channel, type, snapshot: snapshot(), muted: G.audio.muted }, location.origin);
+  G.toggleMute = () => {
+    G.audio.setMuted(!G.audio.muted);
+    G.saveSettings();
+    send('audio');
+  };
   G.storage = {
     getItem: key => values.get(key) || null,
     setItem(key, value) {
@@ -24,6 +29,7 @@
     },
   };
   window.statAiSigma = {
+    toggleMute: () => G.toggleMute(),
     capture() {
       if (initialized && G.P && ['play', 'gameover', 'ending'].includes(G.state) && !G.trans) G.saveGame();
       return snapshot();

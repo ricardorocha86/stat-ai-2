@@ -284,6 +284,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <span className="flex-1">A Lenda de Sigma</span>
         </button>
       </nav>
+      <div aria-hidden="true" className="h-12 flex-shrink-0" />
     </aside>
   );
 };

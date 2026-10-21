@@ -110,14 +110,14 @@
   for (const k in T) for (const c of T[k].ch) c.notes = parse(c.s);
 
   const A = G.audio = {
-    ctx: null, ok: false, musicVol: 0.6, sfxVol: 0.8, cur: null, pending: null, chans: [],
+    ctx: null, ok: false, musicVol: 0.6, sfxVol: 0.8, muted: false, cur: null, pending: null, chans: [],
     init() {
       if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       try { this.ctx = new AC(); } catch (e) { return; }
       const c = this.ctx;
-      this.master = c.createGain(); this.master.gain.value = 0.9; this.master.connect(c.destination);
+      this.master = c.createGain(); this.master.gain.value = this.muted ? 0 : 0.9; this.master.connect(c.destination);
       this.mG = c.createGain(); this.mG.gain.value = this.musicVol; this.mG.connect(this.master);
       this.sG = c.createGain(); this.sG.gain.value = this.sfxVol; this.sG.connect(this.master);
       const len = c.sampleRate * 1;
@@ -131,6 +131,10 @@
     setVol(m, s) {
       this.musicVol = m; this.sfxVol = s;
       if (this.mG) { this.mG.gain.value = m; this.sG.gain.value = s; }
+    },
+    setMuted(muted) {
+      this.muted = Boolean(muted);
+      if (this.master) this.master.gain.value = this.muted ? 0 : 0.9;
     },
     // ---------- primitivas ----------
     tone(o) {

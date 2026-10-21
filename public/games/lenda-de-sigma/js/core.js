@@ -75,6 +75,7 @@ window.G = {};
     codes: {}, hit: {}, pad: {}, anyHit: false,
     init() {
       addEventListener('keydown', e => {
+        if (e.code === 'KeyV') { e.preventDefault(); if (!e.repeat && G.toggleMute) G.toggleMute(); return; }
         if (e.code === 'KeyF' && !e.repeat) { G.toggleFullscreen && G.toggleFullscreen(); }
         const acts = codeToActs[e.code];
         if (acts) {

@@ -612,7 +612,7 @@
         ['Q / Shift / Tab', 'Trocar item'],
         ['Enter / Esc', 'Menu (status, mapa, missões, grimório)'],
         ['M', 'Mapa'],
-        ['F', 'Tela cheia'],
+        ['F / V', 'Tela cheia / Silenciar ou ativar som'],
         ['Controle', 'A=espada B=pular X=item Y=trocar'],
         ['Celular', 'toque: arraste à esquerda, botões Z X C Q']
       ];

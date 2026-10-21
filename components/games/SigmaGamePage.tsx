@@ -11,7 +11,7 @@ const STATUS_TEXT: Record<GameSaveStatus, string> = {
   error: 'Sincronização pendente. Tentaremos novamente automaticamente.',
 };
 
-type GameWindow = Window & { statAiSigma?: { capture: () => GameSnapshot } };
+type GameWindow = Window & { statAiSigma?: { capture: () => GameSnapshot; toggleMute: () => void } };
 
 export default function SigmaGamePage({ userId }: { userId: string }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
@@ -20,6 +20,7 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
   const [attempt, setAttempt] = useState(0);
   const [ready, setReady] = useState(false);
   const [frameReady, setFrameReady] = useState(false);
+  const [muted, setMuted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<GameSaveStatus>('ready');
 
@@ -45,7 +46,10 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
       if (event.data.type === 'ready') {
         frame.contentWindow?.postMessage({ channel: CHANNEL, type: 'init', snapshot: session.initial }, window.location.origin);
       } else if (event.data.type === 'started') {
+        setMuted(Boolean(event.data.muted));
         setFrameReady(true);
+      } else if (event.data.type === 'audio' && typeof event.data.muted === 'boolean') {
+        setMuted(event.data.muted);
       } else if (event.data.type === 'save' && validGameSnapshot(event.data.snapshot)) {
         session.update(event.data.snapshot);
       }
@@ -89,6 +93,10 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
     } catch { frameRef.current?.focus(); }
   };
 
+  const toggleMute = () => {
+    (frameRef.current?.contentWindow as GameWindow | null)?.statAiSigma?.toggleMute();
+  };
+
   return (
     <section className="mx-auto flex max-w-[1440px] flex-col gap-4 p-3 md:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -110,10 +118,13 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
         <div ref={containerRef} className="relative overflow-hidden rounded-2xl border border-slate-700 bg-[#07060c] shadow-xl" style={{ height: 'min(72dvh, 820px)', minHeight: 320 }}>
           {ready && <iframe ref={frameRef} src="/games/lenda-de-sigma/index.html" title="A Lenda de Sigma — O Reino dos Dados" className="h-full w-full border-0" allow="autoplay; fullscreen; gamepad" allowFullScreen />}
           {!frameReady && <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-300">Preparando a aventura…</div>}
-          <button type="button" onClick={fullscreen} disabled={!frameReady} aria-label="Alternar tela cheia do jogo" className="absolute right-3 top-3 rounded-lg border border-white/20 bg-slate-950/80 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:hidden">⛶ Tela cheia</button>
+          <div className="absolute right-3 top-3 flex gap-2">
+            <button type="button" onClick={toggleMute} disabled={!frameReady} aria-label={muted ? 'Ativar som do jogo' : 'Silenciar jogo'} aria-pressed={muted} title="Silenciar ou ativar som (V)" className="rounded-lg border border-white/20 bg-slate-950/80 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:hidden">{muted ? 'Ativar som' : 'Silenciar'}</button>
+            <button type="button" onClick={fullscreen} disabled={!frameReady} aria-label="Alternar tela cheia do jogo" className="rounded-lg border border-white/20 bg-slate-950/80 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:hidden">⛶ Tela cheia</button>
+          </div>
         </div>
       )}
-      <p className="text-xs leading-relaxed text-slate-500">Clique no jogo para usar o teclado. Mova com as setas ou WASD; Z ataca e confirma. De frente para um bloco, pressione Z para puxá-lo uma casa e recuar junto. X pula, C usa o item, Q troca o item e Enter abre o menu. No celular, use os controles de toque. O progresso é salvo automaticamente; ao voltar, escolha Continuar. Combates e enigmas em andamento recomeçam na sala.</p>
+      <p className="text-xs leading-relaxed text-slate-500">Clique no jogo para usar o teclado. Mova com as setas ou WASD; Z ataca e confirma. De frente para um bloco, pressione Z para puxá-lo uma casa e recuar junto. X pula, C usa o item, Q troca o item e Enter abre o menu. V silencia ou ativa o som; M abre o mapa. Ajuste os volumes em Enter → Sistema. No celular, use os controles de toque. O progresso é salvo automaticamente; ao voltar, escolha Continuar. Combates e enigmas em andamento recomeçam na sala.</p>
     </section>
   );
 }
