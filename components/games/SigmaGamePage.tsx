@@ -95,6 +95,7 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
 
   const toggleMute = () => {
     (frameRef.current?.contentWindow as GameWindow | null)?.statAiSigma?.toggleMute();
+    frameRef.current?.focus();
   };
 
   return (
