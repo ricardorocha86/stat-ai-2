@@ -113,7 +113,7 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
           <button type="button" onClick={fullscreen} disabled={!frameReady} aria-label="Alternar tela cheia do jogo" className="absolute right-3 top-3 rounded-lg border border-white/20 bg-slate-950/80 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:hidden">⛶ Tela cheia</button>
         </div>
       )}
-      <p className="text-xs leading-relaxed text-slate-500">Clique no jogo para usar o teclado. Mova com as setas ou WASD; Z ataca e confirma, X pula, C usa o item, Q troca o item e Enter abre o menu. No celular, use os controles de toque. O progresso é salvo automaticamente; ao voltar, escolha Continuar. Combates e enigmas em andamento recomeçam na sala.</p>
+      <p className="text-xs leading-relaxed text-slate-500">Clique no jogo para usar o teclado. Mova com as setas ou WASD; Z ataca e confirma. De frente para um bloco, pressione Z para puxá-lo uma casa e recuar junto. X pula, C usa o item, Q troca o item e Enter abre o menu. No celular, use os controles de toque. O progresso é salvo automaticamente; ao voltar, escolha Continuar. Combates e enigmas em andamento recomeçam na sala.</p>
     </section>
   );
 }

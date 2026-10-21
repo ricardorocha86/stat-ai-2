@@ -10,7 +10,7 @@
   const I = G.input;
   const T = G.touch = { state: {}, tapped: {}, prev: {}, on: false, mode: 'auto', stickId: null, btnPtr: {} };
   const BTN = [
-    { id: 'a', key: 'Z', cap: 'espada', acts: ['a', 'confirm'] },
+    { id: 'a', key: 'Z', cap: 'ação', acts: ['a', 'confirm'] },
     { id: 'b', key: 'X', cap: 'pular', acts: ['b', 'cancel'] },
     { id: 'c', key: 'C', cap: 'item', acts: ['c'] },
     { id: 'sw', key: 'Q', cap: 'trocar', acts: ['sw'] },

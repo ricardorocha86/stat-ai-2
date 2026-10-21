@@ -657,9 +657,9 @@
   class DieBlock extends G.PushBlock {
     constructor(x, y, o) { super(x, y, null, o); this.top = ri(1, 6); const opts = [1, 2, 3, 4, 5, 6].filter(v => v !== this.top && v !== 7 - this.top); this.north = pick(opts); this.east = [1, 2, 3, 4, 5, 6].find(v => v !== this.top && v !== 7 - this.top && v !== this.north && v !== 7 - this.north); this.roll = 0; }
     get darkGlow() { return 22; }
-    push(dir) {
+    push(dir, puller = null) {
       const was = this.moving;
-      super.push(dir);
+      super.push(dir, puller);
       if (!was && this.moving) {
         const t = this.top, n = this.north, e = this.east;
         if (dir === 3) { this.top = 7 - e; this.east = t; }

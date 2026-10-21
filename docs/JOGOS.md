@@ -15,10 +15,15 @@ A seção **Jogos**, depois de **Ferramentas**, abre **A Lenda de Sigma — O Re
 
 O jogo é servido em `public/games/lenda-de-sigma`, fora do bundle React, e acompanha o build e a publicação padrão do app. As adaptações locais estão em `js/game.js` (armazenamento, retomada e escala em telas pequenas) e `js/stat-ai-bridge.js` (comunicação com o app); `index.html` carrega a ponte por último. A pasta de origem é preservada.
 
+## Blocos
+
+Empurre caminhando contra o bloco, como antes. Para puxar, fique de frente para ele e pressione **Z** (ou J, Espaço, A do controle ou Z/ação no celular). O personagem recua junto com o bloco por uma casa. O movimento respeita paredes, outros blocos, perigos, limites dos trilhos e blocos fixos. Puxar no gelo move apenas uma casa; dados gigantes continuam girando na direção do movimento.
+
 ## Verificação
 
 ```powershell
 node scripts/test-game-save-session.cjs
+node scripts/test-block-pulling.cjs
 node node_modules/typescript/bin/tsc --noEmit
 npm run build
 ```

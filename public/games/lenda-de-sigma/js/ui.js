@@ -604,7 +604,8 @@
       const L = [
         ['Setas / WASD', 'Mover'],
         ['Z / J / Espaço', 'Espada · Falar · Confirmar'],
-        ['   (segurar)', 'Golpe giratório (quando aprender)'],
+        ['Z frente a bloco', 'Puxar uma casa (recua junto)'],
+        ['   (segurar Z)', 'Golpe giratório (quando aprender)'],
         ['X / K', 'Pular (com as Botas) · Cancelar'],
         ['C / L', 'Usar item (bomba / raio / gancho)'],
         ['  (segurar C)', 'Carregar o Raio Amostral'],
@@ -615,7 +616,7 @@
         ['Controle', 'A=espada B=pular X=item Y=trocar'],
         ['Celular', 'toque: arraste à esquerda, botões Z X C Q']
       ];
-      L.forEach(([a, b], i) => { G.text(a, 44, 40 + i * 13, '#7ae4ff'); G.text(b, 150, 40 + i * 13, '#ffffff'); });
+      L.forEach(([a, b], i) => { G.text(a, 44, 40 + i * 12, '#7ae4ff'); G.text(b, 150, 40 + i * 12, '#ffffff'); });
     }
   }
 

@@ -185,6 +185,7 @@
       if (this.castT > 0) this.castT -= dt; if (this.chargeFlash > 0) this.chargeFlash -= dt;
       if (this.state === 'fall') { this.fallT += dt; if (this.fallT > 0.6) this.respawnSafe(); return; }
       if (this.state === 'hold' || this.state === 'dead' || this.state === 'pipe' || this.state === 'frozen') return;
+      if (this.state === 'pull') { this.moving = true; this.walkT += dt; return; }
 
       // --- direção / movimento ---
       const canMove = this.state === 'normal';
@@ -467,7 +468,7 @@
       const swinging = this.state === 'attack' || this.state === 'spin' || this.spinCharging;
       if (this.state === 'hold') { name = base + '_hold'; flip = false; }
       else if (swinging || this.castT > 0 || this.charge > 0.15) name = base + '_' + view + '_atk';
-      else if (this.moving && this.state === 'normal') name = base + '_' + view + (Math.floor(this.walkT * 9) % 4);
+      else if (this.moving && (this.state === 'normal' || this.state === 'pull')) name = base + '_' + view + (Math.floor(this.walkT * 9) % 4);
       else name = base + '_' + view + '_stand';
       const o = { flip };
       if (this.starT > 0) o.tint = ['rgba(255,220,80,0.5)', 'rgba(255,100,160,0.5)', 'rgba(100,220,255,0.5)', 'rgba(120,255,140,0.5)'][Math.floor(G.time * 12) % 4];
@@ -1048,31 +1049,51 @@
   class PushBlock extends Ent {
     get darkGlow() { return 18; }
     constructor(x, y, value, o = {}) { super(x, y, 16, 16); this.solid = true; this.pushable = true; this.value = value; this.o = o; this.tx = x; this.ty = y; this.moving = false; this.home = { x, y }; }
-    canGo(nx, ny) {
+    canGo(nx, ny, puller = null) {
       const b = this.bounds;
       if (b && (nx < b.x - 0.01 || ny < b.y - 0.01 || nx + 16 > b.x + b.w + 0.01 || ny + 16 > b.y + b.h + 0.01)) return false;
       const tp = G.TP[G.map.tileAtPx(nx + 8, ny + 8)];
       if (tp.solid || tp.hazard) return false;
-      for (const e of G.ents) if (e !== this && e.solid && !e.dead && G.sameRoom(e) && G.overlap({ x: nx + 1, y: ny + 1, w: 14, h: 14 }, e)) return false;
-      const p = G.player; if (p && G.overlap({ x: nx, y: ny, w: 16, h: 16 }, p)) return false;
+      for (const e of G.ents) if (e !== this && e !== puller && e.solid && !e.dead && G.sameRoom(e) && G.overlap({ x: nx + 1, y: ny + 1, w: 14, h: 14 }, e)) return false;
+      const p = G.player; if (p && p !== puller && G.overlap({ x: nx, y: ny, w: 16, h: 16 }, p)) return false;
       return true;
     }
-    push(dir) {
+    interact(player) {
+      if (player.state !== 'normal' || player.z > 0 || player.vz > 0 || player.carry || player.kbT > 0) return;
+      this.push([1, 0, 3, 2][player.dir], player);
+    }
+    push(dir, puller = null) {
       if (this.moving || this.o.locked) return;
       const d = G.DIRS[dir];
       const nx = this.x + d.x * 16, ny = this.y + d.y * 16;
-      if (!this.canGo(nx, ny)) return;
+      if (!this.canGo(nx, ny, puller)) return;
+      if (puller) {
+        const px = puller.x + d.x * 16, py = puller.y + d.y * 16;
+        // Check the entire backward step, including walls, other blocks and pits.
+        if (G.rectBlocked(Math.min(puller.x, px), Math.min(puller.y, py), puller.w + Math.abs(d.x * 16), puller.h + Math.abs(d.y * 16), puller, { avoidHazard: true })) return;
+        if (G.overlap({ x: nx, y: ny, w: 16, h: 16 }, { x: px, y: py, w: puller.w, h: puller.h })) return;
+        if (G.map.kind === 'dungeon' && G.dun.roomAt(px + puller.w / 2, py + puller.h / 2)?.idx !== G.curRoom) return;
+        this.puller = puller; puller.state = 'pull'; puller.vx = puller.vy = 0;
+        puller.spinCharging = false; puller.spinCharge = 0;
+      }
       this.tx = nx; this.ty = ny; this.moving = true; this.lastDir = dir; G.sfx('push');
     }
-    reset() { this.x = this.tx = this.home.x; this.y = this.ty = this.home.y; this.moving = false; }
+    releasePuller() {
+      if (this.puller?.state === 'pull') { this.puller.state = 'normal'; this.puller.moving = false; this.puller.lastSafe = { x: this.puller.x, y: this.puller.y }; }
+      this.puller = null;
+    }
+    reset() { this.releasePuller(); this.x = this.tx = this.home.x; this.y = this.ty = this.home.y; this.moving = false; }
     update(dt) {
       this.t += dt;
       if (this.moving) {
+        const ox = this.x, oy = this.y;
         this.x = G.approach(this.x, this.tx, 64 * dt); this.y = G.approach(this.y, this.ty, 64 * dt);
+        if (this.puller?.state === 'pull') { this.puller.x += this.x - ox; this.puller.y += this.y - oy; }
         if (this.x === this.tx && this.y === this.ty) {
           this.moving = false;
+          const pulled = !!this.puller; this.releasePuller();
           // no gelo, continua deslizando
-          if (this.o.slide && this.lastDir !== undefined && G.TP[G.map.tileAtPx(this.x + 8, this.y + 8)].ice) {
+          if (!pulled && this.o.slide && this.lastDir !== undefined && G.TP[G.map.tileAtPx(this.x + 8, this.y + 8)].ice) {
             const d = G.DIRS[this.lastDir], nx = this.x + d.x * 16, ny = this.y + d.y * 16;
             if (this.canGo(nx, ny)) { this.tx = nx; this.ty = ny; this.moving = true; return; }
             G.sfx('land');
