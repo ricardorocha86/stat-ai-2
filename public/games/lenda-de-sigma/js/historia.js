@@ -9,7 +9,7 @@
 (function (G) {
   const TS = 16, TAU = Math.PI * 2;
   const say = (n, t, o) => G.ui.say(n, t, o);
-  const VP = { portrait: 'viesNPC_down0' }, HP = { portrait: 'hero_down0' }, GP = { portrait: 'gauss_down0' }, VC = { portrait: 'vicente_down0' };
+  const VP = { portrait: 'viesNPC_down0' }, HP = { get portrait() { return G.spriteHeroi(false) + '_down0'; } }, GP = { portrait: 'gauss_down0' }, VC = { portrait: 'vicente_down0' };
 
   G.CAST.vicente = { skin: G.CAST.hero.skin, hair: '#2a1040', hairStyle: 'short', tunic: '#3a1a5a', trim: '#ffd23a', robe: true, belt: '#ffd23a', boots: '#1a0a2a', glasses: true, build: 'tall' };
 
@@ -167,7 +167,7 @@
       options: ['A média no centro esconde a dispersão das flechas!', 'Média no centro: todas acertaram o centro.', 'Muita dispersão quer dizer pontaria perfeita.'],
       hurt: 'Argh! O desvio padrão... sempre o desvio padrão!', laugh: 'Hahaha! Perfeitos! Pelo menos em média!',
       explain: 'Média igual não quer dizer resultados iguais. O ^ydesvio padrão^0 mostra o quanto os valores se espalham em volta da média.',
-      exit: 'No Vulcão, tudo depende da sorte. E a sorte, garoto, está do MEU lado!' },
+      exit: 'No Vulcão, tudo depende da sorte. E a sorte, {garoto|garota}, está do MEU lado!' },
     d4: { topic: 'prob',
       intro: ['Probabilidade? Ora, eu sou o mestre do acaso!', 'Esta moeda deu ^yCARA 5 vezes seguidas^0. Agora é CERTEZA que vem coroa! Aposte tudo comigo!'],
       lie: { title: 'AGORA VEM COROA!', kind: 'coins', seq: 'CCCCC?' },
@@ -234,7 +234,7 @@
     const holo = G.addEnt(new ViesHolo(p.cx, p.y - 46, { big: true })); holo.room = -1;
     G.music('vies'); p.dir = 1;
     await G.wait(0.9); holo.laugh();
-    await say('Viés', 'Ora, ora... O aprendiz do velho Gauss chegou ao ^pPlanalto do Viés^0.', VP);
+    await say('Viés', 'Ora, ora... {O|A} aprendiz do velho Gauss chegou ao ^pPlanalto do Viés^0.', VP);
     await say('Viés', 'Daqui de cima eu decido o que o reino vê. Um gráfico aqui, um eixo cortado ali... e o povo acredita em TUDO.', VP);
     if (n < 5) await say('Viés', 'Você tem ' + n + (n === 1 ? ' cristal' : ' cristais') + '. Meu selo só se rompe com ^pcinco^0... e eu duvido que você chegue lá. Hahaha!', VP);
     else await say('Viés', 'Cinco cristais... O selo está quebrado. Então venha, se tiver coragem!', VP);
@@ -263,7 +263,7 @@
     cine(true); G.music('vies'); G.sfx('glitch'); G.flash('#a040ff', 0.35, 0.45);
     const holo = G.addEnt(new ViesHolo(r.px + 12 * TS, r.py + 4 * TS)); holo.room = r.idx; p.dir = 1;
     await G.wait(0.9);
-    await say('Viés', 'Bem-vindo ao meu castelo, Sigma. Aqui eu guardo o último cristal: o da ^pAMOSTRA^0.', VP);
+    await say('Viés', 'Bem-{vindo|vinda} ao meu castelo, Sigma. Aqui eu guardo o último cristal: o da ^pAMOSTRA^0.', VP);
     await say('Viés', 'Sem ele, ninguém sabe ESCOLHER quem ouvir. Meus guardas, por exemplo, foram escolhidos a dedo... como todos os meus dados.', VP);
     holo.laugh();
     await say('Viés', 'Suba até a sala do trono, se puder. Mas cuidado: aqui, cada sala conta só metade da história!', VP);
@@ -302,7 +302,7 @@
     const k = await G.ui.ask('Sigma', 'O que responder?', ['Nunca! Dados escolhidos a dedo enganam as pessoas.', 'E se a verdade não me agradar?'], HP);
     if (k === 1) {
       await say('Viés', 'Então você a ESCONDE, como eu!', VP);
-      await say('Sigma', 'Não. Um estatístico aceita os dados... mesmo quando eles o contrariam.', HP);
+      await say('Sigma', 'Não. {Um estatístico|Uma estatística} aceita os dados... mesmo quando eles {o|a} contrariam.', HP);
     } else await say('Viés', 'Hmpf. Igualzinho ao velho Gauss.', VP);
     await say('Viés', 'Então prove, se for capaz de distinguir o VERDADEIRO do FALSO!', VP);
     G.sfx('roar'); G.flash('#c050ff', 0.5, 0.6); G.shake(5, 0.6);

@@ -21,8 +21,14 @@
     crystals: [], keys: {}, bossKey: {}, flags: {}, lessons: [], pipes: [], regions: [], broken: {}, dunSeen: {},
     seen: new Array((G.world.MW / 8) * (G.world.MH / 8)).fill(0),
     stats: { dmg: [], quiz: {}, kills: 0, coinsTotal: 0 }, playTime: 0,
-    savePoint: null
+    savePoint: null, personagem: 'heroi'
   });
+  // personagem escolhido no Novo Jogo ('heroi' ou 'heroina'); saves antigos ficam com o herói
+  G.personagem = 'heroi';
+  G.ehHeroina = () => G.personagem === 'heroina';
+  G.spriteHeroi = (traje = G.P && G.P.items.suit) => (G.ehHeroina() ? 'heroina' : 'hero') + (traje ? '_suit' : '');
+  // textos com '{masculino|feminino}' concordam com o personagem
+  G.genero = s => (typeof s === 'string' && s.includes('{') ? s.replace(/\{([^{}|]*)\|([^{}|]*)\}/g, (_, m, f) => (G.ehHeroina() ? f : m)) : s);
   G.fmtTime = s => { s = Math.floor(s); const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, ss = s % 60; return (h ? h + 'h ' : '') + String(m).padStart(2, '0') + 'm ' + String(ss).padStart(2, '0') + 's'; };
   G.completion = () => {
     const P = G.P; let got = 0, tot = 0;
@@ -156,6 +162,7 @@
   // ------------------------------------------------------------------
   function newGame() {
     G.P = G.newProgress();
+    G.P.personagem = G.personagem;
     const s = startPos();
     G.world.loadOverworld(s.x, s.y);
     G.player.dir = 1;
@@ -172,6 +179,7 @@
     const s = G.loadSave();
     if (!s) { newGame(); return; }
     G.P = s;
+    G.personagem = s.personagem === 'heroina' ? 'heroina' : 'heroi';
     G.ui.clear();
     const wasDead = s.hp <= 0;
     if (wasDead) s.hp = s.maxHp;
@@ -213,9 +221,11 @@
     }
     G.state = 'play';
     G.saveGame();
-    G.ui.toast('Jogo carregado. Bem-vindo de volta, Sigma!', '#7ae4ff');
+    G.ui.toast('Jogo carregado. Bem-{vindo|vinda} de volta, Sigma!', '#7ae4ff');
   }
-  G.toTitle = () => { G.state = 'title'; G.titleT = 0; G.titleSel = 0; G.ui.clear(); G.cutscene = 0; G.music('title'); };
+  // o título mostra o personagem do jogo salvo
+  function personagemDoSave() { const s = G.hasSave() && G.loadSave(); G.personagem = s && s.personagem === 'heroina' ? 'heroina' : 'heroi'; }
+  G.toTitle = () => { G.state = 'title'; G.titleT = 0; G.titleSel = 0; G.ui.clear(); G.cutscene = 0; G.music('title'); personagemDoSave(); };
 
   // ------------------------------------------------------------------
   //  Introdução (história)
@@ -226,7 +236,7 @@
     { t: 'Até que o feiticeiro ^rViés, o Distorcedor^0, roubou os cristais e os escondeu em templos guardados por monstros.', art: 'vies' },
     { t: '^r"Os números dizem o que EU quiser!"^0, gargalhou Viés, mostrando ao povo só os dados que lhe convinham e escondendo todo o resto.', art: 'vies2' },
     { t: 'Sem os cristais, a confusão tomou conta. "Todo mundo pensa assim!", gritavam, depois de perguntar a três amigos...', art: 'confusion' },
-    { t: 'Agora, só um jovem aprendiz do sábio ^yMestre Gauss^0 pode restaurar o equilíbrio.\nSeu nome é ^cSIGMA^0.', art: 'hero' }
+    { t: 'Agora, só {um|uma} jovem aprendiz do sábio ^yMestre Gauss^0 pode restaurar o equilíbrio.\nSeu nome é ^cSIGMA^0.', art: 'hero' }
   ];
   function drawIntroArt(ctx, art, t) {
     const cx = W / 2, cy = 70;
@@ -254,7 +264,7 @@
     } else if (art === 'vies2' && G.introArt) { G.introArt.vies2(ctx, cx, cy, t);
     } else if (art === 'hero') {
       ctx.fillStyle = 'rgba(122,228,255,0.15)'; ctx.fillRect(cx - 30, cy - 30, 60, 70);
-      const s = G.spr['hero_down' + (Math.floor(t * 2) % 2)];
+      const s = G.spr[G.spriteHeroi(false) + '_down' + (Math.floor(t * 2) % 2)];
       G.drawFit(ctx, s, cx - 24, cy - 24, 48, 48);
       G.draw(ctx, 'gauss_down0', cx + 40, cy + 8);
     }
@@ -374,10 +384,23 @@
           G.sfx('confirm');
           if (o === 'Continuar') { G.ui.fade(1, 0.4).then(() => { continueGame(); G.ui.fade(0, 0.5); }); G.state = 'loading'; }
           else if (o === 'Novo Jogo') {
-            if (has) { G.ui.choose(['Não, voltar', 'Sim, apagar o jogo salvo'], { prompt: 'Começar um NOVO jogo apaga o progresso salvo. Tem certeza?', cancel: 0 }).then(r => { if (r === 1) { try { G.storage.removeItem(SAVE_KEY); } catch (e) { } startIntro(); } }); }
-            else startIntro();
+            if (has) { G.ui.choose(['Não, voltar', 'Sim, apagar o jogo salvo'], { prompt: 'Começar um NOVO jogo apaga o progresso salvo. Tem certeza?', cancel: 0 }).then(r => { if (r === 1) abrirEscolha(true); }); }
+            else abrirEscolha(false);
           } else G.ui.controls();
         }
+        G.ui.update(dt);
+        break;
+      }
+      case 'escolha': {
+        G.escolhaT += dt;
+        if (G.input.pressed('left') || G.input.pressed('right')) { G.escolhaSel = 1 - G.escolhaSel; G.sfx('select'); }
+        if (G.input.pressed('confirm') && G.escolhaT > 0.3) {
+          G.sfx('confirm');
+          G.personagem = G.escolhaSel ? 'heroina' : 'heroi';
+          // o save só é apagado aqui: voltar desta tela ainda preserva o jogo salvo
+          if (G.escolhaApagar) { try { G.storage.removeItem(SAVE_KEY); } catch (e) { } }
+          startIntro();
+        } else if (G.input.pressed('cancel')) { G.sfx('cancel'); G.toTitle(); G.titleSel = G.hasSave() ? 1 : 0; }
         G.ui.update(dt);
         break;
       }
@@ -385,7 +408,7 @@
       case 'intro': {
         G.introT += dt;
         const pg = INTRO[G.introPage];
-        const len = G.visLen(pg.t);
+        const len = G.visLen(G.genero(pg.t));
         if (G.input.pressed('start')) { G.introPage = INTRO.length; }
         else if (G.input.pressed('confirm')) {
           if (G.introT * 50 < len) G.introT = len / 50 + 0.01;
@@ -420,6 +443,7 @@
     G.input.endFrame();
   }
   function startIntro() { G.state = 'intro'; G.introPage = 0; G.introT = 0; G.music('title'); }
+  function abrirEscolha(apagarSave) { G.state = 'escolha'; G.escolhaT = 0; G.escolhaSel = 0; G.escolhaApagar = apagarSave; }
 
   // ------------------------------------------------------------------
   //  Renderização
@@ -565,6 +589,66 @@
   }
   function drawTitle(ctx) {
     const t = G.titleT || 0;
+    drawTitleBg(ctx, t);
+    // cristais orbitando o título
+    ['media', 'mediana', 'dispersao', 'prob', 'distrib', 'amostra'].forEach((c, i) => {
+      const an = t * 0.5 + i * Math.PI / 3, depth = Math.sin(an);
+      const x = W / 2 + Math.cos(an) * 150, y = 58 + depth * 14;
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, x, y, 12, '#ffffff', 0.2 + 0.15 * (depth + 1)); ctx.restore();
+      G.draw(ctx, 'crystal_' + c, x - 8, y - 8, { alpha: 0.55 + 0.45 * (depth + 1) / 2 });
+    });
+    // logo
+    G.textBig('A LENDA DE', W / 2, 22, '#d8d8ff', { align: 'center', scale: 2, gradient: ['#ffffff', '#a8a8f0'], outline: '#1a0a3a' });
+    const sh = (t * 0.6) % 3;
+    G.textBig('SIGMA', W / 2, 40, '#ffd84a', { align: 'center', scale: 4, gradient: ['#fff6c0', '#e89a20'], outline: '#5a2a08', shadowColor: 'rgba(0,0,0,0.7)' });
+    if (sh < 1) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const sx = W / 2 - 70 + sh * 140; const gr = ctx.createLinearGradient(sx - 10, 0, sx + 10, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, 'rgba(255,255,255,0.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = gr; ctx.fillRect(sx - 10, 36, 20, 34); ctx.restore(); }
+    G.text('— O REINO DOS DADOS —', W / 2, 79, '#ff9ae6', { align: 'center', outline: '#2a0a2a' });
+    G.text('Uma aventura para aprender Estatística', W / 2, 91, '#c8c0e8', { align: 'center' });
+    // personagem do jogo salvo no morro
+    const hs = G.spr[G.spriteHeroi(false) + '_down_stand'];
+    G.shadow(ctx, 70, H - 32, 20, 0.35);
+    if (hs) G.drawFit(ctx, hs, 46, H - 86, 48, 56);
+    if (G.state === 'boot') {
+      if (Math.floor(t * 2) % 2 === 0) G.text(G.touch && G.touch.on ? 'TOQUE NA TELA PARA COMEÇAR' : 'PRESSIONE QUALQUER TECLA', W / 2, 128, '#ffffff', { align: 'center', outline: '#1a0a3a' });
+    } else {
+      const opts = G.hasSave() ? ['Continuar', 'Novo Jogo', 'Controles'] : ['Novo Jogo', 'Controles'];
+      const pw = 120, ph = opts.length * 13 + 10, px = W / 2 - pw / 2, py = 106;
+      G.panel(ctx, px, py, pw, ph, { r: 4 });
+      opts.forEach((o, i) => {
+        const sel = i === G.titleSel, y = py + 6 + i * 13;
+        if (sel) { G.selBar(ctx, px + 5, y - 1.5, pw - 10, 11, t); G.draw(ctx, 'cursor', px + 9 + Math.sin(t * 8) * 0.8, y); }
+        G.text(o, W / 2 + 4, y, sel ? '#ffe27a' : '#e0e0f0', { align: 'center' });
+      });
+    }
+    G.text('Z: confirmar   Setas: mover   F: tela cheia', W / 2, H - 10, '#c8c0d8', { align: 'center', outline: '#14301e' });
+  }
+  // tela de escolha do personagem (depois de Novo Jogo)
+  const ESCOLHAS = [{ id: 'heroi', nome: 'HERÓI', cor: '#7ae4ff' }, { id: 'heroina', nome: 'HEROÍNA', cor: '#ff9ae6' }];
+  function drawEscolha(ctx) {
+    const t = G.escolhaT || 0;
+    drawTitleBg(ctx, G.titleT + t);
+    ctx.fillStyle = 'rgba(8,4,24,0.45)'; ctx.fillRect(0, 0, W, H);
+    G.textBig('ESCOLHA SEU PERSONAGEM', W / 2, 14, '#ffd84a', { align: 'center', scale: 2, gradient: ['#fff6c0', '#e89a20'], outline: '#5a2a08', shadowColor: 'rgba(0,0,0,0.7)' });
+    G.text('Quem vai recuperar os Cristais da Razão?', W / 2, 36, '#c8c0e8', { align: 'center', outline: '#1a0a3a' });
+    ESCOLHAS.forEach((e, i) => {
+      const sel = i === G.escolhaSel, cw = 112, ch = 128, cx = W / 2 + (i ? 66 : -66), x = cx - cw / 2, y = 50;
+      ctx.globalAlpha = sel ? 1 : 0.7;
+      if (sel) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, cx, y + 58, 62, e.cor, 0.22 + 0.06 * Math.sin(t * 4)); ctx.restore(); }
+      G.panel(ctx, x, y + (sel ? -2 : 0), cw, ch, { r: 5, border: sel ? '#ffd84a' : '#5a5690' });
+      // personagem: o escolhido caminha, o outro fica parado
+      const base = e.id === 'heroina' ? 'heroina' : 'hero';
+      const s = G.spr[base + (sel ? '_down' + (Math.floor(t * 6) % 4) : '_down_stand')];
+      G.shadow(ctx, cx, y + 92, 22, 0.4);
+      if (s) G.drawFit(ctx, s, cx - 24, y + 30 + (sel ? -2 : 0), 48, 56);
+      G.text(e.nome, cx, y + 102, sel ? '#ffe27a' : '#e0e0f0', { align: 'center' });
+      G.text('Sigma', cx, y + 113, sel ? e.cor : '#9a98b0', { align: 'center' });
+      if (sel) G.draw(ctx, 'cursor', x + 8 + Math.sin(t * 8) * 0.8, y + 100);
+      ctx.globalAlpha = 1;
+    });
+    G.text(G.touch && G.touch.on ? 'Direcional: escolher   Toque: confirmar' : '← →: escolher   Z: confirmar   X: voltar', W / 2, H - 10, '#c8c0d8', { align: 'center', outline: '#14301e' });
+  }
+  // céu, montanhas, colinas e vaga-lumes do título (também usados na escolha)
+  function drawTitleBg(ctx, t) {
     if (!titleLayers) titleLayers = buildTitleLayers();
     // céu
     const g = ctx.createLinearGradient(0, 0, 0, H);
@@ -589,43 +673,12 @@
     ctx.save(); ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < 12; i++) { const x = (G.hash2(i, 7, 1) * W + Math.sin(t * 0.7 + i) * 14), y = H - 40 + Math.cos(t * 0.9 + i * 2) * 14 - G.hash2(i, 8, 1) * 20; G.glow(ctx, x, y, 4, '#d8ff7a', 0.6 + 0.4 * Math.sin(t * 3 + i)); }
     ctx.restore();
-    // cristais orbitando o título
-    ['media', 'mediana', 'dispersao', 'prob', 'distrib', 'amostra'].forEach((c, i) => {
-      const an = t * 0.5 + i * Math.PI / 3, depth = Math.sin(an);
-      const x = W / 2 + Math.cos(an) * 150, y = 58 + depth * 14;
-      ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, x, y, 12, '#ffffff', 0.2 + 0.15 * (depth + 1)); ctx.restore();
-      G.draw(ctx, 'crystal_' + c, x - 8, y - 8, { alpha: 0.55 + 0.45 * (depth + 1) / 2 });
-    });
-    // logo
-    G.textBig('A LENDA DE', W / 2, 22, '#d8d8ff', { align: 'center', scale: 2, gradient: ['#ffffff', '#a8a8f0'], outline: '#1a0a3a' });
-    const sh = (t * 0.6) % 3;
-    G.textBig('SIGMA', W / 2, 40, '#ffd84a', { align: 'center', scale: 4, gradient: ['#fff6c0', '#e89a20'], outline: '#5a2a08', shadowColor: 'rgba(0,0,0,0.7)' });
-    if (sh < 1) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const sx = W / 2 - 70 + sh * 140; const gr = ctx.createLinearGradient(sx - 10, 0, sx + 10, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, 'rgba(255,255,255,0.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = gr; ctx.fillRect(sx - 10, 36, 20, 34); ctx.restore(); }
-    G.text('— O REINO DOS DADOS —', W / 2, 79, '#ff9ae6', { align: 'center', outline: '#2a0a2a' });
-    G.text('Uma aventura para aprender Estatística', W / 2, 91, '#c8c0e8', { align: 'center' });
-    // herói no morro
-    const hs = G.spr['hero_down' + (Math.floor(t * 2) % 2 ? '_stand' : '_stand')];
-    G.shadow(ctx, 70, H - 32, 20, 0.35);
-    if (hs) G.drawFit(ctx, hs, 46, H - 86, 48, 56);
-    if (G.state === 'boot') {
-      if (Math.floor(t * 2) % 2 === 0) G.text(G.touch && G.touch.on ? 'TOQUE NA TELA PARA COMEÇAR' : 'PRESSIONE QUALQUER TECLA', W / 2, 128, '#ffffff', { align: 'center', outline: '#1a0a3a' });
-    } else {
-      const opts = G.hasSave() ? ['Continuar', 'Novo Jogo', 'Controles'] : ['Novo Jogo', 'Controles'];
-      const pw = 120, ph = opts.length * 13 + 10, px = W / 2 - pw / 2, py = 106;
-      G.panel(ctx, px, py, pw, ph, { r: 4 });
-      opts.forEach((o, i) => {
-        const sel = i === G.titleSel, y = py + 6 + i * 13;
-        if (sel) { G.selBar(ctx, px + 5, y - 1.5, pw - 10, 11, t); G.draw(ctx, 'cursor', px + 9 + Math.sin(t * 8) * 0.8, y); }
-        G.text(o, W / 2 + 4, y, sel ? '#ffe27a' : '#e0e0f0', { align: 'center' });
-      });
-    }
-    G.text('Z: confirmar   Setas: mover   F: tela cheia', W / 2, H - 10, '#c8c0d8', { align: 'center', outline: '#14301e' });
   }
   function drawIntro(ctx) {
     ctx.fillStyle = '#05030c'; ctx.fillRect(0, 0, W, H);
     const pg = INTRO[Math.min(G.introPage, INTRO.length - 1)];
     drawIntroArt(ctx, pg.art, G.time);
-    const lines = G.wrap(pg.t, 340);
+    const lines = G.wrap(G.genero(pg.t), 340);
     let rem = Math.floor(G.introT * 50);
     lines.forEach((l, i) => { G.text(l, 22, 130 + i * 11, '#ffffff', { max: Math.max(0, rem) }); rem -= G.visLen(l); });
     G.text((G.introPage + 1) + '/' + INTRO.length + '   Z: avançar   Enter: pular', W - 10, H - 10, '#5a5670', { align: 'right' });
@@ -645,7 +698,7 @@
     // herói caído sob um foco de luz
     ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, W / 2, 112, 46, '#ff6a8a', 0.25 * k); ctx.restore();
     G.shadow(ctx, W / 2, 118, 22, 0.4 * k);
-    const hs = G.spr.hero_down_stand;
+    const hs = G.spr[G.spriteHeroi(false) + '_down_stand'];
     if (hs) { ctx.save(); ctx.globalAlpha = k; ctx.translate(W / 2, 112); ctx.rotate(Math.PI / 2); ctx.drawImage(G.tint(hs, 'rgba(80,40,90,0.35)'), -G.lw(hs) / 2, -G.lh(hs) / 2, G.lw(hs), G.lh(hs)); ctx.restore(); }
     const ty = 26 + (1 - k) * -14;
     ctx.globalAlpha = k;
@@ -713,7 +766,7 @@
       const k = Math.min(1, (t - G.endLen) / 1.5);
       ctx.globalAlpha = k;
       G.shadow(ctx, W / 2 - 14, H - 28, 16, 0.4); G.shadow(ctx, W / 2 + 18, H - 28, 16, 0.4);
-      const s = G.spr['hero_down' + (Math.floor(t * 3) % 2 ? '_stand' : '1')];
+      const s = G.spr[G.spriteHeroi(false) + '_down' + (Math.floor(t * 3) % 2 ? '_stand' : '1')];
       if (s) G.draw(ctx, s, W / 2 - 14 - G.lw(s) / 2, H - 28 - G.lh(s) + 2);
       const gs = G.spr.gauss_down_stand || G.spr.gauss_down0;
       if (gs) G.draw(ctx, gs, W / 2 + 18 - G.lw(gs) / 2, H - 28 - G.lh(gs) + 2);
@@ -731,6 +784,7 @@
     ctx.imageSmoothingEnabled = false;
     switch (G.state) {
       case 'boot': case 'title': drawTitle(ctx); break;
+      case 'escolha': drawEscolha(ctx); break;
       case 'intro': drawIntro(ctx); break;
       case 'play': case 'loading':
         if (G.map) { drawWorld(ctx); if (G.state === 'play') G.ui.drawHUD(ctx); if (G.cineDraw) G.cineDraw(ctx); }
@@ -775,6 +829,7 @@
     window.addEventListener('resize', fit); fit();
     G.titleT = 0; G.titleSel = 0;
     G.world.ensure();
+    personagemDoSave();
     let last = performance.now(), acc = 0;
     function loop(now) {
       let d = (now - last) / 1000; last = now;

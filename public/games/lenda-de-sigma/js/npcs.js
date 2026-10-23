@@ -46,7 +46,7 @@
     gauss: async (n) => {
       const p = P(), por = 'gauss_down0';
       if (!p.flags.talkGauss) {
-        await say('Mestre Gauss', 'Ah, Sigma, meu melhor aprendiz! Que bom que você acordou. Temos um problema TERRÍVEL.', { portrait: por });
+        await say('Mestre Gauss', 'Ah, Sigma, {meu melhor|minha melhor} aprendiz! Que bom que você acordou. Temos um problema TERRÍVEL.', { portrait: por });
         await say('Mestre Gauss', 'O feiticeiro ^rViés, o Distorcedor^0, roubou os seis ^pCristais da Razão^0 e os escondeu em templos pelo reino de Datália.', { portrait: por });
         await say('Mestre Gauss', 'Sem os cristais, o povo esqueceu como entender os números. Acreditam em boatos, fazem contas erradas, tomam decisões ruins...', { portrait: por });
         await say('Mestre Gauss', 'Só alguém que domina a ^yEstatística^0 pode recuperá-los. E esse alguém é VOCÊ! É perigoso ir desarmado. Tome isto!', { portrait: por });
@@ -55,17 +55,17 @@
         if (!p.lessons.includes('intro')) p.lessons.push('intro');
         await say('Mestre Gauss', 'Mas uma espada não basta. Primeiro, uma lição rápida sobre o que é a Estatística.', { portrait: por });
         await G.ui.lesson('intro');
-        await say('Mestre Gauss', 'O primeiro cristal está no ^gTemplo da Média^0, a nordeste daqui. Fale comigo sempre que estiver perdido. Boa sorte, Sigma!', { portrait: por });
+        await say('Mestre Gauss', 'O primeiro cristal está no ^gTemplo da Média^0, a nordeste daqui. Fale comigo sempre que estiver {perdido|perdida}. Boa sorte, Sigma!', { portrait: por });
         await say(null, 'Controles: ^ySETAS^0 movem · ^yZ^0 ataca e conversa · ^yEnter^0 abre o menu (status, mapa, missões, Grimório) · ^yM^0 mapa. Explore o reino à vontade!');
         await say(null, 'Dica: quem tem um ^y!^0 amarelo sobre a cabeça tem um pedido para você. Missões rendem tesouros e lições novas!');
         G.ui.toast('Objetivo: Templo da Média (nordeste da vila)', '#ffd84a');
         return;
       }
-      const r = await ask('Mestre Gauss', 'Precisa de ajuda, Sigma?', ['Para onde devo ir?', 'Desafio do Mestre (XP)', 'Quem é o senhor?', 'Nada, obrigado'], { cancel: 3, portrait: por });
+      const r = await ask('Mestre Gauss', 'Precisa de ajuda, Sigma?', ['Para onde devo ir?', 'Desafio do Mestre (XP)', 'Quem é o senhor?', 'Nada, {obrigado|obrigada}'], { cancel: 3, portrait: por });
       if (r === 0) await say('Mestre Gauss', G.nextHint(), { portrait: por });
       else if (r === 1) {
         const ok = await G.ui.quiz(G.Q.genUnlocked(2), { title: 'DESAFIO DO MESTRE' });
-        if (ok) { G.addXP(10); await say('Mestre Gauss', 'Excelente! Você está ficando afiado. (+10 XP)', { portrait: por }); }
+        if (ok) { G.addXP(10); await say('Mestre Gauss', 'Excelente! Você está ficando {afiado|afiada}. (+10 XP)', { portrait: por }); }
         else await say('Mestre Gauss', 'Errar faz parte de aprender. Releia o Grimório e tente de novo!', { portrait: por });
       } else if (r === 2) {
         await say('Mestre Gauss', 'Me inspiro em ^yCarl Friedrich Gauss^0 (1777-1855), o "príncipe dos matemáticos". Ele estudou a famosa ^ccurva normal^0, em forma de sino.', { portrait: por });
@@ -76,7 +76,7 @@
       const p = P(), por = 'mendel_down0';
       if (!p.flags.metMendel) {
         p.flags.metMendel = true;
-        await say('Seu Mendel', 'Bem-vindo à minha loja! Sabia que o monge ^yGregor Mendel^0 descobriu as leis da hereditariedade contando ervilhas? Estatística pura!', { portrait: por });
+        await say('Seu Mendel', 'Bem-{vindo|vinda} à minha loja! Sabia que o monge ^yGregor Mendel^0 descobriu as leis da hereditariedade contando ervilhas? Estatística pura!', { portrait: por });
       }
       await shop('Seu Mendel', por, SHOP_COMMON().concat([
         { label: () => 'Espada de Ferro (ATQ+1)', price: 100, desc: 'Uma espada mais forte. Aumenta seu ataque em 1.', cond: () => p.swordLv === 0, buy: async () => { p.swordLv = 1; G.sfx('fanfare'); await G.ui.banner('swordIcon', 'ESPADA DE FERRO', 'Ataque aumentado! Veja seu novo dano no Diário de Dados.'); } },
@@ -100,7 +100,7 @@
     kid1: async (n) => {
       const p = P();
       if (p.flags.kid1Done) { await say('Tico', 'Agora eu sei calcular a média das minhas bolinhas! Valeu!'); return; }
-      await say('Tico', 'Ei, você é o aprendiz do Mestre Gauss? Me ajuda com a lição de casa?');
+      await say('Tico', 'Ei, você é {o|a} aprendiz do Mestre Gauss? Me ajuda com a lição de casa?');
       const ok = await G.ui.quiz(G.Q.gen('media', 1), { title: 'LIÇÃO DO TICO' });
       if (ok) { p.flags.kid1Done = true; await say('Tico', 'Uau, isso mesmo! Toma, guardei essas moedas pra você.'); G.give('coin', 15); }
       else await say('Tico', 'Hmm, acho que não... Vamos tentar de novo depois?');
@@ -189,7 +189,7 @@
       const p = P(), por = 'pascal_down0';
       if (!p.flags.metPascal) {
         p.flags.metPascal = true;
-        await say('Pascal', 'Bem-vindo ao meu cassino! Sou fã de ^yBlaise Pascal^0, que junto com Fermat inventou a teoria da probabilidade... para resolver uma briga de apostadores!', { portrait: por });
+        await say('Pascal', 'Bem-{vindo|vinda} ao meu cassino! Sou fã de ^yBlaise Pascal^0, que junto com Fermat inventou a teoria da probabilidade... para resolver uma briga de apostadores!', { portrait: por });
         if (!p.lessons.includes('esperanca')) p.lessons.push('esperanca');
         await say('Pascal', 'Antes de apostar, aprenda sobre o ^yVALOR ESPERADO^0. Ele diz quanto você ganha ou perde EM MÉDIA.', { portrait: por });
         await G.ui.lesson('esperanca');
@@ -210,7 +210,7 @@
       const p = P(), por = 'laplace_down0';
       if (!p.flags.metLaplace) {
         p.flags.metLaplace = true;
-        await say('Eremita Laplace', 'Hum... um visitante. Pierre-Simon ^yLaplace^0 dizia: "a teoria da probabilidade é o bom senso reduzido a cálculo".', { portrait: por });
+        await say('Eremita Laplace', 'Hum... {um|uma} visitante. Pierre-Simon ^yLaplace^0 dizia: "a teoria da probabilidade é o bom senso reduzido a cálculo".', { portrait: por });
         await say('Eremita Laplace', 'Você vai precisar disto no templo do bosque. Lá dentro, lembre-se: a MEDIANA fica no meio dos dados ORDENADOS.', { portrait: por });
         await G.give('potion');
         return;
@@ -256,7 +256,7 @@
     galton: async () => {
       const p = P(), por = 'galton_down0';
       if (!p.lessons.includes('normal')) {
-        await say('Professor Galton', 'Brrr! Bem-vindo, jovem. Sou fã de ^yFrancis Galton^0, que criou este tabuleiro para mostrar como o ACASO forma um SINO.', { portrait: por });
+        await say('Professor Galton', 'Brrr! Bem-{vindo|vinda}, jovem. Sou fã de ^yFrancis Galton^0, que criou este tabuleiro para mostrar como o ACASO forma um SINO.', { portrait: por });
         p.lessons.push('normal'); G.sfx('secret'); G.addXP(10);
         await say(null, 'Nova lição no Grimório: ^cDistribuição Normal^0!');
         await G.ui.lesson('normal');

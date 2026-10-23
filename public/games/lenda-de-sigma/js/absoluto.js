@@ -11,7 +11,7 @@
 (function (G) {
   const TS = 16, TAU = Math.PI * 2;
   const say = (n, t, o) => G.ui.say(n, t, o);
-  const AP = { portrait: 'viesAbsPortrait' }, VP = { portrait: 'viesNPC_down0' }, HP = { portrait: 'hero_down0' };
+  const AP = { portrait: 'viesAbsPortrait' }, VP = { portrait: 'viesNPC_down0' }, HP = { get portrait() { return G.spriteHeroi(false) + '_down0'; } };
   const cine = (on, tint) => { if (G.cineSet) G.cineSet(on, tint); };
   const GLYPHS = ['7', '%', 'σ', '?', 'μ', 'Σ', '3', '!', '0', 'x'];
 

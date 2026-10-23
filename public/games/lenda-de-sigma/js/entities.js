@@ -371,7 +371,7 @@
     swordTip() { const h = this.handPos(true), a = [Math.PI / 2, -Math.PI / 2, Math.PI, 0][this.dir]; return { x: h.x + Math.cos(a) * 16, y: h.y + Math.sin(a) * 16 }; }
     // mão na pose de ataque/arremesso (mundo)
     handPos(raw) {
-      const base = G.P.items.suit ? 'hero_suit' : 'hero';
+      const base = G.spriteHeroi();
       const view = this.dir === 0 ? 'down' : this.dir === 1 ? 'up' : 'side';
       const ref = G.spr[base + '_down0'], lw = G.lw(ref), lh = G.lh(ref);
       const sx = this.cx - lw / 2, sy = this.y + this.h + 1 - lh - this.z;
@@ -456,7 +456,7 @@
     }
     draw(ctx, cam) {
       const P = G.P;
-      const base = P.items.suit ? 'hero_suit' : 'hero';
+      const base = G.spriteHeroi();
       const view = this.dir === 0 ? 'down' : this.dir === 1 ? 'up' : 'side';
       const ref = G.spr[base + '_down0'];
       const lw = G.lw(ref), lh = G.lh(ref);

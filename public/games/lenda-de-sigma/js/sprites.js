@@ -571,6 +571,9 @@
   G.CAST = {
     hero: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'spiky', tunic: '#2f7fe0', trim: '#e8c04a', belt: '#8a5a2a', pants: '#3e3466', boots: '#7a4422', cape: '#d8343e', emblem: '#ffd84a', bracer: '#2ec8b8', eyes: '#1a3a5a' },
     hero_suit: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'spiky', tunic: '#ff8a2a', trim: '#5aff8a', belt: '#5a3a1a', pants: '#c05a1a', boots: '#7a3a1a', cape: '#ffd23a', emblem: '#fff4e0', emblem2: '#c0401a', bracer: '#5aff8a', eyes: '#1a3a5a' },
+    // heroína: mesma família e equipamento do herói, cabelo longo com faixa
+    heroina: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'long', tunic: '#2f7fe0', trim: '#e8c04a', belt: '#8a5a2a', pants: '#3e3466', boots: '#7a4422', cape: '#d8343e', emblem: '#ffd84a', bracer: '#2ec8b8', eyes: '#1a3a5a', hat: { type: 'bandana', color: '#d8343e' } },
+    heroina_suit: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'long', tunic: '#ff8a2a', trim: '#5aff8a', belt: '#5a3a1a', pants: '#c05a1a', boots: '#7a3a1a', cape: '#ffd23a', emblem: '#fff4e0', emblem2: '#c0401a', bracer: '#5aff8a', eyes: '#1a3a5a', hat: { type: 'bandana', color: '#5aff8a' } },
     gauss: { skin: SKIN.claro, hair: '#ececf4', hairStyle: 'short', beard: '#ececf4', longBeard: true, tunic: '#6a3aa8', trim: '#ffd84a', robe: true, belt: '#ffd84a', boots: '#4a2a6a', hat: { type: 'wizard', color: '#4a2a8a', color2: '#ffd84a' }, build: 'adult', brows: true, browColor: '#c8c8d8' },
     florence: { skin: SKIN.claro, hair: '#5a3018', hairStyle: 'long', tunic: '#f4f0f0', trim: '#e03030', robe: true, belt: '#e03030', boots: '#7a5a4a', hat: { type: 'nurse', color: '#ffffff', color2: '#e03030' } },
     mendel: { skin: SKIN.medio, hair: '#2a1a10', hairStyle: 'short', tunic: '#3aaa4a', trim: '#2a6a2a', apron: '#e8dcc0', pants: '#4a3a2a', boots: '#3a2418', hat: { type: 'cap', color: '#2a8a3a' }, build: 'stout' },

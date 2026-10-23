@@ -459,7 +459,7 @@
     drawStatus(ctx, x, y, w, h) {
       const P = G.P;
       G.rect(ctx, x, y, 52, 52, '#0a0918'); G.strokeRect(ctx, x, y, 52, 52, '#5a5690');
-      const hs = G.spr[(P.items.suit ? 'hero_suit' : 'hero') + '_down0'];
+      const hs = G.spr[G.spriteHeroi() + '_down0'];
       if (hs) G.drawFit(ctx, hs, x + 2, y + 2, 48, 48);
       G.text('SIGMA', x + 60, y + 2, '#ffd84a');
       G.text('Nível ' + P.level, x + 60, y + 14, '#ffffff');
@@ -631,18 +631,21 @@
     clear() { this.stack.length = 0; this.toasts.length = 0; this.region = null; },
     say(name, text, o = {}) {
       if (Array.isArray(text)) return text.reduce((p, t) => p.then(() => UI.say(name, t, o)), Promise.resolve());
-      return new Promise(res => this.push(new Dialog(name, text, o, res)));
+      return new Promise(res => this.push(new Dialog(name, G.genero(text), o, res)));
     },
-    choose(options, o = {}) { return new Promise(res => this.push(new Choice(options, o, res))); },
+    choose(options, o = {}) {
+      if (o.prompt) o = Object.assign({}, o, { prompt: G.genero(o.prompt) });
+      return new Promise(res => this.push(new Choice(options.map(G.genero), o, res)));
+    },
     ask(name, text, options, o = {}) { return this.choose(options, Object.assign({ prompt: text, name, portrait: o.portrait }, o)); },
     quiz(q, o = {}) { return new Promise(res => this.push(new Quiz(q, o, res))); },
-    banner(icon, title, text, o) { return new Promise(res => this.push(new Banner(icon, title, text, res, o))); },
+    banner(icon, title, text, o) { return new Promise(res => this.push(new Banner(icon, G.genero(title), G.genero(text), res, o))); },
     lesson(id) { return new Promise(res => this.push(new LessonView(id, res))); },
     controls() { return new Promise(res => this.push(new Controls(res))); },
     pause(tab = 0) { return new Promise(res => this.push(new PauseMenu(res, tab))); },
     // cartão do bestiário (não bloqueia): ícone, nome e explicação
     card(o) { this.cards = this.cards || []; this.cards.push(Object.assign({ t: 0, life: 8 }, o)); G.sfx('menu'); },
-    toast(text, color = '#ffffff') { this.toasts.push({ text, color, t: 3 }); if (this.toasts.length > 3) this.toasts.shift(); },
+    toast(text, color = '#ffffff') { this.toasts.push({ text: G.genero(text), color, t: 3 }); if (this.toasts.length > 3) this.toasts.shift(); },
     regionBanner(name, sub) { this.region = { name, sub, t: 0 }; },
     fade(to, dur = 0.4) {
       return new Promise(res => { this.fadeTarget = to; this.fadeSpeed = Math.abs(to - this.fadeA) / Math.max(0.01, dur); this.fadeRes = res; if (this.fadeA === to) { this.fadeRes = null; res(); } });

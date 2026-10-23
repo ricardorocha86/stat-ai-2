@@ -887,7 +887,7 @@
       }
       if (r.type === 'start' && !G.flag(did + '_entered')) {
         G.setFlag(did + '_entered');
-        G.runScript(async () => { await G.wait(0.4); await G.ui.say(null, 'Bem-vindo ao ^y' + m.spec.name + '^0. Leia a ^cTábua^0 para aprender a lição deste lugar!'); });
+        G.runScript(async () => { await G.wait(0.4); await G.ui.say(null, 'Bem-{vindo|vinda} ao ^y' + m.spec.name + '^0. Leia a ^cTábua^0 para aprender a lição deste lugar!'); });
       }
     },
     lock(r) {
@@ -931,7 +931,7 @@
         G.music(did === 'd6' ? 'vies' : 'boss');
         if (did === 'd6' && G.viesBossIntro) await G.viesBossIntro(boss);
         else if (did === 'd6') {
-          await G.ui.say('Viés', 'Então você é o pequeno estatístico que anda recuperando meus cristais... Os números mentem, garoto! Basta escolher QUAIS números mostrar!', { portrait: 'viesNPC_down0' });
+          await G.ui.say('Viés', 'Então você é {o pequeno estatístico|a pequena estatística} que anda recuperando meus cristais... Os números mentem, {garoto|garota}! Basta escolher QUAIS números mostrar!', { portrait: 'viesNPC_down0' });
           await G.ui.say('Viés', 'Vou distorcer sua visão como distorci o reino inteiro!', { portrait: 'viesNPC_down0' });
           G.music('boss');
         }

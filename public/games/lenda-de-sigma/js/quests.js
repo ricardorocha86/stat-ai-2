@@ -584,7 +584,7 @@
     const p = P(), por = 'muriel_down0', nm = 'Dona Muriel';
     if (QS.done('cha')) { await say(nm, G.pick(['Desde o teste, o Seu Quirino me trata com outro respeito! Hehe.', 'Lembre: primeiro a hipótese nula, depois os dados. Nada de conclusões apressadas!', 'Mais um chazinho? Desta vez eu não conto se o leite veio antes!']), { portrait: por }); return; }
     if (!QS.st('cha')) {
-      await say(nm, 'Ah, um jovem estatístico! Ninguém nesta vila acredita em mim...', { portrait: por });
+      await say(nm, 'Ah, {um jovem estatístico|uma jovem estatística}! Ninguém nesta vila acredita em mim...', { portrait: por });
       await say(nm, 'Eu sei dizer, só pelo gosto, se o ^yleite^0 foi servido ANTES ou DEPOIS do ^ychá^0 na xícara! O Seu Quirino jura que é pura sorte.', { portrait: por });
       await say(nm, 'Que tal um experimento de verdade? Você prepara ^y8 xícaras^0 — 4 com o leite primeiro e 4 com o chá primeiro — e eu provo sem ver.', { portrait: por });
       QS.start('cha');
@@ -835,7 +835,7 @@
   N.gauss = async (n) => {
     const p = P(), por = 'gauss_down0', nm = 'Mestre Gauss';
     if (!p.flags.talkGauss) return gauss0(n);
-    const r = await ask(nm, 'Precisa de ajuda, Sigma?', ['Para onde devo ir?', 'Missões do reino', 'Desafio do Mestre (XP)', 'Quem é o senhor?', 'Nada, obrigado'], { cancel: 4, portrait: por });
+    const r = await ask(nm, 'Precisa de ajuda, Sigma?', ['Para onde devo ir?', 'Missões do reino', 'Desafio do Mestre (XP)', 'Quem é o senhor?', 'Nada, {obrigado|obrigada}'], { cancel: 4, portrait: por });
     if (r === 0) await say(nm, G.nextHint(), { portrait: por });
     else if (r === 1) {
       const open = ORDER.filter(id => !QS.done(id));
@@ -844,7 +844,7 @@
       for (const id of open.slice(0, 3)) await say(nm, QS.hint(id), { portrait: por });
     } else if (r === 2) {
       const ok = await G.ui.quiz(G.Q.genUnlocked(2), { title: 'DESAFIO DO MESTRE' });
-      if (ok) { G.addXP(10); await say(nm, 'Excelente! Você está ficando afiado. (+10 XP)', { portrait: por }); }
+      if (ok) { G.addXP(10); await say(nm, 'Excelente! Você está ficando {afiado|afiada}. (+10 XP)', { portrait: por }); }
       else await say(nm, 'Errar faz parte de aprender. Releia o Grimório e tente de novo!', { portrait: por });
     } else if (r === 3) {
       await say(nm, 'Me inspiro em ^yCarl Friedrich Gauss^0 (1777-1855), o "príncipe dos matemáticos". Ele estudou a famosa ^ccurva normal^0, em forma de sino.', { portrait: por });
