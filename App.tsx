@@ -338,6 +338,7 @@ const App: React.FC = () => {
       studentProgress={studentProgress}
       userProfile={userProfile}
       onAskTutor={(text) => setTutorQuestion({ text, id: Date.now() })}
+      onPlayGame={() => setPage('sigma-game')}
     />
   );
 

@@ -593,7 +593,7 @@
       }, { color: op.color }), r.idx));
     });
     add(new G.Sign(...L(20, 2), pz.prompt, { name: 'Enigma' }), r.idx);
-    return { prompt: pz.prompt, rewardPos: [11, 10] };
+    return { prompt: pz.prompt, rewardPos: [11, 10], sign: true };
   };
 
   G.PUZ.plates = (c) => {
@@ -638,7 +638,7 @@
     add(new G.Sign(...L(3, 2), prompt, { name: 'Enigma das Placas' }), r.idx);
     add(new G.AnswerCrystal(...L(20, 2), '↺', false, () => { if (c.isSolved()) return; for (const b of blocks) b.reset(); G.sfx('teleport'); }, { color: '#c8c8ff' }), r.idx);
     add(new TargetMark(...L(10, 2), name + ' = ' + target), r.idx);
-    return { prompt, rewardPos: [11, 10] };
+    return { prompt, rewardPos: [11, 10], sign: true };
   };
 
   function gatePuzzle(kind) {
@@ -700,7 +700,7 @@
     };
     makeGates(false);
     add(new G.Sign(...L(horiz ? 2 : (entry === 'E' ? 20 : 3), horiz ? (entry === 'S' ? 9 : 3) : 10), g.prompt, { name: 'Enigma dos Portões' }), r.idx);
-    return { prompt: g.prompt, rewardPos: far, visibleReward: true };
+    return { prompt: g.prompt, rewardPos: far, visibleReward: true, sign: true };
   };
 
   // ------------------------------------------------------------------
@@ -782,6 +782,11 @@
     }
   }
 
+  // placa "Enigma" ao lado da porta de entrada, no primeiro ponto de chão livre
+  function puzzleSign(r, text, add, L, getL) {
+    const d = r.doors, cands = d.S ? [[14, 10], [9, 10], [15, 9], [8, 9]] : d.E ? [[21, 4], [21, 8], [20, 3], [20, 9]] : d.W ? [[2, 4], [2, 8], [3, 3], [3, 9]] : [[14, 2], [9, 2], [15, 3], [8, 3]];
+    for (const [lx, ly] of cands) { const t = getL(lx, ly); if (t === T.FLOOR || t === T.FLOOR2 || t === T.CARPET) { add(new G.Sign(...L(lx, ly), text, { name: 'Enigma' }), r.idx); return; } }
+  }
   function buildRoom(map, r, did, add) {
     const spec = D[did], ox = r.px, oy = r.py, L = (lx, ly) => [ox + lx * TS, oy + ly * TS];
     const setL = (lx, ly, t) => { const tx = r.x0 + lx, ty = r.y0 + ly; if (G.map === map) map.set(tx, ty, t); else map.tiles[ty * map.w + tx] = t; };
@@ -855,6 +860,8 @@
           const pz = P(ctx) || {};
           r.puz = pz; r.prompt = pz.prompt;
           if (pz.noAutoEnemies) r.noAutoEnemies = true;
+          // placa para reler o enigma a qualquer hora (a explicação também aparece ao entrar)
+          if (pz.prompt && !pz.sign) puzzleSign(r, pz.prompt, add, L, getL);
         }
       }
     }
@@ -976,7 +983,7 @@
         G.sfx('roar');
         G.ui.bossCard(boss.name, did === 'd6' ? 'SENHOR DAS DISTORÇÕES' : 'GUARDIÃO · ' + G.map.spec.name.toUpperCase());
         await G.wait(1.6);
-        G.music(did === 'd6' ? 'vies' : 'boss');
+        G.music(did === 'd6' ? 'vies' : G.bossMusic(boss));
         if (did === 'd6' && G.viesBossIntro) await G.viesBossIntro(boss);
         else if (did === 'd6') {
           await G.ui.say('Viés', 'Então você é {o pequeno estatístico|a pequena estatística} que anda recuperando meus cristais... Os números mentem, {garoto|garota}! Basta escolher QUAIS números mostrar!', { portrait: 'viesNPC_down0' });

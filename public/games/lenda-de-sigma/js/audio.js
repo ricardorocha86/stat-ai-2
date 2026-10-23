@@ -117,20 +117,80 @@
       if (!AC) return;
       try { this.ctx = new AC(); } catch (e) { return; }
       const c = this.ctx;
-      this.master = c.createGain(); this.master.gain.value = this.muted ? 0 : 0.9; this.master.connect(c.destination);
-      this.mG = c.createGain(); this.mG.gain.value = this.musicVol; this.mG.connect(this.master);
+      // mixagem: música → recuo (duck) → filtro (abafa na pausa) → mestre → compressor → saída
+      this.master = c.createGain(); this.master.gain.value = this.muted ? 0 : 0.9;
+      this.comp = c.createDynamicsCompressor();
+      this.comp.threshold.value = -14; this.comp.knee.value = 12; this.comp.ratio.value = 4; this.comp.attack.value = 0.004; this.comp.release.value = 0.2;
+      this.master.connect(this.comp); this.comp.connect(c.destination);
+      this.mF = c.createBiquadFilter(); this.mF.type = 'lowpass'; this.mF.frequency.value = 20000; this.mF.Q.value = 0.4; this.mF.connect(this.master);
+      this.duckG = c.createGain(); this.duckG.connect(this.mF);
+      this.mG = c.createGain(); this.mG.gain.value = this.musicVol; this.mG.connect(this.duckG);
       this.sG = c.createGain(); this.sG.gain.value = this.sfxVol; this.sG.connect(this.master);
+      this.aG = c.createGain(); this.aG.gain.value = this.sfxVol * 0.8; this.aG.connect(this.master);
       const len = c.sampleRate * 1;
       this.noiseBuf = c.createBuffer(1, len, c.sampleRate);
       const d = this.noiseBuf.getChannelData(0);
       for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
       this.ok = true;
-      setInterval(() => this.schedule(), 25);
+      setInterval(() => { this.schedule(); this.ambEvents(0.025); }, 25);
       if (this.pending) { const p = this.pending; this.pending = null; this.cur = null; this.music(p); }
     },
     setVol(m, s) {
       this.musicVol = m; this.sfxVol = s;
-      if (this.mG) { this.mG.gain.value = m; this.sG.gain.value = s; }
+      if (this.mG) { this.mG.gain.value = m; this.sG.gain.value = s; this.aG.gain.value = s * 0.8; }
+    },
+    // a música recua um pouco sob efeitos grandes e volta sozinha
+    duck(amount, dur) {
+      if (!this.ok) return;
+      const g = this.duckG.gain, t = this.ctx.currentTime;
+      g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(1 - amount, t + 0.04); g.setValueAtTime(1 - amount, t + dur * 0.5); g.linearRampToValueAtTime(1, t + dur);
+    },
+    // música abafada com o menu de pausa aberto
+    muffle(on) {
+      if (!this.ok || this.muffled === on) return;
+      this.muffled = on; this.mF.frequency.setTargetAtTime(on ? 850 : 20000, this.ctx.currentTime, on ? 0.06 : 0.12);
+    },
+    // chamado a cada quadro: ambiência da região e o filtro da pausa
+    tick() {
+      if (!this.ok) return;
+      this.ambience(G.ambienceKey ? G.ambienceKey() : null);
+      this.muffle(!!(G.ui && G.ui.stack && G.ui.stack.some(o => o.isPause)));
+    },
+    // ---------- ambiência: uma camada contínua (vento, rumor, água) e eventos esparsos ----------
+    ambience(name) {
+      if (name === this.ambCur) return;
+      this.ambCur = name;
+      const c = this.ctx, t = c.currentTime;
+      if (this.amb) { const old = this.amb; old.g.gain.cancelScheduledValues(t); old.g.gain.setValueAtTime(old.g.gain.value, t); old.g.gain.linearRampToValueAtTime(0.0001, t + 1.2); setTimeout(() => old.nodes.forEach(n => { try { n.stop ? n.stop() : 0; n.disconnect(); } catch (e) { } }), 1400); }
+      this.amb = null;
+      const def = name && AMB[name]; if (!def) return;
+      const g = c.createGain(), nodes = [g]; g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(1, t + 1.5); g.connect(this.aG);
+      for (const b of def.bed || []) {
+        let src;
+        if (b.osc) { src = c.createOscillator(); src.type = b.osc; src.frequency.value = b.f; }
+        else { src = c.createBufferSource(); src.buffer = this.noiseBuf; src.loop = true; }
+        const f = c.createBiquadFilter(); f.type = b.ft || 'lowpass'; f.frequency.value = b.ff || 800; f.Q.value = b.q || 0.7;
+        const v = c.createGain(); v.gain.value = b.v;
+        src.connect(f); f.connect(v); v.connect(g); nodes.push(src, f, v);
+        // rajadas: um oscilador lento mexe no volume (e no filtro) da camada
+        if (b.lfo) {
+          const l = c.createOscillator(), lg = c.createGain(); l.frequency.value = b.lfo; lg.gain.value = b.v * (b.depth || 0.6);
+          l.connect(lg); lg.connect(v.gain); nodes.push(l, lg); l.start(t);
+          if (b.sweep) { const lf = c.createGain(); lf.gain.value = b.sweep; l.connect(lf); lf.connect(f.frequency); nodes.push(lf); }
+        }
+        src.start(t);
+      }
+      this.amb = { def, g, nodes };
+    },
+    ambEvents(dt) {
+      const a = this.amb; if (!a || !a.def.ev) return;
+      for (const [ev, mean] of a.def.ev) if (Math.random() < dt / mean && AMBEV[ev]) try { AMBEV[ev](this.amb.g); } catch (e) { }
+    },
+    // ---------- passos: timbre conforme o chão ----------
+    step(kind) {
+      if (!this.ok) return;
+      const r = 0.85 + Math.random() * 0.3, f = STEPS[kind] || STEPS.terra;
+      f(r, this.sG);
     },
     setMuted(muted) {
       this.muted = Boolean(muted);
@@ -299,7 +359,83 @@
     freeze() { A.noise({ d: 0.2, v: 0.08, ft: 'highpass', f: 5000 }); },
     star() { A.seq([1046, 1318, 1568, 1318, 1568, 2093], 0.05, 'square', 0.07); }
   };
-  G.sfx = function (name) { if (!A.ok) return; const f = S[name]; if (f) try { f(); } catch (e) { } };
+  // efeitos grandes abrem espaço na música: [quanto recua, duração em s]
+  const DUCK = { explode: [0.4, 0.7], roar: [0.5, 1.1], bossdie: [0.6, 2.2], itemget: [0.65, 1.6], fanfare: [0.65, 1.8], crystal: [0.6, 2.0], levelup: [0.4, 1.0], secret: [0.35, 0.9], chest: [0.3, 0.6] };
+  G.sfx = function (name) { if (!A.ok) return; const f = S[name]; if (f) try { f(); if (DUCK[name]) A.duck(...DUCK[name]); } catch (e) { } };
+
+  // ------------------- ambiência por região -------------------
+  // bed: camadas contínuas (ruído filtrado ou oscilador; lfo = rajadas); ev: [evento, intervalo médio em s]
+  const AMB = {
+    vila: { bed: [{ ft: 'bandpass', ff: 900, q: 0.5, v: 0.018, lfo: 0.07, depth: 0.5 }], ev: [['passaro', 2.5], ['passaro2', 4]] },
+    lago: { bed: [{ ft: 'lowpass', ff: 500, v: 0.03, lfo: 0.18, depth: 0.7 }], ev: [['passaro', 3.5], ['agua', 2.2]] },
+    campo: { bed: [{ ft: 'bandpass', ff: 1100, q: 0.4, v: 0.02, lfo: 0.09, depth: 0.6, sweep: 300 }], ev: [['passaro', 3], ['grilo', 5]] },
+    floresta: { bed: [{ ft: 'bandpass', ff: 1600, q: 0.6, v: 0.014, lfo: 0.11, depth: 0.7 }], ev: [['passaro2', 3], ['coruja', 14], ['galho', 9]] },
+    pantano: { bed: [{ ft: 'lowpass', ff: 300, v: 0.03, lfo: 0.05, depth: 0.4 }], ev: [['sapo', 2.2], ['bolha', 3], ['grilo', 4]] },
+    deserto: { bed: [{ ft: 'bandpass', ff: 700, q: 0.8, v: 0.03, lfo: 0.06, depth: 0.8, sweep: 400 }], ev: [['rajada', 9]] },
+    vulcao: { bed: [{ ft: 'lowpass', ff: 120, v: 0.08, lfo: 0.13, depth: 0.5 }, { ft: 'highpass', ff: 4000, v: 0.004 }], ev: [['estalo', 0.7], ['borbulha', 3]] },
+    neve: { bed: [{ ft: 'bandpass', ff: 800, q: 0.9, v: 0.035, lfo: 0.08, depth: 0.8, sweep: 500 }], ev: [['rajada', 7]] },
+    castelo: { bed: [{ osc: 'sine', f: 55, ff: 300, v: 0.03 }, { osc: 'sine', f: 55.8, ff: 300, v: 0.03 }, { ft: 'bandpass', ff: 600, q: 1, v: 0.015, lfo: 0.07, depth: 0.7, sweep: 250 }], ev: [['corvo', 10], ['rajada', 12]] },
+    masmorra: { bed: [{ ft: 'lowpass', ff: 180, v: 0.04, lfo: 0.04, depth: 0.3 }], ev: [['gota', 2.5]] },
+    floresta_m: { bed: [{ ft: 'lowpass', ff: 220, v: 0.035, lfo: 0.05, depth: 0.3 }], ev: [['gota', 3.5], ['galho', 8]] },
+    deserto_m: { bed: [{ ft: 'bandpass', ff: 500, q: 0.7, v: 0.02, lfo: 0.06, depth: 0.6 }], ev: [['areia', 4], ['gota', 9]] },
+    neve_m: { bed: [{ ft: 'bandpass', ff: 900, q: 0.8, v: 0.02, lfo: 0.08, depth: 0.7, sweep: 300 }], ev: [['gelo', 3], ['rajada', 10]] },
+    observatorio: { bed: [{ osc: 'sine', f: 110, ff: 400, v: 0.012, lfo: 0.1, depth: 0.5 }], ev: [['brilho', 1.6]] }
+  };
+  const AMBEV = {
+    passaro(d) { const b = 2400 + Math.random() * 900, n = 2 + (Math.random() * 3 | 0); for (let i = 0; i < n; i++) A.tone({ f: b + i * 120, f2: b + 700 + Math.random() * 300, d: 0.06, type: 'sine', v: 0.022, delay: i * 0.09, dest: d }); },
+    passaro2(d) { const b = 1600 + Math.random() * 500; A.tone({ f: b, f2: b * 1.5, d: 0.12, type: 'sine', v: 0.02, dest: d }); A.tone({ f: b * 1.5, f2: b * 1.1, d: 0.16, type: 'sine', v: 0.018, delay: 0.16, dest: d }); },
+    coruja(d) { A.tone({ f: 440, f2: 400, d: 0.3, type: 'sine', v: 0.03, dest: d }); A.tone({ f: 420, f2: 360, d: 0.45, type: 'sine', v: 0.028, delay: 0.42, dest: d }); },
+    galho(d) { A.noise({ d: 0.04, v: 0.05, ft: 'bandpass', f: 1800, dest: d }); A.noise({ d: 0.03, v: 0.03, ft: 'bandpass', f: 2600, delay: 0.05, dest: d }); },
+    grilo(d) { const f = 4200 + Math.random() * 600; for (let k = 0; k < 2; k++) for (let i = 0; i < 3; i++) A.tone({ f, d: 0.018, type: 'square', v: 0.006, delay: k * 0.35 + i * 0.045, dest: d }); },
+    sapo(d) { const f = 150 + Math.random() * 60; A.tone({ f, f2: f * 0.8, d: 0.09, type: 'square', v: 0.018, dest: d }); A.tone({ f: f * 1.1, f2: f * 0.85, d: 0.12, type: 'square', v: 0.016, delay: 0.13, dest: d }); },
+    bolha(d) { A.tone({ f: 300 + Math.random() * 200, f2: 900, d: 0.06, type: 'sine', v: 0.03, dest: d }); },
+    borbulha(d) { for (let i = 0; i < 3; i++) A.tone({ f: 120 + Math.random() * 80, f2: 260, d: 0.08, type: 'sine', v: 0.04, delay: i * 0.1, dest: d }); },
+    estalo(d) { const n = 1 + (Math.random() * 3 | 0); for (let i = 0; i < n; i++) A.noise({ d: 0.015, v: 0.05, ft: 'highpass', f: 2500 + Math.random() * 2000, delay: i * 0.03 + Math.random() * 0.02, dest: d }); },
+    agua(d) { A.noise({ d: 0.5, v: 0.03, ft: 'lowpass', f: 900, f2: 250, dest: d }); },
+    rajada(d) { A.noise({ d: 1.6, v: 0.035, ft: 'bandpass', f: 500, f2: 1400, dest: d }); },
+    corvo(d) { for (let i = 0; i < 2; i++) A.tone({ f: 620, f2: 480, d: 0.14, type: 'sawtooth', v: 0.012, delay: i * 0.22, dest: d }); },
+    gota(d) { const f = 1200 + Math.random() * 900; A.tone({ f, f2: f * 0.55, d: 0.05, type: 'sine', v: 0.04, dest: d }); A.tone({ f: f * 0.9, f2: f * 0.5, d: 0.05, type: 'sine', v: 0.012, delay: 0.2, dest: d }); },
+    areia(d) { A.noise({ d: 0.6, v: 0.02, ft: 'highpass', f: 3500, dest: d }); },
+    gelo(d) { const f = 2600 + Math.random() * 1400; A.tone({ f, d: 0.25, type: 'triangle', v: 0.012, dest: d }); A.tone({ f: f * 1.5, d: 0.18, type: 'triangle', v: 0.008, delay: 0.05, dest: d }); },
+    brilho(d) { const P5 = [1568, 1760, 2093, 2349, 2637, 3136]; A.tone({ f: P5[Math.random() * P5.length | 0], d: 0.6, type: 'triangle', v: 0.012, a: 0.05, dest: d }); }
+  };
+  const AMB_REGIAO = { vila: 'vila', lago: 'lago', planicie: 'campo', floresta: 'floresta', pantano: 'pantano', deserto: 'deserto', vulcao: 'vulcao', montanha: 'neve', castelo: 'castelo' };
+  const AMB_MASM = { d1: 'masmorra', d2: 'floresta_m', d3: 'deserto_m', d4: 'vulcao', d5: 'neve_m', d6: 'castelo', d7: 'observatorio' };
+  G.ambienceKey = () => {
+    if (G.state !== 'play' || !G.map || !G.player) return null;
+    if (G.map.kind === 'dungeon') return AMB_MASM[G.map.id] || 'masmorra';
+    return AMB_REGIAO[G.world.regionAt(G.player.cx, G.player.cy)] || null;
+  };
+
+  // ------------------- passos por terreno -------------------
+  const STEPS = {
+    grama(r, d) { A.noise({ d: 0.05, v: 0.035, ft: 'bandpass', f: 2400 * r, f2: 1200, dest: d }); },
+    terra(r, d) { A.noise({ d: 0.05, v: 0.05, ft: 'lowpass', f: 900 * r, dest: d }); A.tone({ f: 110 * r, f2: 70, d: 0.04, type: 'sine', v: 0.04, dest: d }); },
+    areia(r, d) { A.noise({ d: 0.08, v: 0.03, ft: 'highpass', f: 2600 * r, dest: d }); },
+    neve(r, d) { A.noise({ d: 0.04, v: 0.045, ft: 'bandpass', f: 1300 * r, dest: d }); A.noise({ d: 0.05, v: 0.03, ft: 'bandpass', f: 900 * r, delay: 0.03, dest: d }); },
+    cinza(r, d) { A.noise({ d: 0.06, v: 0.045, ft: 'lowpass', f: 1500 * r, dest: d }); },
+    gelo(r, d) { A.tone({ f: 2100 * r, d: 0.025, type: 'triangle', v: 0.018, dest: d }); A.noise({ d: 0.02, v: 0.02, ft: 'highpass', f: 5000, dest: d }); },
+    pedra(r, d) { A.noise({ d: 0.035, v: 0.05, ft: 'bandpass', f: 1900 * r, dest: d }); A.tone({ f: 260 * r, f2: 180, d: 0.025, type: 'triangle', v: 0.03, dest: d }); },
+    madeira(r, d) { A.tone({ f: 190 * r, f2: 140, d: 0.07, type: 'triangle', v: 0.06, dest: d }); A.noise({ d: 0.04, v: 0.03, ft: 'bandpass', f: 900 * r, dest: d }); },
+    tapete(r, d) { A.noise({ d: 0.05, v: 0.03, ft: 'lowpass', f: 600 * r, dest: d }); },
+    agua(r, d) { A.noise({ d: 0.12, v: 0.06, ft: 'bandpass', f: 1500 * r, f2: 600, dest: d }); }
+  };
+  const FLOOR_STEP = { tiles: 'pedra', planks: 'madeira', sand: 'areia', cave: 'pedra', ice: 'gelo' }, BASE_STEP = { grass: 'grama', sand: 'areia', snow: 'neve', ash: 'cinza' };
+  // passo do herói: o chão sob os pés escolhe o timbre
+  G.footstep = (p) => {
+    const m = G.map; if (!m || !A.ok) return;
+    const T = G.T, tx = Math.floor(p.cx / 16), ty = Math.floor((p.y + p.h - 1) / 16), id = m.get(tx, ty), th = G.THEMES[m.themeAt(tx, ty)] || {};
+    let k;
+    if (id === T.WATER) k = 'agua';
+    else if (id === T.ICE) k = 'gelo';
+    else if (id === T.BRIDGE) k = 'madeira';
+    else if (id === T.CARPET) k = 'tapete';
+    else if (th.dun) k = FLOOR_STEP[th.floor] || 'pedra';
+    else if (id === T.PLAZA) k = 'pedra';
+    else if (id === T.PATH) k = th.base === 'snow' ? 'neve' : th.base === 'sand' ? 'areia' : 'terra';
+    else k = BASE_STEP[th.base] || 'grama';
+    A.step(k);
+  };
   G.music = function (name) { A.music(name); };
   G.audio.freq = freq; G.audio.TRACKS = T; G.audio.parse = parse; G.SFX = S;
 })(window.G);

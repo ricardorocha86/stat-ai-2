@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getCourseProgress, getCourseStars, getLessonProgress, getLessonStars } from '../services/progressService';
 import { Course, Lesson, StudentProgress, UserProfile } from '../types';
 import CoverShowcase from './CoverShowcase';
+import SigmaGameAnnouncement from './games/SigmaGameAnnouncement';
 import { OwlIcon, PaperAirplaneIcon, StarIcon } from './Icons';
 
 interface HomePageProps {
@@ -10,6 +11,7 @@ interface HomePageProps {
   studentProgress: StudentProgress;
   userProfile: UserProfile | null;
   onAskTutor: (question: string) => void;
+  onPlayGame: () => void;
 }
 
 const lessonLabel = (lesson: Lesson) =>
@@ -26,7 +28,7 @@ const Stars: React.FC<{ count: number }> = ({ count }) => (
   </span>
 );
 
-const HomePage: React.FC<HomePageProps> = ({ course, onSelectLesson, studentProgress, userProfile, onAskTutor }) => {
+const HomePage: React.FC<HomePageProps> = ({ course, onSelectLesson, studentProgress, userProfile, onAskTutor, onPlayGame }) => {
   const [question, setQuestion] = useState('');
 
   const lessons = course.units.flatMap(unit => unit.lessons).filter(lesson => lesson.kind !== 'reference');
@@ -69,6 +71,8 @@ const HomePage: React.FC<HomePageProps> = ({ course, onSelectLesson, studentProg
           </h1>
           <p className="mt-1 text-[--text-secondary]">Que bom ter você no Stat-AI 2.0. Vamos estudar estatística?</p>
         </header>
+
+        <SigmaGameAnnouncement onPlay={onPlayGame} />
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           {currentLesson && (

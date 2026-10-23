@@ -403,7 +403,7 @@
   // ------------------------------------------------------------------
   const TABS = ['STATUS', 'MAPA', 'MISSÕES', 'GRIMÓRIO', 'DADOS', 'SISTEMA'];
   class PauseMenu {
-    constructor(res, tab = 0) { this.res = res; this.tab = tab; this.i = 0; this.t = 0; this.sub = 0; }
+    constructor(res, tab = 0) { this.res = res; this.tab = tab; this.i = 0; this.t = 0; this.sub = 0; this.isPause = true; }
     update(dt) {
       this.t += dt;
       if (this.busy) return;

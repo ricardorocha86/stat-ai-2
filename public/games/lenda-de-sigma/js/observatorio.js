@@ -419,8 +419,13 @@
     histocolosso: { name: 'Histograma Colossal', color: '#7ad8ff', text: 'Um histograma gigante. Cada barra atira tantas vezes quanto a sua ^yfrequência^0. Leia a forma antes que ela dispare!' },
     boxsentinela: { name: 'Sentinela Boxplot', color: '#ffd84a', text: 'Só a ^yMEDIANA^0 sustenta esta caixa de pedra. Arranque-a com o ^cGancho^0 (C) e ataque enquanto ela se desmonta!' }
   });
+  const { part } = G.rig;
   class MiniBoss extends G.Enemy {
     constructor(x, y, type, o) { super(x, y, type, o); this.heavy = true; this.isMini = true; this.stompable = false; this.spawnT = 0.6; }
+    // o corpo desenhado é alto: a espada acerta o corpo, o contato continua só na base
+    contactBox() { return { x: this.x - 1, y: this.y - 7, w: this.w + 2, h: this.h + 7 }; }
+    flashOn() { return this.hurtT > 0 && Math.floor(this.t * 30) % 2 === 0; }
+    look() { return { white: this.flashOn(), alpha: this.spawnT > 0 ? G.clamp(1 - this.spawnT / 0.6, 0, 1) : 1 }; }
     shot(ang, sp, o = {}) { const e = G.addEnt(new G.EShot(this.cx, this.cy - 10, Math.cos(ang) * sp, Math.sin(ang) * sp, Object.assign({ dmg: this.dmg, size: 7, spr: 'pip', life: 4 }, o))); e.room = this.room; return e; }
     die(kind) {
       G.hitStop = 0.25; G.flash('#ffffff', 0.4, 0.6); G.shake(5, 0.5);
@@ -431,18 +436,20 @@
   }
   // REI DADO — cada pulo sorteia um ataque
   class ReiDado extends MiniBoss {
-    constructor(x, y, type, o) { super(x, y, type, o); this.name = 'Rei Dado'; this.face = 6; this.st = 'idle'; this.stT = 1.2; this.hops = 0; }
-    sprName() { return 'dado' + this.face; }
+    constructor(x, y, type, o) { super(x, y, type, o); this.name = 'Rei Dado'; this.face = 6; this.st = 'idle'; this.stT = 1.2; this.hops = 0; this.landT = 0; }
+    sprName() { return 'reidado_icon'; }
+    hurtbox() { return { x: this.cx - 19, y: this.y + this.h - 40 - this.z, w: 38, h: 40 }; }
     immune() { return this.z > 6; }
     onHit(d, sx, sy, kind, crit) { if (this.st === 'dizzy') d *= 2; return super.onHit(d, sx, sy, kind, crit); }
     ai(dt) {
       this.stT -= dt; const p = G.player;
+      if (this.landT > 0) this.landT -= dt;
       if (this.later > 0) { this.later -= dt; if (this.later <= 0) { for (let i = 0; i < 4; i++) this.shot(i * TAU / 4 + TAU / 8, 90); G.sfx('beam'); } }
       if (this.st === 'idle') { if (this.stT <= 0) this.hop(p.cx, p.cy); }
       else if (this.st === 'hop') {
         const k = 1 - this.stT / this.hopT; this.x = G.lerp(this.hx0, this.hx1, k); this.y = G.lerp(this.hy0, this.hy1, k); this.z = Math.sin(k * Math.PI) * 40;
         if (this.stT <= 0) {
-          this.z = 0; G.sfx('stomp'); G.shake(3, 0.2); G.fx.smoke(this.cx, this.y + this.h, 8, '#c8b8a0', 34); G.fx.ring(this.cx, this.cy, 26, '#ffffff', 0.3, 2);
+          this.z = 0; this.landT = 0.22; G.sfx('stomp'); G.shake(3, 0.2); G.fx.smoke(this.cx, this.y + this.h, 8, '#c8b8a0', 34); G.fx.ring(this.cx, this.cy, 26, '#ffffff', 0.3, 2);
           if (p.z < 6 && G.dist(p.cx, p.cy, this.cx, this.cy) < 28) G.hurtPlayer(this.dmg, this.cx, this.cy);
           if (this.hops > 0) { this.hops--; this.hop(p.cx, p.cy, 0.5); return; }
           this.st = 'roll'; this.stT = 0.7; G.sfx('dice');
@@ -470,26 +477,52 @@
       else if (f === 5) { for (let i = 0; i < 5; i++) this.shot(aim + (i - 2) * 0.5, 55, { homing: 1.3, life: 5 }); G.sfx('teleport'); }
       else { for (let r = 0; r < 2; r++) for (let i = 0; i < 6; i++) this.shot(i * TAU / 6 + r * TAU / 12, 80 + r * 25); G.sfx('explode'); G.shake(2, 0.2); }
     }
+    // pose: agacha antes do pulo, estica no ar, achata ao cair; a coroa e as mãos vêm atrasadas
+    pose() {
+      const s = this.st, t = this.t, br = Math.sin(t * 3) * 0.014;
+      const k = { dx: 0, dy: 0, rot: 0, sx: 1 - br, sy: 1 + br, cape: Math.sin(t * 2.4) * 0.03, crY: 0, crR: Math.sin(t * 1.7) * 0.04, hl: Math.sin(t * 3) * 1.5, hr: Math.sin(t * 3 + 1.4) * 1.5, hx: 0, scep: -0.35, eyes: (t % 3.4) < 0.12 ? 'Blink' : '' };
+      if (s === 'hop') {
+        const q = G.clamp(1 - this.stT / this.hopT, 0, 1), dir = Math.sign(this.hx1 - this.hx0) || 1, up = Math.sin(q * Math.PI);
+        if (q < 0.12) { k.sx = 1.14; k.sy = 0.86; } else { k.sx = 0.93; k.sy = 1.08; }
+        k.rot = Math.sin(q * Math.PI * 2) * 0.07 * dir; k.crY = -Math.max(0, q - 0.45) * 12; k.crR = Math.sin(q * Math.PI * 2) * 0.14 * dir;
+        k.hl = k.hr = -9 * up; k.hx = 3 * up; k.cape = -0.1 * up; k.scep = -0.35 - 0.5 * up; k.eyes = 'Mad';
+      } else if (s === 'roll') {
+        k.rot = Math.sin(t * 40) * 0.16; k.dy = -Math.abs(Math.sin(t * 20)) * 3; k.crY = -Math.abs(Math.sin(t * 20)) * 4;
+        k.hl = -7 + Math.sin(t * 30) * 3; k.hr = -7 - Math.sin(t * 30) * 3; k.hx = 2; k.scep = -0.35 + Math.sin(t * 25) * 0.6; k.eyes = 'Mad';
+      } else if (s === 'act') {
+        const q = G.clamp(1 - this.stT / 0.9, 0, 1); k.scep = -1.5 + q * 1.1; k.hr = -12 + q * 12; k.eyes = 'Mad';
+      } else if (s === 'dizzy') {
+        k.rot = Math.sin(t * 3) * 0.1; k.crR = 0.38 + Math.sin(t * 3) * 0.1; k.crY = 2; k.hl = k.hr = 7; k.hx = -2; k.scep = 0.9; k.eyes = 'Dizzy';
+      }
+      if (this.landT > 0) { const l = this.landT / 0.22; k.sx *= 1 + 0.22 * l; k.sy *= 1 - 0.2 * l; k.crY += 5 * l; k.hl += 4 * l; k.hr += 4 * l; }
+      if (this.squashT > 0) { const q = this.squashT / 0.16; k.sx *= 1 + 0.12 * q; k.sy *= 1 - 0.1 * q; }
+      if (this.tellT > 0) k.dx = Math.sin(t * 90) * 0.8;
+      return k;
+    }
     draw(ctx, cam) {
-      const s = G.spr[this.st === 'roll' ? 'dado_roll' + (Math.floor(this.t * 12) % 2) : 'dado' + this.face]; if (!s) return;
-      const sx = this.cx - G.lw(s) / 2 - cam.x, sy = this.y + this.h - G.lh(s) - cam.y - this.z;
-      G.shadow(ctx, this.cx - cam.x, this.y + this.h - cam.y, 30 - Math.min(14, this.z * 0.3), 0.35);
-      const o = { scale: 2.3 }; if (this.hurtT > 0 && Math.floor(this.t * 30) % 2 === 0) o.white = true; if (this.spawnT > 0) o.alpha = 1 - this.spawnT / 0.6;
-      G.draw(ctx, s, sx, sy, o);
-      // coroa
-      const cx = this.cx - cam.x, cy = sy + G.lh(s) * (1 - 2.3) - 4;
-      ctx.save(); ctx.fillStyle = '#1b1428'; ctx.beginPath(); ctx.moveTo(cx - 11, cy + 6); ctx.lineTo(cx - 11, cy - 2); ctx.lineTo(cx - 5, cy + 2); ctx.lineTo(cx, cy - 5); ctx.lineTo(cx + 5, cy + 2); ctx.lineTo(cx + 11, cy - 2); ctx.lineTo(cx + 11, cy + 6); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#ffd84a'; ctx.beginPath(); ctx.moveTo(cx - 10, cy + 5); ctx.lineTo(cx - 10, cy - 0.5); ctx.lineTo(cx - 5, cy + 3); ctx.lineTo(cx, cy - 3.5); ctx.lineTo(cx + 5, cy + 3); ctx.lineTo(cx + 10, cy - 0.5); ctx.lineTo(cx + 10, cy + 5); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#ff4a6a'; ctx.beginPath(); ctx.arc(cx, cy + 2, 1.5, 0, TAU); ctx.fill(); ctx.restore();
-      if (this.st === 'dizzy') for (let i = 0; i < 3; i++) { const a = this.t * 5 + i * 2.1; G.draw(ctx, 'sparkle', cx + Math.cos(a) * 14 - 2, cy - 8 + Math.sin(a) * 4); }
-      G.light.add(cx, sy + G.lh(s) * (1 - 1.15), 70, '#fff4d8', 0.85);
+      const A = G.bossArt, k = this.pose(), o = this.look(), x = this.cx - cam.x, base = this.y + this.h - cam.y;
+      G.shadow(ctx, x + 2, base - 1, 42 - Math.min(18, this.z * 0.35), 0.38);
+      ctx.save(); ctx.translate(x + k.dx, base - this.z + k.dy); ctx.rotate(k.rot); ctx.scale(k.sx, k.sy);
+      part(ctx, A.rdCape, 0, -39, 26, 1, k.cape, o);
+      part(ctx, A['rdBody' + this.face], 0, 0, 19, 41.5, 0, o);
+      part(ctx, A.rdCrown, 3.5, -36.5 + k.crY, 13, 15.5, k.crR, Object.assign({ glow: A.rdCrownGlow, glowA: 0.45 + 0.25 * Math.sin(this.t * 4), glowC: '#fff0c0' }, o));
+      part(ctx, A['rdEyes' + k.eyes], 0, -32.5, 12, 4.75, 0, k.eyes === 'Mad' ? Object.assign({ glow: A.rdEyesMadGlow, glowA: 0.8, glowC: '#ff4a5a' }, o) : o);
+      // mãos flutuando; a direita segura o cetro
+      part(ctx, A.rdGlove, -24 - k.hx, -13 + k.hl, 5.5, 5, 0, o);
+      part(ctx, A.rdScepter, 24 + k.hx, -13 + k.hr, 4, 20, k.scep, Object.assign({ glow: A.rdScepterGlow, glowA: 0.6, glowC: '#ff6a7a' }, o));
+      part(ctx, A.rdGloveF, 24 + k.hx, -13 + k.hr, 5.5, 5, 0, o);
+      ctx.restore();
+      const cx = x, cy = base - this.z - 46;
+      if (this.st === 'dizzy') for (let i = 0; i < 3; i++) { const a = this.t * 5 + i * 2.1; G.draw(ctx, 'sparkle', cx + Math.cos(a) * 15 - 2, cy + Math.sin(a) * 4); }
+      G.light.add(cx, cy + 14, 80, '#fff4d8', 0.85);
     }
   }
   // HISTOGRAMA COLOSSAL — barras que disparam conforme a frequência
   const SHAPES = [['simétrica', [2, 4, 6, 4, 2]], ['assimétrica à direita', [6, 5, 3, 2, 1]], ['assimétrica à esquerda', [1, 2, 3, 5, 6]], ['uniforme', [4, 4, 4, 4, 4]], ['bimodal', [5, 2, 1, 2, 5]]];
   class HistoColosso extends MiniBoss {
     constructor(x, y, type, o) { super(x, y, type, o); this.name = 'Histograma Colossal'; this.h5 = [3, 3, 3, 3, 3]; this.shape = 0; this.target = SHAPES[0][1]; this.st = 'walk'; this.stT = 1.5; }
-    sprName() { return 'barras_icon'; }
+    sprName() { return 'histocolosso_icon'; }
+    hurtbox() { const mx = Math.max(...this.h5), by = this.y + this.h; return { x: this.cx - 23, y: by - 18 - mx * 6.5, w: 46, h: 18 + mx * 6.5 }; }
     ai(dt) {
       this.stT -= dt; const p = G.player;
       for (let i = 0; i < 5; i++) this.h5[i] = G.approach(this.h5[i], this.target[i], dt * 8);
@@ -513,31 +546,40 @@
       }
     }
     draw(ctx, cam) {
-      const x0 = this.x - cam.x, by = this.y + this.h - cam.y, fl = this.hurtT > 0 && Math.floor(this.t * 30) % 2 === 0;
-      G.shadow(ctx, this.cx - cam.x, by, 46, 0.35);
-      const jx = this.tellT > 0 ? Math.sin(this.t * 90) * 0.8 : 0, walk = this.st === 'walk' ? Math.abs(Math.sin(this.t * 6)) * 1.5 : 0;
-      ctx.save();
-      for (const lx of [8, 32]) { ctx.fillStyle = '#1b1428'; ctx.fillRect(x0 + lx - 3 + jx, by - 6 - walk, 7, 7); ctx.fillStyle = '#3a4a7a'; ctx.fillRect(x0 + lx - 2 + jx, by - 5 - walk, 5, 5); }
-      const cols = ['#5ad8ff', '#5aa8ff', '#7a8aff', '#5aa8ff', '#5ad8ff'];
-      const mx = Math.max(...this.h5);
+      const A = G.bossArt, o = this.look(), x = this.cx - cam.x, by = this.y + this.h - cam.y, walk = this.st === 'walk', ph = this.t * 6;
+      const jx = this.tellT > 0 ? Math.sin(this.t * 90) * 0.8 : 0, red = this.tellT > 0 && Math.floor(this.t * 20) % 2 === 0;
+      G.shadow(ctx, x, by - 1, 54, 0.38);
+      // pés alternados e a base (eixo x) balançando com o passo
+      for (const s of [-1, 1]) { const lift = walk ? Math.max(0, Math.sin(ph + (s > 0 ? Math.PI : 0))) * 3 : 0; part(ctx, A.hcFoot, x + s * 14 + jx, by - lift, 5, 7, 0, o); }
+      const bob = walk ? Math.abs(Math.sin(ph)) * 1.2 : 0, baseY = by - 5 - bob, floor = baseY - 7;
+      // barras: haste de gelo recortada pela altura (os sulcos marcam cada unidade de frequência) e a tampa facetada
+      const mx = Math.max(...this.h5), mi = this.h5.indexOf(mx), COL = [0, 1, 2, 1, 0], tops = [];
+      ctx.save(); if (o.alpha < 1) ctx.globalAlpha *= o.alpha;
       this.h5.forEach((hh, i) => {
-        const bh = hh * 6.5, bx = x0 + 1 + i * 8 + jx, top = by - 7 - walk - bh;
-        ctx.fillStyle = '#0a0a1e'; ctx.fillRect(bx - 0.5, top - 0.5, 8, bh + 1);
-        const g = ctx.createLinearGradient(bx, 0, bx + 7, 0); g.addColorStop(0, fl ? '#ffffff' : G.col.shade(cols[i], 0.35)); g.addColorStop(1, fl ? '#ffffff' : G.col.shade(cols[i], -0.25));
-        ctx.fillStyle = this.tellT > 0 && Math.floor(this.t * 20) % 2 === 0 ? '#ff6a7a' : g; ctx.fillRect(bx, top, 7, bh);
-        ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fillRect(bx, top, 7, 1);
-        if (Math.abs(hh - mx) < 0.01 && i === this.h5.indexOf(mx)) { ctx.fillStyle = '#ffffff'; ctx.fillRect(bx + 1, top + 3, 2, 2.5); ctx.fillRect(bx + 4, top + 3, 2, 2.5); ctx.fillStyle = '#1b1428'; ctx.fillRect(bx + 1.5, top + 4, 1, 1.5); ctx.fillRect(bx + 4.5, top + 4, 1, 1.5); }
+        const sh0 = A['hcShaft' + COL[i]], sh = o.white ? G.white(sh0) : red ? G.tint(sh0, 'rgba(255,70,90,0.55)') : sh0;
+        const bh = hh * 6.5, bx = x - 22 + i * 9 + jx, wob = this.st === 'morph' ? Math.sin(this.t * 24 + i) * 0.6 : 0, top = floor - bh + wob;
+        ctx.drawImage(sh, 0, sh.height - bh * 2, sh.width, bh * 2, bx, top, 8, bh);
+        tops.push([bx + 4, top]);
       });
       ctx.restore();
-      if (this.tellT > 0) G.drawTell(ctx, this.cx - cam.x, by - 7 - mx * 6.5 - 12, this.t);
+      tops.forEach(([bx, top], i) => part(ctx, A['hcCap' + COL[i]], bx, top + 1.5, 4.5, 5, 0, red && !o.white ? Object.assign({ glow: A['hcCap' + COL[i]], glowA: 0.5, glowC: '#ff4a5a' }, o) : o));
+      part(ctx, A.hcBase, x + jx, baseY, 24, 9.5, 0, o);
+      // olhos na barra mais alta: a moda é quem enxerga
+      const mad = this.tellT > 0 || this.hp < this.maxHp / 2, [ex, ey] = tops[mi];
+      part(ctx, A['hcEyes' + (mad ? 'Mad' : '')], ex, ey + 6, 4, 2, 0, Object.assign({ glow: A['hcEyes' + (mad ? 'Mad' : '') + 'Glow'], glowA: 0.7 + 0.3 * Math.sin(this.t * 6), glowC: mad ? '#ff4a5a' : '#7af0ff' }, o));
+      // frequência de cada barra enquanto ela troca de forma e mira
+      if (this.st !== 'walk') tops.forEach(([bx, top], i) => G.text(String(this.target[i]), bx, top - 11, '#e8f8ff', { align: 'center' }));
+      if (this.tellT > 0) G.drawTell(ctx, x, floor - mx * 6.5 - 20, this.t);
+      G.light.add(x, floor - mx * 3, 80, mad ? '#ff8a9a' : '#9ae4ff', 0.7);
     }
     drawLate(ctx, cam) { if (this.st !== 'walk') G.puzTag(ctx, this.cx - cam.x, this.y + this.h - cam.y + 4, SHAPES[this.shape][0], '#9ad8ff'); }
   }
   // SENTINELA BOXPLOT — a mediana sustenta a caixa
   class BoxSentinela extends MiniBoss {
-    constructor(x, y, type, o) { super(x, y, type, o); this.name = 'Sentinela Boxplot'; this.hookable = true; this.open = 0; this.wl = 10; this.ang = 0; this.st = 'walk'; this.stT = 1.6; this.cnt = 0; }
-    sprName() { return 'boxsentinela'; }
+    constructor(x, y, type, o) { super(x, y, type, o); this.name = 'Sentinela Boxplot'; this.hookable = true; this.open = 0; this.wl = 20; this.ang = 0; this.st = 'walk'; this.stT = 1.6; this.cnt = 0; }
+    sprName() { return 'boxsentinela_icon'; }
     hookBox() { return { x: this.cx - 6, y: this.y - 22, w: 12, h: 18 }; }
+    hurtbox() { return { x: this.cx - 16, y: this.y + this.h - 34, w: 32, h: 34 }; }
     immune(kind) { return this.open <= 0; }
     onHit(d, sx, sy, kind, crit) { const r = super.onHit(d, sx, sy, kind, crit); if (!r && this.open <= 0 && !this.dead && (!G._bsT || G.time - G._bsT > 6)) { G._bsT = G.time; G.ui.toast('A caixa é firme demais! Arranque a MEDIANA com o Gancho (C).', '#ffd84a'); } return r; }
     onHooked() {
@@ -550,7 +592,7 @@
       if (this.open > 0) { this.open -= dt; this.wl = G.approach(this.wl, 4, dt * 30); if (this.open <= 0) { this.st = 'walk'; this.stT = 1; this.hookable = true; G.sfx('teleport'); } return; }
       if (this.st === 'walk') {
         const a = Math.atan2(p.cy - this.cy, p.cx - this.cx); this.move(Math.cos(a) * this.speed * dt, Math.sin(a) * this.speed * dt);
-        this.wl = G.approach(this.wl, 10, dt * 20); this.ang = G.approach(this.ang, 0, dt * 3);
+        this.wl = G.approach(this.wl, 20, dt * 20); this.ang = G.approach(this.ang, 0, dt * 3);
         if (this.stT <= 0) {
           const m = this.cnt++ % 3;
           if (m === 2) { this.st = 'throw'; this.stT = 0.5; this.tell(0.5); }
@@ -578,34 +620,32 @@
       }
     }
     draw(ctx, cam) {
-      const cx = this.cx - cam.x, by = this.y + this.h - cam.y, fl = this.hurtT > 0 && Math.floor(this.t * 30) % 2 === 0, op = this.open > 0;
-      G.shadow(ctx, cx, by, 36, 0.35);
-      const jx = this.tellT > 0 ? Math.sin(this.t * 90) * 0.8 : 0, cy = by - 18, walk = this.st === 'walk' ? Math.abs(Math.sin(this.t * 5)) * 1.2 : 0;
-      ctx.save();
-      // pernas
-      for (const lx of [-9, 9]) { ctx.fillStyle = '#1b1428'; ctx.fillRect(cx + lx - 3 + jx, by - 10 - walk, 6, 10); ctx.fillStyle = '#6a6488'; ctx.fillRect(cx + lx - 2 + jx, by - 9 - walk, 4, 8); }
-      // bigodes (giram durante a varredura)
-      ctx.translate(cx + jx, cy - walk); ctx.rotate(this.ang); ctx.scale(1, 0.999);
-      ctx.strokeStyle = '#1b1428'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.moveTo(-this.wl, 0); ctx.lineTo(this.wl, 0); ctx.stroke();
-      ctx.strokeStyle = this.st === 'sweep' ? '#ffb0b8' : '#c8d0e8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-this.wl, 0); ctx.lineTo(this.wl, 0); ctx.stroke();
-      for (const s of [-1, 1]) { ctx.fillStyle = '#1b1428'; ctx.fillRect(s * this.wl - 2, -6, 4, 12); ctx.fillStyle = '#e8ecff'; ctx.fillRect(s * this.wl - 1, -5, 2, 10); }
-      ctx.rotate(-this.ang);
-      // caixa (Q1 a Q3)
-      const gap = op ? 4 + Math.sin(this.t * 20) : 0;
+      const A = G.bossArt, o = this.look(), x = this.cx - cam.x, by = this.y + this.h - cam.y, op = this.open > 0, walk = this.st === 'walk', ph = this.t * 5;
+      const jx = this.tellT > 0 ? Math.sin(this.t * 90) * 0.8 : 0, red = this.tellT > 0 && Math.floor(this.t * 20) % 2 === 0;
+      G.shadow(ctx, x, by - 1, 42, 0.38);
+      // pernas: passo alternado; aberta, a caixa afunda e as pernas abrem
+      for (const s of [-1, 1]) { const lift = walk ? Math.max(0, Math.sin(ph + (s > 0 ? Math.PI : 0))) * 2.5 : 0; part(ctx, A.bsLeg, x + s * (op ? 10 : 8) + jx, by - lift, 3.5, 11, op ? s * 0.12 : 0, o); }
+      const cy = by - 19.5 - (walk ? Math.abs(Math.sin(ph)) : 0) + (op ? 2 : 0) + (this.squashT > 0 ? this.squashT * 8 : 0);
+      // bigodes atrás da caixa (giram durante a varredura); a haste é recortada no comprimento
+      ctx.save(); ctx.translate(x + jx, cy); ctx.rotate(this.ang);
+      const rod = o.white ? G.white(A.bsRod) : this.st === 'sweep' ? G.tint(A.bsRod, 'rgba(255,90,110,0.5)') : A.bsRod, L = Math.max(0, this.wl - 8);
       for (const s of [-1, 1]) {
-        const bx = s < 0 ? -15 - gap : gap, g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, fl ? '#ffffff' : '#a8b8e8'); g.addColorStop(1, fl ? '#ffffff' : '#4a5a98');
-        ctx.fillStyle = '#1b1428'; ctx.fillRect(bx - 0.5, -10.5, 15.5 + (s < 0 ? 0 : 0), 21);
-        ctx.fillStyle = this.tellT > 0 && Math.floor(this.t * 20) % 2 === 0 ? '#ff7a8a' : g; ctx.fillRect(bx, -10, 15, 20);
-        ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(bx + 1, -9, 13, 1.5);
+        ctx.save(); ctx.scale(s, 1); if (o.alpha < 1) ctx.globalAlpha *= o.alpha;
+        if (L > 0) ctx.drawImage(rod, 0, 0, Math.min(rod.width, L * 2), rod.height, 8, -1.5, Math.min(48, L), 3);
+        part(ctx, A.bsCap, this.wl, 0, 2, 6, 0, o); ctx.restore();
       }
-      // mediana (núcleo dourado)
-      if (!op) { ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, 0, 0, 10, '#ffd84a', 0.5 + 0.2 * Math.sin(this.t * 6)); ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#ffd84a'; ctx.fillRect(-1.5, -11, 3, 22); ctx.fillStyle = '#fff6c0'; ctx.fillRect(-0.5, -10, 1, 20); }
-      // olhos
-      ctx.fillStyle = op ? '#5a5a7a' : '#ff5a6a'; ctx.fillRect(-9, -4, 3, 2.5); ctx.fillRect(6, -4, 3, 2.5);
       ctx.restore();
-      if (this.tellT > 0) G.drawTell(ctx, cx, cy - 22, this.t);
-      if (op) for (let i = 0; i < 3; i++) { const a = this.t * 5 + i * 2.1; G.draw(ctx, 'sparkle', cx + Math.cos(a) * 14 - 2, cy - 18 + Math.sin(a) * 4); }
-      G.light.add(cx, cy, 40, op ? '#8a8aff' : '#ffd84a', 0.5);
+      // as duas metades (Q1 e Q3); sem a mediana elas se separam e tombam
+      const gap = op ? 4 + Math.sin(this.t * 20) : 0, tilt = op ? 0.1 + Math.sin(this.t * 7) * 0.05 : 0;
+      const eye = { glowA: op ? 0.12 : 0.65 + 0.3 * Math.sin(this.t * 5), glowC: op ? '#8a8aff' : '#ff4a5a' };
+      const half = (side, s) => part(ctx, A['bsHalf' + side], x + jx + s * (0.5 + gap), cy, s < 0 ? 14.5 : 0.5, 10.5, s * tilt, Object.assign({ glow: A['bsHalf' + side + 'Glow'] }, eye, o));
+      half('L', -1); half('R', 1);
+      if (red && !o.white) for (const s of [-1, 1]) part(ctx, G.tint(A['bsHalf' + (s < 0 ? 'L' : 'R')], 'rgba(255,70,90,0.45)'), x + jx + s * 0.5, cy, s < 0 ? 14.5 : 0.5, 10.5, 0, { alpha: o.alpha });
+      if (!op) part(ctx, A.bsMedian, x + jx, cy, 2, 12, 0, Object.assign({ glow: A.bsMedianGlow, glowA: 0.35 + 0.2 * Math.sin(this.t * 6), glowC: '#ffd84a' }, o));
+      part(ctx, A.bsDome, x + jx, cy - 9.5 - (op ? Math.abs(Math.sin(this.t * 10)) * 3 : 0), 6, 6, op ? Math.sin(this.t * 9) * 0.2 : 0, Object.assign({ glow: A.bsDomeGlow, glowA: op ? 0.2 : 0.6, glowC: '#7ae4ff' }, o));
+      if (this.tellT > 0) G.drawTell(ctx, x, cy - 26, this.t);
+      if (op) for (let i = 0; i < 3; i++) { const a = this.t * 5 + i * 2.1; G.draw(ctx, 'sparkle', x + Math.cos(a) * 15 - 2, cy - 20 + Math.sin(a) * 4); }
+      G.light.add(x, cy, 50, op ? '#8a8aff' : '#ffd84a', 0.6);
     }
   }
   Object.assign(G.ENEMY_CLASSES, { reidado: ReiDado, histocolosso: HistoColosso, boxsentinela: BoxSentinela });
@@ -826,7 +866,7 @@
         const [x, y] = L(11, 4);
         mb = G.makeEnemy(TYPES[r.boss] || 'reidado', x, y, { room: r.idx }); c.addLive(mb);
         G.boss = mb; c.lock();
-        G.runScript(async () => { G.music(null); G.sfx('roar'); G.ui.regionBanner(mb.name, 'MINI-CHEFE'); await G.wait(1.0); G.music('boss'); });
+        G.runScript(async () => { G.music(null); G.sfx('roar'); G.ui.regionBanner(mb.name, 'MINI-CHEFE'); await G.wait(1.0); G.music('miniboss'); });
       },
       update() {
         if (done || !mb || !mb.dead) return;

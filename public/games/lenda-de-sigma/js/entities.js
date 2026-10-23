@@ -213,7 +213,14 @@
       let mx = this.vx, my = this.vy;
       if (this.kbT > 0) { this.kbT -= dt; mx = this.kbx; my = this.kby; }
       const r = G.moveEnt(this, mx * dt, my * dt, { nudge: true, low: this.z > 5 });
-      if (this.moving) { this.walkT += dt; if (Math.floor(this.walkT * 4.5) !== Math.floor((this.walkT - dt) * 4.5) && this.z <= 0 && !this.onIce) G.fx.spawn({ x: this.cx + G.rf(-2, 2), y: this.y + this.h, vx: -this.vx * 0.15, vy: -6, kind: 'puff', size: 1.6, color: G.map.kind === 'dungeon' ? '#a8a098' : '#d8d0b0', life: 0.3, drag: 3 }); } else this.walkT = 0;
+      if (this.moving) {
+        this.walkT += dt;
+        // a cada passada: poeirinha e o som do passo (o chão escolhe o timbre)
+        if (Math.floor(this.walkT * 4.5) !== Math.floor((this.walkT - dt) * 4.5) && this.z <= 0) {
+          if (!this.onIce) G.fx.spawn({ x: this.cx + G.rf(-2, 2), y: this.y + this.h, vx: -this.vx * 0.15, vy: -6, kind: 'puff', size: 1.6, color: G.map.kind === 'dungeon' ? '#a8a098' : '#d8d0b0', life: 0.3, drag: 3 });
+          if (G.footstep) G.footstep(this);
+        }
+      } else this.walkT = 0;
 
       // --- empurrar blocos ---
       if (canMove && this.moving && !(ax.x && ax.y) && ((ax.x && r.hitX) || (ax.y && r.hitY))) {
@@ -290,7 +297,8 @@
       // --- perigos do chão ---
       if (this.z <= 0) {
         const tp = G.TP[G.map.tileAtPx(this.cx, this.cy)];
-        if (tp.pit || tp.water) { this.startFall(tp.water ? 'water' : 'pit'); return; }
+        // na água, só cai quando passa da margem desenhada (pisar no barranco não derruba)
+        if (tp.pit || (tp.water && (!G.inDeepWater || G.inDeepWater(this.cx, this.cy)))) { this.startFall(tp.water ? 'water' : 'pit'); return; }
         if (tp.lava && !P.items.suit) { this.startFall('lava'); return; }
         // com o traje, a crosta solta brasas sob os pés
         if (tp.lava && this.moving && Math.random() < 0.35) G.fx.spawn({ x: this.cx + G.rf(-4, 4), y: this.y + this.h, vy: -G.rf(15, 35), vx: G.rf(-8, 8), color: G.pick(['#ff9a3a', '#ffd040', '#ff5a1a']), size: 1, life: G.rf(0.3, 0.6) });

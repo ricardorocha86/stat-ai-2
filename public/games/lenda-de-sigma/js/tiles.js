@@ -219,6 +219,70 @@
     return d;
   }
   const NB = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
+  // chão cujas quinas viram curva quando a água as cerca (cantos internos de lagos e rios)
+  const CARVE = new Set([T.GROUND, T.GROUND2, T.PATH, T.TREE]);
+  const RC = 18;
+  // vértices do tile: posição e os 3 vizinhos que o tocam (diagonal, ortogonal, ortogonal)
+  const VTX = [[0, 0, 7, 0, 6], [32, 0, 1, 0, 2], [32, 32, 3, 2, 4], [0, 32, 5, 4, 6]];
+  // distância de (x, y) a um tile vizinho deslocado (ox, oy), com raio por quina [NW, NE, SE, SW]
+  function sdTile(x, y, ox, oy, rad) {
+    const px = x - 16 - 32 * ox, py = y - 16 - 32 * oy;
+    const r = px < 0 ? (py < 0 ? rad[0] : rad[3]) : (py < 0 ? rad[1] : rad[2]);
+    const qx = Math.abs(px) - 16 + r, qy = Math.abs(py) - 16 + r;
+    return Math.min(Math.max(qx, qy), 0) + Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) - r;
+  }
+  // a quina de terra no vértice v está recortada? (só ela é terra ali e os outros dois tiles são água)
+  function cutAt(n, isLand, v) {
+    const [, , a, b, c] = VTX[v], land = [a, b, c].filter(k => isLand(n[k]));
+    return land.length === 1 && CARVE.has(n[land[0]]) && [a, b, c].every(k => k === land[0] || n[k] === T.WATER) ? land[0] : -1;
+  }
+  // distância à margem: cantos convexos da água arredondados (raio R) e quinas de terra recortadas (raio Rc)
+  function shoreDist(lx, ly, n, isLand, R = 13, Rc = 0) {
+    const x = lx + 0.5, y = ly + 0.5, x2 = 32 - x, y2 = 32 - y, diff = n.map(isLand);
+    const rad = n.map(() => [0, 0, 0, 0]);
+    if (Rc) for (let v = 0; v < 4; v++) {
+      const k = cutAt(n, isLand, v); if (k < 0) continue;
+      const [vx, vy] = VTX[v], [ox, oy] = NB[k], sx = vx > 16 + 32 * ox, sy = vy > 16 + 32 * oy;
+      rad[k][sx ? (sy ? 2 : 1) : (sy ? 3 : 0)] = Rc;
+    }
+    let d = 99;
+    for (let k = 0; k < 8; k++) if (diff[k]) d = Math.min(d, sdTile(x, y, NB[k][0], NB[k][1], rad[k]));
+    const corner = (u, v) => { if (u < R && v < R) d = Math.min(d, R - Math.hypot(R - u, R - v)); };
+    if (diff[0] && diff[6]) corner(x, y);
+    if (diff[0] && diff[2]) corner(x2, y);
+    if (diff[4] && diff[2]) corner(x2, y2);
+    if (diff[4] && diff[6]) corner(x, y2);
+    return d;
+  }
+  // tile de terra com quinas recortadas pela água: raios [NW, NE, SE, SW] ou null
+  function landCuts(id, n) {
+    if (!CARVE.has(id)) return null;
+    const rad = [0, 1, 2, 3].map(v => VTX[v].slice(2).every(k => n[k] === T.WATER) ? RC : 0);
+    return rad.some(r => r) ? rad : null;
+  }
+  const isShoreLand = v => !isWaterish(v) && v !== T.BRIDGE;
+  // margem irregular: quanto a terra avança sobre a água
+  const bankW = (X, Y) => 1.2 + fbm(X * 0.07 + 3, Y * 0.07) * 5;
+  // faixas da margem (de dentro da terra para o fundo): chão, barranco molhado, espuma, raso claro, raso
+  function shoreBand(d, th, P, X, Y, ground) {
+    const b = bankW(X, Y), w = nz(X * 0.12, Y * 0.12) * 2.2;
+    if (d < b) return ground || baseGround(th, P, X, Y);
+    if (d < b + 1.3) return darkP(ground || baseGround(th, P, X, Y), 0.42);
+    if (d < b + 2.3 + w * 0.3) return withA(pk('#ffffff'), 200);
+    if (d < b + 4.5 + w) return withA(pk('#e8fbff'), 95);
+    if (d < b + 11 + w) return withA(P.w[2], 58);
+    return 0;
+  }
+  // o ponto (px lógicos) está na parte funda da água? (a queda acompanha o desenho da margem)
+  G.inDeepWater = (px, py) => {
+    const m = G.map; if (!m) return true;
+    const tx = Math.floor(px / 16), ty = Math.floor(py / 16), id = m.get(tx, ty);
+    if (id !== T.WATER) return true;
+    const n = NB.map(([dx, dy]) => m.get(tx + dx, ty + dy)), dun = m.kind === 'dungeon';
+    const lx = Math.floor((px - tx * 16) * 2), ly = Math.floor((py - ty * 16) * 2);
+    const d = dun ? shoreDist(lx, ly, n, v => !isWaterish(v), 9) : shoreDist(lx, ly, n, isShoreLand, 16, RC);
+    return dun ? d >= 1.5 : d >= bankW(tx * 32 + lx, ty * 32 + ly) + 1.3;
+  };
 
   const isPathLike = id => id === T.PATH || id === T.BRIDGE || id === T.SEAL;
   const isWaterish = id => id === T.WATER || id === T.LAVA;
@@ -241,20 +305,22 @@
     if (t.dun) return renderDunTile(map, tx, ty, id, th, t, P, n, put);
     if (id === T.VOID) { for (let ly = 0; ly < 32; ly++) for (let lx = 0; lx < 32; lx++) put(lx, ly, 0xff0a0608); return; }
     const plaza = id === T.PLAZA || (id === T.BLOCK && n.some(v => v === T.PLAZA));
+    const cuts = landCuts(id, n);
     for (let ly = 0; ly < 32; ly++) for (let lx = 0; lx < 32; lx++) {
       const X = X0 + lx, Y = Y0 + ly;
       let c;
       if (isWaterish(id)) {
         // água/lava: transparente, com margem, espuma e faixa rasa
         const diff = n.map(v => !isWaterish(v) && v !== T.BRIDGE);
-        const d = edgeDist(lx, ly, diff);
         const w = nz(X * 0.12, Y * 0.12) * 2.2;
         const lava = id === T.LAVA;
-        if (d < 1.4 + w * 0.6) c = lava ? pk('#0e0808') : darkP(baseGround(th, P, X, Y), 0.35);
-        else if (d < 2.6 + w * 0.7) c = lava ? withA(pk('#ff6a1a'), 150) : withA(pk('#ffffff'), 190);
-        else if (d < 4 + w) c = lava ? withA(pk('#c03a10'), 70) : withA(pk('#e8fbff'), 90);
-        else if (d < 9 + w) c = lava ? 0 : withA(P.w[2], 60);
-        else c = 0;
+        if (lava) {
+          const d = edgeDist(lx, ly, diff);
+          if (d < 1.4 + w * 0.6) c = pk('#0e0808');
+          else if (d < 2.6 + w * 0.7) c = withA(pk('#ff6a1a'), 150);
+          else if (d < 4 + w) c = withA(pk('#c03a10'), 70);
+          else c = 0;
+        } else c = shoreBand(shoreDist(lx, ly, n, isShoreLand, 16, RC), th, P, X, Y); // margem orgânica
         if (c) put(lx, ly, c);
         continue;
       }
@@ -282,6 +348,8 @@
         if (d < 1.5) c = P.cob[0]; else if (d < 3) c = darkP(c, 0.2);
       }
       if (id !== T.CLIFF) c = cliffShadow(c, n, lx, ly);
+      // quina recortada: a água (desenhada por baixo) entra em curva
+      if (cuts) { const s = sdTile(lx + 0.5, ly + 0.5, 0, 0, cuts); if (s > 0) c = shoreBand(s, th, P, X, Y, c); }
       put(lx, ly, c);
     }
     // objetos baixos pintados no chão
@@ -500,7 +568,7 @@
       if (id === T.ICE) c = icePx(X, Y, f[3]);
       if (id === T.PIT) c = ly < 7 && !TP[n[0]].pit ? darkP(wl[2], ly / 8) : 0xff030206;
       if (isWaterish(id)) {
-        const d = edgeDist(lx, ly, n.map(v => !isWaterish(v)));
+        const d = id === T.LAVA ? edgeDist(lx, ly, n.map(v => !isWaterish(v))) : shoreDist(lx, ly, n, v => !isWaterish(v), 9);
         const w = nz(X * 0.12, Y * 0.12) * 2;
         const lava = id === T.LAVA;
         if (d < 1.5 + w * 0.5) c = lava ? 0xff080a0e : darkP(f[1], 0.4);
@@ -666,10 +734,14 @@
     reset(map) { this.map = map; this.chunks.clear(); this.scanAnim(); },
     scanAnim() {
       const m = this.map; this.animTiles = new Map();
-      for (let ty = 0; ty < m.h; ty++) for (let tx = 0; tx < m.w; tx++) {
-        const id = m.get(tx, ty);
-        if (id === T.WATER || id === T.LAVA || id === T.SEAL) this.animTiles.set(ty * m.w + tx, id);
-      }
+      for (let ty = 0; ty < m.h; ty++) for (let tx = 0; tx < m.w; tx++) { const a = this.animId(tx, ty); if (a) this.animTiles.set(ty * m.w + tx, a); }
+    },
+    // textura animada sob o tile: água/lava/selo, ou água sob a quina de terra recortada
+    animId(tx, ty) {
+      const m = this.map, id = m.get(tx, ty);
+      if (id === T.WATER || id === T.LAVA || id === T.SEAL) return id;
+      if (!CARVE.has(id) || (TH[m.themeAt(tx, ty)] || TH.vila).dun) return 0;
+      return landCuts(id, NB.map(([dx, dy]) => m.get(tx + dx, ty + dy))) ? T.WATER : 0;
     },
     key(cx, cy) { return cy * 1000 + cx; },
     build(cx, cy) {
@@ -698,8 +770,11 @@
         renderTile(buf, 32, 0, 0, this.map, x, y);
         ch.x.putImageData(img, (x - ch.cx * CHT) * 32, (y - ch.cy * CHT) * 32);
       }
-      const id = this.map.get(tx, ty), k = ty * this.map.w + tx;
-      if (id === T.WATER || id === T.LAVA || id === T.SEAL) this.animTiles.set(k, id); else this.animTiles.delete(k);
+      for (let y = ty - 1; y <= ty + 1; y++) for (let x = tx - 1; x <= tx + 1; x++) {
+        if (x < 0 || y < 0 || x >= this.map.w || y >= this.map.h) continue;
+        const a = this.animId(x, y), k = y * this.map.w + x;
+        if (a) this.animTiles.set(k, a); else this.animTiles.delete(k);
+      }
     },
     // pré-renderiza um chunk vizinho por chamada
     idle() {

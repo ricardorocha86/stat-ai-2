@@ -211,6 +211,7 @@
   }
   // perna completa (coxa + canela) com o joelho resolvido por IK
   function leg(ctx, nA, nB, L1, L2, hx, hy, fx, fy, o) { const k = ik(hx, hy, fx, fy, L1, L2); seg(ctx, nA, hx, hy, k[0], k[1], o); seg(ctx, nB, k[0], k[1], fx, fy, o); }
+  G.rig = { part, rot, ik, seg, leg };
 
   class Golem extends Boss {
     constructor(x, y, arena) { super(x, y, 26, 14, { hp: 36, name: 'Golem Desequilibrado', topic: 'media', dmg: 4, arena }); this.armUp = 0; this.rings = []; this.cnt = 0; this.hasP2 = true; this.walkPh = 0; this.slamAt = -9; this.throwAt = -9; }

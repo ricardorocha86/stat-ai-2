@@ -87,7 +87,8 @@
       else if (G.player && G.player.state !== 'dead') this.ai(dt);
       // dano por contato
       const p = G.player;
-      if (p && !this.harmless && p.state !== 'dead' && p.state !== 'fall' && p.z < 3 && G.overlap(this.hurtbox(), { x: p.x, y: p.y - 6, w: p.w, h: p.h + 6 })) {
+      // contato usa a base (contactBox) quando o corpo desenhado é maior que ela
+      if (p && !this.harmless && p.state !== 'dead' && p.state !== 'fall' && p.z < 3 && G.overlap(this.contactBox ? this.contactBox() : this.hurtbox(), { x: p.x, y: p.y - 6, w: p.w, h: p.h + 6 })) {
         if (p.starT > 0) this.onHit(999, p.cx, p.cy, 'star');
         else if (!this.noContact) G.hurtPlayer(this.dmg, this.cx, this.cy);
       }

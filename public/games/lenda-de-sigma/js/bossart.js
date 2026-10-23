@@ -488,5 +488,214 @@
       p.innerLines({ k: -0.5 }); p.outline({ k: -0.88 }); B.viesStaff = p.toCanvas(); B.viesStaffGlow = gl.toCanvas();
     }
   }
-  G.buildBossArt = function () { golem(); spider(); scorpion(); dragon(); yeti(); vies(); };
+  // ------------------------------------------------------------------
+  //  MINI-CHEFES: Rei Dado (dado em 3/4 com coroa, manto, olhos e luvas),
+  //  Histograma Colossal (barras de gelo sobre o eixo x) e Sentinela
+  //  Boxplot (blocos de pedra Q1 e Q3 presos pela mediana dourada)
+  // ------------------------------------------------------------------
+  const PIP9 = { 1: [[1, 1]], 2: [[0, 0], [2, 2]], 3: [[0, 0], [1, 1], [2, 2]], 4: [[0, 0], [2, 0], [0, 2], [2, 2]], 5: [[0, 0], [2, 0], [1, 1], [0, 2], [2, 2]], 6: [[0, 0], [2, 0], [0, 1], [2, 1], [0, 2], [2, 2]] };
+  const GOLD = ['#6a3a08', '#b07818', '#e8b030', '#ffd860', '#fff4b0'];
+  // junta peças prontas num ícone (cartão do bestiário e fantasma da morte)
+  function composite(lw, lh, list) {
+    const c = G.canvas(lw * 2, lh * 2), x = c.getContext('2d');
+    for (const [img, lx, ly] of list) if (img) x.drawImage(img, Math.round(lx * 2), Math.round(ly * 2));
+    c.lw = lw; c.lh = lh; return c;
+  }
+  function reiDado() {
+    const IV = ['#6e5e6c', '#b4a6b0', '#e4dad8', '#f8f2ec', '#ffffff'], SD = ['#3e3044', '#685a70', '#8a7c92', '#a89aae', '#c4b8c8'];
+    const TOPC = ['#cfc4cc', '#e2d8dc', '#f2ecea', '#fdf8f4', '#ffffff'];
+    // face vizinha que aparece na lateral (faces opostas somam 7, então nunca v nem 7 - v)
+    const ADJ = { 1: 2, 2: 3, 3: 1, 4: 1, 5: 3, 6: 2 };
+    // CORPO (40×42): frente 56×54 px de arte, tampo e lateral em perspectiva
+    const front = inRR(3, 28, 56, 54, 8), top = inPoly([[3, 28.5], [59, 28.5], [73, 8], [17, 8]]), side = inPoly([[58.5, 28], [73, 8], [73, 62], [58.5, 82]]);
+    for (let v = 1; v <= 6; v++) {
+      const p = P(40, 42);
+      p.curPart = 1;
+      p.mask(side, (x, y) => {
+        const u = (x + 0.5 - 58.5) / 14.5, yt = 28 - u * 20, yb = 82 - u * 20;
+        if (u < 0.14 || y < yt + 2.5) return SD[3];
+        if (u > 0.88 || y > yb - 3) return SD[1];
+        return (G.bayer(x, y) > 0.5 && y > yb - 10) ? SD[1] : SD[2];
+      }, [56, 6, 74, 84]);
+      for (const [a, b] of PIP9[ADJ[v]]) {
+        const u = 0.27 + a * 0.24, x = 58.5 + u * 14.5, y = 28 + (0.24 + b * 0.26) * 54 - u * 20;
+        p.ell(x, y + 0.6, 1.9, 3.4, SD[4]); p.ell(x - 0.3, y, 1.7, 3.2, SD[0]);
+      }
+      p.curPart = 2;
+      p.mask(top, (x, y) => { const k = (y + 0.5 - 8) / 20.5; return k > 0.86 ? TOPC[4] : k > 0.5 ? TOPC[3] : k > 0.18 ? TOPC[2] : TOPC[1]; }, [2, 6, 74, 30]);
+      p.curPart = 3;
+      p.litMask(front, { ramp: IV, radius: 9, ambient: 0.45, contrast: 1.05, dither: 0.35 }, [2, 27, 61, 83]);
+      // pontos em baixo-relevo: parede de cima na sombra, borda de baixo iluminada
+      const pip = (x, y, r, ace) => {
+        const D = ace ? ['#5a0a18', '#a8182c', '#d8283a', '#ff8a90'] : ['#140c1e', '#2a1e3a', '#46385a', '#8a7aa0'];
+        p.ell(x + 0.7, y + 0.8, r + 0.7, r + 0.7, IV[4]); p.ell(x - 0.4, y - 0.4, r + 0.4, r + 0.4, IV[1]);
+        p.ell(x, y, r, r, (nx, ny) => (nx + ny < -0.45 ? D[0] : nx + ny < 0.4 ? D[1] : D[2]));
+        p.px(Math.round(x + r * 0.3), Math.round(y + r * 0.35), D[3]);
+      };
+      for (const [a, b] of PIP9[v]) pip(31 + (a - 1) * 15.5, 55 + (b - 1) * 15, v === 1 ? 7.5 : 4.6, v === 1);
+      p.innerLines({ k: -0.5 }); p.outline({ k: -0.82 });
+      B['rdBody' + v] = p.toCanvas();
+    }
+    // OLHOS no tampo (24×8): severos, bravos (pupila vermelha), piscando e tontos
+    for (const mode of ['', 'Mad', 'Blink', 'Dizzy']) {
+      const p = P(24, 8), gl = new G.Paint(p.w, p.h);
+      for (const s of [-1, 1]) {
+        const ex = 24 + s * 11, ey = 9.5, ink = '#1a1028';
+        if (mode === 'Blink') { for (let x = -6; x <= 6; x++) p.rect(ex + x, ey + Math.round((x * x) / 24), 1, 2, ink); }
+        else {
+          p.ell(ex, ey, 6.6, 4.7, ink); p.ell(ex, ey, 5.5, 3.7, (nx, ny) => (ny < -0.35 ? '#d4cce4' : '#ffffff'));
+          if (mode === 'Dizzy') { for (let t = 0; t < Math.PI * 4; t += 0.15) { const r = t * 0.36; p.px(Math.round(ex + Math.cos(t * s) * r), Math.round(ey + Math.sin(t * s) * r * 0.72), ink); } }
+          else {
+            const pc = mode === 'Mad' ? ['#7a0a1a', '#e8203a'] : ['#1a1240', '#3a2a7a'];
+            p.ell(ex - s * 0.8, ey + 0.8, 2.6, 3, (nx, ny) => (ny < 0 ? pc[0] : pc[1])); p.px(ex - s * 0.8 - 1.5, ey - 0.8, '#ffffff');
+            if (mode === 'Mad') { gl.ell(ex - s * 0.8, ey + 0.8, 3.4, 3.6, '#ffffff'); }
+          }
+        }
+        // sobrancelha grossa, mais baixa no meio (severa); brava, ainda mais inclinada
+        const inY = mode === 'Mad' ? ey - 2.5 : ey - 4, outY = mode === 'Mad' ? ey - 8 : ey - 7.2;
+        p.line(ex + s * 7.5, outY, ex - s * 2.5, inY, ink, 2.2);
+      }
+      p.outline({ k: -0.6 });
+      B['rdEyes' + mode] = p.toCanvas(); if (mode === 'Mad') B.rdEyesMadGlow = gl.toCanvas();
+    }
+    // COROA (26×16): veludo vermelho por trás das pontas, pérolas e joias com brilho
+    {
+      const p = P(26, 16), gl = new G.Paint(p.w, p.h);
+      p.curPart = 1; p.ell(26, 20, 19, 10, { ramp: ['#3a0614', '#6a1028', '#a01c38', '#c83a50', '#e86a70'], ambient: 0.35 });
+      p.curPart = 2;
+      const crown = inPoly([[4, 31], [4, 15], [8, 5], [12.5, 16], [17, 8], [21.5, 16], [26, 3], [30.5, 16], [35, 8], [39.5, 16], [44, 5], [48, 15], [48, 31]]);
+      p.litMask(crown, { ramp: GOLD, radius: 4, ambient: 0.4, contrast: 1.1, dither: 0.3 }, [3, 2, 49, 32]);
+      for (let x = 4; x < 48; x++) { if (crown(x, 21)) p.px(x, 21, GOLD[1]); if (crown(x, 22)) p.px(x, 22, GOLD[4]); if (crown(x, 30)) p.px(x, 30, GOLD[0]); }
+      for (const [x, y] of [[8, 5], [17, 8], [26, 3], [35, 8], [44, 5]]) { p.ell(x, y, 2.3, 2.3, { ramp: ['#8a8098', '#c8c0d8', '#ece8f4', '#ffffff', '#ffffff'], ambient: 0.5 }); }
+      for (const [x, r, c] of [[14, 2.4, ['#0a1a5a', '#2a5ae8', '#8ab8ff']], [26, 3.2, ['#5a0a14', '#d8202e', '#ff9a9a']], [38, 2.4, ['#0a1a5a', '#2a5ae8', '#8ab8ff']]]) {
+        p.ell(x, 26.5, r + 0.8, r + 0.8, GOLD[0]); p.ell(x, 26.5, r, r, (nx, ny) => (nx + ny < -0.5 ? c[2] : nx + ny < 0.5 ? c[1] : c[0])); gl.ell(x, 26.5, r, r, '#ffffff');
+      }
+      p.innerLines({ k: -0.45 }); p.outline({ k: -0.85 });
+      B.rdCrown = p.toCanvas(); B.rdCrownGlow = gl.toCanvas();
+    }
+    // MANTO (52×38): veludo com dobras, gola e barra de arminho
+    {
+      const p = P(52, 38), RED = ['#2a0410', '#5a0c20', '#8a1830', '#b82a40', '#e05a60'];
+      const hw = y => 30 + (y / 76) * 21 + Math.sin(y * 0.09) * 1.5, hem = x => 70 + Math.sin(x * 0.26) * 2.6 + Math.sin(x * 0.11) * 1.4;
+      const m = (x, y) => y >= 4 && y <= hem(x) && Math.abs(x + 0.5 - 52) <= hw(y);
+      p.curPart = 1; p.litMask(m, { ramp: RED, radius: 12, ambient: 0.3, contrast: 1.15, dither: 0.4 }, [0, 3, 103, 76]);
+      // dobras: faixas escuras que se abrem para baixo
+      for (const fx of [-38, -22, 22, 38]) for (let y = 14; y < 76; y++) { const x = Math.round(52 + fx * (0.55 + y / 76 * 0.45)); for (const dx of [0, 1]) if (m(x + dx, y)) p.px(x + dx, y, dx ? RED[3] : RED[1]); }
+      const ermine = (x, y) => p.px(x, y, (G.hash2(x, y, 3) > 0.93) ? '#1a1418' : (y % 3 === 0 ? '#e8e4ee' : '#ffffff'));
+      p.curPart = 2;
+      for (let x = 0; x < 104; x++) { const yb = hem(x); for (let y = Math.floor(yb - 7); y <= yb; y++) if (m(x, y)) ermine(x, y); }
+      for (let y = 1; y <= 11; y++) for (let x = 0; x < 104; x++) { const dx = (x + 0.5 - 52) / 38, dy = (y + 0.5 - 6) / 5.5; if (dx * dx + dy * dy <= 1) ermine(x, y); }
+      // caudinhas pretas do arminho
+      for (let x = 10; x < 98; x += 9) { const yb = Math.round(hem(x)) - 4; p.rect(x, yb - 2, 2, 3, '#1a1418'); p.px(x - 1, yb + 1, '#1a1418'); p.px(x + 2, yb + 1, '#1a1418'); }
+      for (let x = 20; x < 86; x += 11) { p.rect(x, 4, 2, 3, '#1a1418'); p.px(x - 1, 7, '#1a1418'); p.px(x + 2, 7, '#1a1418'); }
+      p.innerLines({ k: -0.4 }); p.outline({ k: -0.85 });
+      B.rdCape = p.toCanvas();
+    }
+    // LUVA (11×10): punho fechado com bainha dourada; e a espelhada
+    {
+      const p = P(11, 10), W = ['#7a7a98', '#bcbcd4', '#e6e6f2', '#ffffff', '#ffffff'];
+      p.curPart = 1; p.ell(11, 11, 8, 7.4, { ramp: W, ambient: 0.4, contrast: 1.1 });
+      p.curPart = 2; for (const x of [5.5, 10.5, 15.5]) p.ell(x, 5.5, 3.4, 3.4, { ramp: W, ambient: 0.45 });
+      p.curPart = 3; p.ell(17.5, 12, 3, 3.4, { ramp: W, ambient: 0.45 });
+      p.curPart = 4; p.rrect(5, 16, 12, 4, 1.5, (x, y) => (y < 17 ? GOLD[4] : y < 19 ? GOLD[2] : GOLD[1]));
+      p.innerLines({ k: -0.35 }); p.outline({ k: -0.8 });
+      B.rdGlove = p.toCanvas(); B.rdGloveF = p.flipX().toCanvas();
+    }
+    // CETRO (8×30): vara dourada com empunhadura e um dado vermelho na garra
+    {
+      const p = P(8, 30), gl = new G.Paint(p.w, p.h);
+      p.curPart = 1; cyl(p, inRR(6, 13, 4, 46, 1.5), GOLD, [5, 12, 11, 60], { hi: 0.3, sh: 0.7 });
+      for (const y of [24, 40, 52]) p.rect(5, y, 6, 2, GOLD[4]);
+      for (let y = 30; y < 38; y += 2) p.rect(6, y, 4, 1, '#5a2a10');
+      p.curPart = 2; p.poly([[2, 14], [14, 14], [15, 9], [12, 11], [8, 7], [4, 11], [1, 9]], GOLD[2]);
+      p.curPart = 3; bevel(p, inRR(3, 1, 10, 10, 2.5), ['#5a0a14', '#a8182c', '#e0283a', '#ff8a90'], [2, 0, 14, 12]);
+      for (const [x, y] of [[5.5, 3.5], [8, 6], [10.5, 8.5]]) { p.ell(x, y, 1.1, 1.1, '#ffffff'); }
+      gl.rrect(3, 1, 10, 10, 2.5, '#ffffff');
+      p.innerLines({ k: -0.45 }); p.outline({ k: -0.85 });
+      B.rdScepter = p.toCanvas(); B.rdScepterGlow = gl.toCanvas();
+    }
+    G.spr.reidado_icon = composite(52, 52, [[B.rdCape, 0, 10], [B.rdBody6, 7, 10], [B.rdCrown, 16, 0], [B.rdEyes, 14, 15]]);
+  }
+  function histoColosso() {
+    const RAMPS = [['#0e4a6a', '#1a7aa8', '#3ab4e0', '#7ae4ff', '#d8f8ff'], ['#12306e', '#2050b0', '#3a80e8', '#7ab4ff', '#d8ecff'], ['#24186e', '#3a2ab0', '#6050e0', '#9a8cff', '#e0dcff']];
+    // HASTE de gelo (8×44): sulcos a cada unidade de frequência (13 px de arte), a partir da base
+    RAMPS.forEach((R, k) => {
+      const p = P(8, 44), m = (x, y) => x >= 1 && x <= 14;
+      cyl(p, m, R, [0, 0, 15, 87], { hi: 0.28, sh: 0.68, noTop: true, noBottom: true });
+      for (let x = 6; x <= 8; x++) for (let y = 0; y < 88; y++) if (G.bayer(x, y) > 0.55) p.px(x, y, R[3]);
+      for (const y of [16, 44, 74]) p.line(3, y, 10, y - 10, R[4] + 'a0');
+      for (let u = 1; u <= 6; u++) { const y = 87 - u * 13; for (let x = 1; x <= 14; x++) { p.px(x, y, R[1]); p.px(x, y + 1, R[4]); } }
+      for (let y = 80; y < 88; y++) for (let x = 1; x <= 14; x++) if (G.hash2(x, y, 9) > 0.7 - (y - 80) * 0.05) p.px(x, y, '#f4fcff');
+      p.outline({ k: -0.8 });
+      B['hcShaft' + k] = p.toCanvas();
+      // TAMPA facetada (9×5)
+      const q = P(9, 5), cap = inPoly([[1, 10], [1, 5], [5, 1], [13, 1], [17, 5], [17, 10]]);
+      q.litMask(cap, { ramp: R, radius: 3, ambient: 0.4, contrast: 1.1 }, [0, 0, 17, 10]);
+      q.poly([[5.5, 1.5], [12.5, 1.5], [15, 4.5], [3, 4.5]], R[4]); q.line(1, 5, 17, 5, R[3]);
+      q.outline({ k: -0.85 });
+      B['hcCap' + k] = q.toCanvas();
+    });
+    // BASE: o eixo x (48×10), pedra gelada com marcas sob cada barra e a seta no fim
+    {
+      const p = P(48, 10), S = ['#1a2a44', '#2e4668', '#4a6a90', '#7898b8', '#b8d0e4'];
+      const m = (x, y) => inRR(1, 4, 90, 14, 3)(x, y) || inPoly([[88, 3], [95, 11], [88, 19]])(x, y);
+      p.litMask(m, { ramp: S, radius: 4, ambient: 0.35, contrast: 1.1, dither: 0.35 }, [0, 2, 95, 19]);
+      for (let x = 2; x < 90; x++) for (let y = 4; y < 7; y++) if (m(x, y)) p.px(x, y, y === 4 ? '#ffffff' : '#e0f2ff');
+      for (let x = 3; x < 88; x += 2) if (G.hash2(x, 1, 5) > 0.6) { const n = 1 + Math.floor(G.hash2(x, 2, 5) * 3); for (let y = 7; y < 7 + n; y++) p.px(x, y, '#d8eeff'); }
+      for (let i = 0; i < 5; i++) { const x = 6 + i * 18 + 8; p.rect(x, 9, 2, 6, S[0]); p.rect(x + 2, 9, 1, 6, S[4]); }
+      p.outline({ k: -0.85 });
+      B.hcBase = p.toCanvas();
+    }
+    // PÉ de rocha com gelo (10×7)
+    { const p = P(10, 7), m = inRR(1, 2, 18, 11, 4); rock(p, m, ['#1a2436', '#344660', '#526a88', '#7a92ae', '#a8bcd2'], [0, 1, 19, 13], { radius: 4, seed: 31 }); for (let x = 2; x < 18; x++) for (let y = 2; y < 5; y++) if (m(x, y)) p.px(x, y, y < 3 ? '#ffffff' : '#d8eeff'); p.outline({ k: -0.85 }); B.hcFoot = p.toCanvas(); }
+    // OLHOS da moda (8×4): brilham na barra mais alta
+    for (const mode of ['', 'Mad']) {
+      const p = P(8, 4), gl = new G.Paint(p.w, p.h), c = mode ? ['#ff2a4a', '#ffb0b8'] : ['#7af0ff', '#ffffff'];
+      for (const ex of [4.5, 11.5]) { p.ell(ex, 4, 3.2, 2.8, '#06101e'); p.ell(ex, 4.3, 1.7, 1.7, c[0]); p.px(ex - 1, 3, c[1]); gl.ell(ex, 4.3, 2.2, 2.2, '#ffffff'); }
+      if (mode) for (const s of [-1, 1]) p.line(8 + s * 7, 0.5, 8 + s * 1.5, 2, '#06101e', 1.4);
+      B['hcEyes' + mode] = p.toCanvas(); B['hcEyes' + mode + 'Glow'] = gl.toCanvas();
+    }
+    const bars = [2, 4, 6, 4, 2].map((h, i) => { const k = [0, 1, 2, 1, 0][i], sh = B['hcShaft' + k], c = G.canvas(16, h * 13 + 10), x = c.getContext('2d'); x.drawImage(sh, 0, sh.height - h * 13, 16, h * 13, 0, 10, 16, h * 13); x.drawImage(B['hcCap' + k], -1, 2); return [c, h]; });
+    G.spr.histocolosso_icon = composite(52, 56, [[B.hcBase, 2, 46], ...bars.map(([c, h], i) => [c, 4 + i * 9, 46 - h * 6.5 - 5]), [B.hcEyes, 22, 12]]);
+  }
+  function boxSentinela() {
+    const ST = ['#161a34', '#2a3058', '#424c80', '#6672a8', '#98a4d4'], STEEL = ['#2a2e44', '#5a6080', '#9aa2c0', '#d0d6ea', '#ffffff'];
+    const GL = { Q: ['.##.', '#..#', '#..#', '#.##', '.###'], 1: ['.#', '##', '.#', '.#', '.#'], 3: ['##.', '..#', '.#.', '..#', '##.'] };
+    // METADES da caixa (15×21): pedra com moldura entalhada, constelação dourada, Q1/Q3 e o olho
+    for (const side of ['L', 'R']) {
+      const p = P(15, 21), gl = new G.Paint(p.w, p.h), m = inRR(1, 1, 28, 40, 4), L = side === 'L';
+      p.litMask(m, { ramp: ST, radius: 6, ambient: 0.35, contrast: 1.1, dither: 0.4 }, [0, 0, 29, 41]);
+      for (let x = 5; x <= 24; x++) { p.px(x, 5, ST[0]); p.px(x, 6, ST[4]); p.px(x, 35, ST[0]); p.px(x, 36, ST[3]); }
+      for (let y = 5; y <= 36; y++) { p.px(5, y, ST[0]); p.px(6, y, ST[3]); p.px(24, y, ST[0]); p.px(25, y, ST[2]); }
+      for (const [x, y] of [[3, 3], [26, 3], [3, 38], [26, 38]]) { p.ell(x, y, 1.6, 1.6, ST[0]); p.px(x - 1, y - 1, ST[4]); }
+      // olho: fenda do lado da mediana
+      const ex = L ? 15 : 9;
+      p.rect(ex, 11, 7, 4, '#06040e'); p.rect(ex + 1, 12, 5, 2, '#ff4a5a'); gl.rect(ex, 11, 7, 4, '#ffffff');
+      // Q1 / Q3 entalhado em dourado
+      const txt = L ? 'Q1' : 'Q3'; let tx = 9;
+      for (const ch of txt) { const rows = GL[ch]; rows.forEach((r, yy) => { for (let xx = 0; xx < r.length; xx++) if (r[xx] === '#') { p.px(tx + xx + 1, 21 + yy, ST[0]); p.px(tx + xx, 20 + yy, GOLD[3]); } }); tx += rows[0].length + 1; }
+      // constelação
+      const stars = L ? [[9, 29], [14, 32], [19, 28], [21, 31]] : [[9, 30], [12, 27], [17, 31], [21, 28]];
+      for (let i = 1; i < stars.length; i++) p.line(stars[i - 1][0], stars[i - 1][1], stars[i][0], stars[i][1], ST[3]);
+      for (const [x, y] of stars) p.px(x, y, GOLD[4]);
+      p.outline({ k: -0.85 });
+      B['bsHalf' + side] = p.toCanvas(); B['bsHalf' + side + 'Glow'] = gl.toCanvas();
+    }
+    // MEDIANA (4×24): barra de ouro que sustenta a caixa
+    { const p = P(4, 24), gl = new G.Paint(p.w, p.h), m = inRR(1, 1, 6, 46, 2); cyl(p, m, GOLD, [0, 0, 7, 47], { hi: 0.3, sh: 0.7 }); for (const y of [2, 45]) p.rect(1, y, 6, 1, GOLD[4]); p.outline({ k: -0.8 }); gl.mask(m, '#ffffff'); B.bsMedian = p.toCanvas(); B.bsMedianGlow = gl.toCanvas(); }
+    // BIGODE: haste de aço (48×3) desenhada recortada no comprimento, e a ponta em T (4×12)
+    { const p = P(48, 3); cyl90(p, (x, y) => y >= 1 && y <= 4, STEEL, [0, 0, 95, 5]); for (let x = 6; x < 96; x += 12) p.rect(x, 1, 1, 4, STEEL[1]); p.outline({ k: -0.85 }); B.bsRod = p.toCanvas(); }
+    { const p = P(4, 12), m = inRR(1, 1, 6, 22, 2); cyl(p, m, STEEL, [0, 0, 7, 23], { hi: 0.3, sh: 0.7 }); p.rect(1, 1, 6, 3, GOLD[3]); p.rect(1, 20, 6, 3, GOLD[2]); p.outline({ k: -0.85 }); B.bsCap = p.toCanvas(); }
+    // PERNA (7×11): pilar com sapata
+    {
+      const p = P(7, 11);
+      p.curPart = 1; cyl(p, inRR(3, 0, 8, 16, 2), ST, [2, 0, 11, 16], { hi: 0.3, sh: 0.68 });
+      p.curPart = 2; p.litMask(inRR(0, 14, 14, 8, 3), { ramp: ST, radius: 3, ambient: 0.35 }, [0, 13, 13, 22]);
+      p.innerLines({ k: -0.5 }); p.outline({ k: -0.85 }); B.bsLeg = p.toCanvas();
+    }
+    // CÚPULA de latão com a lente do observatório (12×6)
+    { const p = P(12, 6), gl = new G.Paint(p.w, p.h); p.ell(12, 12, 11, 10.5, { ramp: ['#4a2a0a', '#8a5a1a', '#c08a2a', '#e8b84a', '#fff0a0'], ambient: 0.4 }); p.ell(12, 6.5, 3.4, 3.4, '#0a1030'); p.ell(12, 6.5, 2.4, 2.4, (nx, ny) => (nx + ny < -0.3 ? '#bff0ff' : '#3a8ae8')); gl.ell(12, 6.5, 3, 3, '#ffffff'); p.outline({ k: -0.85 }); B.bsDome = p.toCanvas(); B.bsDomeGlow = gl.toCanvas(); }
+    G.spr.boxsentinela_icon = composite(44, 40, [[B.bsLeg, 9, 29], [B.bsLeg, 28, 29], [B.bsHalfL, 7, 12], [B.bsHalfR, 22, 12], [B.bsMedian, 20, 10], [B.bsDome, 16, 5]]);
+  }
+  G.buildBossArt = function () { golem(); spider(); scorpion(); dragon(); yeti(); vies(); reiDado(); histoColosso(); boxSentinela(); };
 })(window.G);

@@ -440,6 +440,7 @@
         G.ui.update(dt);
         break;
     }
+    G.audio.tick();
     G.input.endFrame();
   }
   function startIntro() { G.state = 'intro'; G.introPage = 0; G.introT = 0; G.music('title'); }

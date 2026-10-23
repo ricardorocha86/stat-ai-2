@@ -390,67 +390,71 @@
   PUZ.stonepath = (c) => {
     const { r, L, setL, map } = c;
     const rule = c.opt.rule || 'median';
-    const rows = c.opt.rows || [7, 5, 3];
-    const cols = [9, 10, 11, 12, 13];
+    // sala com porta só à direita ou à esquerda: as fileiras viram colunas e a travessia é na horizontal
+    const horiz = !r.doors.S && !r.doors.N && !!(r.doors.E || r.doors.W), fromE = horiz && !!r.doors.E;
+    const rows = horiz ? (c.opt.rows || [7, 5, 3]).map((_, k) => fromE ? 17 - k * 3 : 6 + k * 3) : (c.opt.rows || [7, 5, 3]); // posição de cada fileira no eixo da travessia
+    const cols = horiz ? [4, 5, 6, 7, 8] : [9, 10, 11, 12, 13]; // posições das 5 pedras no eixo transversal
+    const at = (line, j) => (horiz ? [line, j] : [j, line]); // (lx, ly)
     const lava = !!c.opt.lava;
     const hole = lava ? T.LAVA : T.PIT;
     let done = c.solved;
     // área: fileiras de pedras (resto vira abismo) intercaladas com faixas firmes
     const top = Math.min(...rows) - 1, bot = Math.max(...rows) + 1;
-    for (let ly = top; ly <= bot; ly++) for (let lx = 1; lx < 23; lx++) {
-      if (rows.includes(ly)) setL(lx, ly, done || cols.includes(lx) ? T.FLOOR : hole);
-      else setL(lx, ly, T.FLOOR);
-    }
+    for (let a = top; a <= bot; a++) for (let b = 1; b < (horiz ? 12 : 23); b++) setL(...at(a, b), rows.includes(a) && !done && !cols.includes(b) ? hole : T.FLOOR);
     const state = rows.map(() => null);
     const stones = rows.map(() => []);
     const signs = [];
     const fill = (k) => {
       const row = genRow(rule); state[k] = row;
       for (const s of stones[k]) s.dead = true;
-      stones[k] = cols.map((lx, i) => { const s = new NumStone(...L(lx, rows[k]), row.labels[i]); s.room = r.idx; s.fake = i !== row.ok; return s; });
+      stones[k] = cols.map((j, i) => { const s = new NumStone(...L(...at(rows[k], j)), row.labels[i]); s.room = r.idx; s.fake = i !== row.ok; return s; });
       for (const s of stones[k]) { if (G.map === map && G.curRoom === r.idx) G.addEnt(s); else c.add(s, r.idx); }
       if (signs[k]) signs[k].txt = row.sign;
-      for (const lx of cols) setL(lx, rows[k], T.FLOOR);
+      for (const j of cols) setL(...at(rows[k], j), T.FLOOR);
     };
-    rows.forEach((ly, k) => {
-      const sg = c.add(new Decal(r.px + 3 * TS, r.py + ly * TS + 3, 5 * TS, 10, (ctx, x, y, d) => tag(ctx, x + d.w / 2 - 6, y, d.txt || '', '#ffe27a')), r.idx);
+    rows.forEach((line, k) => {
+      // placa da fileira: à esquerda dela (vertical) ou alternando em cima/embaixo da coluna (horizontal)
+      const sx = horiz ? r.px + (line - 2) * TS : r.px + 3 * TS, sy = horiz ? r.py + (k % 2 ? 10 : 2) * TS + 3 : r.py + line * TS + 3;
+      const sg = c.add(new Decal(sx, sy, 5 * TS, 10, (ctx, x, y, d) => tag(ctx, x + d.w / 2 - 6, y, d.txt || '', '#ffe27a')), r.idx);
       signs[k] = sg;
       if (!done) fill(k);
     });
     let regen = [];
+    const topic = rule === 'z' ? 'normal' : rule === 'prob' ? 'prob' : rule === 'mean' ? 'media' : 'mediana';
     return {
       prompt: {
         median: '^yPONTE DA MEDIANA^0: em cada fileira só a pedra que é a ^gMEDIANA^0 dos cinco números aguenta o seu peso. As outras desabam! (Ordene de cabeça e pegue a do meio.)',
         z: '^yPONTE DO ESCORE-Z^0: cada placa diz a média μ, o desvio σ e um escore z. Pise na pedra com o valor ^gμ + z·σ^0. As outras desabam!',
         prob: '^yPONTE DO ACASO^0: pise na pedra com a ^gmaior^0 (ou ^gmenor^0) probabilidade, como diz a placa. As outras despencam!',
-        mean: '^yPONTE DA MÉDIA^0: pise na pedra que mostra a ^gMÉDIA^0 dos números da placa.'
+        mean: '^yPONTE DA MÉDIA^0: em cada fileira, pise na pedra que mostra a ^gMÉDIA^0 dos números da placa. As outras desabam!'
       }[rule],
       update(dt) {
         const p = G.player; if (!p || done) return;
         for (let i = regen.length - 1; i >= 0; i--) { regen[i].t -= dt; if (regen[i].t <= 0 && p.state !== 'fall') { fill(regen[i].k); regen.splice(i, 1); } }
         if (p.state === 'normal' && p.z <= 0) {
           const ltx = Math.floor(p.cx / TS) - r.x0, lty = Math.floor(p.cy / TS) - r.y0;
-          const k = rows.indexOf(lty);
-          if (k >= 0 && cols.includes(ltx) && state[k]) {
-            const s = stones[k][cols.indexOf(ltx)];
+          const k = rows.indexOf(horiz ? ltx : lty), j = cols.indexOf(horiz ? lty : ltx);
+          if (k >= 0 && j >= 0 && state[k]) {
+            const s = stones[k][j];
             if (s && s.fake && !s.gone) {
               s.gone = true; setL(ltx, lty, hole);
               G.fx.burst(s.cx, s.cy, ['#a89a88', '#6a5c50'], 12, 60, { grav: 200 }); G.sfx('brick');
-              G.recordQuiz(rule === 'z' ? 'normal' : rule === 'prob' ? 'prob' : rule === 'mean' ? 'media' : 'mediana', false);
+              G.recordQuiz(topic, false);
               G.ui.toast('A pedra desabou! Os números da fileira mudaram...', '#ff8a7a');
               regen.push({ k, t: 1.2 });
-            } else if (s && !s.fake && !s.okd) { s.okd = true; G.sfx('correct'); G.recordQuiz(rule === 'z' ? 'normal' : rule === 'prob' ? 'prob' : rule === 'mean' ? 'media' : 'mediana', true); }
+            } else if (s && !s.fake && !s.okd) { s.okd = true; G.sfx('correct'); G.recordQuiz(topic, true); }
           }
-          if (c.opt.down ? lty >= bot : lty <= top) {
+          const crossed = horiz ? (fromE ? ltx <= top : ltx >= bot) : (c.opt.down ? lty >= bot : lty <= top);
+          if (crossed) {
             done = true;
-            for (const ly of rows) for (let lx = 1; lx < 23; lx++) setL(lx, ly, T.FLOOR);
+            for (const line of rows) for (let b = 1; b < (horiz ? 12 : 23); b++) setL(...at(line, b), T.FLOOR);
             for (const row of stones) for (const s of row) s.dead = true;
             G.ui.toast('Travessia completa! Uma ponte firme se forma.', '#7aff8a');
             c.solve();
           }
         }
       },
-      dbg: { stones, rows, cols }, rewardPos: c.opt.down ? [3, 11] : [3, 1]
+      dbg: { stones, rows, cols, horiz }, rewardPos: horiz ? (fromE ? [3, 3] : [20, 3]) : c.opt.down ? [3, 11] : [3, 1]
     };
   };
 

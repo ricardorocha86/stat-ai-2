@@ -2,6 +2,8 @@
 
 A seção **Jogos**, depois de **Ferramentas**, abre **A Lenda de Sigma — O Reino dos Dados**. O jogo usa a versão 2D remasterizada da raiz de `Documentos/TesteJogo`: apenas `index.html` e os 32 scripts referenciados. Arte e áudio são gerados pelo código. As cópias `versao-2d-original` e `versao-3d` não fazem parte do app.
 
+A página inicial anuncia o jogo como novidade (`components/games/SigmaGameAnnouncement.tsx`): o botão **Jogar agora** abre a mesma página da seção Jogos.
+
 ## Progresso por conta
 
 - Documento: `users/{Firebase Auth UID}/games/lenda-de-sigma`.
@@ -51,6 +53,25 @@ O Templo da Média é a fatia de referência do polimento; as mesmas técnicas v
 - **"Lava" = crosta de magma** (`lavaFrames`): placas de basalto com fendas incandescentes que pulsam. Sem o Traje Térmico, o calor queima como antes; com ele, dá para atravessar e saem brasas sob os pés.
 - **Planalto do Viés**: paleta violeta própria (chão, estradas, penhascos, arbustos) e fendas violeta brilhantes na terra.
 
+### Água
+
+- **Margens orgânicas** (`shoreDist` e `shoreBand` em `js/tiles.js`): os cantos convexos da água são arredondados e as quinas de terra cercadas por água (cantos internos) são recortadas em curva, com a água desenhada por baixo delas (`animId` inclui esses tiles). A margem tem largura irregular (`bankW`), barranco molhado, espuma e faixa rasa. Poças de 1 tile ficam redondas e riachos parecem riachos.
+- **Queda coerente** (`G.inDeepWater`, usado em `js/entities.js`): o herói só cai quando passa da margem desenhada. Riachos de 1 tile de largura continuam bloqueando sem as Botas.
+
+### Mini-chefes
+
+Arte em peças (`reiDado`, `histoColosso` e `boxSentinela` em `js/bossart.js`), animadas em `js/observatorio.js` com `G.rig.part`:
+
+- **Rei Dado** (Abismo do Acaso): dado em perspectiva 3/4 com a face sorteada na frente e uma face vizinha válida na lateral, coroa com joias, manto de arminho, olhos no tampo (severos, bravos, piscando, tontos) e luvas com cetro. Agacha antes de pular, estica no ar e achata ao cair.
+- **Histograma Colossal** (Torre das Distribuições): barras de gelo com um sulco por unidade de frequência, tampas facetadas, base em forma de eixo x com seta e pés de rocha. Os olhos ficam na barra mais alta (a moda) e a frequência de cada barra aparece enquanto ele troca de forma e mira.
+- **Sentinela Boxplot** (Observatório): metades Q1 e Q3 de pedra com constelações, mediana dourada, cúpula com lente e bigodes de aço com ponta em T. Sem a mediana, as metades se separam e tombam.
+- O corpo desenhado recebe golpes (`hurtbox`); o contato continua na base (`contactBox`, agora respeitado também por `G.Enemy`).
+
+### Enigmas
+
+- Toda sala de enigma ganha uma placa com o enunciado ao lado da porta de entrada (`puzzleSign` em `js/dungeons.js`), salvo os enigmas que já têm placa própria (`sign: true`).
+- A trilha de valores (`PUZ.stonepath`) se orienta pela porta: quem entra pela direita ou pela esquerda atravessa as fileiras na horizontal.
+
 ## Controles
 
 Z pula, X ataca, conversa e confirma (J e Espaço também), C usa o item, Shift/Q/Tab trocam o item, Enter/Esc abrem o menu e M o mapa. Nos menus, Z cancela. No celular, os botões mostram as mesmas letras.
@@ -62,6 +83,11 @@ Bombas só aparecem depois das Bombas Binomiais: antes disso, blocos "?" e queda
 ## Áudio
 
 O botão **Silenciar / Ativar som**, no canto superior do jogo, e a tecla **V** alternam o som inteiro sem alterar os volumes escolhidos. Música e efeitos continuam ajustáveis separadamente em **Enter → Sistema**. A tecla **M** abre o mapa. O estado de silêncio acompanha as configurações salvas na conta.
+
+- **Tema de cada chefe** (`BOSS_T` em `js/trilha.js`): Golem, Aranha, Escorpião, Dragão, Yeti, Hipótese Nula e os mini-chefes têm tonalidade, andamento e timbre próprios, cada um com versão de fúria para a segunda fase. A melodia é escrita à mão e o baixo e o arpejo saem dos acordes, então os canais têm sempre 64 passos. `G.bossMusic` escolhe a faixa; o Viés e o Viés Absoluto mantêm as suas.
+- **Ambiência** (`AMB` em `js/audio.js`): cada região e masmorra tem uma camada contínua (brisa, água, vento com rajadas, rumor de lava, zumbido do castelo) e eventos esparsos (pássaros, grilos, sapos, coruja, estalos de lava, gotas, sinos de gelo, brilhos do observatório). Segue o volume dos efeitos.
+- **Passos** (`G.footstep`): o chão sob o herói escolhe o timbre (grama, terra, areia, neve, cinza, gelo, pedra, madeira, tapete, água rasa).
+- **Mixagem**: compressor no mestre, a música recua sob efeitos grandes (explosão, rugido, item, cristal) e fica abafada com o menu de pausa aberto.
 
 ## Blocos
 
