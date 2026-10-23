@@ -644,7 +644,7 @@
         G.text(o, W / 2 + 4, y, sel ? '#ffe27a' : '#e0e0f0', { align: 'center' });
       });
     }
-    G.text('Z: confirmar   Setas: mover   F: tela cheia', W / 2, H - 10, '#c8c0d8', { align: 'center', outline: '#14301e' });
+    G.text('X: confirmar   Setas: mover   F: tela cheia', W / 2, H - 10, '#c8c0d8', { align: 'center', outline: '#14301e' });
   }
   // tela de escolha do personagem (depois de Novo Jogo)
   const ESCOLHAS = [{ id: 'heroi', nome: 'HERÓI', cor: '#7ae4ff' }, { id: 'heroina', nome: 'HEROÍNA', cor: '#ff9ae6' }];
@@ -669,7 +669,7 @@
       if (sel) G.draw(ctx, 'cursor', x + 8 + Math.sin(t * 8) * 0.8, y + 100);
       ctx.globalAlpha = 1;
     });
-    G.text(G.touch && G.touch.on ? 'Direcional: escolher   Toque: confirmar' : '← →: escolher   Z: confirmar   X: voltar', W / 2, H - 10, '#c8c0d8', { align: 'center', outline: '#14301e' });
+    G.text(G.touch && G.touch.on ? 'Direcional: escolher   Toque: confirmar' : '← →: escolher   X: confirmar   Z: voltar', W / 2, H - 10, '#c8c0d8', { align: 'center', outline: '#14301e' });
   }
   // céu, montanhas, colinas e vaga-lumes do título (também usados na escolha)
   function drawTitleBg(ctx, t) {
@@ -707,7 +707,7 @@
     const lines = G.wrap(G.genero(pg.t), 340);
     let rem = Math.floor(G.introT * 50);
     lines.forEach((l, i) => { G.text(l, 22, 130 + i * 11, '#ffffff', { max: Math.max(0, rem) }); rem -= G.visLen(l); });
-    G.text((G.introPage + 1) + '/' + INTRO.length + '   Z: avançar   Enter: pular', W - 10, H - 10, '#5a5670', { align: 'right' });
+    G.text((G.introPage + 1) + '/' + INTRO.length + '   X: avançar   Enter: pular', W - 10, H - 10, '#5a5670', { align: 'right' });
   }
   function drawGameOver(ctx) {
     const t = G.goT || 0, k = Math.min(1, t / 1.2);
@@ -799,7 +799,7 @@
       const vs = G.spr.vicente_down_stand || G.spr.vicente_down0;
       if (vs && G.P && G.P.flags.vicente) { G.shadow(ctx, W / 2 + 48, H - 28, 16, 0.4); G.draw(ctx, vs, W / 2 + 48 - G.lw(vs) / 2, H - 28 - G.lh(vs) + 2); }
       G.textBig('OBRIGADO POR JOGAR!', W / 2, 92, '#ffffff', { align: 'center', scale: 2, gradient: ['#ffffff', '#ffd84a'], outline: '#2a1040' });
-      if (Math.floor(t * 2) % 2 === 0) G.text(G.touch && G.touch.on ? 'Toque em Z para voltar ao título' : 'Pressione Z para voltar ao título', W / 2, 120, '#e8e0f8', { align: 'center', outline: '#1a0a2a' });
+      if (Math.floor(t * 2) % 2 === 0) G.text(G.touch && G.touch.on ? 'Toque em X para voltar ao título' : 'Pressione X para voltar ao título', W / 2, 120, '#e8e0f8', { align: 'center', outline: '#1a0a2a' });
       ctx.globalAlpha = 1;
     }
   }

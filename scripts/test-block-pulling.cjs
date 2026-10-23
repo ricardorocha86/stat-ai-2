@@ -37,7 +37,7 @@ function step(n = 1) {
     for (const ent of G.ents) if (ent instanceof G.PushBlock) assert(!G.overlap(ent, G.player), 'the hero and block must not overlap during the step');
   }
 }
-function pressAction(key = 'KeyZ') {
+function pressAction(key = 'KeyX') {
   G.input.codes[key] = true; G.input.hit.a = true; step(); G.input.codes = {};
 }
 for (const facing of [0, 1, 2, 3]) {

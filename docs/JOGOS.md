@@ -44,13 +44,28 @@ O Templo da Média é a fatia de referência do polimento; as mesmas técnicas v
 - **Interface**: retratos falantes nos diálogos (boca abre enquanto o texto corre, piscada), gerados na primeira fala (`G.portraitVariants`); caixa de diálogo e menu de pausa com transição; aviso de poção aparece por cima do menu.
 - **Cenário**: emblema entalhado em todas as arenas de chefe (símbolo de cada tema), feixes de luz no bosque, nas ruínas e na torre de gelo, copas balançando com o vento e sombras de nuvens no mapa aberto; no título, o herói respira e passam estrelas cadentes.
 
+### Terreno das regiões frias, quentes e do Viés
+
+- **Penhascos** (`cliffPx` em `js/tiles.js`): o paredão ocupa quase o tile, com estratos, rachaduras e base escura; a beirada é clara (neve escorrendo no gelo, veios de magma no vulcão), as laterais têm luz e sombra e o chão logo abaixo recebe sombra (`cliffShadow`). O topo dos platôs é rocha com manchas de neve ou grama, para não se confundir com o chão.
+- **Gelo escorregadio**: borda orgânica de neve, aro claro e gelo mais fundo no meio.
+- **"Lava" = crosta de magma** (`lavaFrames`): placas de basalto com fendas incandescentes que pulsam. Sem o Traje Térmico, o calor queima como antes; com ele, dá para atravessar e saem brasas sob os pés.
+- **Planalto do Viés**: paleta violeta própria (chão, estradas, penhascos, arbustos) e fendas violeta brilhantes na terra.
+
+## Controles
+
+Z pula, X ataca, conversa e confirma (J e Espaço também), C usa o item, Shift/Q/Tab trocam o item, Enter/Esc abrem o menu e M o mapa. Nos menus, Z cancela. No celular, os botões mostram as mesmas letras.
+
+## Itens antes da hora
+
+Bombas só aparecem depois das Bombas Binomiais: antes disso, blocos "?" e quedas que dariam bombas viram uma moeda azul (5 moedas). A regra fica em `Pickup` e em `G.give('bombs')`.
+
 ## Áudio
 
 O botão **Silenciar / Ativar som**, no canto superior do jogo, e a tecla **V** alternam o som inteiro sem alterar os volumes escolhidos. Música e efeitos continuam ajustáveis separadamente em **Enter → Sistema**. A tecla **M** abre o mapa. O estado de silêncio acompanha as configurações salvas na conta.
 
 ## Blocos
 
-Empurre caminhando contra o bloco, como antes. Para puxar, fique de frente para ele e pressione **Z** (ou J, Espaço, A do controle ou Z/ação no celular). O personagem recua junto com o bloco por uma casa. O movimento respeita paredes, outros blocos, perigos, limites dos trilhos e blocos fixos. Puxar no gelo move apenas uma casa; dados gigantes continuam girando na direção do movimento.
+Empurre caminhando contra o bloco, como antes. Para puxar, fique de frente para ele e pressione **X** (ou J, Espaço, A do controle ou X/ação no celular). O personagem recua junto com o bloco por uma casa. O movimento respeita paredes, outros blocos, perigos, limites dos trilhos e blocos fixos. Puxar no gelo move apenas uma casa; dados gigantes continuam girando na direção do movimento.
 
 ## Verificação
 

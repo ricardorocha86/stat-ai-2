@@ -1,7 +1,7 @@
 'use strict';
 // =====================================================================
 //  Controles de toque (celular e tablet): direcional flutuante na metade
-//  esquerda da tela, botões Z/X/C/Q à direita (as mesmas teclas citadas
+//  esquerda da tela, botões X/Z/C/Q à direita (as mesmas teclas citadas
 //  pelos textos do jogo), menu, mapa e tela cheia no topo. Tocar no lado
 //  direito durante diálogos e menus confirma. Os estados entram em
 //  G.input como se fossem um controle (pad), inclusive "segurar".
@@ -10,8 +10,8 @@
   const I = G.input;
   const T = G.touch = { state: {}, tapped: {}, prev: {}, on: false, mode: 'auto', stickId: null, btnPtr: {} };
   const BTN = [
-    { id: 'a', key: 'Z', cap: 'ação', acts: ['a', 'confirm'] },
-    { id: 'b', key: 'X', cap: 'pular', acts: ['b', 'cancel'] },
+    { id: 'a', key: 'X', cap: 'ação', acts: ['a', 'confirm'] },
+    { id: 'b', key: 'Z', cap: 'pular', acts: ['b', 'cancel'] },
     { id: 'c', key: 'C', cap: 'item', acts: ['c'] },
     { id: 'sw', key: 'Q', cap: 'trocar', acts: ['sw'] },
     { id: 'start', key: '☰', cap: 'menu', acts: ['start'] },

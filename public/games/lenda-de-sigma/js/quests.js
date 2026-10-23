@@ -486,7 +486,7 @@
         const ok = this.hits === 8;
         bubble(ctx, 76, 26, 296, [ok ? 'Acertei as 8! Eu disse que sabia!' : 'Acertei ' + this.hits + ' de 8... ora essa!', ok ? 'Agora prove que não foi sorte!' : 'Será que foi só sorte?']);
         G.text('Acertos: ' + this.hits + ' de 8', W / 2, 160, ok ? '#7aff8a' : '#ffd84a', { align: 'center' });
-        G.text('Z: continuar', W / 2, 192, '#ffd84a', { align: 'center' });
+        G.text('X: continuar', W / 2, 192, '#ffd84a', { align: 'center' });
       }
     }
   }
@@ -562,7 +562,7 @@
         const n1 = this.n === 1;
         G.text(this.lastOk ? '★ VOCÊ ACERTOU! ★' : 'Não foi dessa vez!', W / 2, by, this.lastOk ? '#7aff8a' : '#ff8a7a', { align: 'center' });
         G.wrap(n1 ? 'Com 1 dado, cada face tem chance 1/6: o histograma fica PLANO.' : 'Com 5 dados, as médias se juntam perto de 3,5 e formam um SINO: é o Teorema Central do Limite!', 340).forEach((l, i) => G.text(l, W / 2, by + 13 + i * 10, '#e8e4f4', { align: 'center' }));
-        G.text('Z: continuar', W / 2, 192, '#ffd84a', { align: 'center' });
+        G.text('X: continuar', W / 2, 192, '#ffd84a', { align: 'center' });
       } else {
         G.text('Experimente à vontade! Dados por jogada:', W / 2, by, '#c8c8e0', { align: 'center' });
         [1, 2, 5, 10].forEach((n, i) => { const sel = i === this.sel, x = 108 + i * 44; G.panel(ctx, x, by + 12, 36, 15, { r: 3, thin: true, corners: false, bgTop: sel ? '#7a4ad0' : '#2e2860', bg: sel ? '#3a2a8a' : '#1a163a', border: sel ? '#ffd84a' : '#5a5690' }); G.text(String(n), x + 18, by + 16, sel ? '#ffe27a' : '#c8c8e0', { align: 'center' }); });

@@ -125,7 +125,7 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
           </div>
         </div>
       )}
-      <p className="text-xs leading-relaxed text-slate-500">Clique no jogo para usar o teclado. Mova com as setas ou WASD; Z ataca e confirma. De frente para um bloco, pressione Z para puxá-lo uma casa e recuar junto. X pula, C usa o item, Q troca o item e Enter abre o menu. V silencia ou ativa o som; M abre o mapa. Ajuste os volumes em Enter → Sistema. No celular, use os controles de toque. O progresso é salvo automaticamente; ao voltar, escolha Continuar. Combates e enigmas em andamento recomeçam na sala.</p>
+      <p className="text-xs leading-relaxed text-slate-500">Clique no jogo para usar o teclado. Mova com as setas ou WASD; X ataca e confirma. De frente para um bloco, pressione X para puxá-lo uma casa e recuar junto. Z pula, C usa o item, Shift ou Q troca o item e Enter abre o menu. V silencia ou ativa o som; M abre o mapa. Ajuste os volumes em Enter → Sistema. No celular, use os controles de toque. O progresso é salvo automaticamente; ao voltar, escolha Continuar. Combates e enigmas em andamento recomeçam na sala.</p>
     </section>
   );
 }

@@ -11,7 +11,7 @@
     const p = P(), c = p.crystals;
     if (!p.items.sword) return 'Fale com o Mestre Gauss na vila.';
     if (!c.includes('media')) return 'Vá ao ^gTemplo da Média^0, a nordeste da vila. Lá dentro você aprenderá sobre a MÉDIA.';
-    if (!c.includes('mediana')) return 'Com as ^yBotas de Salto^0 (tecla X), pule o riacho a OESTE da vila e encontre o ^gBosque da Mediana^0.';
+    if (!c.includes('mediana')) return 'Com as ^yBotas de Salto^0 (tecla Z), pule o riacho a OESTE da vila e encontre o ^gBosque da Mediana^0.';
     if (!c.includes('dispersao')) return 'Exploda as ^yrochas rachadas^0 com bombas para chegar ao ^yDeserto^0 (ao sul do Lago ou a leste dos Campos de Pascal).';
     if (!c.includes('prob')) return 'Atire com o ^cRaio Amostral^0 na barreira de cristal ao NORTE do Lago Bernoulli para chegar ao ^rVulcão^0.';
     if (!c.includes('distrib')) return 'Com o ^oTraje Térmico^0, suba aos ^cPicos Gaussianos^0, ao norte do Bosque Sombrio. A Torre das Distribuições te espera.';
@@ -56,7 +56,7 @@
         await say('Mestre Gauss', 'Mas uma espada não basta. Primeiro, uma lição rápida sobre o que é a Estatística.', { portrait: por });
         await G.ui.lesson('intro');
         await say('Mestre Gauss', 'O primeiro cristal está no ^gTemplo da Média^0, a nordeste daqui. Fale comigo sempre que estiver {perdido|perdida}. Boa sorte, Sigma!', { portrait: por });
-        await say(null, 'Controles: ^ySETAS^0 movem · ^yZ^0 ataca e conversa · ^yEnter^0 abre o menu (status, mapa, missões, Grimório) · ^yM^0 mapa. Explore o reino à vontade!');
+        await say(null, 'Controles: ^ySETAS^0 movem · ^yX^0 ataca e conversa · ^yZ^0 pula (com as botas) · ^yEnter^0 abre o menu (status, mapa, missões, Grimório) · ^yM^0 mapa. Explore o reino à vontade!');
         await say(null, 'Dica: quem tem um ^y!^0 amarelo sobre a cabeça tem um pedido para você. Missões rendem tesouros e lições novas!');
         G.ui.toast('Objetivo: Templo da Média (nordeste da vila)', '#ffd84a');
         return;

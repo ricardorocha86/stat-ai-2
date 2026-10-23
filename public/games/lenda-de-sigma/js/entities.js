@@ -96,12 +96,12 @@
   //  Concessão de itens
   // ------------------------------------------------------------------
   const ITEMS = {
-    sword: ['swordIcon', 'ESPADA DE TREINO', 'Pressione ^yZ^0 para atacar! Corte arbustos, quebre potes e golpeie blocos ^y?^0 para ganhar moedas.'],
-    boots: ['boots', 'BOTAS DE SALTO', 'Pressione ^yX^0 para pular! Atravesse buracos e riachos estreitos, e PISE nos inimigos para um ataque duplo.'],
+    sword: ['swordIcon', 'ESPADA DE TREINO', 'Pressione ^yX^0 para atacar! Corte arbustos, quebre potes e golpeie blocos ^y?^0 para ganhar moedas.'],
+    boots: ['boots', 'BOTAS DE SALTO', 'Pressione ^yZ^0 para pular! Atravesse buracos e riachos estreitos, e PISE nos inimigos para um ataque duplo.'],
     bombs: ['bomb', 'BOMBAS BINOMIAIS', 'Pressione ^yC^0 para colocar uma bomba. Explodem rochas e paredes rachadas. ^yQ^0 troca o item ativo.'],
     beam: ['beamItem', 'RAIO AMOSTRAL', 'Pressione ^yC^0 para atirar. SEGURE ^yC^0 para carregar um tiro poderoso! Quebra barreiras de cristal.'],
-    suit: ['suit', 'TRAJE TÉRMICO', 'Protege contra o frio extremo das montanhas e permite caminhar sobre a lava!'],
-    spin: ['scroll', 'GOLPE GIRATÓRIO', 'SEGURE ^yZ^0 depois de um golpe até a espada brilhar e SOLTE para girar, acertando tudo ao redor!']
+    suit: ['suit', 'TRAJE TÉRMICO', 'Protege do frio extremo das montanhas e do calor da crosta de magma: com ele, dá para atravessá-la!'],
+    spin: ['scroll', 'GOLPE GIRATÓRIO', 'SEGURE ^yX^0 depois de um golpe até a espada brilhar e SOLTE para girar, acertando tudo ao redor!']
   };
   G.ITEMS = ITEMS;
   G.give = async function (kind, n, o = {}) {
@@ -109,7 +109,9 @@
     switch (kind) {
       case 'coin': P.coins = Math.min(999, P.coins + n); P.stats.coinsTotal += n; G.sfx(n >= 5 ? 'bigcoin' : 'coin'); if (p) G.fx.text(p.cx, p.y - 14, '+' + n, '#ffd84a'); return;
       case 'heart': G.healPlayer(n || 4); G.sfx('heart'); return;
-      case 'bombs': P.bombs = Math.min(P.bombMax, P.bombs + (n || 3)); G.sfx('heart'); if (p) G.fx.text(p.cx, p.y - 14, '+' + (n || 3) + ' bombas', '#c8c8ff'); return;
+      case 'bombs':
+        if (!P.items.bombs) return G.give('coin', 5); // ainda não tem as Bombas Binomiais
+        P.bombs = Math.min(P.bombMax, P.bombs + (n || 3)); G.sfx('heart'); if (p) G.fx.text(p.cx, p.y - 14, '+' + (n || 3) + ' bombas', '#c8c8ff'); return;
       case 'xp': G.addXP(n); return;
       case 'mushroom': G.healPlayer(4); if (p) p.superT = 30; G.sfx('powerup'); G.ui.toast('SUPER COGUMELO! Ataque +2 por 30s', '#ff8a5a'); return;
       case 'star': if (p) p.starT = 10; G.sfx('star'); G.music('star'); G.ui.toast('ESTRELA! Invencível por 10s!', '#ffd84a'); return;
@@ -290,6 +292,8 @@
         const tp = G.TP[G.map.tileAtPx(this.cx, this.cy)];
         if (tp.pit || tp.water) { this.startFall(tp.water ? 'water' : 'pit'); return; }
         if (tp.lava && !P.items.suit) { this.startFall('lava'); return; }
+        // com o traje, a crosta solta brasas sob os pés
+        if (tp.lava && this.moving && Math.random() < 0.35) G.fx.spawn({ x: this.cx + G.rf(-4, 4), y: this.y + this.h, vy: -G.rf(15, 35), vx: G.rf(-8, 8), color: G.pick(['#ff9a3a', '#ffd040', '#ff5a1a']), size: 1, life: G.rf(0.3, 0.6) });
         if (this.allSafe()) this.lastSafe = { x: this.x, y: this.y };
       }
       // --- frio ---
@@ -588,6 +592,8 @@
   class Pickup extends Ent {
     constructor(x, y, kind, value = 1, o = {}) {
       super(x - 5, y - 5, 10, 10);
+      // bombas só aparecem depois de ganhar as Bombas Binomiais; antes, viram uma moeda azul
+      if (kind === 'bombs' && G.P && !G.P.items.bombs) { kind = 'coin'; value = 5; }
       this.kind = kind; this.value = value; this.life = o.life !== undefined ? o.life : 9; this.vz = o.pop ? 90 : 0; this.z = o.pop ? 1 : 0;
       this.persist = o.persist; this.flagKey = o.flag; this.pvx = o.vx || 0; this.pvy = o.vy || 0;
     }

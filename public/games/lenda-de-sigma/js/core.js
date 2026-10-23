@@ -63,9 +63,9 @@ window.G = {};
   // ---------- entrada ----------
   const KEYMAP = {
     up: ['ArrowUp', 'KeyW'], down: ['ArrowDown', 'KeyS'], left: ['ArrowLeft', 'KeyA'], right: ['ArrowRight', 'KeyD'],
-    a: ['KeyZ', 'KeyJ', 'Space'], b: ['KeyX', 'KeyK'], c: ['KeyC', 'KeyL'], sw: ['KeyQ', 'ShiftLeft', 'ShiftRight', 'Tab'],
+    a: ['KeyX', 'KeyJ', 'Space'], b: ['KeyZ', 'KeyK'], c: ['KeyC', 'KeyL'], sw: ['KeyQ', 'ShiftLeft', 'ShiftRight', 'Tab'],
     start: ['Enter', 'Escape', 'KeyP'], map: ['KeyM'],
-    confirm: ['KeyZ', 'KeyJ', 'Space', 'Enter'], cancel: ['KeyX', 'KeyK', 'Escape', 'Backspace']
+    confirm: ['KeyX', 'KeyJ', 'Space', 'Enter'], cancel: ['KeyZ', 'KeyK', 'Escape', 'Backspace']
   };
   G.KEYMAP = KEYMAP;
   const codeToActs = {};

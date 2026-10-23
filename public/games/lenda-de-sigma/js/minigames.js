@@ -161,7 +161,7 @@
         G.text(this.win ? '★ VENCEU! +' + this.pay + ' moedas' : 'Perdeu... ' + G.fmt(p * 100, 1) + '% ficou fora da faixa.', W / 2, 167, this.win ? '#7aff8a' : '#ff8a7a', { align: 'center' });
         const L = { 10: 'Com só 10 lançamentos, o acaso domina: a proporção varia MUITO.', 100: 'Com 100 lançamentos a proporção já fica mais estável.', 1000: 'Com 1000 lançamentos quase sempre fica perto de 50%: Lei dos Grandes Números!' }[this.n];
         G.wrap(L, 340).forEach((l, i) => G.text(l, W / 2, 179 + i * 10, '#c8c8e0', { align: 'center' }));
-        G.text('Z: continuar', W / 2, 200, '#ffd84a', { align: 'center' });
+        G.text('X: continuar', W / 2, 200, '#ffd84a', { align: 'center' });
       }
     }
   }
@@ -224,7 +224,7 @@
         const sum = this.d[0] + this.d[1];
         G.text('Soma: ' + sum, 76, 176, '#ffffff', { align: 'center' });
         G.text(this.win ? '★ GANHOU ' + 5 * MULT(this.sum) + '!' : 'Não foi dessa vez.', 76, 188, this.win ? '#7aff8a' : '#ff8a7a', { align: 'center' });
-      } else if (this.st === 'bet') G.text('Z: rolar   X: sair', 76, 182, '#ffd84a', { align: 'center' });
+      } else if (this.st === 'bet') G.text('X: rolar   Z: sair', 76, 182, '#ffd84a', { align: 'center' });
       if (this.msg) G.text(this.msg, 76, 196, '#ff8a7a', { align: 'center' });
       // histograma da sessão
       const vals = [], labs = [];
@@ -300,7 +300,7 @@
       if (this.st === 'pick') {
         const bx = this.pegX(ROWS, this.pick);
         G.text('▼', bx, binY - 8, '#ffd84a', { align: 'center' });
-        G.text('Em qual casa cairão MAIS bolinhas? (← →, Z)', 12, 200, '#c8c8e0');
+        G.text('Em qual casa cairão MAIS bolinhas? (← →, X)', 12, 200, '#c8c8e0');
       }
       for (const b of this.balls) if (!b.done) { ctx.fillStyle = '#2a2a4a'; ctx.beginPath(); ctx.arc(b.x, b.y, 2.3, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#e8f4ff'; ctx.beginPath(); ctx.arc(b.x, b.y, 1.8, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#ffffff'; ctx.fillRect(b.x - 1, b.y - 1, 0.8, 0.8); }
       G.text('linha rosa =', W - 12, 150, '#ff6aa0', { align: 'right' }); G.text('valor esperado', W - 12, 160, '#ff6aa0', { align: 'right' });

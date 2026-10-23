@@ -235,7 +235,7 @@
     // caixote carregado não pode sair da sala: ao sair, volta à pilha de origem
     puz.leave = () => { const p = G.player; if (p && p.carry && p.carry.puzzle) { p.carry.from.count++; p.carry = null; } };
     return {
-      prompt: '^yPILHAS DESIGUAIS^0: pegue caixotes (Z) das pilhas altas e coloque nas baixas até que ^gtodas fiquem com a mesma altura^0. Essa altura igual é justamente a ^yMÉDIA^0 das pilhas!',
+      prompt: '^yPILHAS DESIGUAIS^0: pegue caixotes (X) das pilhas altas e coloque nas baixas até que ^gtodas fiquem com a mesma altura^0. Essa altura igual é justamente a ^yMÉDIA^0 das pilhas!',
       leave: puz.leave, dbg: { mean, puz }, rewardPos: [11, 10]
     };
   };

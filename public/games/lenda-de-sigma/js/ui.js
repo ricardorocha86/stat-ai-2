@@ -393,7 +393,7 @@
       this.lines.slice(0, maxLines).forEach((l, i) => G.text(l, x + 12, y + 24 + i * 10, '#ffffff'));
       if (p.fig) drawFig(ctx, p.fig, x + 70, y + 116, 232, 76);
       G.text(this.L.by, x + 10, y + h - 11, '#9a98b0');
-      const nav = (this.page > 0 ? '← ' : '  ') + (this.page < this.L.pages.length - 1 ? 'próxima →' : 'fechar (Z)');
+      const nav = (this.page > 0 ? '← ' : '  ') + (this.page < this.L.pages.length - 1 ? 'próxima →' : 'fechar (X)');
       G.text(nav, x + w - 10, y + h - 11, '#ffd84a', { align: 'right' });
     }
   }
@@ -503,7 +503,7 @@
       G.text(swords[P.swordLv] + ' · ' + armors[P.armorLv], x, y + 58, '#c8c8e0');
       // itens
       G.text('ITENS', x, y + 72, '#ffd84a');
-      const items = [['swordIcon', 'Espada', P.items.sword], ['boots', 'Botas de Salto (X)', P.items.boots], ['bomb', 'Bombas ' + P.bombs + '/' + P.bombMax, P.items.bombs], ['beamItem', 'Raio Amostral', P.items.beam], ['suit', 'Traje Térmico', P.items.suit], ['scroll', 'Golpe Giratório', P.items.spin], ['hookItem', 'Gancho da Regressão', P.items.hook]];
+      const items = [['swordIcon', 'Espada', P.items.sword], ['boots', 'Botas de Salto (Z)', P.items.boots], ['bomb', 'Bombas ' + P.bombs + '/' + P.bombMax, P.items.bombs], ['beamItem', 'Raio Amostral', P.items.beam], ['suit', 'Traje Térmico', P.items.suit], ['scroll', 'Golpe Giratório', P.items.spin], ['hookItem', 'Gancho da Regressão', P.items.hook]];
       items.forEach(([ic, name, has], i) => {
         const ix = x + (i % 2) * 118, iy = y + 81 + Math.floor(i / 2) * 19;
         G.rect(ctx, ix, iy, 18, 18, '#0a0918');
@@ -520,7 +520,7 @@
       });
       G.text('Fragmentos de', cx, y + 56, '#c8c8e0'); G.text('coração: ' + (P.heartPieces % 4) + '/4', cx, y + 66, '#ff8a9a');
       G.draw(ctx, 'iconPotion', cx, y + 82); G.text('Poções: ' + P.potions, cx + 12, y + 82, '#ffffff');
-      if (P.potions > 0) G.text(P.hp < P.maxHp ? 'Z: beber poção' : 'Vida cheia', cx, y + 94, P.hp < P.maxHp ? '#7aff8a' : '#5a5670');
+      if (P.potions > 0) G.text(P.hp < P.maxHp ? 'X: beber poção' : 'Vida cheia', cx, y + 94, P.hp < P.maxHp ? '#7aff8a' : '#5a5670');
       G.draw(ctx, 'iconCoin', cx, y + 108); G.text('Moedas: ' + P.coins, cx + 12, y + 108, '#ffd84a');
       G.text('Tempo: ' + G.fmtTime(P.playTime), cx, y + 122, '#9a98b0');
       if (G.quest) { G.draw(ctx, 'lens', cx - 1, y + 133); G.text('Lentes: ' + G.quest.lenses() + '/5', cx + 12, y + 135, '#7ae4ff'); }
@@ -546,7 +546,7 @@
         G.wrap(L.title, w - 214).forEach((l, i) => G.text(l, x + 206, y + 8 + i * 10, '#ffd84a'));
         G.text('Fonte: ' + L.by, x + 206, y + 32, '#9a98b0');
         G.wrap(L.pages[0].t.split('\n')[0], w - 214).slice(0, 7).forEach((l, i) => G.text(l, x + 206, y + 48 + i * 10, '#c8c8e0'));
-        G.text('Z: ler lição', x + 206, y + 136, '#7aff8a');
+        G.text('X: ler lição', x + 206, y + 136, '#7aff8a');
       } else {
         G.wrap('Esta lição ainda não foi encontrada. Explore o reino, leia tábuas e converse com os sábios!', w - 214).forEach((l, i) => G.text(l, x + 206, y + 8 + i * 10, '#6a6880'));
       }
@@ -633,10 +633,10 @@
       G.text('CONTROLES', W / 2, 22, '#ffd84a', { align: 'center' });
       const L = [
         ['Setas / WASD', 'Mover'],
-        ['Z / J / Espaço', 'Espada · Falar · Confirmar'],
-        ['Z frente a bloco', 'Puxar uma casa (recua junto)'],
-        ['   (segurar Z)', 'Golpe giratório (quando aprender)'],
-        ['X / K', 'Pular (com as Botas) · Cancelar'],
+        ['X / J / Espaço', 'Espada · Falar · Confirmar'],
+        ['X frente a bloco', 'Puxar uma casa (recua junto)'],
+        ['   (segurar X)', 'Golpe giratório (quando aprender)'],
+        ['Z / K', 'Pular (com as Botas) · Cancelar'],
         ['C / L', 'Usar item (bomba / raio / gancho)'],
         ['  (segurar C)', 'Carregar o Raio Amostral'],
         ['Q / Shift / Tab', 'Trocar item'],
@@ -644,7 +644,7 @@
         ['M', 'Mapa'],
         ['F / V', 'Tela cheia / Silenciar ou ativar som'],
         ['Controle', 'A=espada B=pular X=item Y=trocar'],
-        ['Celular', 'toque: arraste à esquerda, botões Z X C Q']
+        ['Celular', 'toque: arraste à esquerda, botões X Z C Q']
       ];
       L.forEach(([a, b], i) => { G.text(a, 44, 40 + i * 12, '#7ae4ff'); G.text(b, 150, 40 + i * 12, '#ffffff'); });
     }

@@ -40,9 +40,10 @@
     floresta: { base: 'grass', g: ['#16502a', '#226a32', '#30843c', '#44a04a', '#6cc064'], deco: ['#c08aff', '#ffffff', '#ff6a6a', '#ffd23a'], p: ['#5a4228', '#7a5a38', '#9a744a', '#b8905e', '#d0ac7a'], w: ['#1a4a88', '#2a7ab8', '#5aa8dc', '#c8ecff'], tree: 'dark', tc: ['#08281a', '#103c24', '#1a5430', '#2a7040', '#4a9456'], trunk: ['#2a1810', '#422818', '#5a3a22'], cl: ['#3a3428', '#5a5040', '#7a6c56', '#968a70', '#4a8a4a'], bu: ['#0e3e1e', '#1a5a2a', '#2a7834', '#3e9442', '#64b45a'], ro: ['#36383a', '#525558', '#727578', '#94979a', '#bcbfc2'], cob: ['#5a4e40', '#786a58', '#968670', '#b0a088', '#c8b8a0'] },
     pantano: { base: 'grass', g: ['#3a5228', '#4c6a34', '#607e40', '#7a9a50', '#a0b870'], deco: ['#d8e070', '#a0d0a0', '#ffffff', '#c890ff'], p: ['#4a4028', '#625636', '#7a6c48', '#948860', '#b0a47c'], w: ['#2e5e48', '#4a8a6a', '#78b090', '#c8e8c0'], tree: 'willow', tc: ['#1a3018', '#2a4626', '#3c5e34', '#527a46', '#749a62'], trunk: ['#2a2014', '#40321e', '#584628'], cl: ['#383828', '#56563e', '#747458', '#8e8e70', '#6a8a4a'], bu: ['#24401c', '#365a28', '#4a7434', '#609042', '#86b060'], ro: ['#3a3a34', '#56564e', '#76766c', '#96968a', '#bcbcae'], cob: ['#4e4a3a', '#6a6450', '#868068', '#a09a80', '#bab49a'] },
     deserto: { base: 'sand', g: ['#b88a50', '#d4a868', '#e8c47e', '#f4d898', '#fff0c0'], deco: ['#c8a060', '#a07a40', '#ffffff', '#7a6a5a'], p: ['#8a6a40', '#a8845a', '#c49e70', '#dab688', '#ecd0a4'], w: ['#2a70b8', '#3aa0e8', '#72ccf4', '#e0fcff'], tree: 'cactus', tc: ['#1e4a24', '#2e6a30', '#42883c', '#5aa84a', '#88cc6a'], trunk: ['#1e4a24', '#2e6a30', '#42883c'], cl: ['#6a4428', '#8a5e38', '#ac7c4c', '#c89a62', '#e8c884'], bu: ['#6a5a2a', '#8a7a3a', '#a8964c', '#c4b264', '#e0d088'], ro: ['#6a4a30', '#8a6646', '#ac865e', '#c8a478', '#e4c49a'], cob: ['#8a6a48', '#a88660', '#c4a278', '#dcbc92', '#f0d6ae'] },
-    vulcao: { base: 'ash', g: ['#2a2224', '#3e3436', '#544848', '#6a5c5a', '#8a7a76'], deco: ['#ff7a3a', '#8a7a78', '#ffd040', '#3a2a2a'], p: ['#2e2628', '#443a3a', '#5a4e4c', '#706260', '#8a7a76'], w: ['#c03a1a', '#ff7a2a', '#ffd040', '#ffffa0'], tree: 'dead', tc: ['#1a1010', '#2e2220', '#46342e', '#5e4a40', '#7a6252'], trunk: ['#1a1010', '#2e2220', '#46342e'], cl: ['#1e1618', '#34282a', '#4a3a3a', '#62504c', '#7a6660'], bu: ['#2a2018', '#3e3024', '#544232', '#6a5642', '#86705a'], ro: ['#241c1e', '#3a2e30', '#544446', '#6e5c5c', '#8e7a78'], cob: ['#2e2628', '#443a3a', '#5a4e4c', '#706260', '#8a7a76'] },
-    montanha: { base: 'snow', g: ['#9ab0d4', '#bccce6', '#d8e4f4', '#eef4fc', '#ffffff'], deco: ['#a8c8f0', '#ffffff', '#d8e8ff', '#7aa0d0'], p: ['#7e90b0', '#98a8c6', '#b2c0d8', '#c8d4e8', '#dee6f4'], w: ['#4a88c0', '#7ac0ec', '#b0e0ff', '#ffffff'], tree: 'pine', tc: ['#0e2a24', '#18403a', '#245a4c', '#367860', '#ffffff'], trunk: ['#2a1a12', '#42281a', '#5a3a24'], cl: ['#3a4660', '#566482', '#7484a4', '#94a4c4', '#f4f8ff'], bu: ['#6a8aa8', '#8aa8c4', '#a8c4dc', '#c8dcf0', '#ffffff'], ro: ['#465068', '#646e88', '#848ea8', '#a6aec6', '#ccd2e4'], cob: ['#7e90b0', '#98a8c6', '#b2c0d8', '#c8d4e8', '#dee6f4'] },
-    castelo: { base: 'grass', g: ['#2e3430', '#3e4640', '#505a50', '#646e60', '#848e7a'], deco: ['#9a6aaa', '#8a8a7a', '#c8c0d0', '#ff5a7a'], p: ['#3e3a40', '#545058', '#6a6670', '#828088', '#9c9aa2'], w: ['#24306a', '#3a4a8a', '#6a7ac0', '#b0c0f0'], tree: 'dead', tc: ['#141010', '#2a2224', '#403436', '#584a4a', '#706060'], trunk: ['#141010', '#2a2224', '#403436'], cl: ['#22202a', '#36323e', '#4c4856', '#64606e', '#5a6a50'], bu: ['#2a2a22', '#3c3c30', '#525240', '#686852', '#848470'], ro: ['#2e2c36', '#46444e', '#605e6a', '#7c7a86', '#a09ea8'], cob: ['#3e3a40', '#545058', '#6a6670', '#828088', '#9c9aa2'] },
+    vulcao: { base: 'ash', g: ['#2a2224', '#3e3436', '#544848', '#6a5c5a', '#8a7a76'], deco: ['#ff7a3a', '#8a7a78', '#ffd040', '#3a2a2a'], p: ['#2e2628', '#443a3a', '#5a4e4c', '#706260', '#8a7a76'], w: ['#c03a1a', '#ff7a2a', '#ffd040', '#ffffa0'], tree: 'dead', tc: ['#1a1010', '#2e2220', '#46342e', '#5e4a40', '#7a6252'], trunk: ['#1a1010', '#2e2220', '#46342e'], cl: ['#140c0e', '#261a1c', '#3a2a2a', '#52403c', '#9a8478'], bu: ['#2a2018', '#3e3024', '#544232', '#6a5642', '#86705a'], ro: ['#241c1e', '#3a2e30', '#544446', '#6e5c5c', '#8e7a78'], cob: ['#2e2628', '#443a3a', '#5a4e4c', '#706260', '#8a7a76'] },
+    montanha: { base: 'snow', g: ['#9ab0d4', '#bccce6', '#d8e4f4', '#eef4fc', '#ffffff'], deco: ['#a8c8f0', '#ffffff', '#d8e8ff', '#7aa0d0'], p: ['#7e90b0', '#98a8c6', '#b2c0d8', '#c8d4e8', '#dee6f4'], w: ['#4a88c0', '#7ac0ec', '#b0e0ff', '#ffffff'], tree: 'pine', tc: ['#0e2a24', '#18403a', '#245a4c', '#367860', '#ffffff'], trunk: ['#2a1a12', '#42281a', '#5a3a24'], cl: ['#26304a', '#3c4866', '#58688a', '#7c8cae', '#f4f8ff'], bu: ['#6a8aa8', '#8aa8c4', '#a8c4dc', '#c8dcf0', '#ffffff'], ro: ['#465068', '#646e88', '#848ea8', '#a6aec6', '#ccd2e4'], cob: ['#7e90b0', '#98a8c6', '#b2c0d8', '#c8d4e8', '#dee6f4'] },
+    // Planalto do Viés: terra "distorcida", de grama violeta-acinzentada, estradas de pedra escura e penhascos roxos
+    castelo: { base: 'grass', g: ['#241e30', '#352c48', '#4a3e62', '#62547e', '#8a78a8'], deco: ['#c86aff', '#ff5a8a', '#e8d0ff', '#7ae4ff'], p: ['#2a2632', '#3c3846', '#504c5c', '#666274', '#82808e'], w: ['#24306a', '#3a4a8a', '#6a7ac0', '#b0c0f0'], tree: 'dead', tc: ['#120c18', '#241a2e', '#382a44', '#4e3c5c', '#6a5478'], trunk: ['#120c18', '#241a2e', '#382a44'], cl: ['#140e1c', '#261c32', '#3a2e4a', '#544466', '#9a86b8'], bu: ['#24182e', '#362442', '#4a3458', '#60466e', '#7e6090'], ro: ['#26202e', '#3c3446', '#544a60', '#6e647c', '#948aa2'], cob: ['#2e2a36', '#423e4c', '#585464', '#6e6a7c', '#8c8898'] },
     // masmorras: f = piso (escuro→claro), wl = parede (contorno, escuro, médio, claro, brilho)
     d1: { dun: true, floor: 'tiles', wall: 'bricks', f: ['#26383a', '#3a524e', '#4c665e', '#62806e', '#88a68e'], wl: ['#0c1616', '#1e322e', '#30483e', '#466454', '#6e8c76'], acc: '#ffd23a', moss: '#5a8a3a', ca: ['#a82a3a', '#ffd23a'], w: ['#2a5ab8', '#3a8ae8', '#6ab8f4', '#d8f4ff'], amb: '#8e9cac' },
     d2: { dun: true, floor: 'planks', wall: 'roots', f: ['#4a3020', '#644430', '#7e5a3e', '#9a744e', '#b89066'], wl: ['#1a1008', '#3a2614', '#56381e', '#74502c', '#94703e'], acc: '#7aff8a', moss: '#3a7a2a', ca: ['#2a6a2a', '#d8c060'], w: ['#1a4a88', '#2a7ab8', '#5aa8dc', '#c8ecff'], amb: '#86967e' },
@@ -118,6 +119,8 @@
       if (deco) { const c = decoPx(th, P, X, Y); if (c) return c; }
       return g[i];
     }
+    // Planalto do Viés: fendas violeta finas e brilhantes na terra "distorcida"
+    if (th === 'castelo') { const f = Math.abs(fbm(X * 0.028 + 71, Y * 0.028) - 0.5); if (f < 0.005) return pk(f < 0.002 ? '#d08aff' : '#7a3aa8'); }
     // grama: manchas suaves com pontilhado na transição
     const bd = G.bayer(X, Y) * 0.06 - 0.03;
     let i = m + bd > 0.66 ? 3 : m + bd < 0.3 ? 1 : 2;
@@ -247,10 +250,10 @@
         const d = edgeDist(lx, ly, diff);
         const w = nz(X * 0.12, Y * 0.12) * 2.2;
         const lava = id === T.LAVA;
-        if (d < 1.4 + w * 0.6) c = lava ? pk('#2a1410') : darkP(baseGround(th, P, X, Y), 0.35);
-        else if (d < 2.6 + w * 0.7) c = lava ? withA(pk('#ffe070'), 220) : withA(pk('#ffffff'), 190);
-        else if (d < 4 + w) c = lava ? withA(pk('#ffb040'), 120) : withA(pk('#e8fbff'), 90);
-        else if (d < 9 + w) c = lava ? withA(pk('#ff9a30'), 40) : withA(P.w[2], 60);
+        if (d < 1.4 + w * 0.6) c = lava ? pk('#0e0808') : darkP(baseGround(th, P, X, Y), 0.35);
+        else if (d < 2.6 + w * 0.7) c = lava ? withA(pk('#ff6a1a'), 150) : withA(pk('#ffffff'), 190);
+        else if (d < 4 + w) c = lava ? withA(pk('#c03a10'), 70) : withA(pk('#e8fbff'), 90);
+        else if (d < 9 + w) c = lava ? 0 : withA(P.w[2], 60);
         else c = 0;
         if (c) put(lx, ly, c);
         continue;
@@ -265,13 +268,20 @@
         if (d < thr) { c = baseGround(th, P, X, Y); if (d > thr - 1.3) c = darkP(c, 0.18); }
         else if (d < thr + 1.6) c = darkP(dirtPx(th, P, X, Y), 0.22);
         else c = dirtPx(th, P, X, Y);
-      } else if (id === T.ICE) c = icePx(X, Y);
-      else c = baseGround(th, P, X, Y, id === T.GROUND2);
+      } else if (id === T.ICE) {
+        // lago congelado: borda orgânica de neve, aro claro e gelo mais fundo no meio
+        const d = edgeDist(lx, ly, n.map(v => v !== T.ICE)), thr = 1.5 + fbm(X * 0.11 + 4, Y * 0.11) * 4;
+        if (d < thr) c = baseGround(th, P, X, Y);
+        else if (d < thr + 1.5) c = pk('#f2faff');
+        else if (d < thr + 3) c = pk('#d4ecfa');
+        else c = icePx(X, Y, d > thr + 9 ? pk('#a6cceb') : pk('#bcdcf2'));
+      } else c = baseGround(th, P, X, Y, id === T.GROUND2);
       // grama perto da praça: meio-fio
       if (!plaza && !isPathLike(id) && n.some(v => v === T.PLAZA)) {
         const d = edgeDist(lx, ly, n.map(v => v === T.PLAZA));
         if (d < 1.5) c = P.cob[0]; else if (d < 3) c = darkP(c, 0.2);
       }
+      if (id !== T.CLIFF) c = cliffShadow(c, n, lx, ly);
       put(lx, ly, c);
     }
     // objetos baixos pintados no chão
@@ -381,33 +391,55 @@
       post(13);
     }
   }
-  // penhasco: topo (planalto) ou face (paredão)
+  // penhasco: topo (planalto) ou face (paredão). O paredão ocupa quase o tile inteiro, com
+  // estratos, rachaduras e base escura; a beirada de cima é clara (neve no gelo) e as laterais
+  // têm luz à esquerda e sombra à direita, para o relevo ser lido de longe.
   function cliffPx(put, th, P, X0, Y0, n) {
-    const cl = P.cl, t = TH[th] || TH.vila;
+    const cl = P.cl, t = TH[th] || TH.vila, snow = t.base === 'snow', magma = th === 'vulcao';
     const face = n[4] !== T.CLIFF, l = n[6] !== T.CLIFF, r = n[2] !== T.CLIFF, top = n[0] !== T.CLIFF;
+    const F0 = 5; // primeira linha do paredão
     for (let ly = 0; ly < 32; ly++) for (let lx = 0; lx < 32; lx++) {
       const X = X0 + lx, Y = Y0 + ly;
       let c;
-      if (face && ly >= 10) {
-        const s = fbm(X * 0.08, Y * 0.3);
-        let i = s > 0.58 ? 3 : s < 0.4 ? 1 : 2;
-        if (Math.abs(nz(X * 0.15 + 3, Y * 0.04) - 0.5) < 0.03) i = 0;
-        if (((Y + Math.floor(nz(X * 0.05, 3) * 6)) % 9) === 0) i = Math.max(0, i - 1);
-        if (ly >= 29) i = 0;
+      if (face && ly >= F0) {
+        const s = fbm(X * 0.07, Y * 0.22);
+        let i = s > 0.6 ? 3 : s < 0.38 ? 1 : 2;
+        if (((Y + Math.floor(nz(X * 0.05, 3) * 6)) % 8) === 0) i = Math.max(0, i - 1); // estratos
+        if (Math.abs(nz(X * 0.18 + 3, Y * 0.03) - 0.5) < 0.035) i = 0; // rachaduras verticais
+        const v = (ly - F0) / (32 - F0); if (v > 0.72) i = Math.max(0, i - 1); if (v > 0.9) i = 0; // base na sombra
         c = cl[i];
-        if (ly === 10) c = cl[4];
-        if (ly === 11) c = darkP(cl[3], 0.1);
+        if (i >= 2 && hsh(X, Y) > 0.97) c = cl[3];
+        // beirada: neve que escorre (gelo) ou rocha clara
+        const drip = snow ? 3 + nz(X * 0.35, 7) * 5 + (hsh(X, 1) > 0.9 ? 4 : 0) : 1.5 + nz(X * 0.3, 7) * 1.5;
+        if (ly - F0 < drip) c = ly - F0 < drip - 1 ? cl[4] : snow ? pk('#b8c8e0') : cl[3];
+        // vulcão: veios de magma no paredão
+        if (magma && Math.abs(nz(X * 0.11 + 5, Y * 0.09) - 0.5) < 0.018 && ly > F0 + 3) c = Math.abs(nz(X * 0.11 + 5, Y * 0.09) - 0.5) < 0.008 ? pk('#ffb040') : pk('#c8401a');
       } else {
-        if (t.base === 'grass' || t.base === 'snow') c = baseGround(th, P, X, Y);
-        else { const r = fbm(X * 0.08, Y * 0.08) + G.bayer(X, Y) * 0.08 - 0.04; c = r > 0.62 ? cl[3] : r < 0.38 ? cl[1] : cl[2]; if (Math.abs(nz(X * 0.1 + 9, Y * 0.1) - 0.5) < 0.025) c = cl[0]; if (hsh(X, Y) > 0.98) c = cl[3]; }
-        if (face && ly >= 7) c = cl[4];
+        const rockT = () => { const rr = fbm(X * 0.08, Y * 0.08) + G.bayer(X, Y) * 0.08 - 0.04; let k = rr > 0.62 ? cl[3] : rr < 0.38 ? cl[1] : cl[2]; if (Math.abs(nz(X * 0.1 + 9, Y * 0.1) - 0.5) < 0.025) k = cl[0]; if (hsh(X, Y) > 0.98) k = cl[3]; return k; };
+        if (t.base === 'grass' || snow) {
+          // topo do planalto: rocha com manchas de neve/grama, para não se confundir com o chão
+          const cov = fbm(X * 0.07 + 13, Y * 0.07) + (snow ? 0.14 : 0.04);
+          c = cov > 0.52 ? baseGround(th, P, X, Y) : rockT();
+          if (cov > 0.5 && cov <= 0.55) c = darkP(c, 0.18);
+        } else c = rockT();
+        if (face && ly >= F0 - 2) c = mixP(c, cl[4], 0.55); // aresta da frente iluminada
       }
-      if (l && lx < 2 && !(face && ly >= 10)) c = darkP(c, 0.25);
-      if (r && lx > 29 && !(face && ly >= 10)) c = darkP(c, 0.35);
+      const inFace = face && ly >= F0;
+      // laterais: luz à esquerda, sombra à direita (3 px), com contorno
+      if (r && lx > 28) c = darkP(c, (inFace ? 0.25 : 0.2) + (lx - 28) * 0.08);
+      if (l && lx < 3 && !inFace) c = mixP(c, cl[4], 0.25 - lx * 0.07);
       if (l && lx < 1) c = cl[0]; if (r && lx > 30) c = cl[0];
-      if (top && ly < 1 && !face) c = darkP(c, 0.2);
+      // borda de trás do planalto: contorno escuro com brilho logo abaixo
+      if (top && !inFace) { if (ly < 1) c = cl[0]; else if (ly < 3) c = mixP(c, cl[4], 0.35); }
       put(lx, ly, c);
     }
+  }
+  // sombra que o penhasco projeta no chão logo abaixo e dos lados
+  function cliffShadow(c, n, lx, ly) {
+    if (n[0] === T.CLIFF && ly < 10) c = darkP(c, 0.42 * (1 - ly / 10));
+    if (n[6] === T.CLIFF && lx < 5) c = darkP(c, 0.18 * (1 - lx / 5));
+    if (n[2] === T.CLIFF && lx > 26) c = darkP(c, 0.26 * ((lx - 26) / 5));
+    return c;
   }
   function bridgePx(put, tx, ty, n) {
     const wv = TP[n[0]].water || TP[n[4]].water, wh = TP[n[6]].water || TP[n[2]].water;
@@ -471,9 +503,9 @@
         const d = edgeDist(lx, ly, n.map(v => !isWaterish(v)));
         const w = nz(X * 0.12, Y * 0.12) * 2;
         const lava = id === T.LAVA;
-        if (d < 1.5 + w * 0.5) c = lava ? 0xff10141a : darkP(f[1], 0.4);
-        else if (d < 2.6 + w * 0.6) c = lava ? withA(pk('#ffe070'), 230) : withA(0xffffffff, 170);
-        else if (d < 6 + w) c = lava ? withA(pk('#ff9a30'), 70) : withA(P.w[2], 60);
+        if (d < 1.5 + w * 0.5) c = lava ? 0xff080a0e : darkP(f[1], 0.4);
+        else if (d < 2.6 + w * 0.6) c = lava ? withA(pk('#ff6a1a'), 150) : withA(0xffffffff, 170);
+        else if (d < 6 + w) c = lava ? withA(pk('#c03a10'), 50) : withA(P.w[2], 60);
         else c = 0;
         put(lx, ly, c);
         continue;
@@ -738,21 +770,43 @@
     WCACHE.set(th, fr);
     return fr;
   }
+  // "lava" = campo de crosta de magma: placas de basalto escuras e rachaduras incandescentes
+  // que pulsam devagar (dá para andar por cima com o Traje Térmico; sem ele, o calor queima)
   let LAVA = null;
   function lavaFrames() {
     if (LAVA) return LAVA;
-    const cols = ['#8a1a0a', '#c03a10', '#ff7a1a', '#ffc040', '#fff0a0'].map(pk);
+    const rock = ['#140c0c', '#22161a', '#2e2024', '#3c2a2c', '#4e3834'].map(pk), glow = ['#5a1206', '#9a2a0a', '#e0561a', '#ff9a3a', '#ffe08a'].map(pk);
+    // células de Voronoi que se repetem a cada 64 pixels (sementes fixas)
+    const r = G.mulberry32(4242), S = []; for (let i = 0; i < 9; i++) S.push([r() * 64, r() * 64, r()]);
+    const cell = new Float32Array(64 * 64 * 3);
+    for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) {
+      let d1 = 1e9, d2 = 1e9, id = 0;
+      for (const [sx, sy, sh] of S) for (let oy = -64; oy <= 64; oy += 64) for (let ox = -64; ox <= 64; ox += 64) {
+        const d = Math.hypot(x + 0.5 - sx - ox, y + 0.5 - sy - oy);
+        if (d < d1) { d2 = d1; d1 = d; id = sh; } else if (d < d2) d2 = d;
+      }
+      const k = (y * 64 + x) * 3; cell[k] = d2 - d1; cell[k + 1] = id; cell[k + 2] = d1;
+    }
     LAVA = [];
     for (let f = 0; f < 8; f++) {
       const p = new G.Paint(64, 64), ph = f / 8 * Math.PI * 2;
-      const WV = [[1, 2, 1.0, 0.3], [2, -1, 0.8, 1.7], [3, 1, 0.55, 4.1], [-1, 3, 0.5, 2.2], [2, 2, 0.4, 5.3], [1, -3, 0.35, 0.9], [4, -2, 0.25, 3.3]];
       for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) {
-        const u = x / 64 * Math.PI * 2, v = y / 64 * Math.PI * 2;
-        let n1 = 0;
-        for (const [kx, ky, a, s] of WV) n1 += a * Math.sin(kx * u + ky * v + s + ph * (kx > 0 ? 1 : -1));
-        const w2 = Math.sin(u * 2 + n1 * 0.8 + ph);
-        const val = n1 * 0.6 + w2 * 0.5;
-        p.d[y * 64 + x] = val > 1.35 ? cols[4] : val > 0.75 ? cols[3] : val > -0.35 ? cols[2] : val > -1.1 ? cols[1] : cols[0];
+        const k = (y * 64 + x) * 3, seam = cell[k], id = cell[k + 1], d1 = cell[k + 2];
+        const pulse = 0.5 + 0.5 * Math.sin(ph + id * 6.28 + (x + y) * 0.09);
+        let c;
+        if (seam < 1.6) c = glow[Math.min(4, 2 + Math.round(pulse * 2 - seam * 0.6))]; // fenda acesa
+        else if (seam < 3) c = glow[seam < 2.3 ? 1 : 0]; // brilho na borda da placa
+        else {
+          // placa: mais clara no alto à esquerda (relevo), textura de rocha porosa
+          let i = 2 + (id > 0.6 ? 1 : id < 0.3 ? -1 : 0);
+          if (seam < 4.2) i = Math.max(0, i - 1);
+          if (d1 < 6 && seam > 5) i = Math.min(4, i + 1);
+          const n = hsh(x * 7 + 1, y * 13 + 5); if (n > 0.93) i = Math.max(0, i - 1); else if (n < 0.04) i = Math.min(4, i + 1);
+          c = rock[i];
+          // poros que brilham fraco
+          if (n > 0.985 && pulse > 0.6) c = glow[1];
+        }
+        p.d[y * 64 + x] = c;
       }
       LAVA.push(p.toCanvas(32, 32));
     }

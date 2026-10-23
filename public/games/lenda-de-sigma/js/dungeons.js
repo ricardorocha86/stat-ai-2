@@ -1082,7 +1082,7 @@
       d1: ['A ^gMédia^0 voltou ao reino! Os mercadores já conseguem calcular preços justos.', 'Com as ^yBotas de Salto^0, o riacho a oeste da vila não é mais obstáculo. O ^gBosque Sombrio^0 espera!'],
       d2: ['A ^cMediana^0 e a ^cModa^0 retornaram. As pessoas param de se enganar com valores extremos.', 'As ^yBombas^0 podem abrir as rochas rachadas que bloqueiam o ^yDeserto^0, ao sul e a leste.'],
       d3: ['O equilíbrio da ^yDispersão^0 voltou: agora sabemos o quanto os dados variam!', 'O ^cRaio Amostral^0 quebra barreiras de cristal: o ^rVulcão^0 (norte do lago) e o ^pPlanalto^0 (norte da vila) estão abertos.'],
-      d4: ['A ^rProbabilidade^0 foi restaurada! As chances voltam a fazer sentido.', 'Com o ^oTraje Térmico^0, você resiste ao frio dos ^cPicos Gaussianos^0 (norte do Bosque) e pode andar sobre a lava!'],
+      d4: ['A ^rProbabilidade^0 foi restaurada! As chances voltam a fazer sentido.', 'Com o ^oTraje Térmico^0, você resiste ao frio dos ^cPicos Gaussianos^0 (norte do Bosque) e pode atravessar a ^rcrosta de magma^0 sem se queimar!'],
       d5: ['As ^bDistribuições^0 voltaram! O sino de Gauss ressoa por todo o reino.', 'Agora você tem 5 cristais. O selo do ^pCastelo do Viés^0 (norte da vila) vai se romper!']
     }[did];
     if (msgs) for (const m of msgs) await G.ui.say('Mestre Gauss (em pensamento)', m, { portrait: 'gauss_down0' });
