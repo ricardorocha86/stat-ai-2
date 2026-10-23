@@ -278,6 +278,53 @@
     }
     drawLate(ctx, cam) { if (!this._lab) return; const [px, py, lw, lh] = this._lab; G.panel(ctx, px - cam.x, py - cam.y, lw, lh, { r: 2, thin: true, corners: false }); this.lines.forEach((l, i) => G.text(l, px - cam.x + lw / 2, py - cam.y + 3 + i * 9, '#ffffff', { align: 'center', shadow: false })); }
   }
+  // emblema entalhado no chão da arena do chefe (símbolo do tema da masmorra)
+  const EMBLEMA = {
+    d1: { sym: ['#...#', '#...#', '#...#', '#..##', '###.#', '#....', '#....'], cor: '#6aff9a' }, // μ
+    d2: { sym: ['......#', '.....##', '....###', '...####', '..#####', '.######', '#######'], cor: '#b8ff6a' }, // dados ordenados
+    d3: { sym: ['.####', '#..#.', '#...#', '#...#', '.###.'], cor: '#ffc86a' }, // σ
+    d4: { sym: ['#######', '#.#.#.#', '#.....#', '#..#..#', '#.....#', '#.#.#.#', '#######'], cor: '#ff8a4a' }, // face de dado
+    d5: { sym: ['....#....', '...#.#...', '..#...#..', '.#.....#.', '##.....##'], cor: '#7ad8ff' }, // sino de Gauss
+    d6: { sym: ['#......', '##.....', '##.#...', '####...', '####.#.', '######.', '#######'], cor: '#d08aff' }, // barras enviesadas
+    d7: { sym: ['#..#.###', '#..#.#.#', '####.#.#', '#..#.#.#', '#..#.###'], cor: '#8ab0ff' } // H0
+  };
+  const emblemArt = {};
+  function makeEmblem(did) {
+    if (emblemArt[did]) return emblemArt[did];
+    const E = EMBLEMA[did], f = (G.THEMES[G.DUNGEONS[did].theme] || {}).f || ['#202020', '#404040', '#606060', '#808080', '#a0a0a0'];
+    const p = new G.Paint(272, 128), gl = new G.Paint(272, 128), cx = 136, cy = 64, rx = 130, ry = 58;
+    const groove = (x, y) => { p.px(x, y, G.col.mix(f[0], '#000000', 0.35) + 'e0'); };
+    for (let y = 0; y < 128; y++) for (let x = 0; x < 272; x++) {
+      const dx = (x + 0.5 - cx) / rx, dy = (y + 0.5 - cy) / ry, d = Math.hypot(dx, dy);
+      if ((d > 0.95 && d <= 1) || (d > 0.63 && d <= 0.67)) groove(x, y);
+      else if ((d > 0.91 && d <= 0.95 && dy > 0.1) || (d > 0.59 && d <= 0.63 && dy > 0.1)) p.px(x, y, f[4] + 'a0'); // aresta clara do sulco
+      else if (d > 0.67 && d <= 0.91) p.px(x, y, f[1] + '50'); // faixa das runas, mais escura
+      else if (d < 0.59 && d > 0.2 && G.fastNoise(x * 0.08, y * 0.16) > 0.68) p.px(x, y, f[3] + '30'); // desgaste
+    }
+    // runas entre os anéis
+    for (let i = 0; i < 12; i++) {
+      const a = i / 12 * Math.PI * 2 + 0.13;
+      for (let r = 0.72; r <= 0.86; r += 0.01) { const x = Math.round(cx + Math.cos(a) * rx * r), y = Math.round(cy + Math.sin(a) * ry * r); groove(x, y); groove(x + 1, y); gl.px(x, y, '#ffffff'); gl.px(x + 1, y, '#ffffff'); }
+      const x = Math.round(cx + Math.cos(a) * rx * 0.79), y = Math.round(cy + Math.sin(a) * ry * 0.79);
+      for (const [ox, oy] of [[-2, -1], [2, 1], [-2, 1], [2, -1]]) if ((i + ox) % 3 === 0) { groove(x + ox, y + oy); gl.px(x + ox, y + oy, '#ffffff'); }
+    }
+    // símbolo no centro
+    const S = 4, sw = E.sym[0].length * S, sh = E.sym.length * S, sx = Math.round(cx - sw / 2), sy = Math.round(cy - sh / 2);
+    E.sym.forEach((row, r) => [...row].forEach((ch, c) => { if (ch !== '#') return; for (let a = 0; a < S; a++) for (let b = 0; b < S; b++) { groove(sx + c * S + a, sy + r * S + b); gl.px(sx + c * S + a, sy + r * S + b, '#ffffff'); } }));
+    return (emblemArt[did] = { img: p.toCanvas(), glow: gl.toCanvas(), cor: E.cor });
+  }
+  class ArenaEmblem extends G.Ent {
+    constructor(x, y, did) { super(x - 68, y - 32, 136, 64); this.art = makeEmblem(did); }
+    get by() { return -100000 + this.y; }
+    draw(ctx, cam) {
+      const A = this.art, x = this.x - cam.x, y = this.y - cam.y, B = G.boss;
+      G.draw(ctx, A.img, x, y);
+      // as runas pulsam durante a luta e brilham calmas depois do cristal recuperado
+      const fight = B && !B.dead && B.room === this.room, a = fight ? (B.st === 'intro' ? 0.15 : 0.32 + 0.18 * Math.sin(this.t * 3)) : G.flag(G.map.id + '_crystalGot') ? 0.3 : 0.08;
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = a; ctx.drawImage(G.tint(A.glow, A.cor), x, y, 136, 64); ctx.restore();
+      if (a > 0.2) G.light.add(x + 68, y + 32, 70, A.cor, a * 0.8);
+    }
+  }
   class Portal extends G.Ent {
     constructor(x, y) { super(x - 12, y - 8, 24, 16); this.room = G.curRoom; }
     get by() { return this.y - 100; }
@@ -909,6 +956,7 @@
     unlock(r) { if (r.shutters) { for (const s of r.shutters) s.opening = true; r.shutters = null; G.sfx('door'); } },
     bossRoom(r) {
       const did = G.map.id;
+      if (EMBLEMA[did]) G.addEnt(new ArenaEmblem(r.px + 12 * TS, r.py + 7 * TS, did)).room = r.idx;
       if (G.P.flags['boss_' + did]) {
         if (!G.flag(did + '_hc') && did !== 'd6') { const hc = G.addEnt(new G.Pickup(r.px + 7 * TS, r.py + 7 * TS, 'heartContainer', 1, { persist: true, flag: did + '_hc' })); hc.room = r.idx; }
         if (!G.P.flags[did + '_crystalGot']) G.addEnt(new CrystalDrop(r.px + 12 * TS, r.py + 6 * TS, G.map.spec.crystal));
@@ -926,7 +974,7 @@
       G.runScript(async () => {
         G.music(null);
         G.sfx('roar');
-        G.ui.regionBanner(boss.name, 'GUARDIÃO DO CRISTAL');
+        G.ui.bossCard(boss.name, did === 'd6' ? 'SENHOR DAS DISTORÇÕES' : 'GUARDIÃO · ' + G.map.spec.name.toUpperCase());
         await G.wait(1.6);
         G.music(did === 'd6' ? 'vies' : 'boss');
         if (did === 'd6' && G.viesBossIntro) await G.viesBossIntro(boss);

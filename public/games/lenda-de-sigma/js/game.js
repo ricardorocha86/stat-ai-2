@@ -264,7 +264,7 @@
     } else if (art === 'vies2' && G.introArt) { G.introArt.vies2(ctx, cx, cy, t);
     } else if (art === 'hero') {
       ctx.fillStyle = 'rgba(122,228,255,0.15)'; ctx.fillRect(cx - 30, cy - 30, 60, 70);
-      const s = G.spr[G.spriteHeroi(false) + '_down' + (Math.floor(t * 2) % 2)];
+      const s = G.spr[G.spriteHeroi(false) + '_down' + (Math.floor(t * 10) % 8)];
       G.drawFit(ctx, s, cx - 24, cy - 24, 48, 48);
       G.draw(ctx, 'gauss_down0', cx + 40, cy + 8);
     }
@@ -470,8 +470,9 @@
     G.tiles.tallList(m, cx, cy, list);
     list.sort((a, b) => a.by - b.by);
     const late = [];
-    for (const e of list) { if (e.tall) G.draw(ctx, e.spr, e.x - cx, e.y - cy, e.flip ? { flip: true } : undefined); else if (e.late) late.push(e); else { e.draw(ctx, c); if (e.drawLate) late.push(e); } }
+    for (const e of list) { if (e.tall) drawTall(ctx, e, e.x - cx, e.y - cy); else if (e.late) late.push(e); else { e.draw(ctx, c); if (e.drawLate) late.push(e); } }
     G.fx.draw(ctx, c);
+    if (m.kind === 'overworld') cloudShadows(ctx, c);
     // luz e clima
     sceneLighting(m, cx, cy);
     G.weather.addLights(c);
@@ -489,7 +490,7 @@
     if (G.flashT > 0) { ctx.globalAlpha = (G.flashA || 0.8) * G.flashT / G.flashMax; ctx.fillStyle = G.flashColor; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
     // barra do chefe
     const B = G.boss;
-    if (B && !B.dead && G.sameRoom(B)) {
+    if (B && !B.dead && G.sameRoom(B) && !G.ui.bossIntro) {
       const bw = 220, bx = (W - bw) / 2, by = H - 18;
       G.panel(ctx, bx - 6, by - 12, bw + 12, 24, { r: 4, thin: true, corners: false, bgTop: '#3a1a2a', bg: '#140810', border: B.enrage > 0 ? '#ff6a5a' : '#c8a060' });
       G.text((B.isMini ? 'MINI-CHEFE · ' : '') + B.name + (B.enrage > 0 ? ' · ENFURECIDO' : ''), W / 2, by - 8.5, B.enrage > 0 ? '#ff8a7a' : '#ffffff', { align: 'center', shadow: false });
@@ -503,6 +504,29 @@
       for (const th of (B.thresholds || [])) { ctx.fillStyle = '#ffd84a'; ctx.beginPath(); ctx.moveTo(bx + bw * th, by + 0.5); ctx.lineTo(bx + bw * th + 2, by + 4.5); ctx.lineTo(bx + bw * th, by + 8.5); ctx.lineTo(bx + bw * th - 2, by + 4.5); ctx.closePath(); ctx.fill(); }
       ctx.restore();
     }
+  }
+  // árvores do mapa aberto: a copa balança com o vento (fatias deslocadas; o tronco fica parado)
+  function drawTall(ctx, e, x, y) {
+    const s = typeof e.spr === 'string' ? G.spr[e.spr] : e.spr;
+    if (!s) return;
+    const w = G.lw(s), h = G.lh(s);
+    if (h < 24 || G.map.kind !== 'overworld') { G.draw(ctx, s, x, y, e.flip ? { flip: true } : undefined); return; }
+    const ph = G.time * 1.6 + e.x * 0.05 + e.y * 0.03, amp = 0.8 + 0.5 * Math.sin(G.time * 0.4 + e.x * 0.01), k = s.width / w;
+    const top = Math.round(h * 0.6), N = 4, bh = top / N;
+    ctx.save();
+    if (e.flip) { ctx.translate(G.snap(x) + w, G.snap(y)); ctx.scale(-1, 1); x = 0; y = 0; } else { x = G.snap(x); y = G.snap(y); }
+    for (let i = 0; i < N; i++) { const off = Math.round(Math.sin(ph) * amp * (1 - i / N) * 2) / 2 * (e.flip ? -1 : 1); ctx.drawImage(s, 0, i * bh * k, s.width, bh * k + 1, x + off, y + i * bh, w, bh + 0.5); }
+    ctx.drawImage(s, 0, top * k, s.width, (h - top) * k, x, y + top, w, h - top);
+    ctx.restore();
+  }
+  // sombras de nuvens atravessando o mapa aberto (presas ao mundo, andam com o vento)
+  function cloudShadows(ctx, c) {
+    ctx.save();
+    for (let i = 0; i < 4; i++) {
+      const sx = ((i * 173 + G.time * 7 - c.x) % (W + 260) + W + 260) % (W + 260) - 130, sy = ((i * 97 + G.time * 2.5 - c.y) % (H + 180) + H + 180) % (H + 180) - 90;
+      ctx.save(); ctx.translate(sx, sy); ctx.scale(1, 0.55); G.glow(ctx, 0, 0, 70 + (i % 2) * 25, '#0a1020', 0.16); ctx.restore();
+    }
+    ctx.restore();
   }
   // ambiente de luz por região/sala
   const REGION_AMB = { floresta: '#c4d4bc', pantano: '#a8b8a4', vulcao: '#d8a890', castelo: '#9a8ab4' };
@@ -605,7 +629,7 @@
     G.text('— O REINO DOS DADOS —', W / 2, 79, '#ff9ae6', { align: 'center', outline: '#2a0a2a' });
     G.text('Uma aventura para aprender Estatística', W / 2, 91, '#c8c0e8', { align: 'center' });
     // personagem do jogo salvo no morro
-    const hs = G.spr[G.spriteHeroi(false) + '_down_stand'];
+    const hs = G.spr[G.spriteHeroi(false) + ((t % 3.6) < 0.12 ? '_down_blink' : '_down_idle' + (Math.floor(t * 1.4) % 2))] || G.spr[G.spriteHeroi(false) + '_down_stand']; // respira e pisca
     G.shadow(ctx, 70, H - 32, 20, 0.35);
     if (hs) G.drawFit(ctx, hs, 46, H - 86, 48, 56);
     if (G.state === 'boot') {
@@ -637,7 +661,7 @@
       G.panel(ctx, x, y + (sel ? -2 : 0), cw, ch, { r: 5, border: sel ? '#ffd84a' : '#5a5690' });
       // personagem: o escolhido caminha, o outro fica parado
       const base = e.id === 'heroina' ? 'heroina' : 'hero';
-      const s = G.spr[base + (sel ? '_down' + (Math.floor(t * 6) % 4) : '_down_stand')];
+      const s = G.spr[base + (sel ? '_down' + (Math.floor(t * 12) % 8) : '_down_idle' + (Math.floor(t * 1.4) % 2))];
       G.shadow(ctx, cx, y + 92, 22, 0.4);
       if (s) G.drawFit(ctx, s, cx - 24, y + 30 + (sel ? -2 : 0), 48, 56);
       G.text(e.nome, cx, y + 102, sel ? '#ffe27a' : '#e0e0f0', { align: 'center' });
@@ -660,6 +684,8 @@
       ctx.globalAlpha = tw; ctx.fillStyle = i % 9 ? '#ffffff' : '#ffd84a'; ctx.fillRect(G.snap(x), G.snap(y), i % 13 ? 0.5 : 1, i % 13 ? 0.5 : 1);
     }
     ctx.globalAlpha = 1;
+    // estrela cadente a cada poucos segundos
+    { const per = 4.5, k = (t % per) / 0.7, n = Math.floor(t / per); if (k < 1) { const sx = 120 + G.hash2(n, 3, 1) * 220, sy = 8 + G.hash2(n, 4, 1) * 40, ex = sx - 60 * k, ey = sy + 26 * k; const g2 = ctx.createLinearGradient(ex, ey, ex + 18, ey - 8); g2.addColorStop(0, 'rgba(255,255,255,' + (1 - k) + ')'); g2.addColorStop(1, 'rgba(255,255,255,0)'); ctx.strokeStyle = g2; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex + 18, ey - 8); ctx.stroke(); } }
     // lua
     ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, 70, 44, 40, '#ffe8c0', 0.35); ctx.restore();
     ctx.fillStyle = '#fff4dc'; ctx.beginPath(); ctx.arc(70, 44, 11, 0, Math.PI * 2); ctx.fill();

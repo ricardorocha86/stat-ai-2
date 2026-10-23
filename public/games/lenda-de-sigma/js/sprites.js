@@ -96,10 +96,14 @@
     const capeR = spec.cape ? R5(spec.cape) : null;
     const eyeC = spec.eyes || '#2a1e3a';
     const robe = !!spec.robe;
-    // animação
-    const walk = pose === 'walk' ? frame : -1;
-    const bob = (walk === 1 || walk === 3) ? -1 : 0;
-    const atk = pose === 'atk', hold = pose === 'hold';
+    // animação: a caminhada é uma fase contínua (4 quadros nos NPCs, 8 no herói)
+    const walk = pose === 'walk' ? frame : -1, N = spec.walkN || 4;
+    const sn = walk >= 0 ? Math.round(Math.sin(walk / N * Math.PI * 2 + Math.PI / 2) * 1000) / 1000 : 0; // 1 no quadro 0
+    const cs = walk >= 0 ? Math.round(Math.cos(walk / N * Math.PI * 2 + Math.PI / 2) * 1000) / 1000 : 0;
+    const bob = walk >= 0 ? (Math.abs(sn) < 0.5 ? -1 : 0) : (pose === 'idle' && frame === 1 ? -1 : 0);
+    const atk = pose === 'atk', hold = pose === 'hold', hurt = pose === 'hurt';
+    const atkF = atk ? frame : 1; // golpe em 3 tempos: 0 preparo, 1 golpe, 2 continuação
+    const closedEyes = pose === 'blink' || hurt, talking = pose === 'talk';
     let part = 1;
     const next = () => (p.curPart = part++);
     const cx = 24;
@@ -107,7 +111,7 @@
 
     // ---------- pernas e botas ----------
     function legsFront(back) {
-      const lift = [walk === 0 ? 2 : 0, walk === 2 ? 2 : 0];
+      const lift = [Math.round(2 * Math.max(0, sn)), Math.round(2 * Math.max(0, -sn))];
       for (let s = 0; s < 2; s++) {
         const lx = s === 0 ? cx - 6 : cx + 2, up = lift[s];
         if (!robe) {
@@ -124,10 +128,11 @@
     }
     function legsSide() {
       // passada: perna próxima (direita da tela) e distante
-      const st = walk === 0 ? 1 : walk === 2 ? -1 : 0;
-      const legs = [{ off: -st * 3, far: true }, { off: st * 3, far: false }];
+      const st = sn;
+      const legs = [{ off: -st * 3, far: true, k: -1 }, { off: st * 3, far: false, k: 1 }];
       for (const L of legs) {
-        const lx = cx - 3 + L.off, up = (walk === 1 || walk === 3) ? 0 : 0;
+        // no ciclo de 8 quadros, a perna que avança sobe um pouco
+        const lx = cx - 3 + L.off, up = N > 4 ? Math.round(1.5 * Math.max(0, L.k * cs)) : 0;
         const rp = L.far ? pantR.map(c => C.shade(c, -0.25)) : pantR;
         const rb = L.far ? bootR.map(c => C.shade(c, -0.25)) : bootR;
         if (!robe) {
@@ -182,8 +187,10 @@
       const sx = cx + side * (B.shoulder + 1.5);
       const top = Y(B.torsoTop) + 1;
       let hx = sx + side * 1, hy = top + B.armLen + swing;
-      if (atk && view === 'down') { hx = cx + side * 4; hy = Y(B.torsoBot) + 1; }
-      if (atk && view === 'up') { hx = cx + side * 5; hy = top - 3; }
+      // golpe: a mão da espada atravessa o corpo (preparo → golpe → continuação)
+      if (atk && view === 'down') [hx, hy] = side > 0 ? [[cx + 9, top + 3], [cx + 4, Y(B.torsoBot) + 1], [cx - 5, Y(B.torsoBot)]][atkF] : [[cx - 7, top + B.armLen - 1], [cx - 4, Y(B.torsoBot) + 1], [cx - 9, top + B.armLen - 3]][atkF];
+      if (atk && view === 'up') [hx, hy] = side < 0 ? [[cx + 3, top - 5], [cx - 5, top - 3], [cx - 10, top + 2]][atkF] : [[cx + 7, top - 1], [cx + 5, top - 3], [cx + 6, top + 3]][atkF];
+      if (hurt) { hx = cx + side * (B.shoulder + 6); hy = top + 2; }
       if (hold) { hx = cx + side * 9; hy = Y(B.headY) - 9; }
       const sleeve = spec.sleeves === 'short' ? skinR : (robe ? tunR : tunR);
       // manga como cápsula do ombro até o cotovelo/mão
@@ -210,7 +217,8 @@
       next();
       const sx = cx + (near ? 0 : -1), top = Y(B.torsoTop) + 1;
       let hx = sx + swing, hy = top + B.armLen;
-      if (atk) { hx = near ? cx + 10 : cx + 4; hy = top + 4; }
+      if (atk) [hx, hy] = near ? [[cx + 3, top - 5], [cx + 10, top + 4], [cx + 9, top + 10]][atkF] : [[cx - 3, top + 2], [cx + 4, top + 4], [cx + 5, top + 8]][atkF];
+      if (hurt) { hx = cx + (near ? -5 : -8); hy = top + 3; }
       if (hold) { hx = cx + (near ? 4 : -3); hy = Y(B.headY) - 9; }
       const ramp = near ? (spec.sleeves === 'short' ? skinR : tunR) : (spec.sleeves === 'short' ? skinR : tunR).map(c => C.shade(c, -0.3));
       const ax = sx, ay = top + 1;
@@ -250,7 +258,7 @@
       if (!capeR) return;
       next();
       const t = Y(B.torsoTop), w = wide ? B.shoulder + 3 : B.shoulder;
-      const sway = walk >= 0 ? [1, 0, -1, 0][walk] : 0;
+      const sway = sn;
       const pts = [[cx - w + 1, t], [cx + w - 1, t], [cx + w + 2 + sway, 51], [cx - w - 2 + sway, 51]];
       cyl(p, inPoly(pts), capeR, bboxOf(pts), { hi: 0.2, sh: 0.6 });
     }
@@ -376,7 +384,8 @@
         const ey = hcy + 1;
         for (const s of [-1, 1]) {
           const ex = hcx + s * 4 - (s > 0 ? 1 : 0);
-          if (spec.eyeStyle === 'closed') { p.px(ex - 1, ey + 2, eyeC); p.px(ex, ey + 2, eyeC); p.px(ex + 1, ey + 2, eyeC); continue; }
+          if (hurt) { const o = s < 0 ? 0 : 1; p.px(ex + o, ey + 1, eyeC); p.px(ex + 1 - o, ey + 2, eyeC); p.px(ex + o, ey + 3, eyeC); continue; } // > <
+          if (spec.eyeStyle === 'closed' || closedEyes) { p.px(ex - 1, ey + 2, eyeC); p.px(ex, ey + 2, eyeC); p.px(ex + 1, ey + 2, eyeC); continue; }
           p.rect(ex, ey, 2, 4, eyeC);
           p.px(ex + (s < 0 ? 0 : 1), ey, '#ffffff');
           if (spec.eyeGlow) { p.px(ex, ey + 1, spec.eyeGlow); p.px(ex + 1, ey + 1, spec.eyeGlow); }
@@ -385,13 +394,14 @@
         }
         // bochechas
         if (!spec.noBlush) { p.px(hcx - 7, hcy + 6, C.mix(skinR[2], '#ff6a6a', 0.45)); p.px(hcx - 6, hcy + 6, C.mix(skinR[2], '#ff6a6a', 0.3)); p.px(hcx + 6, hcy + 6, C.mix(skinR[2], '#ff6a6a', 0.45)); p.px(hcx + 5, hcy + 6, C.mix(skinR[2], '#ff6a6a', 0.3)); }
-        // boca
-        p.px(hcx - 1, hcy + 7, C.shade(skinR[1], -0.4)); p.px(hcx, hcy + 7, C.shade(skinR[1], -0.4));
+        // boca (aberta nos retratos falando)
+        if (talking) { for (const dx of [-2, -1, 0, 1]) { p.px(hcx + dx, hcy + 7, dx === -2 || dx === 1 ? C.shade(skinR[1], -0.3) : '#3a1018'); if (dx > -2 && dx < 1) p.px(hcx + dx, hcy + 8, '#c85a6a'); } }
+        else { p.px(hcx - 1, hcy + 7, C.shade(skinR[1], -0.4)); p.px(hcx, hcy + 7, C.shade(skinR[1], -0.4)); }
         if (spec.mustache) { const mc = hairR[1]; for (let i = -3; i <= 2; i++) p.px(hcx + i, hcy + 6, mc); p.px(hcx - 4, hcy + 7, mc); p.px(hcx + 3, hcy + 7, mc); }
         if (spec.glasses) { const gc = spec.glasses === true ? '#2a2a3a' : spec.glasses; for (const s of [-1, 1]) { const ex = hcx + s * 4 - (s > 0 ? 1 : 0); for (let i = -1; i <= 2; i++) { p.px(ex + i, hcy - 0, gc); p.px(ex + i, hcy + 5, gc); } p.px(ex - 2, hcy + 1, gc); p.px(ex - 2, hcy + 4, gc); p.px(ex + 3, hcy + 1, gc); p.px(ex + 3, hcy + 4, gc); } p.px(hcx - 1, hcy + 1, gc); p.px(hcx, hcy + 1, gc); }
       } else if (view === 'side') {
         const ex = hcx + 5, ey = hcy + 1;
-        if (spec.eyeStyle === 'closed') { p.px(ex, ey + 2, eyeC); p.px(ex + 1, ey + 2, eyeC); }
+        if (spec.eyeStyle === 'closed' || closedEyes) { p.px(ex, ey + 2, eyeC); p.px(ex + 1, ey + 2, eyeC); }
         else { p.rect(ex, ey, 2, 4, eyeC); p.px(ex + 1, ey, '#ffffff'); if (spec.eyeGlow) p.px(ex, ey + 1, spec.eyeGlow); }
         if (spec.brows !== false) { const bc = spec.browColor || hairR[0]; p.px(ex, ey - 2, bc); p.px(ex + 1, ey - 2, bc); p.px(ex + 2, ey - 2 + (spec.angry ? 1 : 0), bc); }
         // nariz
@@ -498,7 +508,7 @@
     // ================= composição por vista =================
     let hand = { hx: 0, hy: 0 }, hand2;
     if (view === 'down') {
-      const sw = walk === 0 ? 1 : walk === 2 ? -1 : 0;
+      const sw = sn * (N > 4 ? 1.4 : 1);
       if (capeR) capeBack(null, true);
       legsFront(false);
       const T = torso(false);
@@ -507,7 +517,7 @@
       head(); hair(); beard(); hat();
       if (hold) { hand2 = armFront(-1, 0); hand = armFront(1, 0); }
     } else if (view === 'up') {
-      const sw = walk === 0 ? 1 : walk === 2 ? -1 : 0;
+      const sw = sn * (N > 4 ? 1.4 : 1);
       hand2 = armFront(1, -sw);
       hand = armFront(-1, sw);
       legsFront(true);
@@ -515,8 +525,8 @@
       if (capeR) capeBack(T, false);
       head(); hair(); hat();
     } else {
-      const sw = walk === 0 ? 3 : walk === 2 ? -3 : 0;
-      if (capeR) { next(); const t = Y(B.torsoTop); const sway = walk >= 0 ? [1, 0, -1, 0][walk] : 0; const pts = [[cx - 2, t], [cx + 2, t], [cx - 4 + sway, 52], [cx - 11 + sway, 50]]; cyl(p, inPoly(pts), capeR, bboxOf(pts)); }
+      const sw = sn * 3;
+      if (capeR) { next(); const t = Y(B.torsoTop); const sway = sn; const pts = [[cx - 2, t], [cx + 2, t], [cx - 4 + sway, 52], [cx - 11 + sway, 50]]; cyl(p, inPoly(pts), capeR, bboxOf(pts)); }
       hand2 = armSide(false, -sw);
       legsSide();
       const T = torso(true);
@@ -541,39 +551,59 @@
   G.makeDoll = function (name, spec) {
     const views = ['down', 'up', 'side'];
     for (const v of views) {
-      for (let f = 0; f < 4; f++) {
+      for (let f = 0; f < (spec.walkN || 4); f++) {
         const r = doll(spec, v, f, 'walk');
         SPR[name + '_' + v + f] = r.p.toCanvas();
       }
-      const a = doll(spec, v, 0, 'atk');
+      const a = doll(spec, v, 1, 'atk');
       SPR[name + '_' + v + '_atk'] = a.p.toCanvas();
       HAND[name + '_' + v] = { x: a.hand.hx / 2, y: a.hand.hy / 2 };
       const s = doll(spec, v, 0, 'stand');
       SPR[name + '_' + v + '_stand'] = s.p.toCanvas();
+      if (!spec.anims) continue;
+      // herói e heroína: golpe em 3 tempos, respiração, piscada e dano
+      for (const f of [0, 2]) {
+        const r = doll(spec, v, f, 'atk');
+        SPR[name + '_' + v + '_atk' + f] = r.p.toCanvas();
+        HAND[name + '_' + v + '_atk' + f] = { x: r.hand.hx / 2, y: r.hand.hy / 2 };
+      }
+      SPR[name + '_' + v + '_atk1'] = SPR[name + '_' + v + '_atk'];
+      HAND[name + '_' + v + '_atk1'] = HAND[name + '_' + v];
+      SPR[name + '_' + v + '_idle0'] = SPR[name + '_' + v + '_stand'];
+      SPR[name + '_' + v + '_idle1'] = doll(spec, v, 1, 'idle').p.toCanvas();
+      SPR[name + '_' + v + '_blink'] = v === 'up' ? SPR[name + '_' + v + '_stand'] : doll(spec, v, 0, 'blink').p.toCanvas();
+      SPR[name + '_' + v + '_hurt'] = doll(spec, v, 0, 'hurt').p.toCanvas();
     }
     SPR[name + '_hold'] = doll(spec, 'down', 0, 'hold').p.toCanvas();
     // retrato: cabeça ampliada (recorte)
-    const st = SPR[name + '_down_stand'];
-    const B = BUILD[spec.build || 'adult'];
-    const pc = G.canvas(36, 36); const px = pc.getContext('2d');
-    const top = Math.max(0, Math.round(B.headY - 15));
-    px.drawImage(st, 6, top, 36, 36, 0, 0, 36, 36);
-    pc.lw = 18; pc.lh = 18;
-    SPR[name + '_portrait'] = pc;
+    SPR[name + '_portrait'] = cropPortrait(SPR[name + '_down_stand'], spec);
+    DOLLS[name] = spec;
     SPR[name + '_down0'] = SPR[name + '_down0'];
   };
-  G.dollHand = (name, view) => HAND[name + '_' + view] || { x: 12, y: 20 };
+  // retrato: recorte da cabeça ampliada
+  const DOLLS = {};
+  function cropPortrait(src, spec) {
+    const top = Math.max(0, Math.round(BUILD[spec.build || 'adult'].headY - 15));
+    const pc = G.canvas(36, 36); pc.getContext('2d').drawImage(src, 6, top, 36, 36, 0, 0, 36, 36); pc.lw = 18; pc.lh = 18; return pc;
+  }
+  // retratos dos diálogos com boca aberta (fala) e olhos fechados (piscada), gerados na primeira fala
+  G.portraitVariants = name => {
+    const spec = DOLLS[name]; if (!spec || SPR[name + '_portraitTalk']) return;
+    SPR[name + '_portraitTalk'] = cropPortrait(doll(spec, 'down', 0, 'talk').p.toCanvas(), spec);
+    SPR[name + '_portraitBlink'] = cropPortrait(SPR[name + '_down_blink'] || doll(spec, 'down', 0, 'blink').p.toCanvas(), spec);
+  };
+  G.dollHand = (name, view, atkF) => (atkF !== undefined && HAND[name + '_' + view + '_atk' + atkF]) || HAND[name + '_' + view] || { x: 12, y: 20 };
   G.DOLL_SKIN = SKIN;
 
   // ------------------------------------------------------------------
   //  Elenco
   // ------------------------------------------------------------------
   G.CAST = {
-    hero: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'spiky', tunic: '#2f7fe0', trim: '#e8c04a', belt: '#8a5a2a', pants: '#3e3466', boots: '#7a4422', cape: '#d8343e', emblem: '#ffd84a', bracer: '#2ec8b8', eyes: '#1a3a5a' },
-    hero_suit: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'spiky', tunic: '#ff8a2a', trim: '#5aff8a', belt: '#5a3a1a', pants: '#c05a1a', boots: '#7a3a1a', cape: '#ffd23a', emblem: '#fff4e0', emblem2: '#c0401a', bracer: '#5aff8a', eyes: '#1a3a5a' },
+    hero: { walkN: 8, anims: true, skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'spiky', tunic: '#2f7fe0', trim: '#e8c04a', belt: '#8a5a2a', pants: '#3e3466', boots: '#7a4422', cape: '#d8343e', emblem: '#ffd84a', bracer: '#2ec8b8', eyes: '#1a3a5a' },
+    hero_suit: { walkN: 8, anims: true, skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'spiky', tunic: '#ff8a2a', trim: '#5aff8a', belt: '#5a3a1a', pants: '#c05a1a', boots: '#7a3a1a', cape: '#ffd23a', emblem: '#fff4e0', emblem2: '#c0401a', bracer: '#5aff8a', eyes: '#1a3a5a' },
     // heroína: mesma família e equipamento do herói, cabelo longo com faixa
-    heroina: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'long', tunic: '#2f7fe0', trim: '#e8c04a', belt: '#8a5a2a', pants: '#3e3466', boots: '#7a4422', cape: '#d8343e', emblem: '#ffd84a', bracer: '#2ec8b8', eyes: '#1a3a5a', hat: { type: 'bandana', color: '#d8343e' } },
-    heroina_suit: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'long', tunic: '#ff8a2a', trim: '#5aff8a', belt: '#5a3a1a', pants: '#c05a1a', boots: '#7a3a1a', cape: '#ffd23a', emblem: '#fff4e0', emblem2: '#c0401a', bracer: '#5aff8a', eyes: '#1a3a5a', hat: { type: 'bandana', color: '#5aff8a' } },
+    heroina: { walkN: 8, anims: true, skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'long', tunic: '#2f7fe0', trim: '#e8c04a', belt: '#8a5a2a', pants: '#3e3466', boots: '#7a4422', cape: '#d8343e', emblem: '#ffd84a', bracer: '#2ec8b8', eyes: '#1a3a5a', hat: { type: 'bandana', color: '#d8343e' } },
+    heroina_suit: { walkN: 8, anims: true, skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'long', tunic: '#ff8a2a', trim: '#5aff8a', belt: '#5a3a1a', pants: '#c05a1a', boots: '#7a3a1a', cape: '#ffd23a', emblem: '#fff4e0', emblem2: '#c0401a', bracer: '#5aff8a', eyes: '#1a3a5a', hat: { type: 'bandana', color: '#5aff8a' } },
     gauss: { skin: SKIN.claro, hair: '#ececf4', hairStyle: 'short', beard: '#ececf4', longBeard: true, tunic: '#6a3aa8', trim: '#ffd84a', robe: true, belt: '#ffd84a', boots: '#4a2a6a', hat: { type: 'wizard', color: '#4a2a8a', color2: '#ffd84a' }, build: 'adult', brows: true, browColor: '#c8c8d8' },
     florence: { skin: SKIN.claro, hair: '#5a3018', hairStyle: 'long', tunic: '#f4f0f0', trim: '#e03030', robe: true, belt: '#e03030', boots: '#7a5a4a', hat: { type: 'nurse', color: '#ffffff', color2: '#e03030' } },
     mendel: { skin: SKIN.medio, hair: '#2a1a10', hairStyle: 'short', tunic: '#3aaa4a', trim: '#2a6a2a', apron: '#e8dcc0', pants: '#4a3a2a', boots: '#3a2418', hat: { type: 'cap', color: '#2a8a3a' }, build: 'stout' },
@@ -591,8 +621,8 @@
     guard: { skin: SKIN.medio, hair: '#4a3a2a', hairStyle: 'short', tunic: '#3a5ad0', trim: '#ffd23a', pants: '#2a3a7a', boots: '#2a2a3a', hat: { type: 'helmet', color: '#a0a8c0', color2: '#ffffff', plume: '#e03a3a' }, cape: '#2a3a8a', build: 'tall' },
     hermit: { skin: SKIN.claro, hair: '#d0d0d0', hairStyle: 'long', beard: '#e0e0e0', longBeard: true, tunic: '#7a6a5a', trim: '#5a4a3a', robe: true, boots: '#3a2a1a', hat: { type: 'hood', color: '#6a5a4a' } },
     viesNPC: { skin: SKIN.lilas, hair: '#2a1040', hairStyle: 'long', tunic: '#3a1a5a', trim: '#ff3a3a', robe: true, belt: '#ffd23a', boots: '#1a0a2a', hat: { type: 'hood', color: '#2a1040' }, eyes: '#ff3a3a', eyeGlow: '#ff3a3a', cape: '#5a0a3a', angry: true },
-    esqueleto: { skin: SKIN.osso, hair: '#e8e2d0', hairStyle: 'bald', tunic: '#b8b2a2', trim: '#8a8476', pants: '#d8d2c2', boots: '#8a8476', eyes: '#ff3030', eyeGlow: '#ff3030', noBlush: true, noEars: true, brows: false, angry: true, skeleton: true, noBelt: true },
-    cavaleiro: { skin: '#3a3a50', hair: '#3a3a50', hairStyle: 'short', tunic: '#7a2aa0', trim: '#c0a040', belt: '#c0a040', pants: '#5a5a70', boots: '#3a3050', hat: { type: 'helmet', color: '#8a8aa8', color2: '#d0d0e8', visor: true, plume: '#a02ad0' }, cape: '#4a1a6a', build: 'tall', noBlush: true },
+    esqueleto: { walkN: 8, skin: SKIN.osso, hair: '#e8e2d0', hairStyle: 'bald', tunic: '#b8b2a2', trim: '#8a8476', pants: '#d8d2c2', boots: '#8a8476', eyes: '#ff3030', eyeGlow: '#ff3030', noBlush: true, noEars: true, brows: false, angry: true, skeleton: true, noBelt: true },
+    cavaleiro: { walkN: 8, skin: '#3a3a50', hair: '#3a3a50', hairStyle: 'short', tunic: '#7a2aa0', trim: '#c0a040', belt: '#c0a040', pants: '#5a5a70', boots: '#3a3050', hat: { type: 'helmet', color: '#8a8aa8', color2: '#d0d0e8', visor: true, plume: '#a02ad0' }, cape: '#4a1a6a', build: 'tall', noBlush: true },
     guardiao: { skin: '#aaa6ba', hair: '#9a96ac', hairStyle: 'short', tunic: '#9894ac', trim: '#c8c4d8', belt: '#7a768e', pants: '#8a869e', boots: '#76728a', hat: { type: 'helmet', color: '#a8a4bc', color2: '#dcd8ec', visor: true, plume: '#8a869e' }, cape: '#86829a', build: 'tall', noBlush: true, eyes: '#4a4660', brows: false },
     sigmaMom: { skin: SKIN.claro, hair: '#8a4a1e', hairStyle: 'bob', tunic: '#5aa04a', trim: '#f0e0b0', robe: true, boots: '#5a3a1a' }
   };

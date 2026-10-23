@@ -6,6 +6,7 @@
   G.ents = [];
   G.curRoom = -1;
   const CHARGE_T = 0.9; // tempo para carregar o raio
+  const ATK_PREP = 0.033, ATK_SWING = 0.075; // tempos do golpe da espada (s)
   // cores do rastro por nível da espada
   const SWORD_FX = [{ body: '#fff6e0', edge: '#ffb84a' }, { body: '#e8f6ff', edge: '#6ac8ff' }, { body: '#eef0ff', edge: '#8a8aff' }, { body: '#e8fcff', edge: '#ffd23a' }];
   G.SWORD_FX = SWORD_FX;
@@ -64,6 +65,7 @@
     P.hp = Math.max(0, P.hp - d);
     P.stats.hurt = (P.stats.hurt || 0) + d;
     p.inv = o.inv !== undefined ? o.inv : 1.0;
+    p.hurtAnim = 0.3;
     if (sx !== undefined && !o.noKb) {
       const a = Math.atan2(p.cy - sy, p.cx - sx);
       p.kbx = Math.cos(a) * 170; p.kby = Math.sin(a) * 170; p.kbT = 0.14;
@@ -182,6 +184,7 @@
       if (this.starT > 0) { this.starT -= dt; if (this.starT <= 0) G.restoreMusic(); if (Math.random() < 0.5) G.fx.spawn({ x: this.cx + G.rf(-6, 6), y: this.y - 4 + G.rf(-8, 6), vy: -20, life: 0.4, color: G.pick(['#ffd84a', '#ff6aa0', '#7ae4ff', '#ffffff']), size: 1 }); }
       if (this.superT > 0) this.superT -= dt;
       this.bombCD -= dt; this.shotCD -= dt; if (this.liftT > 0) this.liftT -= dt;
+      if (this.hurtAnim > 0) this.hurtAnim -= dt; if (this.landT > 0) this.landT -= dt;
       if (this.castT > 0) this.castT -= dt; if (this.chargeFlash > 0) this.chargeFlash -= dt;
       if (this.state === 'fall') { this.fallT += dt; if (this.fallT > 0.6) this.respawnSafe(); return; }
       if (this.state === 'hold' || this.state === 'dead' || this.state === 'pipe' || this.state === 'frozen') return;
@@ -309,7 +312,7 @@
       }
     }
     land() {
-      G.sfx('land');
+      G.sfx('land'); this.landT = 0.12;
       G.fx.smoke(this.cx, this.y + this.h, 4, G.map.kind === 'dungeon' ? '#c8c0b8' : '#e0d8c0', 22);
       this.unstick();
       // pisão (Mario!)
@@ -357,6 +360,9 @@
       return best;
     }
     startAttack() { this.state = 'attack'; this.atkT = 0; this.hitSet.clear(); G.sfx('sword'); }
+    atkEase() { const p = G.clamp((this.atkT - ATK_PREP) / ATK_SWING, 0, 1); return 1 - (1 - p) * (1 - p) * (1 - p); }
+    // quadro do golpe: 0 preparo, 1 golpe, 2 continuação (giro e raio usam o 1)
+    atkFrame() { if (this.state !== 'attack') return 1; return this.atkT < ATK_PREP ? 0 : this.atkEase() < 0.55 ? 1 : 2; }
     throwCarry() {
       const d = G.DIRS[this.dir];
       G.addEnt(new Thrown(this.cx - 7, this.y - 12, d.x * 190, d.y * 190, this.carry));
@@ -467,9 +473,10 @@
       let name, flip = this.dir === 2;
       const swinging = this.state === 'attack' || this.state === 'spin' || this.spinCharging;
       if (this.state === 'hold') { name = base + '_hold'; flip = false; }
-      else if (swinging || this.castT > 0 || this.charge > 0.15) name = base + '_' + view + '_atk';
-      else if (this.moving && (this.state === 'normal' || this.state === 'pull')) name = base + '_' + view + (Math.floor(this.walkT * 9) % 4);
-      else name = base + '_' + view + '_stand';
+      else if (swinging || this.castT > 0 || this.charge > 0.15) name = base + '_' + view + '_atk' + this.atkFrame();
+      else if (this.hurtAnim > 0) name = base + '_' + view + '_hurt';
+      else if (this.moving && (this.state === 'normal' || this.state === 'pull')) name = base + '_' + view + (Math.floor(this.walkT * 18) % 8);
+      else name = base + '_' + view + ((this.t % 3.6) < 0.12 ? '_blink' : '_idle' + (Math.floor(this.t * 1.4) % 2)); // respira e pisca
       const o = { flip };
       if (this.starT > 0) o.tint = ['rgba(255,220,80,0.5)', 'rgba(255,100,160,0.5)', 'rgba(100,220,255,0.5)', 'rgba(120,255,140,0.5)'][Math.floor(G.time * 12) % 4];
       else if (this.chargeFlash > 0) o.white = Math.floor(G.time * 30) % 2 === 0;
@@ -484,7 +491,8 @@
       }
       // pulo: estica ao subir, achata ao pousar
       if (this.z > 0 && this.state !== 'fall') { o.sy = this.vz > 0 ? 1.06 : 0.97; o.sx = this.vz > 0 ? 0.95 : 1.03; }
-      const h = G.dollHand(base, view);
+      else if (this.landT > 0 && this.state !== 'fall') { const k = this.landT / 0.12; o.sy = 1 - 0.12 * k; o.sx = 1 + 0.1 * k; }
+      const h = G.dollHand(base, view, swinging ? this.atkFrame() : undefined);
       const hx = sx + (flip ? lw - h.x : h.x), hy = sy + h.y;
       if (this.charge > 0.15) this.drawChargeRing(ctx, cam);
       const swordBehind = this.dir === 1;
@@ -536,11 +544,16 @@
       const sweep = 1.5;
       let a0 = null, fade = 1;
       if (this.state === 'attack') {
-        const p = Math.min(1, this.atkT / 0.12), e = 1 - (1 - p) * (1 - p) * (1 - p);
-        ang = base - sgn * sweep + sgn * sweep * 2 * e;
-        a0 = base - sgn * sweep;
-        // a cauda do rastro alcança a lâmina depois do golpe
-        if (this.atkT > 0.12) a0 += (ang - a0) * Math.min(1, (this.atkT - 0.12) / 0.1);
+        // preparo curto (a lâmina recua), golpe rápido e continuação; a janela de acerto não muda
+        const back = 0.35;
+        if (this.atkT < ATK_PREP) ang = base - sgn * (sweep + back * this.atkT / ATK_PREP);
+        else {
+          const e = this.atkEase();
+          ang = base - sgn * (sweep + back) + sgn * (sweep * 2 + back) * e;
+          a0 = base - sgn * (sweep + back);
+          // a cauda do rastro alcança a lâmina depois do golpe
+          if (e >= 1) a0 += (ang - a0) * Math.min(1, (this.atkT - ATK_PREP - ATK_SWING) / 0.1);
+        }
         fade = Math.min(1, (0.25 - this.atkT) / 0.06);
       } else if (this.state === 'spin') {
         const k = this.atkT / 0.42;

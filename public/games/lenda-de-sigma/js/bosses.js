@@ -185,11 +185,99 @@
   // ------------------------------------------------------------------
   // 1) GOLEM DESEQUILIBRADO — Templo da Média
   // ------------------------------------------------------------------
+  // desenha uma peça girando em torno do pivô (px, py em unidades lógicas do sprite)
+  function part(ctx, img, x, y, px, py, rot, o) {
+    if (!img) return;
+    const src = o && o.white ? G.white(img) : img;
+    ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot);
+    if (o && o.alpha !== undefined) ctx.globalAlpha *= o.alpha;
+    ctx.drawImage(src, -px, -py, G.lw(img), G.lh(img));
+    if (o && o.glow && o.glowA > 0.01) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha *= Math.min(1, o.glowA); ctx.drawImage(G.tint(o.glow, o.glowC), -px, -py, G.lw(img), G.lh(img)); }
+    ctx.restore();
+  }
+  const rot = (x, y, a) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
+  // cinemática inversa de dois ossos: devolve o joelho mais alto na tela
+  function ik(ax, ay, bx, by, L1, L2) {
+    let dx = bx - ax, dy = by - ay, d = Math.hypot(dx, dy) || 0.001;
+    if (d > L1 + L2 - 0.01) { const s = (L1 + L2 - 0.01) / d; dx *= s; dy *= s; d = L1 + L2 - 0.01; }
+    const a = Math.atan2(dy, dx), b = Math.acos(G.clamp((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d), -1, 1));
+    const k1 = [ax + Math.cos(a - b) * L1, ay + Math.sin(a - b) * L1], k2 = [ax + Math.cos(a + b) * L1, ay + Math.sin(a + b) * L1];
+    return k1[1] < k2[1] ? k1 : k2;
+  }
+  // segmento de membro de (ax, ay) até (bx, by); apontando para a esquerda usa a versão espelhada (luz continua por cima)
+  function seg(ctx, name, ax, ay, bx, by, o) {
+    const ang = Math.atan2(by - ay, bx - ax), img = G.bossArt[name + (Math.cos(ang) < 0 ? 'F' : '')];
+    part(ctx, img, ax, ay, img.piv[0], img.piv[1], ang, o);
+  }
+  // perna completa (coxa + canela) com o joelho resolvido por IK
+  function leg(ctx, nA, nB, L1, L2, hx, hy, fx, fy, o) { const k = ik(hx, hy, fx, fy, L1, L2); seg(ctx, nA, hx, hy, k[0], k[1], o); seg(ctx, nB, k[0], k[1], fx, fy, o); }
+
   class Golem extends Boss {
-    constructor(x, y, arena) { super(x, y, 26, 14, { hp: 36, name: 'Golem Desequilibrado', topic: 'media', dmg: 4, arena }); this.armUp = 0; this.rings = []; this.cnt = 0; this.hasP2 = true; }
+    constructor(x, y, arena) { super(x, y, 26, 14, { hp: 36, name: 'Golem Desequilibrado', topic: 'media', dmg: 4, arena }); this.armUp = 0; this.rings = []; this.cnt = 0; this.hasP2 = true; this.walkPh = 0; this.slamAt = -9; this.throwAt = -9; }
+    // corpo maior que a base: a espada acerta o tronco; o contato continua só na base
+    hurtbox() { return { x: this.cx - 17, y: this.y + this.h - 50, w: 34, h: 50 }; }
+    contactBox() { return { x: this.x, y: this.y - this.h, w: this.w, h: this.h * 2 }; }
     vulnerable(kind) { if (this.stun > 0) return 1; return kind === 'bomb' ? 0.5 : 0.2; }
     next() { this.st = 'walk'; this.stT = this.p2 ? G.rf(1.1, 1.8) : G.rf(2, 3); }
     onStun() { this.st = 'stunned'; }
+    update(dt) {
+      // despertar: quando os olhos acendem, o templo treme e cai pó das pedras
+      if (this.st === 'intro' && !this.awoke && this.stT < 0.75) {
+        this.awoke = true; G.shake(3, 0.45); G.sfx('roar');
+        G.fx.smoke(this.cx, this.y + this.h, 8, '#a89a8a', 40);
+        G.fx.burst(this.cx, this.cy - 40, ['#8e9f87', '#677862', '#4e8f34'], 12, 50, { grav: 300, size: 2, life: 0.7, drag: 1 });
+      }
+      super.update(dt);
+    }
+    // pose do esqueleto (ângulos em rad; 0 = braço pendurado; positivo = horário)
+    pose() {
+      const s = this.st, t = this.t, k = { lean: -0.07, bob: 0, crouch: 0, bigA: 0.12, bigB: -0.15, smA: -0.12, smB: 0.22, hx: 0, hy: 0, hr: 0, liftL: 0, liftR: 0, jit: 0, glow: 0.18 + 0.08 * Math.sin(t * 3), fist: 0 };
+      if (this.dying) { k.jit = this.dieT < 0.6 ? 1.4 : 0; k.glow = 1.2; k.crouch = Math.min(6, this.dieT * 6); return k; }
+      if (s === 'intro') {
+        const a = G.clamp(1 - this.stT / 1.2, 0, 1);
+        k.crouch = (1 - a) * 7; k.hy = (1 - a) * 3; k.hr = (1 - a) * 0.15; k.glow = a * 0.6; k.jit = a > 0.3 && a < 0.8 ? 0.6 : 0; k.bigA = 0.3 * (1 - a) + 0.12 * a;
+        return k;
+      }
+      if (this.p2T > 0) { k.bigA = 1.5 + Math.sin(t * 30) * 0.06; k.bigB = -0.4; k.smA = -1.5; k.smB = 0.4; k.hy = -2; k.lean = 0; k.jit = 0.9; k.glow = 1; return k; }
+      if (this.stun > 0 || s === 'stunned') {
+        const e = t - this.slamAt < 0.6 ? 1 : 0; // logo após a martelada o punho ainda está no chão
+        k.lean = -0.18 + Math.sin(t * 3) * 0.04; k.crouch = 3; k.hy = 2.5; k.hr = -0.14 + Math.sin(t * 2.4) * 0.06;
+        k.bigA = e ? -0.38 : -0.15; k.bigB = e ? 0 : 0.25; k.smA = -0.02; k.smB = 0.35; k.glow = 0.12 + (Math.floor(t * 10) % 2) * 0.3; k.fist = e;
+        return k;
+      }
+      if (s === 'walk') {
+        const w = Math.sin(this.walkPh);
+        k.liftL = Math.max(0, w) * 3.5; k.liftR = Math.max(0, -w) * 3.5; k.bob = -Math.abs(w) * 1.6;
+        k.lean += w * 0.04; k.bigA = 0.12 + w * 0.14; k.smA = -0.12 - w * 0.2; k.hx = w * 0.6;
+        // continuação do arremesso
+        const th = t - this.throwAt;
+        if (th < 0.4) { const e = th / 0.4; k.bigA = G.lerp(-0.7, 0.12, e * e); k.bigB = G.lerp(-0.2, -0.15, e); k.lean = G.lerp(-0.16, k.lean, e); }
+      } else if (s === 'raise') {
+        const a = this.armUp;
+        k.bigA = 0.12 + a * 2.55; k.bigB = -a * 0.9; k.lean = -0.07 + a * 0.15; k.hr = a * 0.08; k.hy = -a; k.crouch = a * 2.5; k.smA = -0.12 - a * 0.5;
+        k.jit = a >= 1 ? 0.5 : 0; k.glow = 0.2 + a * 0.7; k.fist = a;
+      } else if (s === 'slam') {
+        const e = Math.min(1, (t - this.slamAt) / 0.08), back = Math.min(1, Math.max(0, (t - this.slamAt - 0.5) / 0.6));
+        k.bigA = G.lerp(2.67, -0.38, e) + back * 0.15; k.bigB = G.lerp(-0.9, 0, e); k.lean = G.lerp(0.08, -0.2, e); k.crouch = G.lerp(2.5, 6, e) - back * 2; k.hy = 2 * e; k.smA = -0.5 + e * 0.4;
+        k.glow = 0.9 - back * 0.5; k.fist = 1;
+      } else if (s === 'rain') {
+        const v = Math.sin(t * 20) * 0.16;
+        k.bigA = 2.75 + v; k.bigB = -0.3; k.smA = -2.7 - v; k.smB = 0.3; k.hy = -1.5; k.hr = 0; k.lean = -0.02; k.jit = 0.4; k.glow = 0.5 + Math.abs(v) * 2;
+      } else if (s === 'throw') {
+        const a = G.clamp(1 - this.stT / 0.5, 0, 1);
+        k.bigA = 0.12 + a * 1.7; k.bigB = -a * 1.1; k.lean = -0.07 + a * 0.1; k.hr = a * 0.05; k.fist = a * 0.6;
+      }
+      if (this.enrage > 0) k.glow = Math.max(k.glow, 0.7 + 0.3 * Math.sin(t * 12));
+      return k;
+    }
+    // posições do esqueleto no mundo (efeitos de impacto usam a do punho)
+    rig(k = this.pose()) {
+      const hipX = this.cx + (k.jit ? Math.sin(this.t * 61) * k.jit : 0), base = this.y + this.h, hipY = base - 19 + k.crouch + k.bob;
+      const at = (o, d) => [o[0] + d[0], o[1] + d[1]], hip = [hipX, hipY];
+      const shL = at(hip, rot(-21, -28, k.lean)), shR = at(hip, rot(23, -27, k.lean));
+      const elL = at(shL, rot(0, 12.5, k.lean + k.bigA)), elR = at(shR, rot(0, 8, k.lean + k.smA));
+      return { base, hip, shL, shR, elL, elR, fistL: at(elL, rot(0, 17.5, k.lean + k.bigA + k.bigB)), neck: at(hip, rot(0, -36, k.lean)), core: at(hip, rot(0, -19, k.lean)) };
+    }
     ai(dt) {
       this.stT -= dt;
       const p = G.player;
@@ -197,6 +285,12 @@
         const a = Math.atan2(p.cy - this.cy, p.cx - this.cx), sp = this.p2 ? 38 : 26;
         G.moveEnt(this, Math.cos(a) * sp * dt, Math.sin(a) * sp * dt, { ghostEnts: true });
         this.clampArena(2);
+        // passos pesados: poeira e tremor a cada pisada
+        const before = Math.sin(this.walkPh); this.walkPh += dt * (this.p2 ? 7.5 : 5.5);
+        if (Math.sign(before) !== Math.sign(Math.sin(this.walkPh))) {
+          const fx = this.cx + (before > 0 ? -9 : 9);
+          G.fx.smoke(fx, this.y + this.h, 3, '#a89a8a', 18); G.shake(0.8, 0.06);
+        }
         if (this.stT <= 0) {
           this.cnt++;
           this.st = this.p2 ? ['raise', 'rain', 'throw', 'raise', 'rain'][this.cnt % 5] : (this.cnt % 3 === 0 ? 'throw' : 'raise');
@@ -213,9 +307,15 @@
         this.armUp = Math.min(1, this.armUp + dt * 3);
         if (this.stT <= 0) {
           this.st = 'slam'; this.stT = this.p2 ? 1.5 : 1.2; this.armUp = 0; G.sfx('explode'); G.shake(5, 0.4);
+          this.slamAt = this.t; G.hitStop = Math.max(G.hitStop, 0.07);
           this.rings.push({ r: 8, x: this.cx, y: this.cy, hit: false });
           if (this.p2) this.ring2T = 0.4;
           G.fx.burst(this.cx, this.cy, ['#9a8a7a', '#ffffff'], 20, 90); G.fx.smoke(this.cx, this.cy, 8, '#a89a8a', 50);
+          // o punho afunda no chão: lascas de pedra e cratera
+          const f = this.rig(Object.assign(this.pose(), { bigA: -0.38, bigB: 0, lean: -0.2, crouch: 6 })).fistL;
+          this.crater = { x: f[0], y: this.y + this.h + 2, at: this.t };
+          G.fx.burst(f[0], f[1] + 6, ['#8e9f87', '#677862', '#435241'], 14, 110, { grav: 380, up: -90, size: 2.5, life: 0.7, drag: 1 });
+          G.fx.ring(f[0], this.y + this.h + 2, 22, '#fff0c0', 0.3, 2.5);
         }
       } else if (this.st === 'slam') {
         if (this.ring2T > 0) { this.ring2T -= dt; if (this.ring2T <= 0) { this.rings.push({ r: 8, x: this.cx, y: this.cy, hit: false }); G.sfx('explode'); G.shake(4, 0.3); } }
@@ -227,7 +327,7 @@
             const sh = this.shot(this.cx, this.cy - 14, a, 95, { spr: 'rock', size: 8, z: 20, vz: 60, life: 3, onLand: s => { G.fx.burst(s.cx, s.cy, ['#9a8a7a'], 6, 40); } });
             sh.pierce = true;
           }
-          G.sfx('bombput');
+          G.sfx('bombput'); this.throwAt = this.t;
           this.next();
         }
       }
@@ -240,32 +340,69 @@
       this.rings = this.rings.filter(rg => rg.r <= 220);
     }
     draw(ctx, cam) {
-      const A = G.bossArt, x = this.cx - cam.x, base = this.y + this.h - cam.y;
-      G.shadow(ctx, x, base - 1, 44, 0.38);
+      const A = G.bossArt, k = this.pose(), R = this.rig(k), ox = -cam.x, oy = -cam.y;
+      const x = this.cx + ox, base = R.base + oy;
+      // cratera deixada pela martelada
+      if (this.crater) {
+        const age = this.t - this.crater.at, cx = this.crater.x + ox, cy = this.crater.y + oy;
+        if (age < 5) {
+          ctx.save(); ctx.globalAlpha = Math.min(1, (5 - age) / 1.5);
+          ctx.fillStyle = 'rgba(10,14,10,0.55)'; ctx.beginPath(); ctx.ellipse(cx, cy, 11, 4.5, 0, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = 'rgba(10,14,10,0.7)'; ctx.lineWidth = 0.75; ctx.beginPath();
+          for (let i = 0; i < 6; i++) { const a = i * 1.05 + 0.3, r1 = 9 + (i % 3) * 4; ctx.moveTo(cx + Math.cos(a) * 8, cy + Math.sin(a) * 3.2); ctx.lineTo(cx + Math.cos(a + 0.15) * r1, cy + Math.sin(a + 0.15) * r1 * 0.42); }
+          ctx.stroke(); ctx.restore();
+        }
+      }
+      G.shadow(ctx, x, base - 1, 60, 0.4);
       if (this.st === 'raise') { ctx.save(); ctx.strokeStyle = 'rgba(255,80,60,' + (0.3 + 0.3 * Math.sin(this.t * 20)) + ')'; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(x, base - 4, 30 + this.armUp * 10, (30 + this.armUp * 10) * 0.75, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
       for (const rg of this.rings) {
         const rr = rg.r;
         ctx.save(); ctx.strokeStyle = 'rgba(255,240,200,0.85)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(rg.x - cam.x, rg.y - cam.y, rr, rr * 0.75, 0, 0, Math.PI * 2); ctx.stroke();
         ctx.strokeStyle = 'rgba(160,140,110,0.6)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(rg.x - cam.x, rg.y - cam.y, rr - 4, (rr - 4) * 0.75, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       }
-      const o = this.flashOn() ? { white: true } : undefined;
-      const bob = this.st === 'walk' ? Math.sin(this.t * 6) * 1.2 : 0, up = this.armUp * 14, wob = this.stun > 0 ? Math.sin(this.t * 22) * 0.8 : 0;
-      G.draw(ctx, A.golemLeg, x - 15, base - 12 + (this.st === 'walk' ? Math.max(0, Math.sin(this.t * 6)) * -2 : 0), o);
-      G.draw(ctx, A.golemLeg, x + 5, base - 12 + (this.st === 'walk' ? Math.max(0, -Math.sin(this.t * 6)) * -2 : 0), o);
-      G.draw(ctx, A.golemArmSmall, x + 15 + wob, base - 38 + bob - up * 0.6, o);
-      G.draw(ctx, A.golemTorso, x - 17 + wob, base - 40 + bob, o);
-      // núcleo
-      const gc = this.stun > 0 ? (Math.floor(this.t * 10) % 2 ? '#ffffff' : '#7aff8a') : this.enrage > 0 ? '#ff5a3a' : '#3aff6a';
-      ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, x + wob, base - 24 + bob, 9, gc, 0.9); ctx.restore();
-      ctx.fillStyle = gc; ctx.beginPath(); ctx.arc(x + wob, base - 24 + bob, 2.5, 0, Math.PI * 2); ctx.fill();
-      G.light.add(x, base - 24 + bob, 46, gc, 0.8);
-      G.draw(ctx, A.golemHead, x - 9 + wob, base - 52 + bob, o);
-      const ec = this.enrage > 0 ? '#ff3a3a' : '#ffd84a';
-      ctx.fillStyle = ec; ctx.fillRect(x - 5 + wob, base - 46 + bob, 3, 1.5); ctx.fillRect(x + 2 + wob, base - 46 + bob, 3, 1.5);
-      G.draw(ctx, A.golemArmBig, x - 30 + wob, base - 42 + bob - up, o);
-      G.text('10', x - 22.5 + wob, base - 32 + bob - up, '#2a3428', { align: 'center', shadow: false });
-      G.text('2', x + 20 + wob, base - 30 + bob - up * 0.6, '#2a3428', { align: 'center', shadow: false });
-      this.drawStunStars(ctx, x, base - 58);
+      const white = this.flashOn();
+      const gc = this.dying ? '#ffffff' : this.stun > 0 ? (Math.floor(this.t * 10) % 2 ? '#ffffff' : '#7aff8a') : this.enrage > 0 || this.p2T > 0 ? '#ff5a3a' : '#3aff6a';
+      const fade = this.dying ? G.clamp(1 - (this.dieT - 1.7) / 0.6, 0, 1) : 1;
+      const o = (glow, extra) => ({ white, glow, glowA: k.glow * (extra || 1), glowC: gc, alpha: fade });
+      // morte: as peças se soltam e caem
+      const d = this.dying ? Math.max(0, this.dieT - 0.6) : 0;
+      const fly = (p, vx, vy, sp) => { if (!d) return [p[0] + ox, p[1] + oy, 0]; const y = Math.min(p[1] + vy * d + 170 * d * d, R.base + 2); return [p[0] + vx * d + ox, y + oy, sp * Math.min(d, 1.2)]; };
+      // pernas e bacia
+      part(ctx, A.golemLeg, R.hip[0] - 9 + ox, base - 16 - k.liftL, 7.5, 1, 0, o(A.golemLegGlow));
+      part(ctx, A.golemLeg, R.hip[0] + 9 + ox, base - 16 - k.liftR, 7.5, 1, 0, o(A.golemLegGlow));
+      part(ctx, A.golemPelvis, R.hip[0] + ox, R.hip[1] + 2 + oy, 14, 5.5, k.lean * 0.5, o(A.golemPelvisGlow));
+      // tronco e núcleo
+      { const tp = fly(R.hip, 0, -8, -0.25); part(ctx, A.golemTorso, tp[0], tp[1], 24, 39, k.lean + tp[2], o(A.golemTorsoGlow, 1.3)); }
+      if (!this.dying || this.dieT < 2.3) {
+        const cx = R.core[0] + ox, cy = R.core[1] + oy, pulse = 1 + Math.sin(this.t * 6) * 0.12;
+        ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, cx, cy, 11 * pulse, gc, 0.9); ctx.restore();
+        ctx.fillStyle = gc; ctx.beginPath(); ctx.moveTo(cx, cy - 4.5); ctx.lineTo(cx + 3.5, cy); ctx.lineTo(cx, cy + 4.5); ctx.lineTo(cx - 3.5, cy); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.beginPath(); ctx.moveTo(cx, cy - 4.5); ctx.lineTo(cx, cy); ctx.lineTo(cx - 3.5, cy); ctx.closePath(); ctx.fill();
+        G.light.add(cx, cy, 50 + k.glow * 20, gc, 0.85);
+      }
+      // braço pequeno ("2")
+      { const f = fly(R.elR, 40, -55, 3.5), u = fly(R.shR, 40, -55, 3.5);
+        part(ctx, A.golemSmallFore, f[0], f[1], 6.5, 1.5, k.lean + k.smA + k.smB + f[2], o(A.golemSmallForeGlow, 1 + k.fist * 0.3));
+        part(ctx, A.golemSmallUpper, u[0], u[1], 6, 4, k.lean + k.smA + u[2], o(A.golemSmallUpperGlow)); }
+      // cabeça (olha para o herói) e olhos acesos na fenda
+      { const p = G.player, look = p && !this.dying ? G.clamp((p.cx - this.cx) / 70, -1, 1) * 1.5 : 0;
+        const n = [R.neck[0] + k.hx + look, R.neck[1] + 3 + k.hy], h = fly(n, 12, -85, 2.6), hr = k.lean * 0.6 + k.hr + h[2];
+        part(ctx, A.golemHead, h[0], h[1], 12, 16.5, hr, o(A.golemHeadGlow));
+        if (!this.dying || this.dieT < 0.9) {
+          const ec = this.enrage > 0 || this.p2T > 0 ? '#ff4a3a' : this.stun > 0 ? '#9aa890' : '#ffd84a', ea = this.st === 'intro' ? G.clamp((1 - this.stT / 1.2) * 2 - 0.6, 0, 1) : 1;
+          ctx.save(); ctx.translate(h[0], h[1]); ctx.rotate(hr); ctx.globalAlpha = ea;
+          for (const s of [-1, 1]) {
+            const ex = s * 4 + look * 0.4 - 1.5, ey = this.stun > 0 ? -5 : -5.5;
+            ctx.fillStyle = ec; ctx.fillRect(ex, ey, 3, this.stun > 0 ? 0.5 : 1.5);
+            ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, ex + 1.5, ey + 0.75, 4, ec, 0.8); ctx.globalCompositeOperation = 'source-over';
+          }
+          ctx.restore();
+        } }
+      // braço grande ("10"), na frente
+      { const f = fly(R.elL, -48, -40, -3), u = fly(R.shL, -48, -40, -3);
+        part(ctx, A.golemBigFore, f[0], f[1], 12, 2.5, k.lean + k.bigA + k.bigB + f[2], o(A.golemBigForeGlow, 1 + k.fist));
+        part(ctx, A.golemBigUpper, u[0], u[1], 10, 6.5, k.lean + k.bigA + u[2], o(A.golemBigUpperGlow)); }
+      this.drawStunStars(ctx, R.neck[0] + ox, R.neck[1] + oy - 16 + k.hy);
     }
   }
 
@@ -273,7 +410,10 @@
   // 2) ARANHA MEDIANA — Bosque da Mediana
   // ------------------------------------------------------------------
   class Aranha extends Boss {
-    constructor(x, y, arena) { super(x, y, 26, 14, { hp: 50, name: 'Aranha Mediana', topic: 'd2', dmg: 4, arena }); this.z = 0; this.cnt = 0; this.hasP2 = true; this.fanT = 1.5; }
+    constructor(x, y, arena) { super(x, y, 26, 14, { hp: 50, name: 'Aranha Mediana', topic: 'd2', dmg: 4, arena }); this.z = 0; this.cnt = 0; this.hasP2 = true; this.fanT = 1.5; this.walkPh = 0; this.shotAt = -9; this.landAt = -9; }
+    // o corpo grande recebe golpes; o contato continua na base original
+    hurtbox() { return { x: this.cx - 20, y: this.y + this.h - 34 - this.z, w: 40, h: 34 }; }
+    contactBox() { return { x: this.x, y: this.y - this.h - this.z, w: this.w, h: this.h * 2 }; }
     vulnerable(kind) { if (this.z > 10) return 0; if (this.stun > 0) return 1; return kind === 'bomb' ? 1 : 0.5; }
     next() { this.st = 'crawl'; this.stT = G.rf(2.5, 3.5); this.noContact = false; }
     onStun() { this.st = 'stunned'; this.z = 0; }
@@ -283,13 +423,14 @@
       if (this.st === 'crawl') {
         const a = Math.atan2(p.cy - this.cy, p.cx - this.cx) + Math.sin(this.t * 2) * 0.8;
         G.moveEnt(this, Math.cos(a) * (this.p2 ? 58 : 48) * dt, Math.sin(a) * (this.p2 ? 58 : 48) * dt, { ghostEnts: true }); this.clampArena(2);
+        this.walkPh += dt * (this.p2 ? 13 : 11);
         this.fanT -= dt;
         if (this.p2 && this.fanT <= 0) {
           // leque de 5 teias: a do meio (a "mediana") é mais rápida
           this.fanT = 1.7; const b = Math.atan2(p.cy - this.cy, p.cx - this.cx);
           for (let i = -2; i <= 2; i++) this.shot(this.cx, this.cy - 6, b + i * 0.28, i === 0 ? 125 : 80, { spr: 'web', dmg: 2 });
-          G.sfx('beam');
-        } else if (!this.p2 && Math.random() < dt * 0.9) { const b = Math.atan2(p.cy - this.cy, p.cx - this.cx); this.shot(this.cx, this.cy - 6, b, 80, { spr: 'web', dmg: 2 }); }
+          G.sfx('beam'); this.shotAt = this.t;
+        } else if (!this.p2 && Math.random() < dt * 0.9) { const b = Math.atan2(p.cy - this.cy, p.cx - this.cx); this.shot(this.cx, this.cy - 6, b, 80, { spr: 'web', dmg: 2 }); this.shotAt = this.t; }
         if (this.stT <= 0) { this.st = 'up'; this.stT = 0.8; this.noContact = true; G.sfx('jump'); }
       } else if (this.st === 'up') {
         this.z += 300 * dt;
@@ -302,8 +443,9 @@
       } else if (this.st === 'drop') {
         this.z = Math.max(0, this.z - 600 * dt);
         if (this.z <= 0) {
-          G.sfx('explode'); G.shake(5, 0.4); this.noContact = false;
+          G.sfx('explode'); G.shake(5, 0.4); this.noContact = false; this.landAt = this.t;
           G.fx.burst(this.cx, this.cy, ['#c8c0b0', '#ffffff'], 18, 90);
+          G.fx.smoke(this.cx, this.y + this.h, 10, '#8a7a5a', 45);
           this.cnt++;
           if (this.p2) { this.rings = [{ r: 8, x: this.cx, y: this.cy, hit: false }]; G.addEnt(new Egg(this.cx + G.rf(-60, 60), this.cy + G.rf(-20, 30), this)).room = this.room; }
           else if (this.cnt % 2 === 0) for (let i = 0; i < 2; i++) { const e = G.makeEnemy('aranha', this.cx + (i ? 20 : -30), this.cy, { room: this.room }); G.addEnt(e); }
@@ -330,26 +472,51 @@
         if (lk) { ctx.globalAlpha = 0.18; ctx.fillStyle = '#ff3a3a'; ctx.beginPath(); ctx.ellipse(x, base - 2, 24, 15, 0, 0, Math.PI * 2); ctx.fill(); }
         ctx.restore();
       }
-      G.shadow(ctx, x, base - 1, Math.max(10, 38 - z / 6), 0.38);
-      const cy = base - 12 - z;
-      if (z > 0) { ctx.fillStyle = 'rgba(232,232,240,0.8)'; ctx.fillRect(x - 0.25, -10, 0.5, cy - 14 + 10); }
-      const o = this.flashOn() ? { white: true } : undefined;
-      // pernas articuladas
-      ctx.save(); ctx.lineCap = 'round';
-      for (let i = 0; i < 4; i++) for (const sd of [-1, 1]) {
-        const k = Math.sin(this.t * 12 + i * 1.3 + (sd > 0 ? 1.5 : 0)) * (this.st === 'crawl' ? 3 : 1);
-        const ax = x + sd * 7, ay = cy - 2 + i * 2.5;
-        const kx = x + sd * (20 + i * 1.5), ky = cy - 12 + i * 4 + k;
-        const fx = x + sd * (30 + i), fy = cy + 2 + i * 4 - k * 0.5;
-        ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 3.2; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
-        ctx.strokeStyle = o ? '#ffffff' : '#4a2a6a'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
-        ctx.fillStyle = '#7a4aa0'; ctx.fillRect(kx - 0.75, ky - 0.75, 1.5, 1.5);
+      G.shadow(ctx, x, base - 1, Math.max(16, 62 - z / 4), 0.38);
+      const k = this.pose(), white = this.flashOn();
+      const cy = base - 14 - z - k.rear * 7 + k.bob, ax = x + k.sway;
+      if (z > 0) { ctx.fillStyle = 'rgba(232,232,240,0.85)'; ctx.fillRect(ax - 0.25, -10, 0.5, cy - 30 + 10); }
+      const eyeC = this.enrage > 0 || this.p2T > 0 ? '#ff2a2a' : '#ff4a5a', fade = this.dying ? G.clamp(1 - (this.dieT - 1.2) / 0.6, 0, 1) : 1;
+      const o = { white, alpha: fade };
+      // pernas: alvos no chão (passo alternado), recolhidas no fio, abertas na queda, erguidas na ameaça
+      const FEET = [[26, 10], [37, 1], [37, -9], [27, -19]];
+      const legsOf = (list) => { for (const i of list) for (const sd of [-1, 1]) {
+        const hx = ax + sd * (8 - i * 0.6), hy = cy + 3 - i * 2.4;
+        let fx = x + sd * FEET[i][0] * (1 + k.spread * 0.25), fy = base + FEET[i][1] * (1 + k.spread * 0.2) - (z > 0 && k.fold < 0.5 ? z : 0);
+        const ph = this.walkPh + ((i + (sd > 0 ? 1 : 0)) % 2) * Math.PI;
+        if (k.gait) { fy += Math.cos(ph) * 3 - Math.max(0, Math.sin(ph)) * 4; fx += sd * Math.max(0, Math.sin(ph)) * 1.5; }
+        if (k.twitch) { fx += Math.sin(this.t * 31 + i * 2 + sd) * k.twitch; fy += Math.cos(this.t * 27 + i) * k.twitch; }
+        if (k.rear && i < 2) { fx = G.lerp(fx, hx + sd * (14 + i * 6), k.rear); fy = G.lerp(fy, hy - 24 + i * 8 + Math.sin(this.t * 9 + i) * 2, k.rear); }
+        if (k.fold) { fx = G.lerp(fx, hx + sd * (10 - i), k.fold); fy = G.lerp(fy, hy + 8 - i * 3, k.fold); }
+        leg(ctx, 'spiderFemur', 'spiderTibia', 20, 24, hx, hy, fx, fy, o);
+      } };
+      legsOf([3, 2]);
+      part(ctx, A.spiderAbdomen, ax + k.sway * 0.5, cy - 9 - k.rear * 3 + k.abd, 22, 17, k.lean * 0.6, Object.assign({ glow: A.spiderAbdomenGlow, glowA: 0.6 + 0.4 * Math.sin(this.t * 4), glowC: '#ffd84a' }, o));
+      legsOf([1, 0]);
+      part(ctx, A.spiderHead, ax, cy + 5, 14, 11, k.lean, Object.assign({ glow: A.spiderHeadGlow, glowA: k.eyes, glowC: eyeC }, o));
+      // quelíceras abrem ao atacar
+      for (const sd of [-1, 1]) {
+        const fx = ax + sd * 4.5, fy = cy + 13;
+        ctx.save(); ctx.translate(fx, fy); if (sd > 0) ctx.scale(-1, 1); part(ctx, A.spiderFang, 0, 0, 4.5, 2, -(0.1 + k.fang * 0.55), o); ctx.restore();
       }
-      ctx.restore();
-      G.draw(ctx, A.spiderAbdomen, x - 16, cy - 10, o);
-      G.draw(ctx, A.spiderHead, x - 10, cy - 20, o);
-      for (const [ex, ey] of [[-6, -13], [-2.5, -15], [1.5, -15], [5, -13]]) { ctx.fillStyle = '#ff3a3a'; ctx.beginPath(); ctx.arc(x + ex, cy + ey, 1.4, 0, Math.PI * 2); ctx.fill(); G.light.add(x + ex, cy + ey, 10, '#ff3a3a', 0.4); }
-      this.drawStunStars(ctx, x, cy - 26);
+      if (k.eyes > 0.1 && fade > 0) G.light.add(ax, cy + 4, 34, eyeC, 0.5 * k.eyes);
+      this.drawStunStars(ctx, ax, cy - 22);
+    }
+    pose() {
+      const s = this.st, t = this.t, k = { bob: 0, sway: 0, lean: 0, fold: 0, spread: 0, rear: 0, gait: 0, twitch: 0, fang: 0.15 + 0.1 * Math.sin(t * 7), eyes: 0.75 + 0.25 * Math.sin(t * 5), abd: Math.sin(t * 3) * 0.6 };
+      if (this.dying) { const d = Math.min(1, this.dieT * 1.4); k.fold = d; k.bob = d * 6; k.eyes = Math.max(0, 1 - this.dieT * 2); k.twitch = d < 1 ? 1.5 : 0; return k; }
+      if (s === 'intro') { const a = G.clamp(1 - this.stT / 1.2, 0, 1); k.fold = 1 - a; k.eyes = a; k.bob = (1 - a) * 4; return k; }
+      if (this.p2T > 0) { k.rear = 1; k.fang = 1; k.eyes = 1.2; k.abd = Math.sin(t * 30) * 1.2; return k; }
+      if (s === 'crawl') { k.gait = 1; k.bob = Math.abs(Math.sin(this.walkPh)) * -1; k.sway = Math.sin(this.walkPh * 0.5) * 1.2; k.lean = Math.sin(this.walkPh * 0.5) * 0.05; if (t - this.shotAt < 0.25) { k.fang = 1; k.abd = -2; } }
+      else if (s === 'up') { k.fold = G.clamp(1 - this.stT / 0.8, 0, 1) * 0.9; k.lean = Math.sin(t * 6) * 0.05; }
+      else if (s === 'hang') { k.fold = 0.9; k.lean = Math.sin(t * 2.2) * 0.14; k.sway = Math.sin(t * 2.2) * 3; k.fang = this.locked ? 1 : 0.4; k.eyes = this.locked ? 1.3 : 1; }
+      else if (s === 'drop') { k.spread = 1; k.fang = 1; k.eyes = 1.2; }
+      if (this.stun > 0 || s === 'stunned') {
+        const land = G.clamp(1 - (t - this.landAt) / 0.35, 0, 1); // achata ao cair
+        k.spread = land; k.bob = 3 + land * 3; k.twitch = 1.2; k.eyes = 0.25 + (Math.floor(t * 8) % 2) * 0.2; k.fang = 0.5;
+      }
+      if (this.enrage > 0) k.eyes = Math.max(k.eyes, 1.2);
+      return k;
     }
   }
 
@@ -377,7 +544,10 @@
   // 3) ESCORPIÃO DESVIO-PADRÃO — Ruínas da Dispersão
   // ------------------------------------------------------------------
   class Escorpiao extends Boss {
-    constructor(x, y, arena) { super(x, y, 32, 14, { hp: 64, name: 'Escorpião Desvio-Padrão', topic: 'd3', dmg: 5, arena }); this.cnt = 0; this.sigma = 8; this.sigT = 0; this.face = 1; this.hasP2 = true; }
+    constructor(x, y, arena) { super(x, y, 32, 14, { hp: 64, name: 'Escorpião Desvio-Padrão', topic: 'd3', dmg: 5, arena }); this.cnt = 0; this.sigma = 8; this.sigT = 0; this.face = 1; this.hasP2 = true; this.walkPh = 0; }
+    // o corpo grande recebe golpes; o contato continua na base original
+    hurtbox() { return { x: this.cx - 22, y: this.y + this.h - 26, w: 44, h: 26 }; }
+    contactBox() { return { x: this.x, y: this.y - this.h, w: this.w, h: this.h * 2 }; }
     vulnerable(kind) { if (this.st === 'burrow' || this.st === 'emerge') return 0; if (this.stun > 0) return 1; return kind === 'bigbeam' || kind === 'beam' ? 0.8 : 0.4; }
     next() { this.st = 'stalk'; this.stT = G.rf(1.5, 2.5); }
     onStun() { this.st = 'stunned'; }
@@ -387,7 +557,7 @@
       this.sigma = Math.round(6 + (1 - this.hp / this.maxHp) * 28);
       if (this.st === 'stalk') {
         const a = Math.atan2(p.cy - this.cy, p.cx - this.cx);
-        G.moveEnt(this, Math.cos(a) * 34 * dt, Math.sin(a) * 34 * dt, { ghostEnts: true }); this.clampArena(2);
+        G.moveEnt(this, Math.cos(a) * 34 * dt, Math.sin(a) * 34 * dt, { ghostEnts: true }); this.clampArena(2); this.walkPh += dt * 14;
         this.face = p.cx < this.cx ? -1 : 1;
         if (this.stT <= 0) {
           this.cnt++;
@@ -424,7 +594,7 @@
         if (this.stT > 0.25) this.aimA = Math.atan2(p.cy - this.cy, p.cx - this.cx);
         if (this.stT <= 0) { const a = this.aimA; this.vx = Math.cos(a) * (this.p2 ? 240 : 210); this.vy = Math.sin(a) * (this.p2 ? 240 : 210); this.st = 'dash'; this.stT = 1.2; G.sfx('roar'); }
       } else if (this.st === 'dash') {
-        const r = G.moveEnt(this, this.vx * dt, this.vy * dt, { ghostEnts: true });
+        const r = G.moveEnt(this, this.vx * dt, this.vy * dt, { ghostEnts: true }); this.walkPh += dt * 34;
         const a = this.arena;
         const hitWall = r.hitX || r.hitY || this.x <= a.x + 1 || this.x + this.w >= a.x + a.w - 1 || this.y <= a.y + 1 || this.y + this.h >= a.y + a.h - 1;
         this.clampArena(0);
@@ -436,49 +606,80 @@
       const A = G.bossArt, x = this.cx - cam.x, base = this.y + this.h - cam.y, f = this.face;
       if (this.st === 'burrow') {
         // só o monte de areia aparece
-        ctx.save(); ctx.fillStyle = '#5a4020'; ctx.beginPath(); ctx.ellipse(x, base - 3, 18, 7, 0, 0, Math.PI * 2); ctx.fill();
-        const g = ctx.createRadialGradient(x - 4, base - 8, 1, x, base - 4, 16); g.addColorStop(0, '#f0d8a0'); g.addColorStop(1, '#a8803a');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(x, base - 4 + Math.sin(this.t * 20) * 0.5, 15, 6, 0, Math.PI, 0); ctx.fill(); ctx.restore();
-        G.draw(ctx, G.bossArt.scSting, x - 5, base - 16 + Math.sin(this.t * 10) * 2, { rot: -0.6 });
+        // ondas de areia em volta, monte que tremula e o ferrão espiando com veneno aceso
+        ctx.save(); ctx.strokeStyle = '#f0dcb0'; ctx.lineWidth = 1;
+        for (let i = 0; i < 3; i++) { const r = (this.t * 1.6 + i / 3) % 1; ctx.globalAlpha = (1 - r) * 0.4; ctx.beginPath(); ctx.ellipse(x, base - 3, 22 * (0.8 + r), 8 * (0.8 + r), 0, 0, Math.PI * 2); ctx.stroke(); }
+        ctx.globalAlpha = 1; ctx.fillStyle = 'rgba(70,46,20,0.6)'; ctx.beginPath(); ctx.ellipse(x, base - 3, 24, 8.5, 0, 0, Math.PI * 2); ctx.fill();
+        const g = ctx.createRadialGradient(x - 6, base - 10, 1, x, base - 4, 22); g.addColorStop(0, '#fbe8c0'); g.addColorStop(0.6, '#d8b070'); g.addColorStop(1, '#9a7230');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(x, base - 4 + Math.sin(this.t * 20) * 0.6, 21, 8.5, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = '#8a6428'; for (let i = 0; i < 6; i++) { const a = Math.PI + (i + 0.5) / 6 * Math.PI, rr = 0.55 + (i % 3) * 0.12; ctx.fillRect(x + Math.cos(a) * 21 * rr, base - 4 + Math.sin(a) * 8.5 * rr, 1.5, 1); }
+        ctx.restore();
+        part(ctx, G.bossArt.scSting, x - 2, base - 12 + Math.sin(this.t * 10) * 2, 5, 7, -1.25, { glow: G.bossArt.scStingGlow, glowA: 0.9, glowC: '#ffd84a' });
+        G.light.add(x, base - 12, 22, '#ffd84a', 0.45);
         return;
       }
       if (this.st === 'aim' && this.aimA !== undefined) {
         ctx.save(); ctx.globalAlpha = 0.55 + 0.35 * Math.sin(this.t * 30); ctx.strokeStyle = '#ff3a3a'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.lineDashOffset = -this.t * 40;
         ctx.beginPath(); ctx.moveTo(x, base - 6); ctx.lineTo(x + Math.cos(this.aimA) * 300, base - 6 + Math.sin(this.aimA) * 300); ctx.stroke(); ctx.restore();
       }
-      G.shadow(ctx, x, base - 1, 46, 0.38);
-      const o = this.flashOn() ? { white: true } : undefined;
-      const cy = base - 9;
-      // pernas articuladas (4 pares)
-      ctx.save(); ctx.lineCap = 'round';
-      for (let i = 0; i < 4; i++) for (const sd of [-1, 1]) {
-        const k = Math.sin(this.t * (this.st === 'dash' ? 26 : 9) + i * 1.4 + (sd > 0 ? 1.6 : 0)) * 2;
-        const ax = x - f * (8 - i * 5), ay = cy + sd * 4;
-        const kx = ax - f * 2 + k, ky = cy + sd * 12;
-        const fx = kx - f * 3 + k * 0.5, fy = cy + sd * 15;
-        ctx.strokeStyle = '#2a1004'; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
-        ctx.strokeStyle = o ? '#ffffff' : '#b06a2a'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
+      G.shadow(ctx, x, base - 1, 66, 0.38);
+      const k = this.pose(), white = this.flashOn(), fade = this.dying ? G.clamp(1 - (this.dieT - 1.2) / 0.6, 0, 1) : 1, o = { white, alpha: fade };
+      const eyeC = this.enrage > 0 || this.p2T > 0 ? '#ff2a2a' : '#ff5a3a';
+      // tudo em coordenadas locais: origem no chão, virado para +x
+      ctx.save(); ctx.translate(x, base + k.sink); ctx.scale(f, 1);
+      const by = -11 + k.bob - k.rear * 5;
+      const legs = far => { for (let i = 0; i < 4; i++) {
+        const hx = -13 + i * 6.5, hy = by + (far ? -2 : 4);
+        const ph = this.walkPh + ((i + (far ? 1 : 0)) % 2) * Math.PI;
+        let fx = hx + (i - 1.5) * 4.5, fy = far ? -6 : 5;
+        if (k.gait) { fx += Math.cos(ph) * 3; fy -= Math.max(0, Math.sin(ph)) * 3; }
+        if (k.twitch) { fx += Math.sin(this.t * 29 + i * 3) * k.twitch; fy += Math.cos(this.t * 23 + i) * k.twitch * 0.6; }
+        if (k.curl) { fx = G.lerp(fx, hx + 2, k.curl); fy = G.lerp(fy, hy + 3, k.curl); }
+        leg(ctx, 'scLegA', 'scLegB', 8, 10, hx, hy, fx, fy, o);
+      } };
+      // pinça: braço em 2 segmentos e a pinça no punho (a de baixo é espelhada)
+      const claw = (far) => {
+        const s = far ? -1 : 1, sx = 22, sy = by + (far ? -3 : 5);
+        const a1 = G.lerp(s * 0.95, s * 0.18, k.reach) + (k.rear ? -k.rear * (far ? 0.7 : 1.6) : 0), a2 = G.lerp(-s * 0.4, s * 0.04, k.reach) + (k.rear ? -k.rear * 0.8 : 0);
+        const ex = sx + Math.cos(a1) * 10, ey = sy + Math.sin(a1) * 10, wx = ex + Math.cos(a2) * 8, wy = ey + Math.sin(a2) * 8;
+        seg(ctx, 'scArmA', sx, sy, ex, ey, o); seg(ctx, 'scArmB', ex, ey, wx, wy, o);
+        const img = A['scClaw' + (k.open ? 1 : 0)];
+        ctx.save(); ctx.translate(wx, wy); ctx.rotate(a2 + (far ? -0.1 : 0.1)); if (!far) ctx.scale(1, -1);
+        part(ctx, img, 0, 0, 2, 8.8, 0, o); ctx.restore();
+      };
+      legs(true); claw(true);
+      part(ctx, A.scBody, -3, by, 20, 9, k.tilt, Object.assign({ glow: A.scBodyGlow, glowA: k.sig, glowC: '#ffd84a' }, o));
+      part(ctx, A.scHead, 17, by + 1.5, 7, 7.5, k.tilt * 0.5, Object.assign({ glow: A.scHeadGlow, glowA: k.eyes, glowC: eyeC }, o));
+      legs(false); claw(false);
+      // cauda: corrente de gomos que se curva por cima do corpo até o ferrão
+      let tx = -20, ty = by - 4, th = k.t0;
+      const L = [8, 7.5, 7, 6.5, 6], S = ['scSegL', 'scSegL', 'scSegM', 'scSegM', 'scSegS'];
+      for (let i = 0; i < 5; i++) {
+        const img = A[S[i]]; part(ctx, img, tx, ty, G.lw(img) / 2, G.lh(img) / 2, th, o);
+        tx += Math.cos(th) * L[i]; ty += Math.sin(th) * L[i]; th += k.curl2;
       }
-      // braços das pinças
-      const snap = this.st === 'aim' || this.st === 'dash';
-      for (const sd of [-1, 1]) { ctx.strokeStyle = '#2a1004'; ctx.lineWidth = 3.4; ctx.beginPath(); ctx.moveTo(x + f * 10, cy + sd * 3); ctx.lineTo(x + f * 16, cy + sd * 9); ctx.lineTo(x + f * 21, cy + sd * 8); ctx.stroke(); ctx.strokeStyle = '#d07a2e'; ctx.lineWidth = 1.8; ctx.stroke(); }
+      part(ctx, A.scSting, tx, ty, 5, 7, th - 0.2, Object.assign({ glow: A.scStingGlow, glowA: k.venom, glowC: '#ffd84a' }, o));
+      const stingW = [x + tx * f, base + k.sink + ty];
       ctx.restore();
-      G.draw(ctx, A.scBody, x - 15, cy - 9, Object.assign({ flip: f < 0 }, o || {}));
-      const claw = A['scClaw' + (snap && Math.floor(this.t * 12) % 2 ? 0 : 1)];
-      G.draw(ctx, claw, x + (f > 0 ? 18 : -36), cy - 15, Object.assign({ flip: f < 0 }, o || {}));
-      G.draw(ctx, claw, x + (f > 0 ? 18 : -36), cy + 3, Object.assign({ flip: f < 0, flipY: true }, o || {}));
-      // cauda: segmentos que afinam, curvando por cima do corpo
-      let tx = x - f * 14, ty = cy - 2;
-      for (let i = 0; i < 6; i++) {
-        const th = 0.25 + i * 0.4 + Math.sin(this.t * 3) * 0.08;
-        tx += f * Math.sin(th) * (5.5 - i * 0.4); ty -= Math.cos(th) * (5.5 - i * 0.4);
-        const sc = 1 - i * 0.09;
-        ctx.save(); ctx.translate(tx, ty); ctx.scale(sc, sc); G.draw(ctx, A.scTail, -4.5, -4.5, o); ctx.restore();
-      }
-      G.draw(ctx, A.scSting, tx - 5 + f * 3, ty - 3, { flip: f < 0, rot: f > 0 ? 0.9 : -0.9 });
-      ctx.fillStyle = '#ff3030'; ctx.fillRect(x + f * 13 - 1, cy - 3, 1.5, 1.5); ctx.fillRect(x + f * 13 - 1, cy + 1.5, 1.5, 1.5);
-      if (this.sigT > 0) G.puzTag(ctx, x, base - 52, 'σ = ' + this.sigma + '°', '#ffe27a');
-      this.drawStunStars(ctx, x, cy - 20);
+      if (k.venom > 0.4 && fade > 0) G.light.add(stingW[0], stingW[1], 26, '#ffd84a', k.venom * 0.6);
+      if (k.eyes > 0.2) G.light.add(x + 22 * f, base + by, 24, eyeC, 0.35 * k.eyes);
+      if (this.sigT > 0) G.puzTag(ctx, x, base - 58, 'σ = ' + this.sigma + '°', '#ffe27a');
+      this.drawStunStars(ctx, x + 10 * f, base + by - 16);
+    }
+    pose() {
+      const s = this.st, t = this.t, k = { bob: 0, sink: 0, tilt: 0, rear: 0, reach: 0, open: 0, t0: -2.25 + Math.sin(t * 2.5) * 0.08, curl2: 0.5 + Math.sin(t * 2.5 + 1) * 0.04, gait: 0, twitch: 0, curl: 0, eyes: 0.6 + 0.2 * Math.sin(t * 4), venom: 0.35 + 0.15 * Math.sin(t * 5), sig: this.sigT > 0 ? 0.9 : 0.3 };
+      if (this.dying) { const d = Math.min(1, this.dieT * 1.3); k.curl = d; k.t0 = G.lerp(k.t0, -2.95, d); k.curl2 = G.lerp(0.5, 0.12, d); k.bob = d * 4; k.eyes = Math.max(0, 1 - this.dieT * 2); k.venom = 0; k.twitch = d < 1 ? 1.4 : 0; return k; }
+      if (s === 'intro') { const a = G.clamp(1 - this.stT / 1.2, 0, 1); k.curl = 1 - a; k.t0 = G.lerp(-2.95, -2.25, a); k.curl2 = G.lerp(0.15, 0.5, a); k.eyes = a; k.bob = (1 - a) * 3; return k; }
+      if (this.p2T > 0) { k.rear = 1; k.open = Math.floor(t * 14) % 2; k.t0 = -1.8 + Math.sin(t * 25) * 0.15; k.eyes = 1.2; k.venom = 1; k.sig = 1; return k; }
+      if (this.stun > 0 || s === 'stunned') { k.t0 = -2.9; k.curl2 = 0.15 + Math.sin(t * 6) * 0.05; k.bob = 3; k.tilt = 0.08; k.twitch = 1; k.eyes = 0.2 + (Math.floor(t * 8) % 2) * 0.2; k.venom = 0.1; return k; }
+      if (s === 'stalk') { k.gait = 1; k.bob = Math.abs(Math.sin(this.walkPh)) * -0.6; k.reach = 0.15; k.open = Math.sin(t * 3) > 0.7 ? 1 : 0; }
+      else if (s === 'spread') { const a = G.clamp(1 - this.stT / 0.7, 0, 1); k.t0 = G.lerp(-2.25, -1.85, a); k.curl2 = 0.55; k.venom = 0.4 + a * 0.8 + Math.sin(t * 30) * 0.1 * a; k.open = 1; k.reach = 0.3; k.bob = a; }
+      else if (s === 'rest') { k.t0 = -1.7; k.curl2 = 0.62; k.venom = 0.6; }
+      else if (s === 'aim') { const a = G.clamp(1 - this.stT / 0.7, 0, 1); k.reach = a; k.open = Math.floor(t * 12) % 2; k.bob = 2 * a; k.t0 = -2.55; k.curl2 = 0.48; k.eyes = 1.1; k.tilt = 0.06 * a; }
+      else if (s === 'dash') { k.gait = 1; k.reach = 1; k.open = 0; k.t0 = -2.75; k.curl2 = 0.3; k.bob = 2; k.eyes = 1.2; }
+      else if (s === 'emerge') { k.sink = G.clamp(this.stT / 0.3, 0, 1) * 10; k.open = 1; k.reach = 0.5; k.t0 = -1.9; }
+      if (this.enrage > 0) k.eyes = Math.max(k.eyes, 1.2);
+      return k;
     }
   }
 
@@ -539,17 +740,62 @@
         if (this.stT <= 0) this.next();
       }
     }
+    pose() {
+      const s = this.st, t = this.t, k = { hx: Math.sin(t * 1.3) * 3, hy: Math.sin(t * 2) * 1.5, hr: Math.sin(t * 1.3) * 0.05, bx: Math.sin(t * 0.9) * 5, jaw: 0, eyes: 0.8 + 0.2 * Math.sin(t * 5), pips: 0.15, wing: Math.sin(t * 2.4) * 0.12, sink: 0 };
+      if (this.dying) { const d = G.clamp((this.dieT - 0.3) / 1.3, 0, 1); k.sink = d * d; k.jaw = 0.6; k.eyes = Math.max(0, 1 - this.dieT); k.wing = 0.4 * d; k.hx += Math.sin(t * 40) * 1.5 * (1 - d); return k; }
+      if (s === 'intro') { const a = G.clamp(1 - this.stT / 1.2, 0, 1); k.sink = (1 - a) * (1 - a); k.eyes = a; k.wing = 0.5 * (1 - a) - 0.3 * a; return k; }
+      if (this.p2T > 0) { k.jaw = 1; k.hy = -4; k.wing = -0.35 + Math.sin(t * 30) * 0.05; k.eyes = 1.3; k.hx += Math.sin(t * 40); k.pips = 1; return k; }
+      if (s === 'roll') { k.pips = 0.5 + 0.5 * Math.abs(Math.sin(t * 12)); k.hr = Math.sin(t * 9) * 0.1; k.hy += Math.sin(t * 18); }
+      else if (s === 'show') { k.hy = -3; k.jaw = 0.35; k.wing = -0.25; k.pips = 1; k.eyes = 1.1; }
+      else if (s === 'atk') {
+        k.jaw = 1; k.wing = -0.2 + Math.sin(t * 6) * 0.06; k.eyes = 1.1;
+        if (this.atkKind() === 'SOPRO') { const sw = Math.sin((1 - this.stT / 2.2) * Math.PI * 2); k.hx = -sw * 7; k.hr = sw * 0.15; } // a cabeça acompanha o jato
+      } else if (s === 'tired') { k.jaw = 0.25; k.eyes = 0.35; k.wing = 0.35; k.hy = 2 + Math.sin(t * 1.5); k.hr = 0.06; }
+      if (this.stun > 0) k.eyes = 0.25 + (Math.floor(t * 8) % 2) * 0.2;
+      if (this.enrage > 0) k.eyes = Math.max(k.eyes, 1.2);
+      return k;
+    }
+    update(dt) {
+      super.update(dt);
+      const k = this.pose(), hx = this.cx + k.hx, hY = this.y + this.low * 30 - 6 + k.hy;
+      if (k.jaw > 0.6 && Math.random() < 0.6) G.fx.spawn({ x: hx + G.rf(-6, 6), y: hY + 18, vy: 25, vx: G.rf(-12, 12), life: 0.4, color: G.pick(['#ffd040', '#ff7a1a']), size: 1 });
+      if (this.st === 'tired' && Math.random() < dt * 3) for (const s of [-1, 1]) G.fx.spawn({ x: hx + s * 3, y: hY + 10, vy: -14, vx: s * 4, kind: 'puff', size: 2, color: '#8a7a7a', life: 0.8, drag: 1 });
+      if (!this.dying && Math.random() < dt * 2.5) G.fx.ring(this.cx + k.bx + G.rf(-4, 4), this.y + this.low * 30 + 38, 16, '#ffb050', 0.6, 1); // ondas na lava
+    }
     draw(ctx, cam) {
       const A = G.bossArt, x = this.cx - cam.x, hy = this.y - cam.y + this.low * 30;
-      const o = this.flashOn() ? { white: true } : undefined;
-      for (let i = 4; i >= 0; i--) { const s = 1 - i * 0.12; ctx.save(); ctx.translate(x + Math.sin(this.t * 2 + i) * 3, hy + 26 - i * 7 + (1 - this.low) * 4); ctx.scale(s, s); G.draw(ctx, A.dragonNeck, -10, -6, o); ctx.restore(); }
-      if (this.st === 'show' || this.st === 'atk') { ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, x, hy + 4, 14 + Math.sin(this.t * 20) * 2, '#ff7a1a', 0.6); ctx.restore(); }
-      const open = this.st === 'atk' ? 1 : 0;
-      G.draw(ctx, A['dragonHead' + open], x - 24, hy - 26, o);
-      const ec = this.enrage > 0 ? '#ff3a3a' : '#ffe24a';
-      for (const sx of [-9, 9]) { ctx.fillStyle = '#2a0606'; ctx.beginPath(); ctx.ellipse(x + sx, hy - 12, 3.2, 2.4, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = ec; ctx.beginPath(); ctx.ellipse(x + sx, hy - 12, 2.2, 1.6, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#2a0606'; ctx.fillRect(x + sx - 0.4, hy - 13.5, 0.8, 3); }
-      G.light.add(x, hy - 4, 70, '#ff7a3a', 0.8, 0.25);
-      if (open && Math.random() < 0.5) G.fx.spawn({ x: x + G.rf(-6, 6) + cam.x, y: hy + 6 + cam.y, vy: 20, vx: G.rf(-10, 10), life: 0.4, color: G.pick(['#ffd040', '#ff7a1a']), size: 1 });
+      const k = this.pose(), o = { white: this.flashOn() };
+      const ec = this.enrage > 0 || this.p2T > 0 ? '#ff3a3a' : '#ffe24a';
+      // ao surgir e ao morrer, o corpo passa pela superfície da lava (recortado)
+      const lavaY = hy + 40, oy = k.sink * 64;
+      ctx.save();
+      if (k.sink > 0) { ctx.beginPath(); ctx.rect(-50, -50, G.W + 100, lavaY + 50); ctx.clip(); }
+      for (const s of [-1, 1]) { ctx.save(); ctx.translate(x + s * 9, hy + 22 + oy); ctx.scale(s, 1); part(ctx, A.dragonWing, 0, 0, 2, 31, k.wing, o); ctx.restore(); }
+      // pescoço: 7 gomos da lava até a cabeça; as faces do dado (1 a 6) sobem pelo pescoço
+      const hx = x + k.hx, hY = hy - 6 + k.hy + oy;
+      for (let i = 0; i < 7; i++) {
+        const u = i / 6, px = G.lerp(x + k.bx, hx, u) + Math.sin(u * Math.PI * 1.6 + this.t * 2) * 4 * (1 - u * 0.6), py = G.lerp(hy + 36 + oy, hY + 12, u);
+        const nm = 'dragonNeck' + (i < 4 ? 'L' : 'S') + (i % 6 + 1), img = A[nm];
+        part(ctx, img, px, py, G.lw(img) / 2, G.lh(img) / 2, Math.sin(u * 3 + this.t * 2) * 0.08, Object.assign({ glow: A[nm + 'Glow'], glowA: k.pips, glowC: '#ffe27a' }, o));
+      }
+      // boca: brasa atrás da mandíbula, que desce ao abrir
+      if (k.jaw > 0.1) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, hx, hY + 12 + k.jaw * 3, 10 + k.jaw * 6 + Math.sin(this.t * 20) * 2, '#ff7a1a', 0.5 + k.jaw * 0.4); ctx.restore(); }
+      part(ctx, A.dragonJaw, hx, hY + 11 + k.jaw * 7, 16, 3, k.hr, o);
+      part(ctx, A.dragonHead, hx, hY, 22, 17, k.hr, Object.assign({ glow: A.dragonHeadGlow, glowA: k.eyes, glowC: ec }, o));
+      // olhos de réptil: amarelos com pupila em fenda (fecham quando cansado)
+      if (k.eyes > 0.05) {
+        ctx.save(); ctx.translate(hx, hY); ctx.rotate(k.hr);
+        const op = this.st === 'tired' ? 0.45 : 1;
+        for (const s of [-1, 1]) {
+          ctx.fillStyle = '#1a0404'; ctx.beginPath(); ctx.ellipse(s * 7.5, 0, 3.4, 2.4 * op, s * 0.25, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = o.white ? '#ffffff' : ec; ctx.beginPath(); ctx.ellipse(s * 7.5, 0, 2.5, 1.7 * op, s * 0.25, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#1a0404'; ctx.fillRect(s * 7.5 - 0.4, -1.5 * op, 0.8, 3 * op);
+          ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, s * 7.5, 0, 5, ec, 0.5 * Math.min(1, k.eyes)); ctx.globalCompositeOperation = 'source-over';
+        }
+        ctx.restore();
+      }
+      ctx.restore();
+      if (k.sink < 0.9) { G.light.add(hx, hY, 70, '#ff7a3a', 0.8, 0.25); if (k.eyes > 0.3) G.light.add(hx, hY, 30, ec, 0.4 * Math.min(1, k.eyes)); }
       // painel do dado
       const a = this.arena, px = a.x + 6 - cam.x, py = a.y + 6 - cam.y;
       const pw = this.p2 ? 168 : 128, ph = this.p2 ? 52 : 46;
@@ -591,7 +837,10 @@
   // 5) YETI GAUSSIANO — Torre das Distribuições
   // ------------------------------------------------------------------
   class Yeti extends Boss {
-    constructor(x, y, arena) { super(x, y, 30, 16, { hp: 96, name: 'Yeti Gaussiano', topic: 'd5', dmg: 6, arena }); this.cnt = 0; this.piles = {}; this.z = 0; this.face = 1; this.hasP2 = true; }
+    constructor(x, y, arena) { super(x, y, 30, 16, { hp: 96, name: 'Yeti Gaussiano', topic: 'd5', dmg: 6, arena }); this.cnt = 0; this.piles = {}; this.z = 0; this.face = 1; this.hasP2 = true; this.walkPh = 0; }
+    // corpo grande recebe golpes; o contato continua na base original
+    hurtbox() { return { x: this.cx - 20, y: this.y + this.h - 52 - (this.z || 0), w: 40, h: 52 }; }
+    contactBox() { return { x: this.x, y: this.y - this.h, w: this.w, h: this.h * 2 }; }
     vulnerable(kind) { if (this.z > 8) return 0; return this.stun > 0 ? 1 : 0.4; }
     next() { this.st = 'walk'; this.stT = G.rf(1.2, 2); }
     onStun() { this.st = 'stunned'; this.z = 0; }
@@ -601,7 +850,7 @@
       this.face = p.cx < this.cx ? -1 : 1;
       if (this.st === 'walk') {
         const ang = Math.atan2(p.cy - this.cy, p.cx - this.cx);
-        G.moveEnt(this, Math.cos(ang) * 30 * dt, Math.sin(ang) * 30 * dt, { ghostEnts: true }); this.clampArena(2);
+        G.moveEnt(this, Math.cos(ang) * 30 * dt, Math.sin(ang) * 30 * dt, { ghostEnts: true }); this.clampArena(2); this.walkPh = (this.walkPh || 0) + dt * 8;
         if (this.stT <= 0) { this.cnt++; this.st = ['storm', 'leap', 'charge'][this.cnt % 3]; this.stT = this.st === 'storm' ? 2.2 : 0.6; this.vol = 0; this.tgt = { x: p.cx, y: p.cy }; if (this.st === 'storm') G.sfx('roar'); }
       } else if (this.st === 'storm') {
         this.vol -= dt;
@@ -658,20 +907,45 @@
         ctx.save(); ctx.globalAlpha = 0.55 + 0.35 * Math.sin(this.t * 30); ctx.strokeStyle = '#7ad8ff'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.lineDashOffset = -this.t * 40;
         ctx.beginPath(); ctx.moveTo(x, base - 6); ctx.lineTo(x + Math.cos(this.chA) * 300, base - 6 + Math.sin(this.chA) * 300); ctx.stroke(); ctx.restore();
       }
-      G.shadow(ctx, x, base - 1, 40 - z / 6, 0.38);
-      const o = this.flashOn() ? { white: true } : undefined;
-      const by = base - z, arm = this.st === 'storm' ? Math.sin(this.t * 14) * 6 : 0, bob = this.st === 'walk' ? Math.sin(this.t * 6) : 0;
-      ctx.save(); ctx.fillStyle = '#9aa8c8'; G.rrPath(ctx, x - 14, by - 6, 11, 6, 3); ctx.fill(); G.rrPath(ctx, x + 3, by - 6, 11, 6, 3); ctx.fill(); ctx.restore();
-      G.draw(ctx, A.yetiArm, x - 31, by - 46 + arm + bob, Object.assign({ flip: true }, o || {}));
-      G.draw(ctx, A.yetiArm, x + 17, by - 46 - arm + bob, o);
-      G.draw(ctx, A.yetiBody, x - 20, by - 40 + bob, o);
-      G.draw(ctx, A.yetiHead, x - 13, by - 58 + bob, o);
-      const ec = this.enrage > 0 ? '#ff3a3a' : '#fff4a0';
-      ctx.fillStyle = '#1b1428'; ctx.fillRect(x - 6, by - 47 + bob, 4, 3); ctx.fillRect(x + 2, by - 47 + bob, 4, 3);
-      ctx.fillStyle = ec; ctx.fillRect(x - 5, by - 46.5 + bob, 2, 2); ctx.fillRect(x + 3, by - 46.5 + bob, 2, 2);
-      ctx.fillStyle = '#3a4a6a'; ctx.fillRect(x - 7, by - 49 + bob, 5, 1); ctx.fillRect(x + 2, by - 49 + bob, 5, 1);
-      if (this.enrage > 0) G.light.add(x, by - 45, 20, '#ff3a3a', 0.5);
-      this.drawStunStars(ctx, x, by - 62);
+      G.shadow(ctx, x, base - 1, 58 - z / 5, 0.38);
+      const k = this.pose(), white = this.flashOn(), fade = this.dying ? G.clamp(1 - (this.dieT - 1.2) / 0.6, 0, 1) : 1, o = { white, alpha: fade };
+      const f = this.face, ec = this.enrage > 0 || this.p2T > 0 ? '#ff3a3a' : '#fff4a0';
+      const bx = x + (k.jit ? Math.sin(this.t * 61) * k.jit : 0), by = base - z + k.bob, hip = [bx, by - 2 + k.crouch];
+      for (const s of [-1, 1]) part(ctx, A.yetiFoot, bx + s * 12, by + 1 - (s < 0 ? k.liftL : k.liftR), 8, 9, 0, o);
+      part(ctx, A.yetiBody, hip[0], hip[1], 26, 45, k.lean, Object.assign({ glow: A.yetiBodyGlow, glowA: k.glow, glowC: '#7ad8ff' }, o));
+      // cabeça no topo do sino, virada para o herói
+      const nk = rot(0, -38, k.lean), hx = hip[0] + nk[0] + f * 1.5 + k.hx, hy = hip[1] + nk[1] + k.hy, hr = k.lean + k.hr;
+      part(ctx, A['yetiHead' + (k.roar ? 1 : 0)], hx, hy, 15, 22, hr, o);
+      if (k.eyes > 0.05) {
+        ctx.save(); ctx.translate(hx, hy); ctx.rotate(hr); ctx.globalAlpha *= fade;
+        for (const s of [-1, 1]) { const ex = s * 4.5 + f * 0.6 - 1, ey = -6.5; ctx.fillStyle = '#10142a'; ctx.fillRect(ex - 0.5, ey - 0.5, 3, 2.5); ctx.fillStyle = white ? '#ffffff' : ec; ctx.fillRect(ex, ey, 2, this.stun > 0 ? 0.5 : 1.5); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, ex + 1, ey + 0.7, 4, ec, 0.6 * Math.min(1, k.eyes)); ctx.globalCompositeOperation = 'source-over'; }
+        ctx.restore();
+      }
+      // braços: ombro e antebraço (o direito espelhado: "para fora" é o ângulo negativo)
+      for (const s of [-1, 1]) {
+        const a1 = s < 0 ? k.aL : -k.aR, a2 = s < 0 ? k.bL : -k.bR, sh = rot(s * 16, -24, k.lean), sx = hip[0] + sh[0], sy = hip[1] + sh[1];
+        const ex = sx - Math.sin(k.lean + a1) * 13, ey = sy + Math.cos(k.lean + a1) * 13;
+        part(ctx, A.yetiFore, ex, ey, 9, 3, k.lean + a1 + a2, o);
+        part(ctx, A.yetiArm, sx, sy, 8, 5, k.lean + a1, o);
+      }
+      if (this.enrage > 0) G.light.add(hx, hy - 6, 22, '#ff3a3a', 0.5);
+      this.drawStunStars(ctx, hx, hy - 24);
+    }
+    pose() {
+      const s = this.st, t = this.t, k = { bob: 0, crouch: 0, lean: 0, jit: 0, hx: 0, hy: 0, hr: 0, roar: 0, aL: 0.18, aR: 0.18, bL: -0.25, bR: -0.25, liftL: 0, liftR: 0, glow: 0.3 + 0.15 * Math.sin(t * 3), eyes: 1 };
+      if (this.dying) { const d = Math.min(1, this.dieT * 1.2); k.crouch = d * 9; k.lean = d * 0.22; k.roar = this.dieT < 0.6 ? 1 : 0; k.eyes = Math.max(0, 1 - this.dieT * 1.5); k.glow = 0; k.aL = k.aR = 0.6 * (1 - d); k.jit = d < 1 ? 1.2 : 0; return k; }
+      if (s === 'intro') { const a = G.clamp(1 - this.stT / 1.2, 0, 1); k.crouch = (1 - a) * 8; k.eyes = a; k.roar = a > 0.7 ? 1 : 0; k.aL = k.aR = 0.18 + (a > 0.7 ? 1.2 : 0); return k; }
+      if (this.p2T > 0) { k.roar = 1; k.aL = k.aR = 1.9; k.bL = k.bR = -0.6; k.jit = 1; k.glow = 1; k.hy = -2; return k; }
+      if (this.stun > 0 || s === 'stunned') { k.hr = Math.sin(t * 3) * 0.16; k.hx = Math.sin(t * 3) * 1.5; k.aL = k.aR = 0.04; k.bL = k.bR = 0.1; k.crouch = 3; k.eyes = 0.3; return k; }
+      if (s === 'walk') { const w = Math.sin(this.walkPh); k.liftL = Math.max(0, w) * 4; k.liftR = Math.max(0, -w) * 4; k.bob = -Math.abs(w) * 1.5; k.lean = w * 0.05; k.aL = 0.18 + w * 0.25; k.aR = 0.18 - w * 0.25; }
+      else if (s === 'storm') { const v = Math.sin(t * 14); k.aL = 2.45 + v * 0.35; k.aR = 2.45 - v * 0.35; k.bL = k.bR = -0.35; k.roar = 1; k.hy = -1; k.bob = Math.abs(v) * 1.5; k.glow = 0.85; }
+      else if (s === 'leap') { const L = this.leap, p = L ? L.t : 0; if (p < 0.12) { k.crouch = 6; k.aL = k.aR = -0.3; } else { k.crouch = -2; k.aL = k.aR = 1.7; k.bL = k.bR = -0.9; k.liftL = k.liftR = 3; k.roar = 1; } }
+      else if (s === 'charge') {
+        if (!this.ch) { k.crouch = 5; k.aL = k.aR = 0.65; k.bL = k.bR = -1.3; k.eyes = 1.3; k.roar = 1; k.jit = 0.4; }
+        else { const r = Math.sin(t * 20); k.bob = -Math.abs(r) * 2; k.liftL = Math.max(0, r) * 4; k.liftR = Math.max(0, -r) * 4; k.aL = k.aR = 1.0; k.bL = k.bR = -0.6; k.roar = 1; k.lean = r * 0.06; }
+      }
+      if (this.enrage > 0) k.eyes = Math.max(k.eyes, 1.2);
+      return k;
     }
   }
 
@@ -760,23 +1034,65 @@
       } else if (this.st === 'stunned') { }
     }
     draw(ctx, cam) {
-      const x = this.cx - cam.x, base = this.y + this.h - cam.y;
+      const x = this.cx - cam.x, base = this.y + this.h - cam.y, p = G.player, s = this.st;
       G.shadow(ctx, x, base - 1, 18, 0.4);
-      drawVies(ctx, x, base, this.t, this.flashOn(), this.phase2, this.st === 'tele' ? 0.4 : 1);
+      // pose dos braços conforme o feitiço; ao teleportar e ao levar golpe, a imagem "distorce"
+      const ps = { arms: s === 'homing' ? 'point' : s === 'ring' ? 'spread' : s === 'bias' || s === 'summon' ? 'raise' : s === 'clones' || s === 'cast' ? 'cast' : this.stun > 0 || s === 'stunned' ? 'slump' : 'idle' };
+      if (p) ps.aim = Math.atan2(p.cy - (this.cy - 20), p.cx - this.cx);
+      ps.glitch = s === 'tele' ? 1 : this.hurtT > 0 ? 0.5 : this.dying ? Math.min(1, this.dieT) : 0;
+      if (this.p2T > 0) { ps.arms = 'spread'; ps.glitch = 0.6; }
+      drawVies(ctx, x, base, this.t, this.flashOn(), this.phase2, s === 'tele' ? 0.4 : 1, ps);
       this.drawStunStars(ctx, x, base - 50);
     }
   }
-  function drawVies(ctx, x, base, t, fl, big, alpha) {
-    const A = G.bossArt;
+  // Viés: manto, mangas articuladas, cajado e efeito de distorção (fatias deslocadas com franjas de cor)
+  function drawVies(ctx, x, base, t, fl, big, alpha, ps = {}) {
+    const A = G.bossArt, s = big ? 1.3 : 1;
     const pa = ctx.globalAlpha; ctx.globalAlpha = pa * alpha;
-    const fy = Math.sin(t * 3) * 2;
-    const spr = A['vies' + (big ? 1 : 0)];
+    const fy = Math.sin(t * 3) * 2, arms = ps.arms || 'idle', slump = arms === 'slump';
+    const body = A['vies' + (big ? 1 : 0) + '_' + (Math.floor(t * 8) % 4)] || A['vies' + (big ? 1 : 0)];
+    if (!body) { ctx.globalAlpha = pa; return; }
+    const bw = G.lw(body), bh = G.lh(body), bx = x - bw / 2, by = base - bh - 4 + fy + (slump ? 2 : 0);
     if (big) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, x, base - 26 + fy, 34, '#c050ff', 0.35 + 0.15 * Math.sin(t * 6)); ctx.restore(); }
     if (alpha >= 1) G.light.add(x, base - 26, big ? 70 : 50, '#c070ff', 0.7);
-    G.draw(ctx, spr, x - G.lw(spr) / 2, base - G.lh(spr) - 4 + fy, fl ? { white: true } : undefined);
-    const st = A.viesStaff, sx = x + (big ? 14 : 11);
-    G.draw(ctx, st, sx - 5, base - G.lh(st) - 6 + fy + Math.sin(t * 2) * 1.5);
-    ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, sx, base - G.lh(st) + 0 + fy, 8, '#ffe27a', 0.5); ctx.restore();
+    // fiapos de sombra subindo do manto
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 5; i++) { const k = (t * 0.5 + i / 5) % 1; G.glow(ctx, x + Math.sin(i * 2.3 + t) * 10 * s, base - 4 - k * 30 * s + fy, 3 * (1 - k) + 1, '#9a3ad0', 0.4 * (1 - k)); }
+    ctx.restore();
+    const o = fl ? { white: true } : {};
+    const gl = ps.glitch || 0;
+    if (gl > 0) {
+      // distorção: o corpo em fatias deslocadas, com fantasmas vermelho e ciano
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha *= 0.45 * gl;
+      ctx.drawImage(G.tint(body, '#ff2a5a'), bx - 2.5 * gl, by, bw, bh); ctx.drawImage(G.tint(body, '#2ad8ff'), bx + 2.5 * gl, by, bw, bh);
+      ctx.restore();
+      const n = 7, src = fl ? G.white(body) : body;
+      for (let i = 0; i < n; i++) { const sy = i / n, off = Math.sin(t * 47 + i * 3.1) * 4 * gl * (i % 2 ? 1 : -0.6); ctx.drawImage(src, 0, sy * src.height, src.width, src.height / n + 1, bx + off, by + sy * bh, bw, bh / n + 0.5); }
+    } else G.draw(ctx, body, bx, by, o);
+    // brilho dos olhos e da rachadura da máscara (forte na forma verdadeira)
+    if (A['vies' + (big ? 1 : 0) + 'Glow']) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha *= big ? 0.8 + 0.2 * Math.sin(t * 8) : 0.45; ctx.drawImage(G.tint(A['vies' + (big ? 1 : 0) + 'Glow'], '#ff3a6a'), bx, by, bw, bh); ctx.restore(); }
+    // mangas: ângulo 0 = pendurada; "para fora" é positivo na esquerda e negativo na direita
+    const shL = [x - 8.5 * s, by + 22 * s], shR = [x + 8.5 * s, by + 22 * s];
+    let aL = 0.3 + Math.sin(t * 2) * 0.06, aR = -0.12;
+    if (arms === 'cast') { aL = 1.9 + Math.sin(t * 10) * 0.08; aR = -1.9 - Math.sin(t * 10) * 0.08; }
+    else if (arms === 'spread') { aL = 1.55; aR = -1.55; }
+    else if (arms === 'raise') { aL = 2.5; aR = -2.85; }
+    else if (arms === 'slump') { aL = 0.05; aR = -0.05; }
+    else if (arms === 'point' && ps.aim !== undefined) aL = Math.atan2(-Math.cos(ps.aim), Math.sin(ps.aim));
+    const sl = A['viesSleeve' + (big ? 1 : 0)], hand = (sh, a) => [sh[0] - Math.sin(a) * 15 * s, sh[1] + Math.cos(a) * 15 * s];
+    const hR = hand(shR, aR), hL = hand(shL, aL);
+    // cajado preso à mão direita (sobe junto no feitiço)
+    const st = A.viesStaff, sa = arms === 'raise' ? -0.15 : arms === 'slump' ? 0.35 : Math.sin(t * 2) * 0.05;
+    part(ctx, st, hR[0], hR[1], 6, 26, sa, Object.assign({ glow: A.viesStaffGlow, glowA: 0.6 + 0.4 * Math.sin(t * 5), glowC: '#ffe27a' }, o));
+    if (sl) { part(ctx, sl, shL[0], shL[1], 5 * s, 1 * s, aL, o); part(ctx, sl, shR[0], shR[1], 5 * s, 1 * s, aR, o); }
+    const tip = rot(0, -26, sa); ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, hR[0] + tip[0], hR[1] + tip[1] + 3, 8, '#ffe27a', 0.5); ctx.restore();
+    // energia nas mãos durante os feitiços
+    if (arms === 'cast' || arms === 'point' || arms === 'spread') {
+      const pts = arms === 'point' ? [hL] : arms === 'spread' ? [hL, hR] : [[(hL[0] + hR[0]) / 2, (hL[1] + hR[1]) / 2 - 4]];
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      for (const [hx, hy] of pts) { G.glow(ctx, hx, hy, 9 + Math.sin(t * 20) * 2, '#c050ff', 0.8); G.glow(ctx, hx, hy, 4, '#ffffff', 0.7); }
+      ctx.restore();
+    }
     ctx.globalAlpha = pa;
   }
   G.drawVies = drawVies;

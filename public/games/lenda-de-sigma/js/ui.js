@@ -177,6 +177,8 @@
       this.page = 0; this.shown = 0; this.t = 0; this.speed = o.speed || 70;
       this.keep = o.keep; // mantém visível (usado com escolhas)
       this.y = o.top ? 6 : 148;
+      // a caixa só "surge" se não houver outra fala logo antes (conversas seguidas não piscam)
+      this.pop = G.time - (UI._lastDlg || -9) < 0.25 ? 1 : 0;
     }
     pageLen() { return this.pages[this.page].reduce((s, l) => s + G.visLen(l), 0); }
     update(dt) {
@@ -189,10 +191,14 @@
         if (I.pressed('confirm') || I.pressed('cancel')) this.shown = len;
       } else if (I.pressed('confirm') || I.pressed('cancel')) {
         if (this.page < this.pages.length - 1) { this.page++; this.shown = 0; G.sfx('select'); }
-        else { this.done = true; this.res(); }
+        else { this.done = true; UI._lastDlg = G.time; this.res(); }
       }
     }
-    draw(ctx) { drawDialogBox(ctx, this); }
+    draw(ctx) {
+      const k = this.pop ? 1 : Math.min(1, this.t / 0.12);
+      if (k >= 1) { drawDialogBox(ctx, this); return; }
+      ctx.save(); ctx.globalAlpha *= k; ctx.translate(0, (1 - k) * 8); drawDialogBox(ctx, this); ctx.restore();
+    }
   }
   function drawDialogBox(ctx, d, full) {
     const x = 8, y = d.y, w = 368, h = 62;
@@ -200,8 +206,15 @@
     let tx = x + 10;
     if (d.portrait) {
       G.panel(ctx, x + 5, y + 6, 40, 40, { r: 2, bgTop: '#3a3470', bg: '#1a1640', corners: false, thin: true });
-      const spr = G.spr[String(d.portrait).replace(/_down0$/, '_portrait')] || G.spr[d.portrait];
-      if (spr) G.drawFit(ctx, spr, x + 9, y + 10, 32, 32);
+      // retrato falante: abre a boca enquanto o texto corre e pisca de vez em quando
+      const base = String(d.portrait).replace(/_down0$/, '_portrait'), typing = !full && d.shown < d.pageLen();
+      if (G.portraitVariants && !G.spr[base + 'Talk']) G.portraitVariants(base.replace(/_portrait$/, ''));
+      let key = base;
+      if (typing && Math.floor(d.shown / 2.5) % 2 === 0 && G.spr[base + 'Talk']) key = base + 'Talk';
+      else if (!typing && d.t > 0.5 && (d.t % 3.3) < 0.13 && G.spr[base + 'Blink']) key = base + 'Blink';
+      const spr = G.spr[key] || G.spr[base] || G.spr[d.portrait];
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, x + 25, y + 26, 18, '#7a6ad8', typing ? 0.35 : 0.2); ctx.restore();
+      if (spr) G.drawFit(ctx, spr, x + 9, y + 10 + (typing ? Math.round(Math.sin(d.t * 14)) * 0.5 : 0), 32, 32);
       tx = x + 52;
     }
     if (d.name) {
@@ -398,10 +411,14 @@
       if (I.pressed('left')) { this.tab = (this.tab + TABS.length - 1) % TABS.length; this.i = 0; G.sfx('select'); }
       if (I.pressed('right')) { this.tab = (this.tab + 1) % TABS.length; this.i = 0; G.sfx('select'); }
       const P = G.P;
+      if (this.healT > 0) this.healT -= dt;
       if (this.tab === 0) {
         if (I.pressed('confirm') && P.potions > 0) {
-          if (P.hp < P.maxHp) { P.potions--; G.healPlayer(16); G.sfx('heal'); G.ui.toast('Você bebeu uma poção! +4 corações'); }
-          else G.sfx('wrong');
+          if (P.hp < P.maxHp) {
+            const antes = P.hp; P.potions--; G.healPlayer(16); G.sfx('heal');
+            this.healT = 1; this.healed = P.hp - antes; // brilho e "+vida" no próprio menu
+            G.ui.toast('Você bebeu uma poção! +' + this.healed + ' de vida', '#7aff8a');
+          } else { G.sfx('wrong'); G.ui.toast('Sua vida já está cheia: guarde a poção para depois.'); }
         }
       } else if (this.tab === 2) {
         if (G.questTabUpdate) G.questTabUpdate(this, I);
@@ -440,7 +457,13 @@
       ];
     }
     draw(ctx) {
-      ctx.fillStyle = 'rgba(5,4,15,0.82)'; ctx.fillRect(0, 0, W, H);
+      // entra com o fundo escurecendo e o painel subindo um pouco
+      const k = Math.min(1, this.t / 0.14), e = 1 - (1 - k) * (1 - k);
+      ctx.fillStyle = 'rgba(5,4,15,' + (0.82 * e) + ')'; ctx.fillRect(0, 0, W, H);
+      if (k < 1) { ctx.save(); ctx.globalAlpha *= e; ctx.translate(0, (1 - e) * 10); this.drawPanel(ctx); ctx.restore(); return; }
+      this.drawPanel(ctx);
+    }
+    drawPanel(ctx) {
       const x = 4, y = 4, w = 376, h = 208;
       G.panel(ctx, x, y, w, h);
       // abas
@@ -466,7 +489,14 @@
       const need = G.xpNeeded(P.level);
       G.rect(ctx, x + 60, y + 25, 80, 4, '#2a2a4a'); G.rect(ctx, x + 60, y + 25, Math.round(80 * Math.min(1, P.xp / need)), 4, '#7ae4ff');
       G.text('XP ' + P.xp + '/' + need, x + 146, y + 24, '#9a98b0');
-      G.text('Vida ' + P.hp + '/' + P.maxHp, x + 60, y + 34, '#ff8a9a');
+      const heal = this.healT > 0 ? this.healT : 0;
+      G.text('Vida ' + P.hp + '/' + P.maxHp, x + 60, y + 34, heal > 0 && Math.floor(heal * 12) % 2 ? '#7aff8a' : '#ff8a9a');
+      if (heal > 0) {
+        // poção: brilho verde no retrato e "+vida" subindo
+        ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, x + 26, y + 26, 30, '#5aff8a', heal * 0.8); ctx.restore();
+        for (let i = 0; i < 5; i++) { const a = (1 - heal) * 22, px = x + 10 + i * 8, py = y + 44 - a - (i % 2) * 6; ctx.globalAlpha = heal; G.draw(ctx, 'sparkle', px, py); }
+        ctx.globalAlpha = heal; G.text('+' + this.healed, x + 120 + (1 - heal) * 4, y + 34 - (1 - heal) * 8, '#7aff8a', { outline: '#0a2a10' }); ctx.globalAlpha = 1;
+      }
       const swords = ['Espada de Madeira', 'Espada de Ferro', 'Espada de Prata', 'Espada Gaussiana'];
       const armors = ['Túnica', 'Couraça de Couro', 'Cota de Malha'];
       G.text('ATQ ' + G.atk() + '   DEF ' + G.def() + '   SAB ' + P.sab, x + 60, y + 44, '#ffffff');
@@ -490,7 +520,7 @@
       });
       G.text('Fragmentos de', cx, y + 56, '#c8c8e0'); G.text('coração: ' + (P.heartPieces % 4) + '/4', cx, y + 66, '#ff8a9a');
       G.draw(ctx, 'iconPotion', cx, y + 82); G.text('Poções: ' + P.potions, cx + 12, y + 82, '#ffffff');
-      if (P.potions > 0) G.text('Z: beber poção', cx, y + 94, P.hp < P.maxHp ? '#7aff8a' : '#5a5670');
+      if (P.potions > 0) G.text(P.hp < P.maxHp ? 'Z: beber poção' : 'Vida cheia', cx, y + 94, P.hp < P.maxHp ? '#7aff8a' : '#5a5670');
       G.draw(ctx, 'iconCoin', cx, y + 108); G.text('Moedas: ' + P.coins, cx + 12, y + 108, '#ffd84a');
       G.text('Tempo: ' + G.fmtTime(P.playTime), cx, y + 122, '#9a98b0');
       if (G.quest) { G.draw(ctx, 'lens', cx - 1, y + 133); G.text('Lentes: ' + G.quest.lenses() + '/5', cx + 12, y + 135, '#7ae4ff'); }
@@ -647,6 +677,8 @@
     card(o) { this.cards = this.cards || []; this.cards.push(Object.assign({ t: 0, life: 8 }, o)); G.sfx('menu'); },
     toast(text, color = '#ffffff') { this.toasts.push({ text: G.genero(text), color, t: 3 }); if (this.toasts.length > 3) this.toasts.shift(); },
     regionBanner(name, sub) { this.region = { name, sub, t: 0 }; },
+    // entrada de chefe: faixas de cinema, nome grande e subtítulo
+    bossCard(name, sub, color = '#ffd84a') { this.bossIntro = { name, sub, color, t: 0 }; },
     fade(to, dur = 0.4) {
       return new Promise(res => { this.fadeTarget = to; this.fadeSpeed = Math.abs(to - this.fadeA) / Math.max(0.01, dur); this.fadeRes = res; if (this.fadeA === to) { this.fadeRes = null; res(); } });
     },
@@ -657,12 +689,31 @@
       for (let i = this.toasts.length - 1; i >= 0; i--) { this.toasts[i].t -= dt; if (this.toasts[i].t <= 0) this.toasts.splice(i, 1); }
       if (this.cards && this.cards.length && !this.blocking()) { const c = this.cards[0]; c.t += dt; if (c.t > c.life) this.cards.shift(); }
       if (this.region) { this.region.t += dt; if (this.region.t > 3.5) this.region = null; }
+      if (this.bossIntro) { this.bossIntro.t += dt; if (this.bossIntro.t > 2.9) this.bossIntro = null; }
       if (this.fadeA !== this.fadeTarget) {
         this.fadeA = G.approach(this.fadeA, this.fadeTarget, this.fadeSpeed * dt);
         if (this.fadeA === this.fadeTarget && this.fadeRes) { const r = this.fadeRes; this.fadeRes = null; r(); }
       }
     },
     draw(ctx) {
+      if (this.bossIntro) {
+        const b = this.bossIntro, t = b.t, out = t > 2.3 ? Math.max(0, 1 - (t - 2.3) / 0.6) : 1, k = Math.min(1, t / 0.4) * out;
+        const bar = Math.round(24 * (1 - Math.pow(1 - k, 3)) * 2) / 2;
+        ctx.fillStyle = '#05030a'; ctx.fillRect(0, 0, W, bar); ctx.fillRect(0, H - bar, W, bar);
+        ctx.globalAlpha = 0.8 * k; ctx.fillStyle = b.color; ctx.fillRect(0, bar, W, 0.5); ctx.fillRect(0, H - bar - 0.5, W, 0.5);
+        // véu escuro atrás do nome
+        const g = ctx.createLinearGradient(0, H - bar - 46, 0, H - bar); g.addColorStop(0, 'rgba(5,3,10,0)'); g.addColorStop(1, 'rgba(5,3,10,0.7)');
+        ctx.globalAlpha = k; ctx.fillStyle = g; ctx.fillRect(0, H - bar - 46, W, 46);
+        // subtítulo e nome deslizam da esquerda; um brilho atravessa o nome
+        const ta = G.clamp((t - 0.3) / 0.35, 0, 1) * out, e = 1 - Math.pow(1 - ta, 3), x0 = 26 - (1 - e) * 40;
+        ctx.globalAlpha = ta;
+        G.text(b.sub, x0, H - bar - 38, b.color, { outline: '#05030a' });
+        ctx.fillStyle = b.color; ctx.fillRect(x0, H - bar - 28, (G.textW(b.sub) + 30) * e, 0.5);
+        G.textBig(b.name, x0, H - bar - 24, '#ffffff', { scale: 2, gradient: ['#ffffff', '#ffd0a8'], outline: '#2a0a14', shadowColor: 'rgba(0,0,0,0.85)' });
+        const sw = (t - 0.7) / 0.5;
+        if (sw > 0 && sw < 1) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const sx = x0 + sw * (G.textW(b.name) * 2 + 20); const gr = ctx.createLinearGradient(sx - 12, 0, sx + 12, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, 'rgba(255,255,255,0.5)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = gr; ctx.fillRect(sx - 12, H - bar - 26, 24, 20); ctx.restore(); }
+        ctx.globalAlpha = 1;
+      }
       if (this.region) {
         const r = this.region, a = r.t < 0.5 ? r.t / 0.5 : r.t > 2.8 ? Math.max(0, (3.5 - r.t) / 0.7) : 1;
         ctx.globalAlpha = a;
@@ -679,15 +730,17 @@
         ctx.globalAlpha = 1;
       }
       const dlgOpen = this.stack.some(o => o instanceof Dialog || o instanceof Choice);
+      if (this.cards && this.cards.length && !dlgOpen && G.state === 'play') this.drawCard(ctx, this.cards[0]);
+      for (const o of this.stack) o.draw(ctx);
+      // avisos por cima de tudo (antes ficavam escondidos atrás do menu de pausa)
+      const menu = this.stack.some(o => o instanceof PauseMenu);
       this.toasts.forEach((t, i) => {
-        const w = Math.min(W - 8, G.textW(t.text) + 16), x = (W - w) / 2, y = (dlgOpen ? 28 : (G.boss && !G.boss.dead && G.state === 'play' ? 160 : 186)) - (this.toasts.length - 1 - i) * 15;
+        const w = Math.min(W - 8, G.textW(t.text) + 16), x = (W - w) / 2, y = (dlgOpen ? 28 : menu ? 196 : (G.boss && !G.boss.dead && G.state === 'play' ? 160 : 186)) - (this.toasts.length - 1 - i) * 15;
         ctx.globalAlpha = Math.min(1, t.t * 2);
         G.pill(ctx, x, y - 1, w, 13, t.color);
         G.text(t.text, x + 8, y + 2, t.color);
         ctx.globalAlpha = 1;
       });
-      if (this.cards && this.cards.length && !dlgOpen && G.state === 'play') this.drawCard(ctx, this.cards[0]);
-      for (const o of this.stack) o.draw(ctx);
       if (this.fadeA > 0) { ctx.fillStyle = 'rgba(0,0,0,' + this.fadeA + ')'; ctx.fillRect(0, 0, W, H); }
     },
     drawCard(ctx, c) {

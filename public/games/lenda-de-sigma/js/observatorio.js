@@ -381,10 +381,11 @@
         ctx.restore();
       }
       const fl = this.flashOn(), tilt = this.stun > 0 ? Math.sin(t * 3) * 0.25 : Math.sin(t * 1.3) * 0.05;
-      ctx.save(); ctx.translate(x, y); ctx.rotate(tilt);
+      ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(1.3, 1.3);
       // manto de nebulosa
       const mg = ctx.createLinearGradient(0, -6, 0, 26); mg.addColorStop(0, '#5a3aa8'); mg.addColorStop(1, 'rgba(40,20,90,0)');
       ctx.fillStyle = mg; ctx.beginPath(); ctx.moveTo(-16, 4); ctx.quadraticCurveTo(-22, 22 + Math.sin(t * 3) * 2, -6, 28); ctx.lineTo(6, 28); ctx.quadraticCurveTo(22, 22 + Math.cos(t * 3) * 2, 16, 4); ctx.closePath(); ctx.fill();
+      for (let i = 0; i < 9; i++) { const sx = Math.sin(i * 2.7) * 12, sy = 8 + (i * 7.3) % 18, tw = 0.4 + 0.6 * Math.abs(Math.sin(t * 2 + i)); ctx.fillStyle = 'rgba(255,255,255,' + (tw * 0.8) + ')'; ctx.fillRect(sx, sy, 0.6, 0.6); } // estrelas no manto
       // auréola em forma de sino
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = '#ffd84a'; ctx.lineWidth = 1.5; ctx.beginPath();
       for (let i = -24; i <= 24; i++) { const yy = -16 - 12 * Math.exp(-(i * i) / 90); if (i === -24) ctx.moveTo(i, yy); else ctx.lineTo(i, yy); }
@@ -399,7 +400,7 @@
       else for (const ex of [-6, 6]) { ctx.fillStyle = '#1a0a2a'; ctx.beginPath(); ctx.ellipse(ex, -1, 3.4, 2.2, ex < 0 ? 0.2 : -0.2, 0, TAU); ctx.fill(); ctx.fillStyle = angry ? '#ff4a6a' : '#7ae4ff'; ctx.beginPath(); ctx.ellipse(ex, -1, 2.2, 1.3, 0, 0, TAU); ctx.fill(); }
       ctx.fillStyle = '#2a1a40'; ctx.fillRect(-5, 7, 10, 1.2);
       ctx.restore();
-      G.text('H₀', x, y - 13, '#c08a1a', { align: 'center', shadow: false });
+      G.text('H₀', x, y - 17, '#c08a1a', { align: 'center', shadow: false });
       G.light.add(x, y, 60, this.stun > 0 ? '#ffd84a' : '#a08aff', 0.8);
       this.drawStunStars(ctx, x, y - 20);
     }

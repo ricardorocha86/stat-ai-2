@@ -342,7 +342,9 @@
     ai(dt) {
       this.stT -= dt; if (this.labelT > 0) this.labelT -= dt;
       const tgt = SHAPES[this.shape];
-      for (let i = 0; i < 5; i++) this.hs[i] = G.approach(this.hs[i], tgt[i], dt * 6);
+      // barras com mola: passam do ponto e balançam até assentar
+      this.hv = this.hv || [0, 0, 0, 0, 0];
+      for (let i = 0; i < 5; i++) { this.hv[i] += (140 * (tgt[i] - this.hs[i]) - 11 * this.hv[i]) * dt; this.hs[i] = Math.max(0, this.hs[i] + this.hv[i] * dt); }
       const t = this.toPlayer();
       if (this.st === 'aim') {
         if (this.stT <= 0) {
@@ -362,31 +364,56 @@
     hurtbox() { return { x: this.x - 1, y: this.y - 16, w: this.w + 2, h: this.h + 16 }; }
     sprName() { return 'barras_icon'; }
     draw(ctx, cam) {
-      const x0 = Math.round(this.x - cam.x), by = Math.round(this.y + this.h - cam.y);
-      G.shadow(ctx, this.cx - cam.x, by - 1, 22, 0.3);
+      const S = G.snap, x0 = S(this.x - cam.x), by = S(this.y + this.h - cam.y), cx = this.cx - cam.x;
+      G.shadow(ctx, cx, by - 1, 24, 0.32);
       const white = this.hurtT > 0 && Math.floor(this.t * 30) % 2 === 0, tell = this.tellT > 0 && Math.floor(this.t * 20) % 2 === 0;
       const jx = this.tellT > 0 ? Math.sin(this.t * 90) * 0.75 : 0;
-      const step = Math.floor(this.t * 6) % 2;
-      // pezinhos e eixo
-      ctx.fillStyle = '#1b1428'; ctx.fillRect(x0 + 3 + jx, by - 3 + (step ? 0 : 0.5), 4, 3); ctx.fillRect(x0 + 13 + jx, by - 3 + (step ? 0.5 : 0), 4, 3);
-      ctx.fillStyle = '#4a4660'; ctx.fillRect(x0 + 3.5 + jx, by - 2.5 + (step ? 0 : 0.5), 3, 2); ctx.fillRect(x0 + 13.5 + jx, by - 2.5 + (step ? 0.5 : 0), 3, 2);
-      ctx.fillStyle = '#1b1428'; ctx.fillRect(x0 - 1 + jx, by - 5.5, 22, 3);
-      ctx.fillStyle = '#c8c4d8'; ctx.fillRect(x0 - 0.5 + jx, by - 5, 21, 1.5);
+      const walking = this.st !== 'aim' && this.st !== 'reshape' && this.toPlayer().d > 40;
+      const step = walking ? Math.sin(this.t * 12) : 0, bob = S(Math.abs(step) * -0.75);
+      ctx.save();
+      // achata ao levar golpe, ancorado no chão
+      if (this.squashT > 0) { const k = this.squashT / 0.16; ctx.translate(cx, by); ctx.scale(1 + 0.22 * k, 1 - 0.2 * k); ctx.translate(-cx, -by); }
+      // botinhas (levantam alternadas)
+      for (const [fx, up] of [[x0 + 3, Math.max(0, step)], [x0 + 13, Math.max(0, -step)]]) {
+        const fy = by - 3 - S(up * 1.5);
+        ctx.fillStyle = '#140e22'; ctx.fillRect(fx + jx - 0.5, fy - 0.5, 5, 3.5);
+        ctx.fillStyle = '#4a4466'; ctx.fillRect(fx + jx, fy, 4, 2.5);
+        ctx.fillStyle = '#7a74a0'; ctx.fillRect(fx + jx, fy, 4, 0.5);
+      }
+      // eixo: placa metálica com marcas
+      const ax = x0 - 1.5 + jx, ay = by - 6 + bob;
+      ctx.fillStyle = '#140e22'; ctx.fillRect(ax - 0.5, ay - 0.5, 24, 4);
+      ctx.fillStyle = '#8a86a6'; ctx.fillRect(ax, ay, 23, 3);
+      ctx.fillStyle = '#e4e0f4'; ctx.fillRect(ax, ay, 23, 1);
+      ctx.fillStyle = '#5a5678'; ctx.fillRect(ax, ay + 2.5, 23, 0.5);
+      for (let i = 0; i <= 5; i++) { ctx.fillStyle = '#3a3658'; ctx.fillRect(ax + 1.5 + i * 4, ay + 1, 0.5, 1.5); }
+      // barras com volume: luz à esquerda, sombra à direita, topo brilhante
+      const cols = [['#9ae8ff', '#5ac8ff', '#2a8ac8'], ['#7ad8ff', '#3ab0e8', '#1a72b0'], ['#6ac8f8', '#2a98d8', '#145e9a'], ['#7ad8ff', '#3ab0e8', '#1a72b0'], ['#9ae8ff', '#5ac8ff', '#2a8ac8']];
+      const aiming = this.st === 'aim';
       let top = 0, ti = 0;
       for (let i = 0; i < 5; i++) {
-        const h = 3 + this.hs[i] * 4.5, bx = x0 + i * 4 + jx, y = by - 5 - h;
+        const h = S(3 + this.hs[i] * 4.5), bx = x0 + i * 4 + jx, y = ay - h;
         if (h > top) { top = h; ti = i; }
-        ctx.fillStyle = '#10202e'; ctx.fillRect(bx - 0.5, y - 0.5, 4.5, h + 0.5);
-        const c = white ? '#ffffff' : tell ? '#ff6a6a' : ['#5ac8ff', '#3ab0e8', '#2a98d8', '#3ab0e8', '#5ac8ff'][i];
-        ctx.fillStyle = c; ctx.fillRect(bx, y, 3.5, h);
-        ctx.fillStyle = white ? '#ffffff' : 'rgba(255,255,255,0.55)'; ctx.fillRect(bx, y, 1, h); ctx.fillRect(bx, y, 3.5, 0.5);
+        const [hi, md, lo] = white ? ['#ffffff', '#ffffff', '#ffffff'] : tell ? ['#ffb0b0', '#ff6a6a', '#c02a3a'] : cols[i];
+        ctx.fillStyle = '#0e1a2a'; ctx.fillRect(bx - 0.5, y - 0.5, 4.5, h + 0.5);
+        ctx.fillStyle = md; ctx.fillRect(bx, y, 3.5, h);
+        ctx.fillStyle = lo; ctx.fillRect(bx + 2.5, y, 1, h); ctx.fillRect(bx, y + h - 1, 3.5, 1);
+        ctx.fillStyle = hi; ctx.fillRect(bx, y, 1, h - 1); ctx.fillRect(bx, y, 3.5, 0.5);
+        if (h > 6 && !white) { ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(bx + 1, y + 1.5, 0.5, Math.min(3, h - 3)); }
+        // na mira, o topo de cada barra acende
+        if (aiming) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, bx + 1.75, y, 3 + Math.sin(this.t * 30) * 0.8, '#7ad8ff', 0.7); ctx.restore(); }
       }
-      // rosto na barra mais alta
-      const fx = x0 + ti * 4 + jx, fy = by - 5 - top + 2;
-      ctx.fillStyle = '#10202e'; ctx.fillRect(fx + 0.5, fy + 1, 1, 1.5); ctx.fillRect(fx + 2, fy + 1, 1, 1.5);
-      ctx.fillRect(fx, fy, 1.5, 0.5); ctx.fillRect(fx + 2, fy, 1.5, 0.5);
-      if (this.labelT > 0) G.puzTag(ctx, this.cx - cam.x, by - 5 - top - 10, this.shape, '#7ad8ff');
-      if (this.tellT > 0) G.drawTell(ctx, this.cx - cam.x + 14, by - 5 - top, this.t);
+      // rosto na barra mais alta: olhos que seguem o herói
+      const fx = x0 + ti * 4 + jx, fy = ay - top + 1.5, p = G.player, lx = p ? G.clamp((p.cx - this.cx) / 40, -1, 1) * 0.5 : 0, ly = p ? G.clamp((p.cy - this.cy) / 40, -1, 1) * 0.5 : 0;
+      if (!white) {
+        ctx.fillStyle = '#f4fbff'; ctx.fillRect(fx, fy, 1.5, 2); ctx.fillRect(fx + 2, fy, 1.5, 2);
+        ctx.fillStyle = '#0e1a2a'; ctx.fillRect(S(fx + 0.5 + lx), S(fy + 0.5 + ly), 1, 1); ctx.fillRect(S(fx + 2.5 + lx), S(fy + 0.5 + ly), 1, 1);
+        if (aiming || this.tellT > 0) { ctx.fillRect(fx - 0.5, fy - 1, 1.5, 0.5); ctx.fillRect(fx + 2.5, fy - 1, 1.5, 0.5); ctx.fillRect(fx + 1, fy - 0.5, 0.5, 0.5); ctx.fillRect(fx + 2, fy - 0.5, 0.5, 0.5); }
+      }
+      ctx.restore();
+      if (aiming) G.light.add(cx, ay - top, 26, '#7ad8ff', 0.6);
+      if (this.labelT > 0) G.puzTag(ctx, cx, ay - top - 10, this.shape, '#7ad8ff');
+      if (this.tellT > 0) G.drawTell(ctx, cx + 14, ay - top, this.t);
       if (this.hp < this.maxHp) { G.rect(ctx, x0, by + 1, 20, 2, '#3a0a10'); G.rect(ctx, x0, by + 1, Math.round(20 * this.hp / this.maxHp), 2, '#ff4a5a'); }
     }
   }

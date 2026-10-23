@@ -21,6 +21,29 @@ Depois de **Novo Jogo** (e da confirmação de apagar o save, quando houver), um
 
 A escolha fica em `progress.personagem` (`'heroi'` ou `'heroina'`); saves sem o campo carregam o herói. `G.spriteHeroi()` dá o sprite certo no mundo, no menu, na introdução, no título, no fim de jogo e nos créditos. Falas dirigidas a Sigma usam `{masculino|feminino}`, resolvido por `G.genero` em diálogos, escolhas, banners, avisos e na introdução.
 
+## Polimento visual (fatia do Templo da Média)
+
+O Templo da Média é a fatia de referência do polimento; as mesmas técnicas valem para o resto do jogo.
+
+- **Herói e heroína** (`js/sprites.js`, `js/entities.js`): specs com `walkN: 8, anims: true` geram caminhada de 8 quadros, respiração (`_idle0/1`), piscada (`_blink`), dano (`_hurt`) e golpe em 3 tempos (`_atk0/1/2`, com a mão de cada quadro em `G.dollHand(nome, vista, quadro)`). NPCs continuam com 4 quadros, idênticos aos de antes. A espada recua 33 ms antes do golpe; a janela de acerto não mudou.
+- **Inimigos** (`js/enemies.js`, `js/foes.js`): achatamento ao levar golpe, surgimento com rebote e pedaços que caem na morte valem para todos. A Gosma estica e respinga, o Cogumau vira para onde anda e o Histograma Ambulante tem barras com volume, molas e olhos que seguem o herói.
+- **Golem** (`js/bossart.js`, `js/bosses.js`): peças articuladas com pivôs (`pose()` define ângulos por estado, `rig()` encadeia bacia → tronco → ombro → cotovelo → punho). Cada peça tem uma camada `...Glow` que acende com a cor do núcleo. O corpo maior recebe golpes (`hurtbox`), mas o dano por contato continua só na base (`contactBox`).
+- **Cenário e interface**: feixes de luz no tema `d1` (`rays` em `js/light.js`), emblema μ no chão da arena (`EMBLEMA` em `js/dungeons.js`) e cartão de entrada de chefe com faixas de cinema (`G.ui.bossCard`).
+
+### Expansão para o jogo todo
+
+- **Chefes** (`js/bossart.js`, `js/bosses.js`): todos os chefes principais usam peças articuladas com `pose()` por estado. Ajudantes comuns: `part` (peça com pivô e camada de brilho), `ik` e `leg` (perna de dois ossos por cinemática inversa) e `seg`/`limbSeg` (segmentos de membro com versão espelhada para manter a luz por cima).
+  - Aranha Mediana: 8 pernas por IK com passo alternado, abdome com 7 valores ordenados (a mediana dourada brilha), quelíceras que abrem.
+  - Escorpião Desvio-Padrão: placas com σ, pinças grandes, cauda em corrente que se arma antes do leque e se achata na investida.
+  - Dragão dos Dados: pescoço com as faces 1–6 de um dado, mandíbula separada, asas, olhos de réptil; emerge e afunda na lava com recorte.
+  - Yeti Gaussiano: corpo com silhueta de sino e a curva normal no peito, chifres de gelo, braços em dois segmentos.
+  - Viés: manto com bainha em "gráfico enviesado" (4 quadros), mangas por feitiço e distorção em fatias ao teleportar (`drawVies` aceita a pose como 8º parâmetro; os outros usos continuam iguais).
+  - Hipótese Nula: 30% maior, com estrelas no manto. O Viés Absoluto já tinha arte própria e não mudou.
+  - Em todos, a espada acerta o corpo maior (`hurtbox`), mas o dano por contato continua na base original (`contactBox`).
+- **Inimigos**: movimento próprio via `squish()` (lobo galopa, chama tremula, fantasma flutua, morcego balança, aranhinha corre, cogumau ginga), encolhem antes de atacar e esqueletos/cavaleiros andam em 8 quadros.
+- **Interface**: retratos falantes nos diálogos (boca abre enquanto o texto corre, piscada), gerados na primeira fala (`G.portraitVariants`); caixa de diálogo e menu de pausa com transição; aviso de poção aparece por cima do menu.
+- **Cenário**: emblema entalhado em todas as arenas de chefe (símbolo de cada tema), feixes de luz no bosque, nas ruínas e na torre de gelo, copas balançando com o vento e sombras de nuvens no mapa aberto; no título, o herói respira e passam estrelas cadentes.
+
 ## Áudio
 
 O botão **Silenciar / Ativar som**, no canto superior do jogo, e a tecla **V** alternam o som inteiro sem alterar os volumes escolhidos. Música e efeitos continuam ajustáveis separadamente em **Enter → Sistema**. A tecla **M** abre o mapa. O estado de silêncio acompanha as configurações salvas na conta.

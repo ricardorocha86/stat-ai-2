@@ -57,11 +57,11 @@
     lago: { kind: 'sparkle', n: 10, cols: ['#ffffff'] },
     planicie: { kind: 'petal', n: 6, cols: ['#ffe07a', '#ffffff'] },
     d4: { kind: 'ember', n: 18, cols: ['#ffb040', '#ff6a2a'] },
-    d5: { kind: 'snow', n: 26, cols: ['#ffffff'] },
+    d5: { kind: 'snow', n: 26, cols: ['#ffffff'], rays: '#d8f0ff' },
     d6: { kind: 'mist', n: 8, cols: ['#b080d0'] },
-    d2: { kind: 'firefly', n: 8, cols: ['#c8ff7a'] },
-    d1: { kind: 'dust', n: 14, cols: ['#e8f0d8'] },
-    d3: { kind: 'dust', n: 18, cols: ['#f4dca0'] }
+    d2: { kind: 'firefly', n: 8, cols: ['#c8ff7a'], rays: '#e8ffd0' },
+    d1: { kind: 'dust', n: 22, cols: ['#e8f0d8', '#fff4c8'], rays: '#fff0c0' },
+    d3: { kind: 'dust', n: 22, cols: ['#f4dca0', '#fff0c8'], rays: '#fff0c8' }
   };
   G.weather = {
     key: null,
@@ -92,6 +92,7 @@
     },
     draw(ctx, cam) {
       const wd = WEATHER[this.key]; if (!wd) return;
+      if (wd.rays) rays(ctx, cam, wd.rays);
       for (const p of amb) {
         const x = p.x - cam.x, y = p.y - cam.y;
         const fade = Math.min(1, p.t * 2, (p.life - p.t) * 2);
@@ -115,6 +116,22 @@
       }
     }
   };
+  // feixes de luz das janelas altas (presos ao mundo, respiram devagar)
+  function rays(ctx, cam, col) {
+    const sp = 136, x0 = Math.floor((cam.x - 120) / sp) * sp;
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = col;
+    for (let wx = x0; wx < cam.x + W + 40; wx += sp) {
+      const h = G.hash2(Math.round(wx / sp), 3, 77);
+      if (h < 0.3) continue;
+      const x = wx + h * 40 - cam.x, w = 12 + h * 14, len = 150 + h * 70, sl = 0.5;
+      for (let i = 0; i < 6; i++) { // faixas sobrepostas: o feixe some aos poucos
+        const k = i / 6, y1 = len * (1 - k * 0.8);
+        ctx.globalAlpha = (0.026 + 0.012 * Math.sin(G.time * 0.7 + h * 9)) * (1 - k * 0.3);
+        ctx.beginPath(); ctx.moveTo(x + w * k * 0.3, 0); ctx.lineTo(x + w * (1 - k * 0.3), 0); ctx.lineTo(x + w * (1 - k * 0.3) + y1 * sl, y1); ctx.lineTo(x + w * k * 0.3 + y1 * sl, y1); ctx.closePath(); ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
   function spawn(wd, cam, anywhere) {
     const p = { t: 0, s: Math.random() * 6.28, life: G.rf(4, 9), c: G.pick(wd.cols), v: G.rf(10, 26) };
     p.x = cam.x + G.rf(-20, W + 20); p.y = cam.y + G.rf(-20, H + 20);
