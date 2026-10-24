@@ -696,6 +696,7 @@
     add(new G.AnswerCrystal(...L(16, 7), 'GIRAR', false, () => { if (done || S.running > 0) return; S.samples = []; S.running = 2.4; G.sfx('dice'); }, { color: '#7aff8a' }), r.idx);
     add(new G.Sign(...L(3, 9), 'A alavanca troca quantos dados entram em CADA média (1, 2 ou 5). O cristal GIRA a máquina e desenha o histograma das médias.', { name: 'Placa' }), r.idx);
     return {
+      dicas: ['Experimente: gire a máquina com 1 dado, depois com 2. Compare o formato dos histogramas.', 'Quanto mais dados entram em cada média, mais o histograma vira um sino. Use o máximo.'],
       prompt: '^yMÁQUINA DAS MÉDIAS^0: a porta norte só abre quando a tela mostrar um ^gSINO^0. Use a ^calavanca^0 para escolher quantos dados entram em cada média e golpeie o cristal para ^yGIRAR^0.',
       update(dt) {
         if (S.running <= 0) return;
@@ -740,29 +741,19 @@
       if (v.join(' ') === '1 4 6 4 1') {
         done = true; for (const b of blocks) b.o.locked = true;
         G.ui.toast('1 4 6 4 1: os jeitos de tirar 0, 1, 2, 3 e 4 caras em 4 moedas (16 no total)!', '#7aff8a'); G.recordQuiz('binomial', true); c.solve();
-      } else { G.ui.toast('Linha 4 = ' + v.join(' ') + '? Cada número é a SOMA dos dois de cima!', '#ff8a7a'); G.sfx('wrong'); }
+      } else { G.ui.toast('Linha 4 = ' + v.join(' ') + '? Cada número é a SOMA dos dois de cima!', '#ff8a7a'); G.sfx('wrong'); c.erro(); }
     };
     if (done) [1, 4, 6, 4, 1].forEach((v, i) => c.add(new G.PushBlock(...L(8 + i * 2, 9), v, { locked: true }), r.idx));
     else spots.forEach((lx, i) => { const b = add(new G.PushBlock(...L(lx, 10), vals[i], { onMoved: check }), r.idx); b.bounds = bounds; blocks.push(b); });
     if (!done) add(new G.AnswerCrystal(...L(20, 3), '↺', false, () => { if (done) return; for (const b of blocks) b.reset(); G.sfx('teleport'); }, { color: '#c8c8ff' }), r.idx);
     return {
+      dicas: ['A linha 3 é 1 3 3 1. Some cada par vizinho para achar a linha de baixo.', 'A linha 4 é 1, 1+3, 3+3, 3+1, 1 = 1 4 6 4 1.'],
       prompt: '^yTRIÂNGULO DE PASCAL^0: complete a ^ylinha 4^0 empurrando as pedras numeradas para as placas. Cada número é a ^gsoma dos dois de cima^0. Se travar, golpeie o cristal ↺.',
       rewardPos: [3, 4]
     };
   };
 
-  // régua no chão com marcos empurráveis (boxplot e intervalo de confiança)
-  function rail(c, labels, init, x0, onCheck, drawExtra) {
-    const { r, L, add } = c, row = 9, N = 20;
-    const bounds = { x: r.px + (x0 + 1) * TS, y: r.py + row * TS, w: N * TS, h: TS };
-    const blocks = labels.map((lab, i) => { const [x, y] = L(x0 + init[i], row); const b = add(new G.PushBlock(x, y, lab, { locked: c.solved, onMoved: onCheck }), r.idx); b.bounds = bounds; return b; });
-    add(new G.Decal(r.px + (x0 + 1) * TS, r.py + (row + 1) * TS, N * TS, 12, (ctx, x, y) => {
-      ctx.fillStyle = 'rgba(255,230,160,0.55)'; ctx.fillRect(x, y + 1, N * TS, 1);
-      for (let v = 1; v <= N; v++) { const px = x + (v - 1) * TS + 8; ctx.fillRect(px, y, 0.5, 3); floorNum(ctx, px, y + 4, String(v)); }
-    }), r.idx);
-    if (drawExtra) add(new FloorDecal(r.px + (x0 + 1) * TS, r.py + (row + 1) * TS, N * TS, 12, (ctx, x, y) => drawExtra(ctx, x, y, blocks.map(b => valOfRail(b, r, x0)))), r.idx);
-    return blocks;
-  }
+  const rail = G.puzRail;
   // BOXPLOT DE PEDRA (quartis)
   PUZ.boxrail = (c) => {
     const { r, add } = c; let done = c.solved;
@@ -782,7 +773,7 @@
       G.text('MEDIDAS DAS ESTRELAS (anos-luz)', x + 6 * TS, y + 3, '#7ae4ff', { align: 'center', shadow: false });
       G.text(data.join('   '), x + 6 * TS, y + 15, '#ffffff', { align: 'center', shadow: false });
     }), r.idx);
-    return { prompt: '^yBOXPLOT DE PEDRA^0: o quadro mostra 7 medidas. Empurre os marcos ^yQ1^0, ^yMd^0 (mediana) e ^yQ3^0 para os valores certos da régua. (Ordene os dados; Q1 e Q3 são as medianas das metades.)', rewardPos: [11, 6], dbg: { target, blocks } };
+    return { dicas: ['Ordene as 7 medidas. A mediana é a 4ª.', 'Em ordem: ' + s.join(', ') + '. Q1 é a 2ª, a mediana a 4ª e Q3 a 6ª.'], prompt: '^yBOXPLOT DE PEDRA^0: o quadro mostra 7 medidas. Empurre os marcos ^yQ1^0, ^yMd^0 (mediana) e ^yQ3^0 para os valores certos da régua. (Ordene os dados; Q1 e Q3 são as medianas das metades.)', rewardPos: [11, 6], dbg: { target, blocks } };
   };
   // RÉGUA DA CONFIANÇA (intervalo de confiança)
   PUZ.cirail = (c) => {
@@ -790,12 +781,30 @@
     let sample, m, e;
     for (;;) { m = G.ri(8, 13); e = G.pick([2, 3, 4]); sample = [m + G.ri(-3, 3), m + G.ri(-3, 3), m + G.ri(-3, 3)]; const last = 4 * m - st.sum(sample); if (last >= 2 && last <= 20) { sample.push(last); break; } }
     const target = [m - e, m + e], truth = m + G.ri(-e + 1, e - 1), x0 = 1;
+    // depois de resolver: 20 amostras novas de 4 valores, cada uma com seu intervalo média ± margem.
+    // σ vem da própria margem (e = 1,96·σ/√4), então cada intervalo acerta μ com 95% de chance
+    const sims = [], NS = 20, sdMedia = e / 1.96;
+    let simT = 0;
+    const simular = () => { sims.length = 0; for (let i = 0; i < NS; i++) { const u = Math.max(1e-6, Math.random()), w = Math.random(); sims.push(truth + Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * w) * sdMedia); } };
+    const pegaram = () => sims.filter(mm => Math.abs(mm - truth) <= e).length;
+    if (done) { simular(); simT = 99; }
     const blocks = rail(c, ['INF', 'SUP'], done ? target : [3, 18], x0, () => {
       if (done || blocks.some(b => b.moving)) return;
       const v = blocks.map(b => valOfRail(b, r, x0));
-      if (v[0] === target[0] && v[1] === target[1]) { done = true; for (const b of blocks) b.o.locked = true; G.ui.toast('Intervalo ' + target[0] + ' a ' + target[1] + ' ✓  O valor verdadeiro era ' + truth + ': capturado!', '#7aff8a'); G.recordQuiz('confianca', true); c.solve(); }
+      if (v[0] === target[0] && v[1] === target[1]) {
+        done = true; for (const b of blocks) b.o.locked = true; G.ui.toast('Intervalo ' + target[0] + ' a ' + target[1] + ' ✓  O valor verdadeiro era ' + truth + ': capturado!', '#7aff8a'); G.recordQuiz('confianca', true); c.solve();
+        simular(); simT = 0;
+        G.runScript(async () => { await G.wait(NS * 0.12 + 1); G.ui.toast('Mais 20 amostras: ' + pegaram() + ' de 20 intervalos pegaram μ. É isso que "95% de confiança" quer dizer: o MÉTODO acerta cerca de 95% das vezes.', '#9ad8ff'); });
+      }
     }, (ctx, x, y, v) => {
       const px = val => x + (val - 1) * TS + 8, by = y - 30;
+      const vis = Math.min(NS, Math.floor(simT / 0.12));
+      for (let i = 0; i < vis; i++) {
+        const mm = sims[i], ok = Math.abs(mm - truth) <= e, yy = y - 84 + i * 2;
+        ctx.fillStyle = ok ? 'rgba(122,228,255,0.85)' : '#ff6a5a'; ctx.fillRect(px(mm - e), yy, px(mm + e) - px(mm - e), 1);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(px(mm) - 0.25, yy - 0.5, 0.5, 2);
+      }
+      if (vis) { ctx.fillStyle = 'rgba(255,216,74,0.7)'; ctx.fillRect(px(truth) - 0.25, y - 86, 0.5, vis * 2 + 3); }
       if (v[0] < v[1]) { ctx.save(); const g = ctx.createLinearGradient(px(v[0]), 0, px(v[1]), 0); g.addColorStop(0, 'rgba(122,228,255,0.15)'); g.addColorStop(0.5, 'rgba(122,228,255,0.45)'); g.addColorStop(1, 'rgba(122,228,255,0.15)'); ctx.fillStyle = g; ctx.fillRect(px(v[0]), by - 4, px(v[1]) - px(v[0]), 8); ctx.restore(); }
       if (done) { ctx.fillStyle = '#ffd84a'; ctx.fillRect(px(truth) - 0.5, by - 10, 1, 20); G.text('μ', px(truth), by - 19, '#ffd84a', { align: 'center', shadow: false }); }
     });
@@ -803,9 +812,15 @@
       ctx.save(); ctx.fillStyle = 'rgba(10,14,34,0.85)'; G.rrPath(ctx, x, y, 14 * TS, 38, 3); ctx.fill(); ctx.strokeStyle = '#7ae4ff'; ctx.lineWidth = 0.5; G.rrPath(ctx, x + 0.25, y + 0.25, 14 * TS - 0.5, 37.5, 3); ctx.stroke(); ctx.restore();
       G.text('AMOSTRA: ' + sample.join(', '), x + 7 * TS, y + 3, '#ffffff', { align: 'center', shadow: false });
       G.text('margem de erro (95%): ±' + e, x + 7 * TS, y + 14, '#ffe27a', { align: 'center', shadow: false });
-      G.text('intervalo = média da amostra ± margem', x + 7 * TS, y + 25, '#9ac8ff', { align: 'center', shadow: false });
+      if (done && simT >= NS * 0.12) G.text('20 amostras novas: ' + pegaram() + ' de 20 intervalos pegaram μ', x + 7 * TS, y + 25, '#7aff8a', { align: 'center', shadow: false });
+      else G.text('intervalo = média da amostra ± margem', x + 7 * TS, y + 25, '#9ac8ff', { align: 'center', shadow: false });
     }), r.idx);
-    return { prompt: '^yRÉGUA DA CONFIANÇA^0: calcule a média da amostra do quadro e monte o ^gintervalo de confiança^0: empurre ^yINF^0 para média - margem e ^ySUP^0 para média + margem.', rewardPos: [11, 6], dbg: { target, blocks } };
+    return {
+      prompt: '^yRÉGUA DA CONFIANÇA^0: calcule a média da amostra do quadro e monte o ^gintervalo de confiança^0: empurre ^yINF^0 para média - margem e ^ySUP^0 para média + margem.',
+      dicas: ['Some os 4 valores da amostra e divida por 4: essa é a média da amostra.', 'A média da amostra é ' + m + '. Os marcos vão em ' + m + ' − ' + e + ' = ' + (m - e) + ' e ' + m + ' + ' + e + ' = ' + (m + e) + '.'],
+      update(dt) { if (sims.length && simT < 99) simT += dt; },
+      rewardPos: [11, 6], dbg: { target, blocks, sims }
+    };
   };
   // TRIBUNAL DA HIPÓTESE (valor-p)
   const CLAIMS = ['a moeda é honesta', 'o dado não é viciado', 'o remédio não faz efeito', 'o treino não melhora a mira', 'a ração não muda o peso das galinhas', 'a poção não acelera a cura', 'a chuva não depende da lua', 'o amuleto não traz sorte'];
@@ -842,7 +857,7 @@
         G.ui.toast('p = ' + F(u.pv, 3) + ' ≥ 0,05: não há evidência para rejeitar H₀!', '#ff8a7a');
       }
     };
-    return { prompt: '^yTRIBUNAL DA HIPÓTESE^0: cada estátua defende uma hipótese nula H₀ (fale com ela para ouvir). ^rCondene^0 com a espada só as que devem ser REJEITADAS: ^yvalor-p menor que 0,05^0.', rewardPos: [11, 9] };
+    return { dicas: ['Fale com cada estátua para ver o valor-p dela. Só condene se p for MENOR que 0,05.', 'p = 0,07 parece pequeno, mas é maior que 0,05: não há evidência suficiente para rejeitar H₀.'], prompt: '^yTRIBUNAL DA HIPÓTESE^0: cada estátua defende uma hipótese nula H₀ (fale com ela para ouvir). ^rCondene^0 com a espada só as que devem ser REJEITADAS: ^yvalor-p menor que 0,05^0.', rewardPos: [11, 9] };
   };
   // ABISMO DAS ARGOLAS (gancho)
   PUZ.chasm = (c) => {

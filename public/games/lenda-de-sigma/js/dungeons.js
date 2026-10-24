@@ -61,8 +61,8 @@
       rooms: {
         S: { at: [0, 0], type: 'start', lesson: 'prob', exit: 'N' },
         C: { at: [1, 0], type: 'combat', enemies: [['dado', 2], ['morcego', 1, { tier: 2 }], ['chama', 1]], feat: 'lavapools', dark: true },
-        D: { at: [0, 1], type: 'dice', opt: { sum: 7 }, lesson: 'combinada', reward: { chest: { type: 'key' } } },
-        U: { at: [1, 1], type: 'crystals', opt: { puzzle: 'urn' }, dark: true, reward: { chest: { type: 'key' } } },
+        D: { at: [0, 1], type: 'tabuleiro', lesson: 'combinada', reward: { chest: { type: 'key' } } },
+        U: { at: [1, 1], type: 'urnas', dark: true, reward: { chest: { type: 'key' } } },
         H: { at: [0, 2], type: 'stonepath', opt: { rule: 'prob', rows: [3, 5, 7, 9], lava: true, down: true } },
         I: { at: [1, 2], type: 'item', item: 'suit' },
         L: { at: [0, 3], type: 'hub', feat: 'lavaband', enemies: [['chama', 1], ['moeda', 2]] },
@@ -77,7 +77,7 @@
         S: { at: [0, 4], type: 'start', lesson: 'freq' },
         C: { at: [1, 4], type: 'combat', enemies: [['lobo', 2], ['gosma', 1, { variant: '_ice', tier: 2.2 }], ['barras', 1, { tier: 1.6 }]], feat: 'ice' },
         Hg: { at: [0, 3], type: 'hist', reward: { chest: { type: 'key' } } },
-        Nm: { at: [1, 3], type: 'crystals', opt: { puzzle: 'normal' }, lesson: 'normal', reward: { chest: { type: 'key' } } },
+        Nm: { at: [1, 3], type: 'sino', lesson: 'normal', lessonAt: [2, 3], reward: { chest: { type: 'key' } } },
         H: { at: [0, 2], type: 'stonepath', opt: { rule: 'z', rows: [9, 7, 5, 3] } },
         I: { at: [1, 2], type: 'item', item: 'spin' },
         G: { at: [0, 1], type: 'gates', opt: { puzzle: 'normalgate' }, reward: { chest: { type: 'heartPiece' } } },
@@ -95,9 +95,9 @@
         Sc: { at: [2, 3], type: 'scatter', lesson: 'vies', reward: { chest: { type: 'key' } } },
         H: { at: [1, 2], type: 'combat', enemies: [['esqueleto', 2, { tier: 2 }], ['outlier', 2, { tier: 1.8 }], ['fantasma', 1]], feat: 'carpet' },
         Y: { at: [0, 2], type: 'bonus', qb: ['coins', 'potion', 'coins', 'bombs'], oracle: true, feat: 'pots' },
-        Z: { at: [2, 2], type: 'crystals', opt: { puzzle: 'bias' }, reward: { chest: { type: 'potion' } } },
+        Z: { at: [2, 2], type: 'galeria', reward: { chest: { type: 'potion' } } },
         X: { at: [1, 1], type: 'combat', enemies: [['cavaleiro', 1], ['pizza', 1, { tier: 2 }], ['ruido', 1, { tier: 2 }], ['esqueleto', 1, { tier: 2 }]], feat: 'pitband' },
-        W: { at: [0, 1], type: 'stonepath', opt: { rule: 'mean', rows: [9, 7, 5, 3] }, reward: { chest: { type: 'heartPiece' } } },
+        W: { at: [0, 1], type: 'stonepath', opt: { rule: 'corr', rows: [9, 7, 5, 3] }, reward: { chest: { type: 'heartPiece' } } },
         K: { at: [2, 1], type: 'braziers', opt: { rule: 'dentroSigma' }, reward: { chest: { type: 'bossKey' } } },
         B: { at: [1, 0], type: 'boss', feat: 'carpet' }
       },
@@ -627,7 +627,7 @@
         G.ui.toast(name + ': ' + expl + '  ✓', '#7aff8a');
         for (const b of blocks) b.o.locked = true;
         G.recordQuiz(metric === 'mean' ? 'media' : metric === 'range' ? 'amplitude' : 'mediana', true); c.solve();
-      } else { G.ui.toast(name + ': ' + expl + ' ≠ ' + target, '#ff8a7a'); G.sfx('wrong'); }
+      } else { G.ui.toast(name + ': ' + expl + ' ≠ ' + target, '#ff8a7a'); G.sfx('wrong'); c.erro(); }
     };
     vals.forEach((v, i) => {
       const [bx, by] = L(5 + i * 3.5, 8);
@@ -638,7 +638,12 @@
     add(new G.Sign(...L(3, 2), prompt, { name: 'Enigma das Placas' }), r.idx);
     add(new G.AnswerCrystal(...L(20, 2), '↺', false, () => { if (c.isSolved()) return; for (const b of blocks) b.reset(); G.sfx('teleport'); }, { color: '#c8c8ff' }), r.idx);
     add(new TargetMark(...L(10, 2), name + ' = ' + target), r.idx);
-    return { prompt, rewardPos: [11, 10], sign: true };
+    const dicas = {
+      mean: ['A média de 3 números é a soma ÷ 3. Para a média dar ' + target + ', a soma precisa ser ' + 3 * target + '.', 'Procure três pedras que somem ' + 3 * target + '.'],
+      median: ['A mediana de 3 números é o do meio, depois de ordenar.', 'Uma das pedras nas placas precisa ser ' + target + ', com uma menor e uma maior que ela.'],
+      range: ['Amplitude = maior − menor. O número do meio não muda a amplitude!', 'Escolha duas pedras cuja diferença seja ' + target + ' e uma terceira entre elas.']
+    }[metric];
+    return { prompt, dicas, rewardPos: [11, 10], sign: true };
   };
 
   function gatePuzzle(kind) {
@@ -649,9 +654,14 @@
       return { prompt: 'Dois caminhos. Siga pelo portão cujos números têm o ^yMENOR DESVIO PADRÃO^0 (os mais concentrados perto da média).', gates: sets.map((s, i) => ({ lines: ['Portão ' + 'AB'[i], s.join(', ')], ok: s === A })) };
     }
     if (kind === 'normalgate') {
-      const ok = G.chance(0.5) ? 0 : 1;
-      const L = [['perto da', 'média μ'], ['a mais de', '3σ de μ']];
-      return { prompt: 'Numa distribuição normal, onde é MAIS PROVÁVEL encontrar um valor? Escolha o portão certo.', gates: [0, 1].map(i => ({ lines: ok === 0 ? L[i] : L[1 - i], ok: ok === 0 ? i === 0 : i === 1 })) };
+      // pares (σ, z) com distâncias inteiras: o grupo de σ pequeno tem sempre o maior |z| (o mais incomum),
+      // mas a distância bruta até a média ora aponta para ele, ora para o outro grupo
+      let R, C;
+      do { R = G.pick([[3, 2], [3, 3], [4, 2], [4, 2.5], [4, 3], [5, 2], [5, 3]]); C = G.pick([[10, 0.5], [10, 1], [12, 0.5], [12, 1], [15, 1]]); } while (R[0] * R[1] === C[0] * C[1]);
+      const v = G.pick([170, 175, 180]), grupos = [{ mu: v - R[0] * R[1], sg: R[0], z: R[1] }, { mu: v - C[0] * C[1], sg: C[0], z: C[1] }];
+      const ordem = G.chance(0.5) ? [0, 1] : [1, 0], nomes = ['Norte', 'Sul'];
+      return { prompt: 'As alturas dos guardas do Norte e do Sul seguem distribuições normais (μ e σ nos portões, em cm). Um guarda de ^y' + v + ' cm^0 é MAIS INCOMUM em qual grupo? Siga por esse portão.', z: { v, grupos, ordem },
+        gates: ordem.map((g, i) => ({ lines: ['Guardas do ' + nomes[i], 'μ=' + grupos[g].mu + '  σ=' + grupos[g].sg], ok: g === 0 })) };
     }
     const ok = G.chance(0.5) ? 0 : 1;
     const good = ['60 soldados', 'SORTEADOS'], bad = ['60 da guarda', 'real (altos)'];
@@ -670,6 +680,7 @@
     const far = horiz ? (entry === 'S' ? [11, 3] : [11, 9]) : (entry === 'E' ? [5, 6] : [18, 6]);
     if (c.solved) return { rewardPos: far, visibleReward: true };
     const g = gatePuzzle(kind);
+    let atual = g, placa = null;
     pz.choose = (gate) => {
       if (c.isSolved()) return;
       if (gate.correct) {
@@ -690,6 +701,7 @@
     };
     const makeGates = (live) => {
       const g2 = live ? gatePuzzle(kind) : g;
+      atual = g2; r.prompt = g2.prompt; if (placa) placa.text = g2.prompt;
       gatePos.forEach(([lx, ly, w, h], i) => {
         const [x, y] = L(lx, ly);
         const gate = new Gate(x, y, w * TS, h * TS, g2.gates[i].lines, g2.gates[i].ok, pz, entry);
@@ -699,8 +711,14 @@
       });
     };
     makeGates(false);
-    add(new G.Sign(...L(horiz ? 2 : (entry === 'E' ? 20 : 3), horiz ? (entry === 'S' ? 9 : 3) : 10), g.prompt, { name: 'Enigma dos Portões' }), r.idx);
-    return { prompt: g.prompt, rewardPos: far, visibleReward: true, sign: true };
+    placa = add(new G.Sign(...L(horiz ? 2 : (entry === 'E' ? 20 : 3), horiz ? (entry === 'S' ? 9 : 3) : 10), g.prompt, { name: 'Enigma dos Portões' }), r.idx);
+    const dicas = () => {
+      if (kind !== 'normalgate') return ['Pense em quem os números representam e em quão espalhados eles estão.', 'Desvio padrão pequeno = valores juntinhos perto da média.'];
+      const { v, grupos, ordem } = atual.z, nomes = ['Norte', 'Sul'];
+      return ['Compare em desvios padrão, não em centímetros: z = (valor − μ) ÷ σ. Quanto maior o z, mais incomum.',
+        ordem.map((gi, i) => nomes[i] + ': z = (' + v + ' − ' + grupos[gi].mu + ') ÷ ' + grupos[gi].sg + ' = ' + F(grupos[gi].z)).join('.   ') + '.'];
+    };
+    return { prompt: g.prompt, dicas, rewardPos: far, visibleReward: true, sign: true };
   };
 
   // ------------------------------------------------------------------
@@ -785,7 +803,7 @@
   // placa "Enigma" ao lado da porta de entrada, no primeiro ponto de chão livre
   function puzzleSign(r, text, add, L, getL) {
     const d = r.doors, cands = d.S ? [[14, 10], [9, 10], [15, 9], [8, 9]] : d.E ? [[21, 4], [21, 8], [20, 3], [20, 9]] : d.W ? [[2, 4], [2, 8], [3, 3], [3, 9]] : [[14, 2], [9, 2], [15, 3], [8, 3]];
-    for (const [lx, ly] of cands) { const t = getL(lx, ly); if (t === T.FLOOR || t === T.FLOOR2 || t === T.CARPET) { add(new G.Sign(...L(lx, ly), text, { name: 'Enigma' }), r.idx); return; } }
+    for (const [lx, ly] of cands) { const t = getL(lx, ly); if (t === T.FLOOR || t === T.FLOOR2 || t === T.CARPET) return add(new G.Sign(...L(lx, ly), text, { name: 'Enigma' }), r.idx); }
   }
   function buildRoom(map, r, did, add) {
     const spec = D[did], ox = r.px, oy = r.py, L = (lx, ly) => [ox + lx * TS, oy + ly * TS];
@@ -802,6 +820,7 @@
       solved: G.flag(solvedKey),
       isSolved: () => G.flag(solvedKey),
       solve: () => solvePuzzle(r),
+      erro: () => { r.erros = (r.erros || 0) + 1; },
       lock: () => DUN.lock(r), unlock: () => DUN.unlock(r),
       addLive: (e) => { e.room = r.idx; return G.addEnt(e); }
     };
@@ -857,11 +876,15 @@
       default: {
         const P = G.PUZ[r.type];
         if (P) {
-          const pz = P(ctx) || {};
+          // as placas "Enigma" da sala recebem as dicas em degraus (G.dun.dicas)
+          const placas = [];
+          const addPz = (e, idx) => { if (e instanceof G.Sign && /^Enigma/.test(e.o.name || '')) placas.push(e); return add(e, idx); };
+          const pz = P(Object.assign({}, ctx, { add: addPz })) || {};
           r.puz = pz; r.prompt = pz.prompt;
           if (pz.noAutoEnemies) r.noAutoEnemies = true;
           // placa para reler o enigma a qualquer hora (a explicação também aparece ao entrar)
-          if (pz.prompt && !pz.sign) puzzleSign(r, pz.prompt, add, L, getL);
+          if (pz.prompt && !pz.sign) placas.push(puzzleSign(r, pz.prompt, add, L, getL));
+          for (const sg of placas) if (sg) sg.o.puz = r;
         }
       }
     }
@@ -876,6 +899,11 @@
     if (r.clearReward) r.clearChest = add(new G.Chest(...L(11, 6), flagBase + 'chest_' + r.key, r.clearReward, { hidden: true }), r.idx);
   }
 
+  const rq0 = G.recordQuiz;
+  G.recordQuiz = (topic, ok) => {
+    rq0(topic, ok);
+    if (!ok && G.map && G.map.kind === 'dungeon') { const r = G.map.rooms.find(rr => rr.idx === G.curRoom); if (r && r.puz) r.erros = (r.erros || 0) + 1; }
+  };
   function solvePuzzle(room) {
     const did = G.map.id;
     if (G.flag(did + '_solved_' + room.key)) return;
@@ -888,10 +916,91 @@
   }
 
   // ------------------------------------------------------------------
+  //  Caderno de Enigmas (aba ENIGMAS do menu)
+  // ------------------------------------------------------------------
+  // nome e ideia de cada enigma; a chave é o tipo da sala, ou "tipo:variante"
+  const CADERNO = {
+    balance: ['Balança da Média', 'A média é o ponto de equilíbrio dos dados: as distâncias dos valores abaixo dela se compensam com as dos valores acima.'],
+    level: ['Pilhas Desiguais', 'A média é a divisão justa: juntar tudo e repartir igualmente entre todos.'],
+    'plates:mean': ['Placas da Média', 'Média = soma dos valores ÷ quantidade de valores.'],
+    'plates:median': ['Placas da Mediana', 'Mediana = o valor do meio quando os dados estão em ordem.'],
+    'plates:range': ['Placas da Amplitude', 'Amplitude = maior valor − menor valor: a medida mais simples de dispersão.'],
+    'braziers:acimaMedia': ['Ritual do Fogo', 'Comparar cada valor com a média separa os dados em "acima" e "abaixo", e nem sempre metade fica de cada lado.'],
+    'braziers:dentroSigma': ['Ritual do Fogo (1σ)', 'O intervalo de μ − σ a μ + σ reúne os valores típicos, os que ficam perto da média.'],
+    'stonepath:median': ['Ponte da Mediana', 'Para achar a mediana de 5 números, ordene e pegue o 3º.'],
+    'stonepath:prob': ['Ponte do Acaso', 'Para comparar chances escritas como frações, transforme-as em decimais: 2/3 ≈ 0,67 é maior que 3/5 = 0,6.'],
+    'stonepath:z': ['Ponte do Escore-z', 'O escore z diz a quantos desvios padrão um valor está da média: valor = μ + z·σ.'],
+    'stonepath:corr': ['Ponte da Correlação', 'O coeficiente r vai de −1 a 1. Perto de ±1, os pontos quase formam uma reta; perto de 0, não há tendência linear.'],
+    'stonepath:mean': ['Ponte da Média', 'Média de três números: some e divida por 3.'],
+    sortline: ['Estátuas da Ordem', 'A mediana só aparece com os dados em ordem. O menor número de trocas entre vizinhas é o número de pares fora de ordem.'],
+    tally: ['Arena da Moda', 'A moda é o valor (ou a categoria) que mais se repete.'],
+    rangeline: ['Régua da Dispersão', 'Dois conjuntos podem ter a mesma média e amplitudes diferentes: centro e dispersão são coisas distintas.'],
+    archers: ['Duelo dos Arqueiros', 'Viés é errar sempre para o mesmo lado; variância é espalhar. Um bom arqueiro, como um bom estimador, tem pouco dos dois.'],
+    tabuleiro: ['Tabuleiro dos 36', 'Dois dados têm 36 resultados igualmente prováveis. Contar casas dá a probabilidade, e saber o resultado de um dado encolhe o universo (probabilidade condicional).'],
+    urnas: ['Urnas Opacas', 'Sem ver o conteúdo, dá para estimar uma proporção tirando amostras. Quanto mais tiragens, mais perto da verdade (Lei dos Grandes Números).'],
+    hist: ['Histograma de Gelo', 'O histograma conta quantos dados caem em cada classe: a altura de cada coluna é a frequência.'],
+    sino: ['Sino de Gelo', 'Na distribuição normal, cerca de 68% dos dados ficam a até 1σ da média e cerca de 95% a até 2σ.'],
+    'gates:normalgate': ['Portões dos Sinos', 'Um valor é mais incomum quanto maior o seu escore z, não a sua distância em centímetros até a média.'],
+    survey: ['Pesquisa no Salão', 'Uma amostra só representa a população se cobrir todos os grupos dela. Perguntar só onde é fácil gera viés de seleção.'],
+    scatter: ['Gráfico de Dispersão', 'O coeficiente r mede o quanto os pontos se alinham numa reta, não o quanto a reta é inclinada.'],
+    galeria: ['Galeria das Mentiras', 'Um gráfico engana quando corta o eixo, soma mais de 100%, aumenta figuras em altura e largura ou vende correlação como causa.'],
+    cltmachine: ['Máquina das Médias', 'Médias de vários dados formam um sino, mesmo quando cada dado sozinho é plano: é o Teorema Central do Limite.'],
+    pascal: ['Triângulo de Pascal', 'A linha 4 (1 4 6 4 1) conta os jeitos de tirar 0, 1, 2, 3 e 4 caras em 4 moedas: 16 no total.'],
+    boxrail: ['Boxplot de Pedra', 'Q1, mediana e Q3 dividem os dados ordenados em quatro partes de tamanhos parecidos.'],
+    cirail: ['Régua da Confiança', 'Um intervalo de 95% vem de um método que captura o valor verdadeiro em cerca de 95% das amostras.'],
+    tribunal: ['Tribunal da Hipótese', 'Rejeitamos H₀ quando o valor-p fica abaixo do nível de significância (aqui, 0,05).']
+  };
+  const chaveCaderno = r => { const o = r.opt || {}, k = r.type + ':' + (o.metric || o.rule || o.puzzle); return CADERNO[k] ? k : r.type; };
+  function listaCaderno() {
+    const L = [];
+    for (const did of ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7']) {
+      if (!D[did]) continue;
+      for (const key in D[did].rooms) { const ck = chaveCaderno(D[did].rooms[key]); if (CADERNO[ck]) L.push({ did, key, ck }); }
+    }
+    return L;
+  }
+  const estadoCaderno = (e) => G.flag(e.did + '_solved_' + e.key) ? 2 : ((G.P.dunSeen[e.did] || []).includes(e.key) ? 1 : 0);
+  G.cadernoTabUpdate = (m, inp) => {
+    const n = listaCaderno().length; m.ci = m.ci || 0;
+    if (inp.pressed('up')) { m.ci = (m.ci + n - 1) % n; G.sfx('select'); }
+    if (inp.pressed('down')) { m.ci = (m.ci + 1) % n; G.sfx('select'); }
+  };
+  G.drawCadernoTab = (ctx, x, y, w, h, m) => {
+    const L = listaCaderno(), sel = m.ci || 0, feitos = L.filter(e => estadoCaderno(e) === 2).length;
+    G.text('CADERNO DE ENIGMAS · ' + feitos + '/' + L.length + ' resolvidos', x, y, '#ffd84a');
+    const per = 13, start = Math.max(0, Math.min(sel - 6, L.length - per));
+    L.slice(start, start + per).forEach((e, k) => {
+      const i = start + k, s = estadoCaderno(e), yy = y + 13 + k * 11;
+      if (i === sel) G.rect(ctx, x, yy - 2, 176, 11, '#3a3a8a');
+      G.text(e.did.slice(1), x + 3, yy, '#5a5690');
+      G.text(s ? CADERNO[e.ck][0] : '? ? ?', x + 13, yy, s ? (i === sel ? '#ffd84a' : '#ffffff') : '#5a5670');
+      if (s) G.text(s === 2 ? '✓' : '•', x + 170, yy, s === 2 ? '#7aff8a' : '#ffd84a', { align: 'right' });
+    });
+    const e = L[sel], s = estadoCaderno(e), px = x + 184, pw = w - 184;
+    G.panel(ctx, px, y + 10, pw, h - 12, { r: 4, thin: true, corners: false });
+    G.text(D[e.did].name, px + 7, y + 17, '#9ac8ff');
+    if (!s) { G.wrap('Enigma ainda não encontrado. Explore as salas desta masmorra!', pw - 14).forEach((l, i) => G.text(l, px + 7, y + 31 + i * 10, '#8a88a0')); return; }
+    let yy = y + 29;
+    G.wrap(CADERNO[e.ck][0], pw - 14).forEach(l => { G.text(l, px + 7, yy, '#ffd84a'); yy += 10; });
+    G.text(s === 2 ? 'RESOLVIDO!' : 'Ainda sem solução', px + 7, yy + 2, s === 2 ? '#7aff8a' : '#ffe27a'); yy += 16;
+    if (s === 2) { G.text('O QUE ELE ENSINA:', px + 7, yy, '#ffe27a'); yy += 10; G.wrap(CADERNO[e.ck][1], pw - 14).forEach(l => { G.text(l, px + 7, yy, '#ffffff'); yy += 10; }); }
+    else G.wrap('Volte à sala e fale com a placa do enigma. Se travar, ela ganha dicas com o tempo.', pw - 14).forEach(l => { G.text(l, px + 7, yy, '#c8c8e0'); yy += 10; });
+  };
+
+  // ------------------------------------------------------------------
   //  Execução (entrar em salas, travas, chefes)
   // ------------------------------------------------------------------
   const DUN = G.dun = {
     build,
+    listaDicas(r) {
+      if (!r || !r.puz || !r.puz.dicas || G.flag(G.map.id + '_solved_' + r.key)) return null;
+      const l = typeof r.puz.dicas === 'function' ? r.puz.dicas() : r.puz.dicas;
+      if (l && l[0] !== r.dicaChave) { r.dicaChave = l[0]; r.erros = 0; r.tempoEnigma = 0; r.dicaLida = 0; r.dicaAvisada = 0; }
+      return l;
+    },
+    nivelDica(r) { const e = r.erros || 0, t = r.tempoEnigma || 0; return Math.max(e >= 4 ? 2 : e >= 2 ? 1 : 0, t >= 150 ? 2 : t >= 75 ? 1 : 0); },
+    dicas(r) { const l = this.listaDicas(r); return l ? l.slice(0, this.nivelDica(r)) : null; },
+    dicaNova(r) { const d = this.dicas(r); return !!d && d.length > (r.dicaLida || 0); },
     load(did) {
       const { map, ents } = build(did);
       G.map = map; G.ents = []; G.fx.clear(); G.spawners = []; G.boss = null; G.trans = null;
@@ -1007,6 +1116,11 @@
       }
       const cur = m.rooms.find(rr => rr.idx === G.curRoom);
       if (cur && cur.puz && cur.puz.update) cur.puz.update(dt);
+      if (cur && this.listaDicas(cur) && !G.trans) {
+        cur.tempoEnigma = (cur.tempoEnigma || 0) + dt;
+        const n = Math.min(this.nivelDica(cur), this.listaDicas(cur).length);
+        if (n > (cur.dicaAvisada || 0)) { cur.dicaAvisada = n; G.ui.toast('Uma dica nova apareceu na placa do enigma.', '#9ad8ff'); }
+      }
       if (cur && cur.live) {
         const alive = G.ents.some(e => e.isEnemy && !e.dead && e.room === cur.idx && !e.isBoss && !e.tallyMob && !(e.constructor && e.constructor.name === 'ViesClone'));
         if (!alive) {
@@ -1055,7 +1169,7 @@
           else if (r.type === 'item') icon = G.flag(did + '_item') ? '' : '?';
           else if (r.type === 'start') icon = 'E';
           else if (r.type === 'bigkey' || (r.reward && r.reward.chest && r.reward.chest.type === 'bossKey' && !P.bossKey[did])) icon = P.bossKey[did] ? '' : 'K';
-          else if (G.PUZ[r.type]) icon = G.flag(did + '_solved_' + r.key) ? '✓' : '◆';
+          else if (G.PUZ[r.type] && !r.semIcone) icon = G.flag(did + '_solved_' + r.key) ? '✓' : '◆';
           if (icon) G.text(icon, rx + cw / 2, ry + ch / 2 - 3, icon === '✓' ? '#7aff8a' : '#ffffff', { align: 'center' });
         }
         if (cur && Math.floor(G.time * 4) % 2 === 0) { ctx.fillStyle = '#ff5a8a'; ctx.beginPath(); ctx.arc(rx + cw - 7, ry + 7, 2, 0, Math.PI * 2); ctx.fill(); }

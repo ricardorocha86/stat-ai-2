@@ -435,8 +435,13 @@
       }
       case 'ending':
         G.endT += dt;
-        if (G.endT > 8 && G.input.pressed('confirm') && G.endT > G.endLen) { G.toTitle(); }
+        // depois dos créditos vem a cena do gancho para "A Lenda de Sigma 2" (js/amanha.js)
+        if (G.endT > 8 && G.input.pressed('confirm') && G.endT > G.endLen) { if (G.ganchoInicio) G.ganchoInicio(); else G.toTitle(); }
         if (G.input.pressed('start')) G.endT += 6;
+        G.ui.update(dt);
+        break;
+      case 'gancho':
+        if (G.ganchoUpdate) G.ganchoUpdate(dt);
         G.ui.update(dt);
         break;
     }
@@ -819,6 +824,7 @@
         break;
       case 'gameover': drawGameOver(ctx); break;
       case 'ending': drawEnding(ctx); break;
+      case 'gancho': if (G.ganchoDraw) G.ganchoDraw(ctx); break;
     }
     G.ui.draw(ctx);
   }

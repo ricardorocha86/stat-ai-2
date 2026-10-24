@@ -400,7 +400,7 @@
     brilho(d) { const P5 = [1568, 1760, 2093, 2349, 2637, 3136]; A.tone({ f: P5[Math.random() * P5.length | 0], d: 0.6, type: 'triangle', v: 0.012, a: 0.05, dest: d }); }
   };
   const AMB_REGIAO = { vila: 'vila', lago: 'lago', planicie: 'campo', floresta: 'floresta', pantano: 'pantano', deserto: 'deserto', vulcao: 'vulcao', montanha: 'neve', castelo: 'castelo' };
-  const AMB_MASM = { d1: 'masmorra', d2: 'floresta_m', d3: 'deserto_m', d4: 'vulcao', d5: 'neve_m', d6: 'castelo', d7: 'observatorio' };
+  const AMB_MASM = { d1: 'masmorra', d2: 'floresta_m', d3: 'deserto_m', d4: 'vulcao', d5: 'neve_m', d6: 'castelo', d7: 'observatorio', d8: 'vila' };
   G.ambienceKey = () => {
     if (G.state !== 'play' || !G.map || !G.player) return null;
     if (G.map.kind === 'dungeon') return AMB_MASM[G.map.id] || 'masmorra';

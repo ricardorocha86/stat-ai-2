@@ -1,6 +1,6 @@
 # A Lenda de Sigma
 
-A seção **Jogos**, depois de **Ferramentas**, abre **A Lenda de Sigma — O Reino dos Dados**. O jogo usa a versão 2D remasterizada da raiz de `Documentos/TesteJogo`: apenas `index.html` e os 32 scripts referenciados. Arte e áudio são gerados pelo código. As cópias `versao-2d-original` e `versao-3d` não fazem parte do app.
+A seção **Jogos**, depois de **Ferramentas**, abre **A Lenda de Sigma — O Reino dos Dados**. O jogo usa a versão 2D remasterizada da raiz de `Documentos/TesteJogo`: apenas `index.html` e os 34 scripts referenciados. Arte e áudio são gerados pelo código. As cópias `versao-2d-original` e `versao-3d` não fazem parte do app.
 
 A página inicial anuncia o jogo como novidade (`components/games/SigmaGameAnnouncement.tsx`): o botão **Jogar agora** abre a mesma página da seção Jogos.
 
@@ -72,6 +72,37 @@ Arte em peças (`reiDado`, `histoColosso` e `boxSentinela` em `js/bossart.js`), 
 
 - Toda sala de enigma ganha uma placa com o enunciado ao lado da porta de entrada (`puzzleSign` em `js/dungeons.js`), salvo os enigmas que já têm placa própria (`sign: true`).
 - A trilha de valores (`PUZ.stonepath`) se orienta pela porta: quem entra pela direita ou pela esquerda atravessa as fileiras na horizontal.
+- **Dicas em degraus** (`dicas` no retorno de cada `PUZ`, `G.dun.dicas`): a placa do enigma ganha uma dica depois de 2 erros ou 75 s na sala, e outra mais direta depois de 4 erros ou 150 s. Um "?" azul pisca na placa quando há dica nova. Erros contam por `G.recordQuiz(…, false)` ou `c.erro()`; em enigmas de várias etapas, a contagem recomeça a cada etapa.
+- **Caderno de Enigmas** (aba ENIGMAS do menu, `G.drawCadernoTab` em `js/dungeons.js`): lista os enigmas de cada masmorra, marca os vistos e os resolvidos e, depois de resolvido, explica o que cada um ensina.
+- Avisos longos quebram em várias linhas e ficam mais tempo na tela (`toast` em `js/ui.js`).
+
+| Sala | O que mudou |
+|---|---|
+| Tabuleiro dos 36 (Abismo, no lugar dos dados rolantes) | O chão é o espaço amostral de dois dados (coluna = vermelho, linha = azul). Pulando (Z) nas casas, o jogador acende três eventos: soma 7 (6 casas), pelo menos um k (11 casas, não 12) e "o vermelho caiu v" com soma ≥ 8 (probabilidade condicional). Casa errada dá 1 de dano e explica a conta. |
+| Pesquisa no Salão | Julga o método: a amostra precisa cobrir as 4 fileiras e a faixa escolhida tem de bater com a proporção da amostra (ou a real). Antes, numa simulação de 200 mil partidas, até a melhor estratégia (2 por fileira) errava 55% das vezes. |
+| Ritual do Fogo (1σ) | Uma placa mostra μ e σ: a habilidade cobrada é ler o intervalo μ ± σ. |
+| Duelo dos Arqueiros | Um arqueiro tem viés (flechas juntas fora do centro), o outro tem variância (espalhadas em volta do centro). Duas perguntas: quem é mais consistente e quem acerta o centro em média. |
+| Gráfico de Dispersão | Segunda fase: manter r ≥ 0,9 com a inclinação entre −0,6 e 0,6 (r mede alinhamento, não inclinação). |
+| Ponte da Correlação (Castelo, no lugar da Ponte da Média) | Cada fileira mostra um mini gráfico de dispersão; a pedra certa traz o r (−0,9, −0,5, 0, +0,5, +0,9) mais próximo do r da nuvem. |
+| Galeria das Mentiras (Castelo, no lugar dos cristais do viés) | Quatro quadros com gráficos desenhados (dois enganam, dois são honestos): eixo cortado, pizza que soma 120%, figura que cresce em altura e largura, correlação vendida como causa. Golpear um honesto dá dano e explica. |
+| Sino de Gelo (Torre, no lugar dos cristais da normal) | Dois marcos na régua cercam uma área da normal (a porcentagem é calculada ao vivo com Φ). Etapas: 68% (μ ± σ) e 95% (μ ± 2σ). |
+| Urnas Opacas (Abismo, no lugar das urnas visíveis) | Potes lacrados com 20%, 50% e 80% de bolas douradas. Cada golpe tira uma bola com reposição; o cristal só aceita resposta depois de 3 tiragens de cada pote. |
+| Portões dos Sinos (Torre) | Dois grupos com μ e σ diferentes; o valor mais incomum é o de maior escore z, e a distância bruta às vezes engana. |
+| Régua da Confiança | Depois de resolver, 20 amostras novas desenham 20 intervalos (σ derivado da margem, e = 1,96·σ/√4) e o quadro conta quantos pegaram μ. |
+| Estátuas da Ordem | Mostra trocas usadas × mínimo (número de inversões); ordenar no mínimo dá 5 moedas. |
+| Histograma de Gelo | 6 a 8 blocos (antes 9 a 12) e cada faixa mostra quantos já tem. |
+| Arena da Moda | O placar mostra riscos de contagem, em feixes de 5, em vez de barras. |
+
+## Pós-jogo (`js/amanha.js`)
+
+- **Créditos**: depois de "Obrigado por jogar", o estado `gancho` mostra um caco da máscara do Viés voando pelo Pântano à noite, o Portão do Amanhã acendendo ("DADOS RECEBIDOS... APRENDENDO.") e o cartão **A Lenda de Sigma 2 — em breve**.
+- **Formatura**: ao continuar depois da vitória, o Mestre Gauss ganha um "!" e entrega o **Capelo de Formatura** na praça, com os capelos voando.
+- **Capelo** (item da tecla C, entra no rodízio de Q): voa 6,5 tiles e volta como bumerangue; passa por cima de água, cercas, pedras e arbustos, para em árvores e paredes; causa 2 + nível da espada de dano (chefes só fazem "tim"), aciona alavancas, braseiros e potes e traz moedas e corações.
+- **Relíquias**: nove pedestais no meio d'água (laguinhos 5x5 cavados ou água que já existia), a 2 tiles da margem, que só o capelo alcança: 4 fragmentos de coração (lago, floresta, montanha, vila), 2 poções (pântano, vulcão), 2 Bolsas Binomiais (+5 bombas; planície, castelo) e 50 moedas (deserto). Flags `cap_<região>`. `G.HEART_PIECES_TOTAL` passou a 44.
+- **Poço das Estrelas** (praça da Vila Gauss): antes do Observatório, mostra estrelas de dia; depois dele (e da dica da Professora Gertrude), as estrelas formam uma coruja olhando para o sudoeste e o balde traz um fragmento de coração. O mapa passa a mostrar um "?" sobre a coruja.
+- **Coruja do Saber** (ilhota no canto sudoeste do Pântano de Bayes): visível desde o começo, dormindo. O capelo na cabeça dela a acorda; ela leva Sigma voando às Terras do Amanhã e traz de volta à margem.
+- **Terras do Amanhã** (`d8`): mapa de telas 3x3 montado pelo motor das masmorras, mas com chão a céu aberto (`themeAt` por sala via `map.temaSala`, temas `am_*`), sem inimigos. Áreas: Porto dos Dados (chegada, rio de bits), Vale das Medidas (Regressão: a lavradora prevê a altura de uma muda pela reta de mínimos quadrados e a muda cresce com o erro residual), Bosque das Decisões (Classificação: o jogador rotula 4 cartas e a máquina aprende as palavras dos spams), Costa das Marés (Séries Temporais: maré periódica e previsão da próxima maré alta), Praça do Horizonte, Oficina dos Autômatos (Aprendizado de Máquina: o autômato corrige a força pelo erro até acertar o cesto), Cidade das Mentes (IA: tradutor, pintora e um livro falante com modelo de bigramas treinado nas lições do jogo) e o **Portão do Amanhã**, fechado até a sequência.
+- Salvar e continuar dentro das Terras retoma na mesma tela; a saída por morte ou menu volta para a margem da coruja.
 
 ## Controles
 
@@ -97,7 +128,7 @@ O botão **Silenciar / Ativar som**, no canto superior do jogo, e a tecla **V** 
 
 ## Blocos
 
-Empurre caminhando contra o bloco, como antes. Para puxar, fique de frente para ele e pressione **X** (ou J, Espaço, A do controle ou X/ação no celular). O personagem recua junto com o bloco por uma casa. O movimento respeita paredes, outros blocos, perigos, limites dos trilhos e blocos fixos. Puxar no gelo move apenas uma casa; dados gigantes continuam girando na direção do movimento.
+Empurre caminhando contra o bloco, como antes. Para puxar, fique de frente para ele e pressione **X** (ou J, Espaço, A do controle ou X/ação no celular). O personagem recua junto com o bloco por uma casa. O movimento respeita paredes, outros blocos, perigos, limites dos trilhos e blocos fixos. Puxar no gelo move apenas uma casa.
 
 ## Verificação
 

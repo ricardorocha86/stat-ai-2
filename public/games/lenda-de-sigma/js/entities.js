@@ -86,6 +86,7 @@
     if (P.items.bombs) list.push('bomb');
     if (P.items.beam) list.push('beam');
     if (P.items.hook) list.push('hook');
+    if (P.items.capelo) list.push('capelo');
     if (!list.length) return;
     const i = list.indexOf(P.sub);
     P.sub = list[(i + 1) % list.length];
@@ -723,8 +724,18 @@
   class Sign extends Ent {
     get darkGlow() { return 18; }
     constructor(x, y, text, o = {}) { super(x + 1, y + 6, 14, 10); this.text = text; this.solid = true; this.o = o; }
-    interact() { G.runScript(async () => { await G.ui.say(this.o.name || 'Placa', this.text); }); }
-    draw(ctx, cam) { G.draw(ctx, 'sign', this.x - 1 - cam.x, this.y - 6 - cam.y); }
+    interact() {
+      G.runScript(async () => {
+        await G.ui.say(this.o.name || 'Placa', this.text);
+        // placa de enigma: as dicas liberadas pelos erros ou pelo tempo na sala vêm em seguida
+        const r = this.o.puz, d = r && G.dun.dicas(r);
+        if (d && d.length) { for (let i = 0; i < d.length; i++) await G.ui.say('Dica ' + (i + 1), d[i]); r.dicaLida = d.length; }
+      });
+    }
+    draw(ctx, cam) {
+      G.draw(ctx, 'sign', this.x - 1 - cam.x, this.y - 6 - cam.y);
+      if (this.o.puz && G.dun.dicaNova(this.o.puz)) G.text('?', this.cx - cam.x, this.y - 18 - cam.y + Math.sin(G.time * 5) * 1.5, '#9ad8ff', { align: 'center', outline: '#0a1430' });
+    }
   }
   G.Sign = Sign;
 

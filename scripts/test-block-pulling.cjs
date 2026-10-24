@@ -22,7 +22,7 @@ function fixture(facing = 1, Block = G.PushBlock, options = {}) {
   G.P = { items: {}, flags: {}, stats: {}, sub: null };
   G.map = new G.GameMap('test', 'dungeon', 24, 13, G.T.FLOOR);
   G.ents = []; G.input.codes = {}; G.input.pad = {}; G.input.hit = {};
-  const block = Block === G.DieBlock ? new Block(160, 96, options) : new Block(160, 96, 5, options);
+  const block = new Block(160, 96, 5, options);
   const positions = { 0: [163, 88], 1: [163, 112], 2: [176, 100], 3: [150, 100] };
   const player = G.player = new G.Player(...positions[facing]);
   player.dir = facing;
@@ -94,13 +94,6 @@ checks.push('fixed blocks and rail limits remain enforced');
   pressAction(); step(40); assert.equal(block.y, 112); assert.equal(player.y, 128); assert.equal(moved, 1);
   pressAction(); step(20); assert.equal(block.y, 128); assert.equal(moved, 2);
   checks.push('pulling on ice stops after one tile and puzzle callbacks fire once per move');
-}
-{
-  const { block } = fixture(1, G.DieBlock);
-  const original = { top: block.top, north: block.north, east: block.east };
-  pressAction(); step(20);
-  assert.equal(block.top, original.north); assert.equal(block.north, 7 - original.top); assert.equal(block.east, original.east);
-  checks.push('giant dice roll in the direction they are pulled');
 }
 {
   const { block, player } = fixture(1);

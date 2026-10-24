@@ -401,7 +401,7 @@
   // ------------------------------------------------------------------
   //  MENU DE PAUSA
   // ------------------------------------------------------------------
-  const TABS = ['STATUS', 'MAPA', 'MISSÕES', 'GRIMÓRIO', 'DADOS', 'SISTEMA'];
+  const TABS = ['STATUS', 'MAPA', 'MISSÕES', 'GRIMÓRIO', 'ENIGMAS', 'DADOS', 'SISTEMA'];
   class PauseMenu {
     constructor(res, tab = 0) { this.res = res; this.tab = tab; this.i = 0; this.t = 0; this.sub = 0; this.isPause = true; }
     update(dt) {
@@ -423,6 +423,8 @@
       } else if (this.tab === 2) {
         if (G.questTabUpdate) G.questTabUpdate(this, I);
       } else if (this.tab === 4) {
+        if (G.cadernoTabUpdate) G.cadernoTabUpdate(this, I);
+      } else if (this.tab === 5) {
         if (I.pressed('up') || I.pressed('down') || I.pressed('confirm')) { this.page = this.page ? 0 : 1; G.sfx('select'); }
       } else if (this.tab === 3) {
         const list = G.LESSON_ORDER;
@@ -433,7 +435,7 @@
           if (P.lessons.includes(id)) { this.busy = true; G.ui.lesson(id).then(() => { this.busy = false; }); }
           else G.sfx('wrong');
         }
-      } else if (this.tab === 5) {
+      } else if (this.tab === 6) {
         const opts = this.sysOpts();
         if (I.pressed('up')) { this.i = (this.i + opts.length - 1) % opts.length; G.sfx('select'); }
         if (I.pressed('down')) { this.i = (this.i + 1) % opts.length; G.sfx('select'); }
@@ -469,15 +471,15 @@
       // abas
       let tx = x + 6;
       TABS.forEach((t, i) => {
-        const tw = G.textW(t) + 12;
+        const tw = G.textW(t) + 10; // 7 abas: margens menores para caber a seta ◀ ▶
         G.panel(ctx, tx, y + 4, tw, 14, { r: 3, bgTop: i === this.tab ? '#7a4ad0' : '#2e2860', bg: i === this.tab ? '#3a2a8a' : '#1a163a', corners: false, thin: true, border: i === this.tab ? '#ffd84a' : '#5a5690' });
-        G.text(t, tx + 6, y + 8, i === this.tab ? '#ffe27a' : '#9a98b0');
-        tx += tw + 3;
+        G.text(t, tx + 5, y + 8, i === this.tab ? '#ffe27a' : '#9a98b0');
+        tx += tw + 2;
       });
       G.text('◀ ▶', x + w - 8, y + 7, '#5a5670', { align: 'right' });
       G.rect(ctx, x + 4, y + 19, w - 8, 1, '#5a5690');
       const cx = x + 8, cy = y + 24;
-      [this.drawStatus, this.drawMap, this.drawQuests, this.drawGrimoire, this.drawData, this.drawSystem][this.tab].call(this, ctx, cx, cy, w - 16, h - 30);
+      [this.drawStatus, this.drawMap, this.drawQuests, this.drawGrimoire, this.drawCaderno, this.drawData, this.drawSystem][this.tab].call(this, ctx, cx, cy, w - 16, h - 30);
     }
     drawStatus(ctx, x, y, w, h) {
       const P = G.P;
@@ -503,7 +505,7 @@
       G.text(swords[P.swordLv] + ' · ' + armors[P.armorLv], x, y + 58, '#c8c8e0');
       // itens
       G.text('ITENS', x, y + 72, '#ffd84a');
-      const items = [['swordIcon', 'Espada', P.items.sword], ['boots', 'Botas de Salto (Z)', P.items.boots], ['bomb', 'Bombas ' + P.bombs + '/' + P.bombMax, P.items.bombs], ['beamItem', 'Raio Amostral', P.items.beam], ['suit', 'Traje Térmico', P.items.suit], ['scroll', 'Golpe Giratório', P.items.spin], ['hookItem', 'Gancho da Regressão', P.items.hook]];
+      const items = [['swordIcon', 'Espada', P.items.sword], ['boots', 'Botas de Salto (Z)', P.items.boots], ['bomb', 'Bombas ' + P.bombs + '/' + P.bombMax, P.items.bombs], ['beamItem', 'Raio Amostral', P.items.beam], ['suit', 'Traje Térmico', P.items.suit], ['scroll', 'Golpe Giratório', P.items.spin], ['hookItem', 'Gancho da Regressão', P.items.hook]].concat(P.items.capelo ? [['capeloItem', 'Capelo de Formatura', true]] : []);
       items.forEach(([ic, name, has], i) => {
         const ix = x + (i % 2) * 118, iy = y + 81 + Math.floor(i / 2) * 19;
         G.rect(ctx, ix, iy, 18, 18, '#0a0918');
@@ -529,6 +531,7 @@
     }
     drawMap(ctx, x, y, w, h) { if (G.drawMapTab) G.drawMapTab(ctx, x, y, w, h); }
     drawQuests(ctx, x, y, w, h) { if (G.drawQuestTab) G.drawQuestTab(ctx, x, y, w, h, this); }
+    drawCaderno(ctx, x, y, w, h) { if (G.drawCadernoTab) G.drawCadernoTab(ctx, x, y, w, h, this); }
     drawGrimoire(ctx, x, y, w, h) {
       const P = G.P, list = G.LESSON_ORDER;
       G.text('Lições aprendidas: ' + P.lessons.length + '/' + list.length, x, y, '#ffd84a');
@@ -675,7 +678,8 @@
     pause(tab = 0) { return new Promise(res => this.push(new PauseMenu(res, tab))); },
     // cartão do bestiário (não bloqueia): ícone, nome e explicação
     card(o) { this.cards = this.cards || []; this.cards.push(Object.assign({ t: 0, life: 8 }, o)); G.sfx('menu'); },
-    toast(text, color = '#ffffff') { this.toasts.push({ text: G.genero(text), color, t: 3 }); if (this.toasts.length > 3) this.toasts.shift(); },
+    // avisos longos ficam mais tempo na tela (cerca de 18 letras por segundo)
+    toast(text, color = '#ffffff') { const tx = G.genero(text); this.toasts.push({ text: tx, color, t: Math.max(3, tx.length / 18) }); if (this.toasts.length > 3) this.toasts.shift(); },
     regionBanner(name, sub) { this.region = { name, sub, t: 0 }; },
     // entrada de chefe: faixas de cinema, nome grande e subtítulo
     bossCard(name, sub, color = '#ffd84a') { this.bossIntro = { name, sub, color, t: 0 }; },
@@ -734,13 +738,17 @@
       for (const o of this.stack) o.draw(ctx);
       // avisos por cima de tudo (antes ficavam escondidos atrás do menu de pausa)
       const menu = this.stack.some(o => o instanceof PauseMenu);
-      this.toasts.forEach((t, i) => {
-        const w = Math.min(W - 8, G.textW(t.text) + 16), x = (W - w) / 2, y = (dlgOpen ? 28 : menu ? 196 : (G.boss && !G.boss.dead && G.state === 'play' ? 160 : 186)) - (this.toasts.length - 1 - i) * 15;
+      // do mais novo (embaixo) para o mais antigo; aviso que não cabe numa linha quebra para cima
+      let base = dlgOpen ? 28 : menu ? 196 : (G.boss && !G.boss.dead && G.state === 'play' ? 160 : 186);
+      for (let i = this.toasts.length - 1; i >= 0; i--) {
+        const t = this.toasts[i], lines = G.textW(t.text) + 16 > W - 8 ? G.wrap(t.text, W - 24) : [t.text];
+        const w = Math.min(W - 8, Math.max(...lines.map(l => G.textW(l))) + 16), x = (W - w) / 2, y = base - (lines.length - 1) * 9;
         ctx.globalAlpha = Math.min(1, t.t * 2);
-        G.pill(ctx, x, y - 1, w, 13, t.color);
-        G.text(t.text, x + 8, y + 2, t.color);
+        G.pill(ctx, x, y - 1, w, 13 + (lines.length - 1) * 9, t.color);
+        lines.forEach((l, k) => G.text(l, x + 8, y + 2 + k * 9, t.color));
         ctx.globalAlpha = 1;
-      });
+        base = dlgOpen ? y + 13 + (lines.length - 1) * 9 + 2 : y - 15;
+      }
       if (this.fadeA > 0) { ctx.fillStyle = 'rgba(0,0,0,' + this.fadeA + ')'; ctx.fillRect(0, 0, W, H); }
     },
     drawCard(ctx, c) {
@@ -794,6 +802,7 @@
       }
       if (P.sub === 'bomb') { G.draw(ctx, 'bomb', bx + 2, by + 2); G.text(String(P.bombs), bx + 19, by + 13, '#ffffff', { align: 'right', outline: '#1a1028' }); }
       else if (P.sub === 'hook') G.draw(ctx, 'hookItem', bx + 2, by + 2);
+      else if (P.sub === 'capelo') G.draw(ctx, 'capeloItem', bx + 2, by + 2);
       else if (P.sub === 'beam') {
         G.draw(ctx, 'beamItem', bx + 2, by + 2);
         if (G.player && G.player.charge > 0) { const c = Math.min(1, G.player.charge / 0.9); G.bar(ctx, bx + 2, by + 17, 16, 2, c, c >= 1 ? '#ffffff' : '#7ae4ff', '#2a8ad0'); }

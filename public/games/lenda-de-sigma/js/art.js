@@ -429,11 +429,12 @@
   };
   // pílula de aviso
   G.pill = function (ctx, x, y, w, h, accent = '#ffffff') {
+    const rad = Math.min(h / 2, 6.5); // avisos de várias linhas: cantos arredondados, não uma cápsula
     ctx.save();
-    ctx.fillStyle = 'rgba(4,2,12,0.4)'; rr(ctx, x + 1, y + 1, w, h, h / 2); ctx.fill();
+    ctx.fillStyle = 'rgba(4,2,12,0.4)'; rr(ctx, x + 1, y + 1, w, h, rad); ctx.fill();
     const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, 'rgba(40,34,90,0.95)'); g.addColorStop(1, 'rgba(14,10,36,0.95)');
-    ctx.fillStyle = g; rr(ctx, x, y, w, h, h / 2); ctx.fill();
-    ctx.strokeStyle = C.alpha(accent, 0.7); ctx.lineWidth = 0.5; rr(ctx, x + 0.25, y + 0.25, w - 0.5, h - 0.5, h / 2); ctx.stroke();
+    ctx.fillStyle = g; rr(ctx, x, y, w, h, rad); ctx.fill();
+    ctx.strokeStyle = C.alpha(accent, 0.7); ctx.lineWidth = 0.5; rr(ctx, x + 0.25, y + 0.25, w - 0.5, h - 0.5, rad); ctx.stroke();
     ctx.restore();
   };
 })(window.G);
