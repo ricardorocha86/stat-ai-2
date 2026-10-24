@@ -57,6 +57,7 @@ O Templo da Média é a fatia de referência do polimento; as mesmas técnicas v
 
 - **Margens orgânicas** (`shoreDist` e `shoreBand` em `js/tiles.js`): os cantos convexos da água são arredondados e as quinas de terra cercadas por água (cantos internos) são recortadas em curva, com a água desenhada por baixo delas (`animId` inclui esses tiles). A margem tem largura irregular (`bankW`), barranco molhado, espuma e faixa rasa. Poças de 1 tile ficam redondas e riachos parecem riachos.
 - **Queda coerente** (`G.inDeepWater`, usado em `js/entities.js`): o herói só cai quando passa da margem desenhada. Riachos de 1 tile de largura continuam bloqueando sem as Botas.
+- **Desempenho**: `shoreFn` monta a vizinhança uma vez por tile e devolve a distância por pixel; a água funda pula o ruído. O chão vizinho é pré-montado em fatias de ~2,5 ms por quadro (`G.ground.idle`, `makeJob`/`runJob`), e um chunk visível que ainda estava em montagem é concluído de onde parou.
 
 ### Mini-chefes
 
@@ -75,6 +76,11 @@ Arte em peças (`reiDado`, `histoColosso` e `boxSentinela` em `js/bossart.js`), 
 ## Controles
 
 Z pula, X ataca, conversa e confirma (J e Espaço também), C usa o item, Shift/Q/Tab trocam o item, Enter/Esc abrem o menu e M o mapa. Nos menus, Z cancela. No celular, os botões mostram as mesmas letras.
+
+### Celular
+
+- **Direcional sempre visível** (`js/touch.js`): fica no canto inferior esquerdo, semitransparente e com setas. Tocando nele, ele acende; tocando em outro ponto da metade esquerda, ele vai até o dedo e volta ao canto quando o dedo sai.
+- **Tela cheia sempre deitada**: o botão ⛶ do jogo e o **Tela cheia** da página fazem a mesma coisa. Com a API de tela cheia (Android), a página entra em tela cheia e trava em paisagem. Sem ela (iPhone), a página cobre a tela por CSS. Em qualquer caso, se o aparelho continuar em pé, o jogo gira 90° (`T.setLandscape`, `G.rotated`); o toque e o `fit()` trocam largura e altura. A página avisa o jogo com a mensagem `landscape` e o jogo pede tela cheia com a mensagem `fullscreen`.
 
 ## Itens antes da hora
 

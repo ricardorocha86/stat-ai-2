@@ -50,12 +50,14 @@
   #tc-topbar { position: absolute; display: flex; left: 50%; top: 2vmin; transform: translateX(-50%); }
   #tc-rot { position: absolute; left: 0; right: 0; text-align: center; color: rgba(200,195,240,0.45); font: 3vmin monospace; pointer-events: none; display: none; }
   body.tc-portrait #tc-rot { display: block; }
-  #tc-stick { position: absolute; width: 28vmin; height: 28vmin; margin: -14vmin 0 0 -14vmin; border-radius: 50%; display: none;
-    background: radial-gradient(circle, rgba(120,110,220,0.10), rgba(120,110,220,0.22)); border: 2px solid rgba(220,215,255,0.35); }
+  /* direcional sempre visível no canto (semitransparente); ao tocar, acende e acompanha o dedo */
+  #tc-stick { position: absolute; left: 21vmin; top: calc(100% - 23vmin); width: 28vmin; height: 28vmin; margin: -14vmin 0 0 -14vmin; border-radius: 50%;
+    opacity: 0.55; transition: opacity 0.2s; pointer-events: none;
+    background: radial-gradient(circle, rgba(120,110,220,0.16), rgba(120,110,220,0.34)); border: 2px solid rgba(220,215,255,0.6); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  #tc-stick.on { opacity: 0.95; transition: none; }
+  #tc-stick i { position: absolute; font: 3.4vmin monospace; font-style: normal; line-height: 1; color: rgba(240,236,255,0.85); text-shadow: 0 1px 2px #000; }
   #tc-knob { position: absolute; left: 50%; top: 50%; width: 12vmin; height: 12vmin; margin: -6vmin 0 0 -6vmin; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.6), rgba(150,140,255,0.45)); border: 2px solid rgba(255,255,255,0.6); }
-  #tc-hint { position: absolute; left: 6vmin; bottom: 8vmin; width: 22vmin; height: 22vmin; border-radius: 50%; border: 2px dashed rgba(220,215,255,0.22);
-    color: rgba(220,215,255,0.35); font: 2.6vmin monospace; display: flex; align-items: center; justify-content: center; text-align: center; pointer-events: none; }
   `;
   const LAYOUT = {
     a: 'right:4vmin; bottom:9vmin; width:18vmin; height:18vmin;',
@@ -64,14 +66,17 @@
     sw: 'right:22vmin; bottom:20vmin; width:10.5vmin; height:10.5vmin;',
     start: '', map: '', fs: ''
   };
-  let root, stick, knob, hint;
+  let root, stick, knob;
   const els = {};
   function build() {
     if (root) return;
     const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
     root = document.createElement('div'); root.id = 'tc';
-    hint = document.createElement('div'); hint.id = 'tc-hint'; hint.textContent = 'arraste para andar'; root.appendChild(hint);
-    stick = document.createElement('div'); stick.id = 'tc-stick'; knob = document.createElement('div'); knob.id = 'tc-knob'; stick.appendChild(knob); root.appendChild(stick);
+    stick = document.createElement('div'); stick.id = 'tc-stick'; knob = document.createElement('div'); knob.id = 'tc-knob';
+    for (const [ch, pos] of [['▲', 'left:50%;top:1.2vmin;transform:translateX(-50%)'], ['▼', 'left:50%;bottom:1.2vmin;transform:translateX(-50%)'], ['◀', 'left:1.4vmin;top:50%;transform:translateY(-50%)'], ['▶', 'right:1.4vmin;top:50%;transform:translateY(-50%)']]) {
+      const a = document.createElement('i'); a.textContent = ch; a.style.cssText = pos; stick.appendChild(a);
+    }
+    stick.appendChild(knob); root.appendChild(stick);
     const bar = document.createElement('div'); bar.id = 'tc-topbar'; root.appendChild(bar);
     const rot = document.createElement('div'); rot.id = 'tc-rot'; rot.textContent = 'dica: deite o aparelho para uma tela maior'; root.appendChild(rot);
     for (const b of ['fs', 'map', 'start'].map(id => BTN.find(q => q.id === id)).concat(BTN.filter(q => !['fs', 'map', 'start'].includes(q.id)))) {
@@ -89,6 +94,9 @@
     root.addEventListener('contextmenu', e => e.preventDefault());
   }
   const btnAt = (x, y) => { const e = document.elementFromPoint(x, y); const b = e && e.closest && e.closest('.tc-b'); return b ? b.dataset.id : null; };
+  // posição do toque no quadro do jogo: com o jogo girado 90° (celular em pé), x e y trocam
+  const toFrame = e => (G.rotated ? { x: e.clientY, y: innerWidth - e.clientX } : { x: e.clientX, y: e.clientY });
+  const frameW = () => (G.rotated ? innerHeight : innerWidth);
   function recompute() {
     const s = {};
     for (const pid in T.btnPtr) { const b = BTN.find(q => q.id === T.btnPtr[pid]); if (b) for (const a of b.acts) s[a] = true; }
@@ -115,32 +123,59 @@
       if (navigator.vibrate) try { navigator.vibrate(8); } catch (er) { }
       recompute(); return;
     }
-    if (e.clientX < innerWidth * 0.5 && T.stickId === null) {
-      T.stickId = e.pointerId; T.sx = e.clientX; T.sy = e.clientY;
-      stick.style.left = T.sx + 'px'; stick.style.top = T.sy + 'px'; stick.style.display = 'block'; hint.style.display = 'none';
-      setStick(e.clientX, e.clientY); recompute(); return;
+    const p = toFrame(e);
+    if (p.x < frameW() * 0.5 && T.stickId === null) {
+      T.stickId = e.pointerId;
+      // tocando na base, o direcional fica onde está; fora dela, ele vem até o dedo
+      const cx = stick.offsetLeft + stick.offsetWidth / 2, cy = stick.offsetTop + stick.offsetHeight / 2;
+      if (Math.hypot(p.x - cx, p.y - cy) <= stick.offsetWidth / 2) { T.sx = cx; T.sy = cy; }
+      else { T.sx = p.x; T.sy = p.y; stick.style.left = p.x + 'px'; stick.style.top = p.y + 'px'; }
+      stick.classList.add('on');
+      setStick(p.x, p.y); recompute(); return;
     }
     // toque livre: confirma diálogos, menus e telas de título
     if (G.state !== 'play' || (G.ui && G.ui.blocking())) T.tapped.confirm = true;
   }
   function move(e) {
-    if (e.pointerId === T.stickId) { e.preventDefault(); setStick(e.clientX, e.clientY); recompute(); return; }
+    if (e.pointerId === T.stickId) { e.preventDefault(); const p = toFrame(e); setStick(p.x, p.y); recompute(); return; }
     if (T.btnPtr[e.pointerId] !== undefined) {
       const id = btnAt(e.clientX, e.clientY);
       if (id && id !== 'fs' && id !== T.btnPtr[e.pointerId]) { T.btnPtr[e.pointerId] = id; const b = BTN.find(q => q.id === id); for (const a of b.acts) T.tapped[a] = true; recompute(); }
     }
   }
   function up(e) {
-    if (e.pointerId === T.stickId) { T.stickId = null; T.dirs = {}; stick.style.display = 'none'; knob.style.transform = ''; }
+    if (e.pointerId === T.stickId) { T.stickId = null; T.dirs = {}; stick.style.left = stick.style.top = ''; stick.classList.remove('on'); knob.style.transform = ''; }
     delete T.btnPtr[e.pointerId];
     recompute();
   }
+  // tela cheia sempre deitada. Dentro do Stat AI, quem decide é a página (ela também cobre o iPhone,
+  // que não tem tela cheia de verdade); fora dele, o próprio jogo pede tela cheia e trava em paisagem.
+  const lockLandscape = () => { try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => { }); } catch (er) { } };
   function toggleFS() {
-    if (G.toggleFullscreen) G.toggleFullscreen();
-    setTimeout(() => { try { if (document.fullscreenElement && screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => { }); } catch (er) { } }, 300);
+    if (parent !== window) { parent.postMessage({ channel: 'statai-sigma-v1', type: 'fullscreen' }, location.origin); return; }
+    const el = document.documentElement, on = !(document.fullscreenElement || T.landscape);
+    if (on) { const rq = el.requestFullscreen || el.webkitRequestFullscreen; if (rq) Promise.resolve(rq.call(el)).then(lockLandscape, () => { }); }
+    else if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => { });
+    T.setLandscape(on);
   }
+  // modo deitado: se a tela continuar em pé (sem trava de orientação), o jogo inteiro gira 90°
+  function applyRot() {
+    const rot = !!T.landscape && innerHeight > innerWidth, b = document.body;
+    G.rotated = rot;
+    Object.assign(b.style, rot
+      ? { position: 'fixed', left: '0', top: '0', width: innerHeight + 'px', height: innerWidth + 'px', transformOrigin: '0 0', transform: 'translateX(' + innerWidth + 'px) rotate(90deg)' }
+      : { position: '', left: '', top: '', width: '', height: '', transformOrigin: '', transform: '' });
+  }
+  T.setLandscape = function (on) {
+    T.landscape = !!on; applyRot(); layout();
+    if (G.canvasEl) window.dispatchEvent(new Event('resize'));
+  };
+  addEventListener('message', e => {
+    if (e.source === parent && e.origin === location.origin && e.data && e.data.channel === 'statai-sigma-v1' && e.data.type === 'landscape') T.setLandscape(e.data.on);
+  });
+  document.addEventListener('fullscreenchange', () => { if (parent === window && !document.fullscreenElement && T.landscape) T.setLandscape(false); });
   function layout() {
-    const portrait = innerHeight > innerWidth;
+    const portrait = innerHeight > innerWidth && !G.rotated;
     document.body.classList.toggle('tc-portrait', !!portrait);
     requestAnimationFrame(() => {
       const bar = document.getElementById('tc-topbar'), rot = document.getElementById('tc-rot'); if (!bar || !G.canvasEl) return;
@@ -162,7 +197,7 @@
   // descobre telas de toque
   addEventListener('pointerdown', e => { if (e.pointerType === 'touch' && !T.seenTouch) { T.seenTouch = true; if (T.mode === 'auto') T.apply(); if (G.audio) G.audio.init(); } }, true);
   addEventListener('touchstart', () => { if (!T.seenTouch) { T.seenTouch = true; if (T.mode === 'auto') T.apply(); } }, { passive: true, capture: true });
-  addEventListener('resize', layout);
+  addEventListener('resize', () => { applyRot(); layout(); });
   addEventListener('load', () => {
     if (window.matchMedia && matchMedia('(pointer: coarse)').matches && (navigator.maxTouchPoints || 0) > 0) T.seenTouch = true;
     T.apply();

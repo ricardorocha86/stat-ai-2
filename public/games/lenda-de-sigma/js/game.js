@@ -334,7 +334,7 @@
   function updatePlay(dt) {
     const P = G.P;
     P.playTime += dt;
-    if (G.frame % 6 === 0 && G.ground) G.ground.idle();
+    if (G.ground) G.ground.idle(); // pré-monta o chão vizinho em fatias de ~2,5 ms
     if (G.trans) { G.dun.updateTrans(dt); G.fx.update(dt); return; }
     if (G.hitStop > 0) { G.hitStop -= dt; G.fx.update(dt * 0.25); return; }
     const frozen = G.ui.blocking() || G.cutscene > 0;
@@ -830,7 +830,9 @@
   // escolhido pelo tamanho físico da janela; o resto da escala é feito pelo navegador.
   function fit() {
     const cv = G.canvasEl;
-    const s = Math.max(0.1, Math.min(window.innerWidth / W, window.innerHeight / H));
+    // com o jogo girado 90° (celular em pé no modo deitado), largura e altura trocam
+    const vw = G.rotated ? window.innerHeight : window.innerWidth, vh = G.rotated ? window.innerWidth : window.innerHeight;
+    const s = Math.max(0.1, Math.min(vw / W, vh / H));
     const dpr = window.devicePixelRatio || 1;
     const phys = s * dpr;
     const k = Math.min(8, Math.max(2, 2 * Math.floor(phys / 2)));

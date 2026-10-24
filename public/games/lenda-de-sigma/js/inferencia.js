@@ -35,7 +35,7 @@
     quartis: { title: 'Quartis e Boxplot', by: 'Ferreiro Tukey', pages: [
       { t: 'Os ^yQUARTIS^0 dividem os dados ordenados em ^gquatro partes iguais^0:\n\n• ^yQ1^0: 25% dos dados ficam abaixo dele\n• ^yQ2^0: é a própria mediana (50%)\n• ^yQ3^0: 75% dos dados ficam abaixo dele\n\nComo achar: ordene, ache a mediana (Q2). Q1 é a mediana da metade de baixo; Q3, a mediana da metade de cima.' },
       { t: 'Exemplo: 2, 4, 5, 7, 8, 9, 12\nMediana Q2 = ^g7^0\nMetade de baixo: 2, 4, 5 → Q1 = ^g4^0\nMetade de cima: 8, 9, 12 → Q3 = ^g9^0\n\nA ^yamplitude interquartil^0 (IQR) = Q3 - Q1 = ^g5^0: o tamanho da "metade do meio" dos dados.', fig: { type: 'box', values: [2, 4, 5, 7, 8, 9, 12] } },
-      { t: 'O ^yBOXPLOT^0 (diagrama de caixa) foi popularizado por ^cJohn Tukey^0: uma caixa de Q1 a Q3, um traço na mediana e "bigodes" até os valores normais.\n\n^oOutlier^0: valor abaixo de Q1 - 1,5·IQR ou acima de Q3 + 1,5·IQR. Ele aparece como um ponto solto!', fig: { type: 'box', values: [6, 8, 9, 10, 10, 11, 12, 13, 24] } }
+      { t: 'O ^yBOXPLOT^0 (diagrama de caixa) foi popularizado por ^cJohn Tukey^0: uma caixa de Q1 a Q3, um traço na mediana e "bigodes" até os valores mais extremos que não são outliers.\n\n^oOutlier^0: valor abaixo de Q1 - 1,5·IQR ou acima de Q3 + 1,5·IQR. Ele aparece como um ponto solto!', fig: { type: 'box', values: [6, 8, 9, 10, 10, 11, 12, 13, 24] } }
     ] },
     binomial: { title: 'Distribuição Binomial', by: 'Tábua do Observatório', pages: [
       { t: 'Repita um experimento ^yn vezes^0. Cada vez só há dois resultados (^gsucesso^0 ou fracasso), com a mesma chance ^yp^0, e uma tentativa não afeta a outra.\n\nO número de sucessos segue a ^yDISTRIBUIÇÃO BINOMIAL^0.\nExemplo: lançar 4 moedas e contar as caras.' },
@@ -44,11 +44,11 @@
     ] },
     tcl: { title: 'Teorema Central do Limite', by: 'Eremita Laplace', pages: [
       { t: 'Um dado é "plano": cada face tem chance 1/6. Nada de sino!\n\nMas faça assim: lance ^y5 dados^0, tire a ^yMÉDIA^0, anote. Repita muitas vezes...\n\nO histograma das médias forma um ^gSINO^0!', fig: { type: 'clt', n: 1 } },
-      { t: 'Esse é o ^yTeorema Central do Limite^0 (Laplace, 1810):\n\n^gmédias de amostras grandes seguem, aproximadamente, uma distribuição normal^0 — qualquer que seja a forma dos dados originais.\n\nPor isso a curva normal aparece em todo lugar!', fig: { type: 'clt', n: 5 } },
+      { t: 'Esse é o ^yTeorema Central do Limite^0 (Laplace, 1810):\n\n^gmédias de amostras grandes seguem, aproximadamente, uma distribuição normal^0 — qualquer que seja a forma dos dados originais (desde que a variância seja finita).\n\nPor isso a curva normal aparece em todo lugar!', fig: { type: 'clt', n: 5 } },
       { t: 'E tem mais: quanto ^ymaior a amostra^0, mais ^gestreito^0 fica o sino das médias.\n\nO desvio padrão das médias é ^cσ ÷ √n^0.\nCom n = 4, o espalhamento cai pela metade. Com n = 100, cai para um décimo!\n\nAmostras grandes dão médias mais confiáveis.' }
     ] },
     confianca: { title: 'Intervalo de Confiança', by: 'Pescador Neyman', pages: [
-      { t: 'Uma amostra nunca acerta o valor EXATO da população. Por isso damos uma faixa:\n\n   ^cestimativa ± margem de erro^0\n\n"62% querem a ponte, com margem de 5 pontos" quer dizer: o valor verdadeiro deve estar entre ^g57% e 67%^0.', fig: { type: 'ci', est: 62, m: 5 } },
+      { t: 'Uma amostra nunca acerta o valor EXATO da população. Por isso damos uma faixa:\n\n   ^cestimativa ± margem de erro^0\n\n"62% querem a ponte, com margem de 5 pontos" dá o intervalo de ^g57% a 67%^0: os valores plausíveis para a população, vindos de um método que costuma acertar.', fig: { type: 'ci', est: 62, m: 5 } },
       { t: '^cJerzy Neyman^0 criou o ^yintervalo de confiança^0 em 1937.\n\nUm intervalo de ^y95%^0 vem de um método que acerta em 95% das amostras: de 20 intervalos, em média ^g19 capturam^0 o valor verdadeiro (e 1 erra!).', fig: { type: 'ci', many: true } },
       { t: 'Regra prática para proporções (95%):\n\n   ^cmargem ≈ 1 ÷ √n^0\n\nn = 25 → ±20%   n = 100 → ±10%\nn = 400 → ±5%   n = 2500 → ±2%\n\nPara cortar a margem pela ^ymetade^0, é preciso ^g4 vezes^0 mais gente!' }
     ] },
@@ -167,7 +167,7 @@
     }
     if (kind === 1) {
       const [n, m] = pick([[25, 20], [100, 10], [400, 5], [2500, 2], [10000, 1]]);
-      return q('confianca', 'Pela regra prática (margem ≈ 1 ÷ √n), qual a margem de erro de uma pesquisa com ^yn = ' + n + '^0 pessoas?', m + '%', [(m * 2) + '%', Math.max(1, m / 2) + '%', '1%', '50%', (m + 5) + '%'].filter(x => x !== m + '%'),
+      return q('confianca', 'Pela regra prática (margem ≈ 1 ÷ √n), qual a margem de erro de uma pesquisa com ^yn = ' + n + '^0 pessoas?', m + '%', [(m * 2) + '%', F(Math.max(1, m / 2)) + '%', '1%', '50%', (m + 5) + '%'].filter(x => x !== m + '%'),
         '1 ÷ √' + n + ' = 1 ÷ ' + Math.sqrt(n) + ' = ' + F(1 / Math.sqrt(n), 3) + ' → ^g±' + m + '%^0.', null, x => x);
     }
     if (kind === 2) return qc('confianca', 'Para reduzir a margem de erro pela METADE, a amostra precisa ser...', ['4 vezes maior', '2 vezes maior', 'Metade do tamanho', '10 vezes menor'], 0,

@@ -236,23 +236,27 @@
     const [, , a, b, c] = VTX[v], land = [a, b, c].filter(k => isLand(n[k]));
     return land.length === 1 && CARVE.has(n[land[0]]) && [a, b, c].every(k => k === land[0] || n[k] === T.WATER) ? land[0] : -1;
   }
-  // distância à margem: cantos convexos da água arredondados (raio R) e quinas de terra recortadas (raio Rc)
-  function shoreDist(lx, ly, n, isLand, R = 13, Rc = 0) {
-    const x = lx + 0.5, y = ly + 0.5, x2 = 32 - x, y2 = 32 - y, diff = n.map(isLand);
-    const rad = n.map(() => [0, 0, 0, 0]);
+  // distância à margem: cantos convexos da água arredondados (raio R) e quinas de terra recortadas (raio Rc).
+  // O que só depende dos vizinhos é montado uma vez por tile; devolve d(lx, ly) para cada pixel.
+  function shoreFn(n, isLand, R = 13, Rc = 0) {
+    const diff = n.map(isLand), land = [];
+    for (let k = 0; k < 8; k++) if (diff[k]) land.push({ k, ox: NB[k][0], oy: NB[k][1], rad: [0, 0, 0, 0] });
     if (Rc) for (let v = 0; v < 4; v++) {
       const k = cutAt(n, isLand, v); if (k < 0) continue;
       const [vx, vy] = VTX[v], [ox, oy] = NB[k], sx = vx > 16 + 32 * ox, sy = vy > 16 + 32 * oy;
-      rad[k][sx ? (sy ? 2 : 1) : (sy ? 3 : 0)] = Rc;
+      land.find(l => l.k === k).rad[sx ? (sy ? 2 : 1) : (sy ? 3 : 0)] = Rc;
     }
-    let d = 99;
-    for (let k = 0; k < 8; k++) if (diff[k]) d = Math.min(d, sdTile(x, y, NB[k][0], NB[k][1], rad[k]));
-    const corner = (u, v) => { if (u < R && v < R) d = Math.min(d, R - Math.hypot(R - u, R - v)); };
-    if (diff[0] && diff[6]) corner(x, y);
-    if (diff[0] && diff[2]) corner(x2, y);
-    if (diff[4] && diff[2]) corner(x2, y2);
-    if (diff[4] && diff[6]) corner(x, y2);
-    return d;
+    const cNW = diff[0] && diff[6], cNE = diff[0] && diff[2], cSE = diff[4] && diff[2], cSW = diff[4] && diff[6];
+    return (lx, ly) => {
+      const x = lx + 0.5, y = ly + 0.5, x2 = 32 - x, y2 = 32 - y;
+      let d = 99;
+      for (const l of land) { const s = sdTile(x, y, l.ox, l.oy, l.rad); if (s < d) d = s; }
+      if (cNW && x < R && y < R) d = Math.min(d, R - Math.hypot(R - x, R - y));
+      if (cNE && x2 < R && y < R) d = Math.min(d, R - Math.hypot(R - x2, R - y));
+      if (cSE && x2 < R && y2 < R) d = Math.min(d, R - Math.hypot(R - x2, R - y2));
+      if (cSW && x < R && y2 < R) d = Math.min(d, R - Math.hypot(R - x, R - y2));
+      return d;
+    };
   }
   // tile de terra com quinas recortadas pela água: raios [NW, NE, SE, SW] ou null
   function landCuts(id, n) {
@@ -265,6 +269,7 @@
   const bankW = (X, Y) => 1.2 + fbm(X * 0.07 + 3, Y * 0.07) * 5;
   // faixas da margem (de dentro da terra para o fundo): chão, barranco molhado, espuma, raso claro, raso
   function shoreBand(d, th, P, X, Y, ground) {
+    if (d >= 19.4) return 0; // além da faixa mais larga possível (banco 6,2 + raso 11 + onda 2,2): água funda, sem ruído
     const b = bankW(X, Y), w = nz(X * 0.12, Y * 0.12) * 2.2;
     if (d < b) return ground || baseGround(th, P, X, Y);
     if (d < b + 1.3) return darkP(ground || baseGround(th, P, X, Y), 0.42);
@@ -280,7 +285,7 @@
     if (id !== T.WATER) return true;
     const n = NB.map(([dx, dy]) => m.get(tx + dx, ty + dy)), dun = m.kind === 'dungeon';
     const lx = Math.floor((px - tx * 16) * 2), ly = Math.floor((py - ty * 16) * 2);
-    const d = dun ? shoreDist(lx, ly, n, v => !isWaterish(v), 9) : shoreDist(lx, ly, n, isShoreLand, 16, RC);
+    const d = (dun ? shoreFn(n, v => !isWaterish(v), 9) : shoreFn(n, isShoreLand, 16, RC))(lx, ly);
     return dun ? d >= 1.5 : d >= bankW(tx * 32 + lx, ty * 32 + ly) + 1.3;
   };
 
@@ -306,21 +311,20 @@
     if (id === T.VOID) { for (let ly = 0; ly < 32; ly++) for (let lx = 0; lx < 32; lx++) put(lx, ly, 0xff0a0608); return; }
     const plaza = id === T.PLAZA || (id === T.BLOCK && n.some(v => v === T.PLAZA));
     const cuts = landCuts(id, n);
+    // água/lava: vizinhança calculada uma vez por tile
+    const lavaDiff = id === T.LAVA ? n.map(v => !isWaterish(v) && v !== T.BRIDGE) : null, shore = id === T.WATER ? shoreFn(n, isShoreLand, 16, RC) : null;
     for (let ly = 0; ly < 32; ly++) for (let lx = 0; lx < 32; lx++) {
       const X = X0 + lx, Y = Y0 + ly;
       let c;
       if (isWaterish(id)) {
         // água/lava: transparente, com margem, espuma e faixa rasa
-        const diff = n.map(v => !isWaterish(v) && v !== T.BRIDGE);
-        const w = nz(X * 0.12, Y * 0.12) * 2.2;
-        const lava = id === T.LAVA;
-        if (lava) {
-          const d = edgeDist(lx, ly, diff);
+        if (lavaDiff) {
+          const d = edgeDist(lx, ly, lavaDiff), w = nz(X * 0.12, Y * 0.12) * 2.2;
           if (d < 1.4 + w * 0.6) c = pk('#0e0808');
           else if (d < 2.6 + w * 0.7) c = withA(pk('#ff6a1a'), 150);
           else if (d < 4 + w) c = withA(pk('#c03a10'), 70);
           else c = 0;
-        } else c = shoreBand(shoreDist(lx, ly, n, isShoreLand, 16, RC), th, P, X, Y); // margem orgânica
+        } else c = shoreBand(shore(lx, ly), th, P, X, Y); // margem orgânica
         if (c) put(lx, ly, c);
         continue;
       }
@@ -562,13 +566,14 @@
       }
       return;
     }
+    const lavaDiff = id === T.LAVA ? n.map(v => !isWaterish(v)) : null, shore = id === T.WATER ? shoreFn(n, v => !isWaterish(v), 9) : null;
     for (let ly = 0; ly < 32; ly++) for (let lx = 0; lx < 32; lx++) {
       const X = X0 + lx, Y = Y0 + ly;
       let c = floorPx(t, P, X, Y, id, lx, ly, n);
       if (id === T.ICE) c = icePx(X, Y, f[3]);
       if (id === T.PIT) c = ly < 7 && !TP[n[0]].pit ? darkP(wl[2], ly / 8) : 0xff030206;
       if (isWaterish(id)) {
-        const d = id === T.LAVA ? edgeDist(lx, ly, n.map(v => !isWaterish(v))) : shoreDist(lx, ly, n, v => !isWaterish(v), 9);
+        const d = lavaDiff ? edgeDist(lx, ly, lavaDiff) : shore(lx, ly);
         const w = nz(X * 0.12, Y * 0.12) * 2;
         const lava = id === T.LAVA;
         if (d < 1.5 + w * 0.5) c = lava ? 0xff080a0e : darkP(f[1], 0.4);
@@ -731,7 +736,7 @@
   const CHT = 16, CPX = CHT * 32; // tiles por chunk, pixels de arte por chunk
   G.ground = {
     map: null, chunks: new Map(), animTiles: new Map(),
-    reset(map) { this.map = map; this.chunks.clear(); this.scanAnim(); },
+    reset(map) { this.map = map; this.chunks.clear(); this.job = null; this.scanAnim(); },
     scanAnim() {
       const m = this.map; this.animTiles = new Map();
       for (let ty = 0; ty < m.h; ty++) for (let tx = 0; tx < m.w; tx++) { const a = this.animId(tx, ty); if (a) this.animTiles.set(ty * m.w + tx, a); }
@@ -744,24 +749,39 @@
       return landCuts(id, NB.map(([dx, dy]) => m.get(tx + dx, ty + dy))) ? T.WATER : 0;
     },
     key(cx, cy) { return cy * 1000 + cx; },
-    build(cx, cy) {
-      const m = this.map;
-      const c = G.canvas(CPX, CPX), x = c.getContext('2d');
-      const img = x.createImageData(CPX, CPX), buf = new Uint32Array(img.data.buffer);
-      const tx0 = cx * CHT, ty0 = cy * CHT;
-      for (let ty = ty0; ty < ty0 + CHT; ty++) for (let tx = tx0; tx < tx0 + CHT; tx++) {
-        if (tx >= m.w || ty >= m.h) continue;
-        renderTile(buf, CPX, (tx - tx0) * 32, (ty - ty0) * 32, m, tx, ty);
+    // um chunk em montagem: os tiles são pintados um a um no buffer e o canvas só é preenchido no fim
+    makeJob(cx, cy) {
+      const c = G.canvas(CPX, CPX), x = c.getContext('2d'), img = x.createImageData(CPX, CPX);
+      return { cx, cy, c, x, img, buf: new Uint32Array(img.data.buffer), i: 0 };
+    },
+    // pinta tiles do job até acabar (ou até o prazo, em ms de performance.now); devolve true quando completo
+    runJob(j, until) {
+      const m = this.map, tx0 = j.cx * CHT, ty0 = j.cy * CHT;
+      while (j.i < CHT * CHT) {
+        if (until && performance.now() >= until) return false;
+        const tx = tx0 + (j.i % CHT), ty = ty0 + ((j.i / CHT) | 0); j.i++;
+        if (tx < m.w && ty < m.h) renderTile(j.buf, CPX, (tx - tx0) * 32, (ty - ty0) * 32, m, tx, ty);
       }
-      x.putImageData(img, 0, 0);
-      const ch = { c, x, cx, cy };
-      this.chunks.set(this.key(cx, cy), ch);
+      return true;
+    },
+    finishJob(j) {
+      j.x.putImageData(j.img, 0, 0);
+      const ch = { c: j.c, x: j.x, cx: j.cx, cy: j.cy };
+      this.chunks.set(this.key(j.cx, j.cy), ch);
       if (this.chunks.size > 48) { const first = this.chunks.keys().next().value; this.chunks.delete(first); }
       return ch;
+    },
+    // montagem imediata (chunk já visível); aproveita o que a pré-montagem já pintou
+    build(cx, cy) {
+      let j = this.job;
+      if (j && j.cx === cx && j.cy === cy) this.job = null; else j = this.makeJob(cx, cy);
+      this.runJob(j);
+      return this.finishJob(j);
     },
     get(cx, cy) { return this.chunks.get(this.key(cx, cy)) || this.build(cx, cy); },
     retile(tx, ty) {
       if (!this.map) return;
+      this.job = null; // a pré-montagem em curso pode ter pintado o tile antigo: recomeça depois
       for (let y = ty - 1; y <= ty + 1; y++) for (let x = tx - 1; x <= tx + 1; x++) {
         if (x < 0 || y < 0 || x >= this.map.w || y >= this.map.h) continue;
         const ch = this.chunks.get(this.key(Math.floor(x / CHT), Math.floor(y / CHT)));
@@ -776,15 +796,29 @@
         if (a) this.animTiles.set(k, a); else this.animTiles.delete(k);
       }
     },
-    // pré-renderiza um chunk vizinho por chamada
-    idle() {
+    // pré-monta os chunks vizinhos aos poucos: no máximo ~budget ms por quadro, sem travar o jogo
+    idle(budget = 2.5) {
       if (!this.map || !G.player) return;
+      const until = performance.now() + budget;
+      while (performance.now() < until) {
+        if (!this.job) {
+          const next = this.nextMissing(); if (!next) return;
+          this.job = this.makeJob(next[0], next[1]);
+        }
+        if (!this.runJob(this.job, until)) return;
+        const j = this.job; this.job = null;
+        if (!this.chunks.has(this.key(j.cx, j.cy))) this.finishJob(j);
+      }
+    },
+    // próximo chunk ainda não montado perto do herói (anel de raio 1, depois 2)
+    nextMissing() {
       const m = this.map, nx = Math.ceil(m.w / CHT), ny = Math.ceil(m.h / CHT);
       const pcx = Math.floor(G.player.cx / 256), pcy = Math.floor(G.player.cy / 256);
       for (let r = 1; r <= 2; r++) for (let cy = pcy - r; cy <= pcy + r; cy++) for (let cx = pcx - r; cx <= pcx + r; cx++) {
         if (cx < 0 || cy < 0 || cx >= nx || cy >= ny) continue;
-        if (!this.chunks.has(this.key(cx, cy))) { this.build(cx, cy); return; }
+        if (!this.chunks.has(this.key(cx, cy))) return [cx, cy];
       }
+      return null;
     },
     draw(ctx, camx, camy) {
       const m = this.map; if (!m) return;

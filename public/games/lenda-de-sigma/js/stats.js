@@ -65,13 +65,14 @@
       const n = ri(3, lv >= 2 ? 6 : 5), m = ri(3, 12);
       const a = listWithMean(n, m, Math.min(m - 1, 5));
       const s = st.sum(a);
-      const ctx = pick(['O guerreiro coletou estas moedas em ' + n + ' dias: ', 'Notas de um aluno: ', 'Gosmas derrotadas por hora: ', 'Peso (kg) de ' + n + ' melancias: ']);
+      const ctx = pick(['O guerreiro coletou estas moedas em ' + n + ' dias: ', 'Pontos feitos por partida: ', 'Gosmas derrotadas por hora: ', 'Peso (kg) de ' + n + ' melancias: ']);
       return q('media', ctx + '^y' + list(a) + '^0. Qual é a MÉDIA?', m, [st.median(a) === m ? m + 2 : st.median(a), s, m + 1, m - 1, Math.max(...a)],
         'Some tudo e divida pela quantidade: (' + a.join('+') + ') = ' + s + '; ' + s + ' ÷ ' + n + ' = ^g' + m + '^0.', { type: 'dots', values: a, mark: 'mean' });
     }
     if (kind === 2) {
       const m = ri(5, 9), a = [m + ri(-3, 3), m + ri(-3, 3)]; const third = 3 * m - a[0] - a[1];
-      if (third < 0 || third > 15) return GEN.media(lv);
+      // notas na escala de 0 a 10
+      if (third < 0 || third > 10 || a.some(v => v > 10)) return GEN.media(lv);
       return q('media', 'A média de 3 provas é ^y' + m + '^0. Duas notas foram ^y' + a[0] + '^0 e ^y' + a[1] + '^0. Qual foi a terceira nota?', third, [m, third + 1, third - 2, 3 * m],
         'Média 3 provas = ' + m + ' → soma = 3 × ' + m + ' = ' + 3 * m + '. Terceira = ' + 3 * m + ' - ' + a[0] + ' - ' + a[1] + ' = ^g' + third + '^0.');
     }
@@ -178,7 +179,7 @@
   // ------------------------- EVENTOS COMBINADOS -------------------------
   GEN.combinada = () => {
     const kind = ri(0, 3);
-    if (kind === 0) return q('combinada', 'Lançando DUAS moedas, qual a probabilidade de sair CARA nas duas?', '1/4', ['1/2', '1/3', '2/4', '1/8'], 'Eventos independentes: multiplique! 1/2 × 1/2 = ^g1/4^0. (Possibilidades: CC, CK, KC, KK)', { type: 'coins' }, x => x);
+    if (kind === 0) return q('combinada', 'Lançando DUAS moedas, qual a probabilidade de sair CARA nas duas?', '1/4', ['1/2', '1/3', '3/4', '1/8'], 'Eventos independentes: multiplique! 1/2 × 1/2 = ^g1/4^0. (Possibilidades: CC, CK, KC, KK)', { type: 'coins' }, x => x);
     if (kind === 1) {
       const s = pick([7, 2, 12, 6, 8]);
       const ways = { 2: 1, 6: 5, 7: 6, 8: 5, 12: 1 }[s];

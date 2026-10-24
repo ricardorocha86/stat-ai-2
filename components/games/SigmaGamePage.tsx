@@ -23,6 +23,9 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
   const [muted, setMuted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<GameSaveStatus>('ready');
+  // "tela cheia" por CSS quando o navegador não tem a API (iPhone); o jogo gira para ficar deitado
+  const [pseudoFull, setPseudoFull] = useState(false);
+  const fullscreenRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     let active = true;
@@ -48,6 +51,8 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
       } else if (event.data.type === 'started') {
         setMuted(Boolean(event.data.muted));
         setFrameReady(true);
+      } else if (event.data.type === 'fullscreen') {
+        fullscreenRef.current();
       } else if (event.data.type === 'audio' && typeof event.data.muted === 'boolean') {
         setMuted(event.data.muted);
       } else if (event.data.type === 'save' && validGameSnapshot(event.data.snapshot)) {
@@ -84,14 +89,39 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
     frameRef.current?.focus();
   };
 
-  const fullscreen = async () => {
-    if (!containerRef.current) return;
-    try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await containerRef.current.requestFullscreen();
-      frameRef.current?.focus();
-    } catch { frameRef.current?.focus(); }
+  const setGameLandscape = (on: boolean) => {
+    frameRef.current?.contentWindow?.postMessage({ channel: CHANNEL, type: 'landscape', on }, window.location.origin);
   };
+  // tela cheia sempre deitada: trava a orientação quando o aparelho deixa; senão o jogo gira por conta própria
+  const fullscreen = async () => {
+    const container = containerRef.current;
+    if (!container) return;
+    const orientation = screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> };
+    if (document.fullscreenElement || pseudoFull) {
+      if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
+      orientation?.unlock?.();
+      setPseudoFull(false);
+      setGameLandscape(false);
+    } else {
+      try {
+        if (!container.requestFullscreen) throw new Error('sem tela cheia');
+        await container.requestFullscreen();
+        await orientation?.lock?.('landscape').catch(() => {});
+      } catch {
+        setPseudoFull(true);
+      }
+      setGameLandscape(true);
+    }
+    frameRef.current?.focus();
+  };
+  fullscreenRef.current = fullscreen;
+
+  // saiu da tela cheia pelo sistema (voltar, Esc): o jogo deixa de girar
+  useEffect(() => {
+    const onChange = () => { if (!document.fullscreenElement && !pseudoFull) setGameLandscape(false); };
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, [pseudoFull]);
 
   const toggleMute = () => {
     (frameRef.current?.contentWindow as GameWindow | null)?.statAiSigma?.toggleMute();
@@ -116,10 +146,11 @@ export default function SigmaGamePage({ userId }: { userId: string }) {
           <button type="button" onClick={() => setAttempt(value => value + 1)} className="mt-3 rounded-lg bg-red-700 px-4 py-2 font-semibold text-white">Tentar novamente</button>
         </div>
       ) : (
-        <div ref={containerRef} className="relative overflow-hidden rounded-2xl border border-slate-700 bg-[#07060c] shadow-xl" style={{ height: 'min(72dvh, 820px)', minHeight: 320 }}>
+        <div ref={containerRef} className={pseudoFull ? 'fixed inset-0 z-[100] overflow-hidden bg-[#07060c]' : 'relative overflow-hidden rounded-2xl border border-slate-700 bg-[#07060c] shadow-xl'} style={pseudoFull ? { height: '100dvh' } : { height: 'min(72dvh, 820px)', minHeight: 320 }}>
           {ready && <iframe ref={frameRef} src="/games/lenda-de-sigma/index.html" title="A Lenda de Sigma — O Reino dos Dados" className="h-full w-full border-0" allow="autoplay; fullscreen; gamepad" allowFullScreen />}
           {!frameReady && <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-300">Preparando a aventura…</div>}
-          <div className="absolute right-3 top-3 flex gap-2">
+          {/* com o aparelho em pé no modo deitado o jogo está girado: os botões dele (⛶ tela) cuidam de sair */}
+          <div className={'absolute right-3 top-3 flex gap-2' + (pseudoFull ? ' portrait:hidden' : '')}>
             <button type="button" onClick={toggleMute} disabled={!frameReady} aria-label={muted ? 'Ativar som do jogo' : 'Silenciar jogo'} aria-pressed={muted} title="Silenciar ou ativar som (V)" className="rounded-lg border border-white/20 bg-slate-950/80 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:hidden">{muted ? 'Ativar som' : 'Silenciar'}</button>
             <button type="button" onClick={fullscreen} disabled={!frameReady} aria-label="Alternar tela cheia do jogo" className="rounded-lg border border-white/20 bg-slate-950/80 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:hidden">⛶ Tela cheia</button>
           </div>

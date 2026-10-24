@@ -18,7 +18,7 @@
     mediana: { title: 'Mediana', by: 'Tábua do Bosque', pages: [
       { t: 'A ^yMEDIANA^0 é o valor do MEIO quando os dados estão ^gem ordem^0.\n\n  1) Ordene do menor para o maior.\n  2) Pegue o valor central.\n\nMetade dos dados fica abaixo dela e metade acima.' },
       { t: 'Quantidade ÍMPAR: 7, 2, 9, 4, 5\nOrdenando: 2, 4, ^g5^0, 7, 9 → mediana = 5\n\nQuantidade PAR: 3, 8, 1, 6\nOrdenando: 1, ^g3, 6^0, 8\nMediana = (3 + 6) ÷ 2 = ^g4,5^0', fig: { type: 'dots', values: [7, 2, 9, 4, 5], mark: 'median' } },
-      { t: 'A mediana é ^gresistente a outliers^0.\nEm 2, 3, 4, 5, 100 a média é 22,8, mas a mediana é 4 — bem mais representativa!\n\nPor isso usamos a mediana para salários e preços de casas.', fig: { type: 'dots', values: [2, 3, 4, 5, 30], mark: 'both' } }
+      { t: 'A mediana é ^gresistente a outliers^0.\nEm 2, 3, 4, 5, 30 a média é 8,8, mas a mediana é 4 — bem mais representativa!\n\nPor isso usamos a mediana para salários e preços de casas.', fig: { type: 'dots', values: [2, 3, 4, 5, 30], mark: 'both' } }
     ] },
     moda: { title: 'Moda', by: 'Tábua do Bosque', pages: [
       { t: 'A ^yMODA^0 é o valor que ^gmais se repete^0.\n\nEm 3, 5, 5, 7, 5, 2 a moda é ^g5^0 (aparece 3 vezes).\n\nPode haver duas modas (^cbimodal^0) ou nenhuma, se nada se repetir.', fig: { type: 'dots', values: [3, 5, 5, 7, 5, 2], mark: 'mode' } },
