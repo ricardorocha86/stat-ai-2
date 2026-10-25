@@ -90,7 +90,8 @@
       if (kind === 'lens') await G.ui.banner('lens_' + n, 'LENTE ' + LENS_INFO[n][0] + '!', 'Você tem ' + QS.lenses() + ' de 5 Lentes da Inferência. ' + (QS.lenses() >= 5 ? 'Leve-as à Professora Gertrude, nos Campos de Pascal!' : 'Procure quem precisa de ajuda: um "!" amarelo marca quem tem um pedido.'), { color: LENS_INFO[n][1] });
       else {
         const P0 = P(), names = ['ESPADA DE MADEIRA', 'ESPADA DE FERRO', 'ESPADA DE PRATA', 'ESPADA GAUSSIANA'];
-        if (P0.swordLv < 3) { P0.swordLv++; await G.ui.banner('swordIcon', 'TÊMPERA: ' + names[P0.swordLv] + '!', 'O Ferreiro Tukey aprimorou sua lâmina. Ataque +1!', { color: '#ffa24a' }); }
+        const nv = G.equip.melhorEspada() + 1;
+        if (nv <= 3) { G.equip.ganhar('espada', nv); await G.ui.banner('swordIcon', 'TÊMPERA: ' + names[nv] + '!', 'O Ferreiro Tukey aprimorou sua lâmina. Ataque +1!', { color: '#ffa24a' }); }
         else { P0.coins = Math.min(999, P0.coins + 100); await G.ui.banner('coinRed', 'PAGAMENTO DO FERREIRO', 'Sua espada já é perfeita! Tukey pagou 100 moedas pelo serviço.', { color: '#ffa24a' }); }
       }
     } finally {

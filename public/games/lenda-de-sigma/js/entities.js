@@ -8,7 +8,7 @@
   const CHARGE_T = 0.9; // tempo para carregar o raio
   const ATK_PREP = 0.033, ATK_SWING = 0.075; // tempos do golpe da espada (s)
   // cores do rastro por nível da espada
-  const SWORD_FX = [{ body: '#fff6e0', edge: '#ffb84a' }, { body: '#e8f6ff', edge: '#6ac8ff' }, { body: '#eef0ff', edge: '#8a8aff' }, { body: '#e8fcff', edge: '#ffd23a' }];
+  const SWORD_FX = [{ body: '#fff6e0', edge: '#ffb84a' }, { body: '#e8f6ff', edge: '#6ac8ff' }, { body: '#eef0ff', edge: '#8a8aff' }, { body: '#e8fcff', edge: '#ffd23a' }, { body: '#e0fffa', edge: '#3affd8' }];
   G.SWORD_FX = SWORD_FX;
   G.addEnt = e => { G.ents.push(e); return e; };
   G.sameRoom = e => e.room === -1 || e.room === G.curRoom;
@@ -35,6 +35,17 @@
   G.xpNeeded = lv => Math.floor(18 * Math.pow(lv, 1.45));
   G.atk = () => { const P = G.P; return 1 + P.swordLv + Math.floor((P.level - 1) / 2) + (G.player && G.player.superT > 0 ? 2 : 0); };
   G.def = () => { const P = G.P; return P.armorLv + Math.floor(P.level / 3); };
+  // equipamento: P.espadas/P.armaduras guardam o que já foi conquistado; swordLv/armorLv são os EQUIPADOS.
+  // saves antigos não têm as listas: valem todas as peças até a equipada (a evolução era em sequência)
+  const faixa = n => Array.from({ length: n + 1 }, (_, i) => i);
+  G.equip = {
+    espadas() { const P = G.P; if (!P.espadas) P.espadas = faixa(P.swordLv); return P.espadas; },
+    armaduras() { const P = G.P; if (!P.armaduras) P.armaduras = faixa(P.armorLv); return P.armaduras; },
+    melhorEspada() { return Math.max(...this.espadas()); },
+    melhorArmadura() { return Math.max(...this.armaduras()); },
+    ganhar(tipo, lv) { const l = tipo === 'espada' ? this.espadas() : this.armaduras(); if (!l.includes(lv)) { l.push(lv); l.sort((a, b) => a - b); } G.P[tipo === 'espada' ? 'swordLv' : 'armorLv'] = lv; },
+    trocar(tipo) { const l = tipo === 'espada' ? this.espadas() : this.armaduras(), k = tipo === 'espada' ? 'swordLv' : 'armorLv'; const i = l.indexOf(G.P[k]); G.P[k] = l[(i + 1) % l.length]; return l.length > 1; }
+  };
   G.rollDamage = (mul = 1) => {
     let d = G.atk() + G.ri(0, 2);
     let crit = Math.random() < 0.04 + G.P.sab * 0.006;
@@ -98,7 +109,7 @@
   // ------------------------------------------------------------------
   const ITEMS = {
     sword: ['swordIcon', 'ESPADA DE TREINO', 'Pressione ^yX^0 para atacar! Corte arbustos, quebre potes e golpeie blocos ^y?^0 para ganhar moedas.'],
-    boots: ['boots', 'BOTAS DE SALTO', 'Pressione ^yZ^0 para pular! Atravesse buracos e riachos estreitos, e PISE nos inimigos para um ataque duplo.'],
+    boots: ['boots', 'BOTAS DE SALTO', 'Agora seu pulo (^yZ^0) vai MAIS ALTO e MAIS LONGE: atravesse buracos e riachos estreitos, passe por cima de cercas e pedras e PISE nos inimigos para um ataque duplo.'],
     bombs: ['bomb', 'BOMBAS BINOMIAIS', 'Pressione ^yC^0 para colocar uma bomba. Explodem rochas e paredes rachadas. ^yQ^0 troca o item ativo.'],
     beam: ['beamItem', 'RAIO AMOSTRAL', 'Pressione ^yC^0 para atirar. SEGURE ^yC^0 para carregar um tiro poderoso! Quebra barreiras de cristal.'],
     suit: ['suit', 'TRAJE TÉRMICO', 'Protege do frio extremo das montanhas e do calor da crosta de magma: com ele, dá para atravessá-la!'],
@@ -259,7 +270,8 @@
           }
           else { if (this.spinCharge >= 0.75) this.startSpin(); this.spinCharging = false; this.spinCharge = 0; }
         }
-        if (inp.pressed('b') && P.items.boots && this.z <= 0) { this.vz = 168; this.z = 0.01; G.sfx('jump'); }
+        // sem as botas, um pulinho: fica abaixo de 5 px (não cruza cercas nem pedras) e não vence um buraco de 1 tile
+        if (inp.pressed('b') && this.z <= 0) { this.vz = P.items.boots ? 168 : 68; this.z = 0.01; G.sfx('jump'); }
         if (inp.pressed('sw')) G.cycleSub();
         if (P.sub === 'bomb' && P.items.bombs && inp.pressed('c')) this.placeBomb();
         if (P.sub === 'beam' && P.items.beam) {
@@ -418,7 +430,7 @@
           if (applied && e.isEnemy) {
             G.P.stats.dmg.push(d);
             const ex = hb.x + hb.w / 2, ey = hb.y + hb.h / 2, away = Math.atan2(ey - this.cy, ex - this.cx);
-            const pal = SWORD_FX[Math.min(3, G.P.swordLv)];
+            const pal = SWORD_FX[Math.min(5, G.P.swordLv)];
             const ang = kind === 'spin' ? away + Math.PI / 2 : (this.dir < 2 ? 0.25 : Math.PI / 2 - 0.35) * (Math.random() < 0.5 ? 1 : -1) + G.rf(-0.25, 0.25);
             G.fx.cut(ex, ey, ang, crit ? 34 : 26, crit ? '#ffe27a' : pal.edge);
             G.fx.streaks(ex, ey, away, crit ? 9 : 5, 160, crit ? '#ffe27a' : '#ffffff', 0.7);
@@ -578,12 +590,12 @@
       const P = G.P;
       const glow = this.spinCharging && this.spinCharge >= 0.75;
       // rastro do golpe (smear)
-      const pal = SWORD_FX[Math.min(3, G.P.swordLv)];
+      const pal = SWORD_FX[Math.min(5, G.P.swordLv)];
       if (a0 !== null) {
         if (this.state === 'spin') G.smear(ctx, hx, hy, a0, ang, 7, 24, { alpha: fade, body: '#fff6d8', edge: '#ffc84a', tip: 9 });
         else G.smear(ctx, hx, hy, a0, ang, 5, 22, { alpha: fade, body: pal.body, edge: pal.edge });
       }
-      const spr = G.spr[['swordBlade', 'swordBlade', 'swordBlade2', 'swordBlade3', 'swordBlade4'][Math.min(4, P.swordLv + 1)]] || G.spr.swordBlade;
+      const spr = G.spr[['swordBlade', 'swordBlade', 'swordBlade2', 'swordBlade3', 'swordBlade4', 'swordBlade5', 'swordBlade6'][Math.min(6, P.swordLv + 1)]] || G.spr.swordBlade;
       if (!spr) return;
       ctx.save();
       ctx.translate(G.snap(hx), G.snap(hy)); ctx.rotate(ang); ctx.scale(len, len);

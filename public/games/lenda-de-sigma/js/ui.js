@@ -401,7 +401,7 @@
   // ------------------------------------------------------------------
   //  MENU DE PAUSA
   // ------------------------------------------------------------------
-  const TABS = ['STATUS', 'MAPA', 'MISSÕES', 'GRIMÓRIO', 'ENIGMAS', 'DADOS', 'SISTEMA'];
+  const TABS = ['STATUS', 'MAPA', 'MISSÕES', 'GRIMÓRIO', 'ENIGMAS', 'MESTRES', 'DADOS', 'SISTEMA'];
   class PauseMenu {
     constructor(res, tab = 0) { this.res = res; this.tab = tab; this.i = 0; this.t = 0; this.sub = 0; this.isPause = true; }
     update(dt) {
@@ -413,18 +413,28 @@
       const P = G.P;
       if (this.healT > 0) this.healT -= dt;
       if (this.tab === 0) {
-        if (I.pressed('confirm') && P.potions > 0) {
-          if (P.hp < P.maxHp) {
-            const antes = P.hp; P.potions--; G.healPlayer(16); G.sfx('heal');
-            this.healT = 1; this.healed = P.hp - antes; // brilho e "+vida" no próprio menu
-            G.ui.toast('Você bebeu uma poção! +' + this.healed + ' de vida', '#7aff8a');
-          } else { G.sfx('wrong'); G.ui.toast('Sua vida já está cheia: guarde a poção para depois.'); }
+        // linhas: 0 espada, 1 armadura, 2 poção
+        this.eq = this.eq || 0;
+        if (I.pressed('up')) { this.eq = (this.eq + 2) % 3; G.sfx('select'); }
+        if (I.pressed('down')) { this.eq = (this.eq + 1) % 3; G.sfx('select'); }
+        if (I.pressed('confirm')) {
+          if (this.eq < 2) { if (G.equip.trocar(this.eq === 0 ? 'espada' : 'armadura')) { G.sfx('equip' in G.SFX ? 'equip' : 'switch'); this.trocaT = 0.4; } else { G.sfx('wrong'); G.ui.toast(this.eq === 0 ? 'Você só tem esta espada por enquanto.' : 'Você só tem esta armadura por enquanto.'); } }
+          else if (P.potions > 0) {
+            if (P.hp < P.maxHp) {
+              const antes = P.hp; P.potions--; G.healPlayer(16); G.sfx('heal');
+              this.healT = 1; this.healed = P.hp - antes; // brilho e "+vida" no próprio menu
+              G.ui.toast('Você bebeu uma poção! +' + this.healed + ' de vida', '#7aff8a');
+            } else { G.sfx('wrong'); G.ui.toast('Sua vida já está cheia: guarde a poção para depois.'); }
+          } else G.sfx('wrong');
         }
+        if (this.trocaT > 0) this.trocaT -= 1 / 60;
       } else if (this.tab === 2) {
         if (G.questTabUpdate) G.questTabUpdate(this, I);
       } else if (this.tab === 4) {
         if (G.cadernoTabUpdate) G.cadernoTabUpdate(this, I);
       } else if (this.tab === 5) {
+        if (G.mestresTabUpdate) G.mestresTabUpdate(this, I);
+      } else if (this.tab === 6) {
         if (I.pressed('up') || I.pressed('down') || I.pressed('confirm')) { this.page = this.page ? 0 : 1; G.sfx('select'); }
       } else if (this.tab === 3) {
         const list = G.LESSON_ORDER;
@@ -435,7 +445,7 @@
           if (P.lessons.includes(id)) { this.busy = true; G.ui.lesson(id).then(() => { this.busy = false; }); }
           else G.sfx('wrong');
         }
-      } else if (this.tab === 6) {
+      } else if (this.tab === 7) {
         const opts = this.sysOpts();
         if (I.pressed('up')) { this.i = (this.i + opts.length - 1) % opts.length; G.sfx('select'); }
         if (I.pressed('down')) { this.i = (this.i + 1) % opts.length; G.sfx('select'); }
@@ -471,63 +481,89 @@
       // abas
       let tx = x + 6;
       TABS.forEach((t, i) => {
-        const tw = G.textW(t) + 10; // 7 abas: margens menores para caber a seta ◀ ▶
+        const tw = G.textW(t) + 6; // 8 abas: margens curtas para caber a seta ◀ ▶
         G.panel(ctx, tx, y + 4, tw, 14, { r: 3, bgTop: i === this.tab ? '#7a4ad0' : '#2e2860', bg: i === this.tab ? '#3a2a8a' : '#1a163a', corners: false, thin: true, border: i === this.tab ? '#ffd84a' : '#5a5690' });
-        G.text(t, tx + 5, y + 8, i === this.tab ? '#ffe27a' : '#9a98b0');
-        tx += tw + 2;
+        G.text(t, tx + 3, y + 8, i === this.tab ? '#ffe27a' : '#9a98b0');
+        tx += tw + 1;
       });
       G.text('◀ ▶', x + w - 8, y + 7, '#5a5670', { align: 'right' });
       G.rect(ctx, x + 4, y + 19, w - 8, 1, '#5a5690');
       const cx = x + 8, cy = y + 24;
-      [this.drawStatus, this.drawMap, this.drawQuests, this.drawGrimoire, this.drawCaderno, this.drawData, this.drawSystem][this.tab].call(this, ctx, cx, cy, w - 16, h - 30);
+      [this.drawStatus, this.drawMap, this.drawQuests, this.drawGrimoire, this.drawCaderno, this.drawMestres, this.drawData, this.drawSystem][this.tab].call(this, ctx, cx, cy, w - 16, h - 30);
     }
+    drawMestres(ctx, x, y, w, h) { if (G.drawMestresTab) G.drawMestresTab(ctx, x, y, w, h, this); }
     drawStatus(ctx, x, y, w, h) {
-      const P = G.P;
-      G.rect(ctx, x, y, 52, 52, '#0a0918'); G.strokeRect(ctx, x, y, 52, 52, '#5a5690');
+      const P = G.P, heal = this.healT > 0 ? this.healT : 0;
+      // herói (com a armadura equipada), nível e atributos
+      const bx = x + 2, by = y;
+      G.rect(ctx, bx, by, 64, 64, '#0a0918'); G.strokeRect(ctx, bx, by, 64, 64, '#5a5690');
       const hs = G.spr[G.spriteHeroi() + '_down0'];
-      if (hs) G.drawFit(ctx, hs, x + 2, y + 2, 48, 48);
-      G.text('SIGMA', x + 60, y + 2, '#ffd84a');
-      G.text('Nível ' + P.level, x + 60, y + 14, '#ffffff');
-      const need = G.xpNeeded(P.level);
-      G.rect(ctx, x + 60, y + 25, 80, 4, '#2a2a4a'); G.rect(ctx, x + 60, y + 25, Math.round(80 * Math.min(1, P.xp / need)), 4, '#7ae4ff');
-      G.text('XP ' + P.xp + '/' + need, x + 146, y + 24, '#9a98b0');
-      const heal = this.healT > 0 ? this.healT : 0;
-      G.text('Vida ' + P.hp + '/' + P.maxHp, x + 60, y + 34, heal > 0 && Math.floor(heal * 12) % 2 ? '#7aff8a' : '#ff8a9a');
+      if (hs) G.drawFit(ctx, hs, bx + 4, by + 2, 56, 60);
+      if (this.trocaT > 0) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, bx + 32, by + 32, 34, '#ffe8a0', this.trocaT * 1.5); ctx.restore(); }
       if (heal > 0) {
-        // poção: brilho verde no retrato e "+vida" subindo
-        ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, x + 26, y + 26, 30, '#5aff8a', heal * 0.8); ctx.restore();
-        for (let i = 0; i < 5; i++) { const a = (1 - heal) * 22, px = x + 10 + i * 8, py = y + 44 - a - (i % 2) * 6; ctx.globalAlpha = heal; G.draw(ctx, 'sparkle', px, py); }
-        ctx.globalAlpha = heal; G.text('+' + this.healed, x + 120 + (1 - heal) * 4, y + 34 - (1 - heal) * 8, '#7aff8a', { outline: '#0a2a10' }); ctx.globalAlpha = 1;
+        ctx.save(); ctx.globalCompositeOperation = 'lighter'; G.glow(ctx, bx + 32, by + 32, 34, '#5aff8a', heal * 0.8); ctx.restore();
+        ctx.globalAlpha = heal; G.text('+' + this.healed, bx + 48 + (1 - heal) * 4, by + 8 - (1 - heal) * 8, '#7aff8a', { outline: '#0a2a10' }); ctx.globalAlpha = 1;
       }
-      const swords = ['Espada de Madeira', 'Espada de Ferro', 'Espada de Prata', 'Espada Gaussiana'];
-      const armors = ['Túnica', 'Couraça de Couro', 'Cota de Malha'];
-      G.text('ATQ ' + G.atk() + '   DEF ' + G.def() + '   SAB ' + P.sab, x + 60, y + 44, '#ffffff');
-      G.text(swords[P.swordLv] + ' · ' + armors[P.armorLv], x, y + 58, '#c8c8e0');
-      // itens
-      G.text('ITENS', x, y + 72, '#ffd84a');
-      const items = [['swordIcon', 'Espada', P.items.sword], ['boots', 'Botas de Salto (Z)', P.items.boots], ['bomb', 'Bombas ' + P.bombs + '/' + P.bombMax, P.items.bombs], ['beamItem', 'Raio Amostral', P.items.beam], ['suit', 'Traje Térmico', P.items.suit], ['scroll', 'Golpe Giratório', P.items.spin], ['hookItem', 'Gancho da Regressão', P.items.hook]].concat(P.items.capelo ? [['capeloItem', 'Capelo de Formatura', true]] : []);
-      items.forEach(([ic, name, has], i) => {
-        const ix = x + (i % 2) * 118, iy = y + 81 + Math.floor(i / 2) * 19;
-        G.rect(ctx, ix, iy, 18, 18, '#0a0918');
-        if (has) { G.draw(ctx, ic, ix + 1, iy + 1); G.text(name, ix + 22, iy + 6, '#ffffff'); }
-        else G.text('???', ix + 22, iy + 6, '#5a5670');
+      G.text('SIGMA · Nv ' + P.level, bx + 32, by + 70, '#ffd84a', { align: 'center' });
+      const need = G.xpNeeded(P.level);
+      G.rect(ctx, bx, by + 81, 64, 4, '#2a2a4a'); G.rect(ctx, bx, by + 81, Math.round(64 * Math.min(1, P.xp / need)), 4, '#7ae4ff');
+      G.text('Vida ' + P.hp + '/' + P.maxHp, bx, by + 90, heal > 0 && Math.floor(heal * 12) % 2 ? '#7aff8a' : '#ff8a9a');
+      G.text('ATQ ' + G.atk() + '   DEF ' + G.def(), bx, by + 101, '#ffffff');
+      G.text('SAB ' + P.sab, bx, by + 112, '#c8c8e0');
+      // equipamento: X troca a peça da linha escolhida
+      const ex = x + 76, ew = 172, sel = this.eq || 0;
+      G.text('EQUIPAMENTO', ex, y, '#ffd84a');
+      const swords = ['Espada de Madeira', 'Espada de Ferro', 'Espada de Prata', 'Espada Gaussiana', 'Espada do Amanhã', 'Pena dos Mestres'];
+      const armors = ['Túnica', 'Couraça de Couro', 'Cota de Malha', 'Armadura de Silício'];
+      const linha = (i, icone, nome, bonus, todos, tem, atual) => {
+        const yy = y + 12 + i * 34;
+        if (sel === i) G.selBar(ctx, ex - 2, yy - 2, ew, 32, G.time);
+        G.rect(ctx, ex, yy, 18, 18, '#0a0918'); G.draw(ctx, icone, ex + 1, yy + 1);
+        G.text(nome, ex + 22, yy + 1, sel === i ? '#ffe27a' : '#ffffff');
+        if (bonus) G.text(bonus, ex + ew - 6, yy + 1, '#7aff8a', { align: 'right' });
+        // coleção: uma casinha por peça; as conquistadas aparecem, a equipada fica com moldura
+        for (let k = 0; k < todos; k++) {
+          const cx = ex + 22 + k * 15, cy = yy + 12;
+          G.rect(ctx, cx, cy, 13, 13, k === atual ? '#3a3a8a' : '#141230');
+          if (tem.includes(k)) { ctx.save(); ctx.translate(cx + 0.5, cy + 0.5); ctx.scale(0.75, 0.75); G.draw(ctx, (i === 0 ? 'espIcon' : 'armIcon') + k, 0, 0); ctx.restore(); }
+          else G.text('·', cx + 6.5, cy + 2, '#3a3858', { align: 'center' });
+          if (k === atual) G.strokeRect(ctx, cx, cy, 13, 13, '#ffd84a');
+        }
+      };
+      const esp = G.equip.espadas(), arm = G.equip.armaduras();
+      // a mão da arma: as seis espadas e, na última casinha (6), o escudo, que se usa no lugar delas
+      const usaEscudo = !!(P.escudo && P.usaEscudo);
+      linha(0, usaEscudo ? 'espIcon6' : 'espIcon' + P.swordLv, usaEscudo ? 'Escudo de Confiança' : swords[P.swordLv] || 'Espada', usaEscudo ? 'DEFESA' : 'ATQ +' + P.swordLv, 7, P.escudo ? esp.concat([6]) : esp, usaEscudo ? 6 : P.swordLv);
+      linha(1, 'armIcon' + P.armorLv, armors[P.armorLv] || 'Túnica', P.armorLv ? 'DEF +' + P.armorLv : '', 4, arm, P.armorLv);
+      { // poções
+        const yy = y + 12 + 2 * 34;
+        if (sel === 2) G.selBar(ctx, ex - 2, yy - 2, ew, 20, G.time);
+        G.rect(ctx, ex, yy, 18, 18, '#0a0918'); G.draw(ctx, 'iconPotion', ex + 5, yy + 5);
+        G.text('Poções: ' + P.potions, ex + 22, yy + 1, sel === 2 ? '#ffe27a' : '#ffffff');
+        G.text(P.potions ? (P.hp < P.maxHp ? 'beber' : 'vida cheia') : 'nenhuma', ex + ew - 6, yy + 1, P.potions && P.hp < P.maxHp ? '#7aff8a' : '#5a5670', { align: 'right' });
+      }
+      G.text(sel === 2 ? '▲▼ escolhe   X: beber' : '▲▼ escolhe   X: trocar', ex, y + h - 14, '#9a98b0');
+      // itens, cristais e moedas
+      const ix = x + 258;
+      G.text('ITENS', ix, y, '#ffd84a');
+      const items = [['boots', P.items.boots], ['bomb', P.items.bombs], ['beamItem', P.items.beam], ['suit', P.items.suit], ['scroll', P.items.spin], ['hookItem', P.items.hook], [G.flag('capeloDourado') ? 'capeloOuro' : 'capeloItem', P.items.capelo], ['tenisFibra', G.flag('fibraOtica')]];
+      items.forEach(([ic, has], i) => {
+        const cx = ix + (i % 4) * 24, cy = y + 11 + Math.floor(i / 4) * 22;
+        G.rect(ctx, cx, cy, 20, 20, '#0a0918');
+        if (has) G.draw(ctx, ic, cx + 2, cy + 2); else G.text('?', cx + 10, cy + 6, '#3a3858', { align: 'center' });
       });
-      // cristais
-      const cx = x + 238;
-      G.text('CRISTAIS', cx, y + 2, '#ffd84a');
-      ['media', 'mediana', 'dispersao', 'prob', 'distrib', 'amostra'].forEach((c, i) => {
-        const has = P.crystals.includes(c);
-        const sx = cx + (i % 3) * 22, sy = y + 12 + Math.floor(i / 3) * 20;
-        if (has) G.draw(ctx, 'crystal_' + c, sx, sy); else G.draw(ctx, 'crystal_' + c, sx, sy, { tint: 'rgba(20,20,40,0.85)' });
+      // quantas bombas, no canto do quadro (embaixo dele ficaria por cima da segunda fileira)
+      if (P.items.bombs) G.text(String(P.bombs), ix + 24 + 20, y + 11 + 13, P.bombs >= P.bombMax ? '#7aff8a' : '#ffffff', { align: 'right' });
+      G.text('CRISTAIS', ix, y + 60, '#ffd84a');
+      ['media', 'mediana', 'dispersao', 'prob', 'distrib', 'amostra'].concat(P.flags.inferencia ? ['inferencia'] : []).forEach((c, i) => {
+        const has = c === 'inferencia' || P.crystals.includes(c), cx = ix + (i % 4) * 24 + 2, cy = y + 70 + Math.floor(i / 4) * 18;
+        G.draw(ctx, 'crystal_' + c, cx, cy, has ? undefined : { tint: 'rgba(20,20,40,0.85)' });
       });
-      G.text('Fragmentos de', cx, y + 56, '#c8c8e0'); G.text('coração: ' + (P.heartPieces % 4) + '/4', cx, y + 66, '#ff8a9a');
-      G.draw(ctx, 'iconPotion', cx, y + 82); G.text('Poções: ' + P.potions, cx + 12, y + 82, '#ffffff');
-      if (P.potions > 0) G.text(P.hp < P.maxHp ? 'X: beber poção' : 'Vida cheia', cx, y + 94, P.hp < P.maxHp ? '#7aff8a' : '#5a5670');
-      G.draw(ctx, 'iconCoin', cx, y + 108); G.text('Moedas: ' + P.coins, cx + 12, y + 108, '#ffd84a');
-      G.text('Tempo: ' + G.fmtTime(P.playTime), cx, y + 122, '#9a98b0');
-      if (G.quest) { G.draw(ctx, 'lens', cx - 1, y + 133); G.text('Lentes: ' + G.quest.lenses() + '/5', cx + 12, y + 135, '#7ae4ff'); }
-      if (P.flags.inferencia) G.draw(ctx, 'crystal_inferencia', cx + 68, y + 22);
-      G.text('Progresso total: ' + G.completion() + '%', cx, y + 150, '#9a98b0');
+      G.draw(ctx, 'iconCoin', ix, y + 110); G.text(String(P.coins), ix + 12, y + 110, '#ffd84a');
+      G.text('♥ ' + (P.heartPieces % 4) + '/4', ix + 52, y + 110, '#ff8a9a');
+      G.text(G.fmtTime(P.playTime), ix, y + 124, '#9a98b0');
+      G.text('Progresso ' + G.completion() + '%', ix, y + 136, '#9a98b0');
+      if (G.quest) { G.draw(ctx, 'lens', ix - 1, y + 146); G.text('Lentes ' + G.quest.lenses() + '/5', ix + 12, y + 148, '#7ae4ff'); }
     }
     drawMap(ctx, x, y, w, h) { if (G.drawMapTab) G.drawMapTab(ctx, x, y, w, h); }
     drawQuests(ctx, x, y, w, h) { if (G.drawQuestTab) G.drawQuestTab(ctx, x, y, w, h, this); }
@@ -789,10 +825,12 @@
       }
       // nível e XP
       const hy2 = 5 + Math.ceil(hearts / 10) * 9;
-      G.panel(ctx, 4, hy2, 22, 10, { r: 2, bgTop: '#2a5a8a', bg: '#14304a', corners: false, thin: true, border: '#7ae4ff' });
+      // o selo do nível cresce com dois dígitos, e a barra de XP anda junto
+      const nw = Math.max(22, G.textW('Nv' + P.level) + 7);
+      G.panel(ctx, 4, hy2, nw, 10, { r: 2, bgTop: '#2a5a8a', bg: '#14304a', corners: false, thin: true, border: '#7ae4ff' });
       G.text('Nv' + P.level, 7, hy2 + 2, '#ffffff', { shadow: false });
       const need = G.xpNeeded(P.level), k = Math.min(1, P.xp / need);
-      G.bar(ctx, 28, hy2 + 3, 40, 4, k, '#7ae4ff', '#2a8ad0');
+      G.bar(ctx, nw + 6, hy2 + 3, 40, 4, k, '#7ae4ff', '#2a8ad0');
       // item secundário
       const bx = 296, by = 4;
       if (P.items.bombs || P.items.beam || P.items.hook) {

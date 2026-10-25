@@ -12,7 +12,7 @@ A página inicial anuncia o jogo como novidade (`components/games/SigmaGameAnnou
 - As regras existentes em `firestore.rules` para `users/{userId}/**` já permitem acesso somente ao dono da conta. Não é necessário liberar uma coleção pública ou alterar regras.
 - Salvamento a cada 15 segundos fora de diálogos/transições, nos pontos originais do jogo, no botão **Salvar agora** e ao sair da página/ocultar o app. Escritas são agrupadas e enviadas em ordem.
 - Alterações pendentes ficam em `statai:game:lenda-de-sigma:v1:{uid}` no aparelho e são reenviadas quando a conexão voltar. O indicador só confirma o salvamento na conta após a resposta do Firestore.
-- A leitura tenta o servidor antes de abrir o jogo. Se falhar e não houver cópia da conta, a página oferece nova tentativa, preservando o save remoto. A chave genérica do jogo independente não é importada para contas do Stat AI.
+- A leitura tenta o servidor antes de abrir o jogo. Se falhar e não houver cópia da conta, a página oferece nova tentativa, preservando o save remoto. A chave genérica do jogo independente não é importada para contas do Stat AI. Aberta direto, fora do Stat AI, a página do jogo inicia sem aviso e guarda o progresso só na memória (nada vai para a conta).
 - **Continuar** restaura a posição no mundo ou a sala da masmorra. Combates, diálogos e enigmas não são serializados no meio da execução; a sala é reconstruída com o progresso permanente. **Novo Jogo** mantém a confirmação original e limpa o save da conta.
 
 O jogo é servido em `public/games/lenda-de-sigma`, fora do bundle React, e acompanha o build e a publicação padrão do app. As adaptações locais estão em `js/game.js` (armazenamento, retomada e escala em telas pequenas) e `js/stat-ai-bridge.js` (comunicação com o app); `index.html` carrega a ponte por último. A pasta de origem é preservada.
@@ -97,16 +97,59 @@ Arte em peças (`reiDado`, `histoColosso` e `boxSentinela` em `js/bossart.js`), 
 
 - **Créditos**: depois de "Obrigado por jogar", o estado `gancho` mostra um caco da máscara do Viés voando pelo Pântano à noite, o Portão do Amanhã acendendo ("DADOS RECEBIDOS... APRENDENDO.") e o cartão **A Lenda de Sigma 2 — em breve**.
 - **Formatura**: ao continuar depois da vitória, o Mestre Gauss ganha um "!" e entrega o **Capelo de Formatura** na praça, com os capelos voando.
-- **Capelo** (item da tecla C, entra no rodízio de Q): voa 6,5 tiles e volta como bumerangue; passa por cima de água, cercas, pedras e arbustos, para em árvores e paredes; causa 2 + nível da espada de dano (chefes só fazem "tim"), aciona alavancas, braseiros e potes e traz moedas e corações.
-- **Relíquias**: nove pedestais no meio d'água (laguinhos 5x5 cavados ou água que já existia), a 2 tiles da margem, que só o capelo alcança: 4 fragmentos de coração (lago, floresta, montanha, vila), 2 poções (pântano, vulcão), 2 Bolsas Binomiais (+5 bombas; planície, castelo) e 50 moedas (deserto). Flags `cap_<região>`. `G.HEART_PIECES_TOTAL` passou a 44.
+- **Capelo** (item da tecla C, entra no rodízio de Q): voa 6,5 tiles girando, com rastro de brilho e faíscas, e volta como bumerangue; passa por cima de água, cercas, pedras e arbustos, para em árvores e paredes; causa 2 + nível da espada de dano (chefes só fazem "tim"), aciona alavancas, braseiros e potes e traz moedas e corações. O **Capelo Dourado** voa 9 tiles e causa +2 de dano.
+- **Relíquias**: nove pedestais no meio d'água (laguinhos 5x5 cavados ou água que já existia), a 2 tiles da margem, que só o capelo alcança: 4 fragmentos de coração (lago, floresta, montanha, vila), 2 poções (pântano, vulcão), 2 Bolsas Binomiais (+5 bombas; planície, castelo) e 50 moedas (deserto). Flags `cap_<região>`. `G.HEART_PIECES_TOTAL` passou a 44 e, com as tumbas dos mestres no lugar de quatro fragmentos, ficou em 40.
 - **Poço das Estrelas** (praça da Vila Gauss): antes do Observatório, mostra estrelas de dia; depois dele (e da dica da Professora Gertrude), as estrelas formam uma coruja olhando para o sudoeste e o balde traz um fragmento de coração. O mapa passa a mostrar um "?" sobre a coruja.
-- **Coruja do Saber** (ilhota no canto sudoeste do Pântano de Bayes): visível desde o começo, dormindo. O capelo na cabeça dela a acorda; ela leva Sigma voando às Terras do Amanhã e traz de volta à margem.
-- **Terras do Amanhã** (`d8`): mapa de telas 3x3 montado pelo motor das masmorras, mas com chão a céu aberto (`themeAt` por sala via `map.temaSala`, temas `am_*`), sem inimigos. Áreas: Porto dos Dados (chegada, rio de bits), Vale das Medidas (Regressão: a lavradora prevê a altura de uma muda pela reta de mínimos quadrados e a muda cresce com o erro residual), Bosque das Decisões (Classificação: o jogador rotula 4 cartas e a máquina aprende as palavras dos spams), Costa das Marés (Séries Temporais: maré periódica e previsão da próxima maré alta), Praça do Horizonte, Oficina dos Autômatos (Aprendizado de Máquina: o autômato corrige a força pelo erro até acertar o cesto), Cidade das Mentes (IA: tradutor, pintora e um livro falante com modelo de bigramas treinado nas lições do jogo) e o **Portão do Amanhã**, fechado até a sequência.
-- Salvar e continuar dentro das Terras retoma na mesma tela; a saída por morte ou menu volta para a margem da coruja.
+- **Coruja do Saber** (ilhota no canto sudoeste do Pântano de Bayes): visível da margem desde o começo, dormindo do outro lado do lago. Chegar até ela pede todo o equipamento: parede rachada (bombas) → barreira de cristal (raio) → riacho de 2 tiles (botas) → argola do outro lado do lago, 4 tiles de água (gancho). Uma segunda argola, na trilha, serve para voltar da ilhota. O baú do fragmento do pântano fica no fim dessa trilha. O capelo na cabeça dela a acorda, mas só a menos de 6 tiles: da margem, ele bate na pedra e volta. Ela leva Sigma voando às Terras do Amanhã e, na volta, desce na ilhota.
+- **Terras do Amanhã** (`d8`): a **Cidade do Amanhã**, um mapa aberto de 56×36 tiles em dia de feira, sem inimigos (os inimigos ficam no Núcleo, atrás do portão). Usa o motor das masmorras com uma sala só (`map.livre`): `G.dun.update` faz a câmera seguir o herói, `G.dun.roomAt` devolve a sala única e `G.dun.drawMap` desenha o mapa da cidade. Cada bairro tem seu chão (`map.temaFn`, temas `am_*`).
+  - Lugares (cada um com uma função): Pouso da Coruja (chegada e volta), avenida com postes de neon até o **Portão do Amanhã**, Praça da Feira, Pavilhão da Inteligência Artificial, **Datacenter** (Big Data), canal com bits, Parque do Vale (horta e laguinho), Oficina (engrenagens, tanque de resfriamento e o A-7 treinando arremessos), costa com farol, **Café dos Dados** (a Barista Duda recupera toda a vida por 10 moedas), **Escola de Dados** (a Professora Íris dá as pistas dos totens e do Núcleo) e casas e escritórios sem letreiro. Drones sobrevoam a feira.
+  - As barracas não têm nome escrito: cada uma tem um painel holográfico animado da sua área (pontos e reta, cartas caindo em duas caixas, onda com previsão pontilhada, erro encolhendo). Café e escola mostram só um ícone na porta.
+  - **Totens de Dados** (ŷ, Σ, σ e r): dormem no meio da água (laguinho do parque, canal, mar e tanque da oficina). O capelo os acende; cada um explica o seu símbolo e manda um feixe de luz ao portão, que tem quatro encaixes nos pilares. Com os quatro acesos (`totem_*`), as grades se recolhem e o portão leva ao Núcleo.
+  - Gente: dez moradores andando, cada um com um uso real de previsão ou IA (padaria, relógio, câmera, raio-X, trânsito, viés nos dados), o Robô Guia, Vicente (que estranha o portão), o Robô Tradutor e a Robô Pintora.
+  - **Barracas e minijogos** (prêmio único na primeira vitória; depois, 20 moedas):
+
+    | Barraca | Minijogo | Vitória | Prêmio |
+    |---|---|---|---|
+    | Regressão (Lavradora Ana) | Ajuste a Reta: mover a reta e ver os resíduos e o erro total | erro ≤ 1,25 × mínimos quadrados | Contêiner de Coração |
+    | Classificação (Carteiro Tobias) | Triagem Relâmpago: 12 cartas, spam ou caixa contra o relógio, com matriz de confusão | 10 de 12 | Capelo Dourado |
+    | Séries Temporais (Faroleira Marina) | Previsão das Marés: continuar tendência e ciclo por 4 horas | erro médio ≤ 0,35 m | Amuleto das Marés (meio coração a cada 15 s) |
+    | Aprendizado de Máquina (Mestra Engrenagem) | Treine o Autômato: escolher a taxa de aprendizado (0,1, 0,5 ou 1,2) e ver a curva de erro | acertar o cesto em até 5 tentativas, 3 rodadas | Armadura de Silício (`armorLv` 3) |
+    | IA (Livro Falante, no Pavilhão) | Humano ou Máquina?: frases das lições × frases de um modelo de bigramas treinado só com a prosa das lições | 6 de 8 | Espada do Amanhã (`swordLv` 4) |
+    | Big Data (Engenheira Dara, no Datacenter) | Servidores em Paralelo: mandar 40 blocos de trabalho para 4 servidores sem nenhum passar do limite | todos processados | Tênis de Fibra Ótica (+20% de velocidade) |
+- Salvar e continuar dentro da cidade retoma no mesmo ponto; a saída por morte ou menu volta para a margem da coruja.
+- **Núcleo do Amanhã** (`d9`): mini-masmorra atrás do portão, com servidores de luz vermelha nas paredes e inimigos fortes (tier 2,5 a 3). Usa os prêmios da feira:
+  - Cofre de Dados: a chave flutua numa ilha no meio do abismo; o capelo a busca.
+  - Abismo de Dados: duas alavancas do outro lado erguem a ponte. Ficam a cerca de 120 px do ponto mais próximo: o capelo comum (104 px) não chega, o **Capelo Dourado** (144 px) chega.
+  - Duas salas de combate dão a chave pequena e a Chave do Guardião.
+  - **Viés 2.0**: holograma treinado com os dados da máscara, com escudo de dados que só o capelo quebra (depois, 3 s de espada). Ataca com anéis de pacotes, previsões mirando o herói e bots de ruído. Na metade da vida, foge pelos cabos (`boss_d9`), aparece o cartão **A Lenda de Sigma 2 — em breve** e surge o portal de volta para a cidade.
+  - **Escudo de Confiança** (`js/escudo.js`): depois da fuga, um baú (`d9_escudo`) aparece no salão. O escudo entra no lugar da espada (Enter → STATUS → X na linha da arma, depois das espadas). Bloqueia tudo o que vem de frente e dos lados (270°), desfaz tiros e empurra o atacante; só as costas (90°) tomam dano, como as caudas de um intervalo de confiança. Dano forçado (quedas, lava, a tumba que recusa) passa. O X dá um empurrão com o escudo (meio dano, corta arbustos) e não há golpe giratório.
+
+## Manuscritos dos Mestres (`js/manuscritos.js`)
+
+Sete tumbas pelo reino, cada uma com uma lápide que explica a regra. Empurrar ou puxar a tumba do jeito certo revela uma escadinha para uma cripta pequena; lá o fantasma do autor conta a história, faz uma pergunta (errou, ele explica e pergunta de novo) e entrega o manuscrito numa cena própria: pergaminho que desce e se abre, texto escrito com pena, selo Σ de cera e o rolo voando para o canto com a contagem "k/7". A tumba que recusa range, treme e tira um pouco de vida.
+
+| Mestre | Onde | Regra da tumba | Pergunta |
+|---|---|---|---|
+| Pascal e Fermat (1654) | Vulcão, atrás de parede rachada | duas tumbas (P e F): alinhadas com uma casa livre entre elas; a escada abre no meio | partida de 3 pontos parada em 2 a 1, com 64 moedas: 48 para quem tem 2 |
+| Jacob Bernoulli (1713) | ilhota do Lago Bernoulli | cada empurrão lança 100 moedas; no 10º (mil lances) ela cede | em 1000 lançamentos a proporção de caras fica mais perto de 50% do que em 10 |
+| Thomas Bayes (1763) | clareira no norte do Pântano | tumba com musgo; a lápide dá a priori (3/4 norte) e a verossimilhança do musgo: sul tem posterior 2/3 | moeda honesta × moeda de duas caras: 2/3 |
+| Laplace (1812) | oeste dos Picos Gaussianos (traje) | placas de 2 a 12 com o histograma das somas de dois dados; levar à soma 7 | soma de 100 dados: sino em torno de 350 |
+| Karl Pearson (1900) | sudeste do Deserto, atrás de barreira de cristal | pilares com 12, 9, 3 e 16 lançamentos de um d4 (esperado 10); empurrar para o 3 | o seis saiu 16 vezes em 60 lançamentos: (16 − 10)²/10 = 3,6 |
+| Ronald Fisher (1935) | horta cercada nos Campos de Pascal | quadrado latino 3×3 com duas casas vazias; a tumba de trigo vai para a casa certa (a outra avisa) | a senhora que prova o chá, 8 xícaras: chutando, 1 em 70 |
+| Leo Breiman (2001) | clareira no nordeste do Bosque, além do fosso | o capelo vira a alavanca e baixa a ponte; cinco árvores votam com setas e a maioria diz leste | por que a floresta erra menos que uma árvore |
+
+- Estado em `P.flags.tumbas[id]` (`escada` e posição final das tumbas) e a lista em `P.manuscritos`; `G.progressoExtra` soma os 7 ao progresso total.
+- Cada cripta é uma masmorra de uma sala (`cr_<id>`, tema escuro próprio, velas, decoração do autor e sarcófago com o emblema). A saída leva de volta ao lado da escada.
+- **Florence** (enfermaria da Vila Gauss) apresenta o acervo quando o herói tem um manuscrito ou dois cristais, conta os novos, dá pistas em rodízio dos que faltam e, com os sete, entrega a **Pena dos Mestres** (`swordLv` 5, a arma mais forte).
+- Menu: aba **MESTRES** (lista e detalhes de cada obra). Mapa: marcador de tumba (cinza; dourado depois do manuscrito).
+
+## Equipamento
+
+O menu (Enter → STATUS) mostra o herói com a armadura equipada, o equipamento e os itens. ▲▼ escolhe a linha e X troca a espada, troca a armadura ou bebe uma poção. `P.espadas` e `P.armaduras` guardam as peças conquistadas (`G.equip`); `swordLv`/`armorLv` são as equipadas. Saves antigos recebem todas as peças até a equipada. Cada espada tem lâmina e brilho próprios; cada armadura muda as cores da roupa do herói ou da heroína (couro marrom, malha prateada, silício escuro com detalhes ciano), gerada na primeira vez que aparece. Lojas e a têmpera do Tukey olham a melhor peça conquistada. A linha da arma tem sete casas: as cinco espadas (a 4 é a Espada do Amanhã), a **Pena dos Mestres** (`swordLv` 5, prêmio da Florence) e o **Escudo de Confiança** (`P.escudo`; `P.usaEscudo` quando está no braço).
 
 ## Controles
 
-Z pula, X ataca, conversa e confirma (J e Espaço também), C usa o item, Shift/Q/Tab trocam o item, Enter/Esc abrem o menu e M o mapa. Nos menus, Z cancela. No celular, os botões mostram as mesmas letras.
+Z pula (um pulinho desde o começo; com as Botas de Salto, o pulo alto que cruza buracos, riachos estreitos, cercas e pedras), X ataca, conversa e confirma (J e Espaço também), C usa o item, Shift/Q/Tab trocam o item, Enter/Esc abrem o menu e M o mapa. Nos menus, Z cancela. No celular, os botões mostram as mesmas letras.
 
 ### Celular
 
@@ -131,6 +174,8 @@ O botão **Silenciar / Ativar som**, no canto superior do jogo, e a tecla **V** 
 Empurre caminhando contra o bloco, como antes. Para puxar, fique de frente para ele e pressione **X** (ou J, Espaço, A do controle ou X/ação no celular). O personagem recua junto com o bloco por uma casa. O movimento respeita paredes, outros blocos, perigos, limites dos trilhos e blocos fixos. Puxar no gelo move apenas uma casa.
 
 ## Verificação
+
+Para jogar o pós-jogo sem refazer tudo: no localhost, `index.html?teste=pos-vies` (com `&heroina` para a heroína) começa com o save de quem acabou de vencer o Viés: seis cristais e o da Inferência, todos os itens até o Gancho, nível 14, parado na porta do castelo, antes da formatura (`js/teste-local.js`). O save fica só na memória: recarregar a página volta ao começo. Fora do localhost, ou sem o parâmetro, o arquivo não faz nada.
 
 ```powershell
 node scripts/test-game-save-session.cjs

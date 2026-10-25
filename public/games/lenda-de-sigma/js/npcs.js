@@ -79,8 +79,8 @@
         await say('Seu Mendel', 'Bem-{vindo|vinda} à minha loja! Sabia que o monge ^yGregor Mendel^0 descobriu as leis da hereditariedade contando ervilhas? Estatística pura!', { portrait: por });
       }
       await shop('Seu Mendel', por, SHOP_COMMON().concat([
-        { label: () => 'Espada de Ferro (ATQ+1)', price: 100, desc: 'Uma espada mais forte. Aumenta seu ataque em 1.', cond: () => p.swordLv === 0, buy: async () => { p.swordLv = 1; G.sfx('fanfare'); await G.ui.banner('swordIcon', 'ESPADA DE FERRO', 'Ataque aumentado! Veja seu novo dano no Diário de Dados.'); } },
-        { label: () => 'Couraça de Couro (DEF+1)', price: 90, desc: 'Reduz o dano recebido em 1/4 de coração.', cond: () => p.armorLv === 0, buy: async () => { p.armorLv = 1; G.sfx('fanfare'); await G.ui.banner('armorIcon', 'COURAÇA DE COURO', 'Defesa aumentada!'); } },
+        { label: () => 'Espada de Ferro (ATQ+1)', price: 100, desc: 'Uma espada mais forte. Aumenta seu ataque em 1.', cond: () => G.equip.melhorEspada() === 0, buy: async () => { G.equip.ganhar('espada', 1); G.sfx('fanfare'); await G.ui.banner('swordIcon', 'ESPADA DE FERRO', 'Ataque aumentado! Veja seu novo dano no Diário de Dados.'); } },
+        { label: () => 'Couraça de Couro (DEF+1)', price: 90, desc: 'Reduz o dano recebido em 1/4 de coração.', cond: () => G.equip.melhorArmadura() === 0, buy: async () => { G.equip.ganhar('armadura', 1); G.sfx('fanfare'); await G.ui.banner('armorIcon', 'COURAÇA DE COURO', 'Defesa aumentada!'); } },
         { label: () => 'Fragmento de Coração', price: 300, desc: 'Um raro fragmento. 4 fragmentos = 1 coração.', cond: () => !p.flags.shopHP1, buy: async () => { p.flags.shopHP1 = true; await G.give('heartPiece'); } }
       ]));
     },
@@ -156,7 +156,7 @@
     },
     traveler_lago: async () => {
       const p = P();
-      if (!p.items.boots) await say('Viajante', 'Vejo um baú naquela ilhota no meio do lago... O píer termina perto dela. Se eu soubesse PULAR...');
+      if (!p.items.boots) await say('Viajante', 'Vejo uma tumba antiga naquela ilhota no meio do lago... O píer termina perto dela. Se eu pulasse mais longe...');
       else await say('Viajante', 'Com essas botas você chega na ilhota! Pule do fim do píer.');
     },
 
@@ -246,8 +246,8 @@
         await say('Mercador Quetelet', 'Saudações, viajante! Meu nome vem de ^yAdolphe Quetelet^0, que estudou o "homem médio" e criou o índice de massa corporal.', { portrait: por });
       }
       await shop('Mercador Quetelet', por, SHOP_COMMON().concat([
-        { label: () => 'Espada de Prata (ATQ+1)', price: 260, desc: 'Lâmina brilhante. Exige a Espada de Ferro.', cond: () => p.swordLv === 1, buy: async () => { p.swordLv = 2; G.sfx('fanfare'); await G.ui.banner('swordIcon', 'ESPADA DE PRATA', 'Ataque aumentado!'); } },
-        { label: () => 'Cota de Malha (DEF+1)', price: 240, desc: 'Armadura resistente. Exige a Couraça de Couro.', cond: () => p.armorLv === 1, buy: async () => { p.armorLv = 2; G.sfx('fanfare'); await G.ui.banner('armorIcon', 'COTA DE MALHA', 'Defesa aumentada!'); } },
+        { label: () => 'Espada de Prata (ATQ+1)', price: 260, desc: 'Lâmina brilhante. Exige a Espada de Ferro.', cond: () => G.equip.melhorEspada() === 1, buy: async () => { G.equip.ganhar('espada', 2); G.sfx('fanfare'); await G.ui.banner('swordIcon', 'ESPADA DE PRATA', 'Ataque aumentado!'); } },
+        { label: () => 'Cota de Malha (DEF+1)', price: 240, desc: 'Armadura resistente. Exige a Couraça de Couro.', cond: () => G.equip.melhorArmadura() === 1, buy: async () => { G.equip.ganhar('armadura', 2); G.sfx('fanfare'); await G.ui.banner('armorIcon', 'COTA DE MALHA', 'Defesa aumentada!'); } },
         { label: () => 'Fragmento de Coração', price: 350, desc: 'Raríssimo no deserto.', cond: () => !p.flags.shopHP2, buy: async () => { p.flags.shopHP2 = true; await G.give('heartPiece'); } }
       ]));
     },

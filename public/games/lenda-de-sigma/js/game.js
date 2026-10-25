@@ -26,7 +26,18 @@
   // personagem escolhido no Novo Jogo ('heroi' ou 'heroina'); saves antigos ficam com o herói
   G.personagem = 'heroi';
   G.ehHeroina = () => G.personagem === 'heroina';
-  G.spriteHeroi = (traje = G.P && G.P.items.suit) => (G.ehHeroina() ? 'heroina' : 'hero') + (traje ? '_suit' : '');
+  // cores de cada armadura (o boneco é gerado na primeira vez que aparece); sem armadura, vale o Traje Térmico
+  const ARMADURA_VISUAL = [null,
+    { tunic: '#8a5a2a', trim: '#d8a860', belt: '#4a2a10', pants: '#4a3a2a', cape: '#6a3a1a', bracer: '#d8a860', emblem: '#e8c04a' },
+    { tunic: '#9aa4b8', trim: '#eef2fa', belt: '#4a4e5e', pants: '#3a3e4e', cape: '#3a5ab8', bracer: '#dce2ee', emblem: '#ffd84a' },
+    { tunic: '#1c2a4e', trim: '#5affd8', belt: '#0e1630', pants: '#141c34', cape: '#2a6ab8', bracer: '#5affd8', emblem: '#7ae4ff' }];
+  G.spriteHeroi = (traje = G.P && G.P.items.suit) => {
+    const base = G.ehHeroina() ? 'heroina' : 'hero', a = (G.P && G.P.armorLv) || 0, vis = ARMADURA_VISUAL[a];
+    if (!vis || !G.makeDoll) return base + (traje ? '_suit' : '');
+    const nome = base + '_a' + a;
+    if (!G.spr[nome + '_down0']) G.makeDoll(nome, Object.assign({}, G.CAST[base], vis, base === 'heroina' ? { hat: { type: 'bandana', color: vis.cape } } : {}));
+    return nome;
+  };
   // textos com '{masculino|feminino}' concordam com o personagem
   G.genero = s => (typeof s === 'string' && s.includes('{') ? s.replace(/\{([^{}|]*)\|([^{}|]*)\}/g, (_, m, f) => (G.ehHeroina() ? f : m)) : s);
   G.fmtTime = s => { s = Math.floor(s); const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, ss = s % 60; return (h ? h + 'h ' : '') + String(m).padStart(2, '0') + 'm ' + String(ss).padStart(2, '0') + 's'; };
@@ -38,6 +49,7 @@
     if (G.quest) { tot += G.QUEST_ORDER.length; got += G.QUEST_ORDER.filter(id => G.quest.done(id)).length; }
     tot += 1; if (P.flags.boss_d7) got++;
     tot += G.LESSON_ORDER.length; got += P.lessons.length;
+    for (const f of G.progressoExtra || []) { const [g, t] = f(); got += g; tot += t; }
     return Math.round(got / tot * 100);
   };
 
@@ -487,7 +499,7 @@
     G.weather.draw(ctx, c);
     if (G.player && G.player.cold) { ctx.fillStyle = 'rgba(200,230,255,' + (0.08 + 0.04 * Math.sin(G.time * 2)) + ')'; ctx.fillRect(0, 0, W, H); }
     G.light.vignette(ctx, m.kind === 'dungeon' ? 1 : 0.7);
-    if (m.kind === 'dungeon') { ctx.fillStyle = '#050308'; ctx.fillRect(0, 0, W, 8); }
+    if (m.kind === 'dungeon' && !m.livre) { ctx.fillStyle = '#050308'; ctx.fillRect(0, 0, W, 8); }
     if (G.P && G.player && G.P.hp > 0 && G.P.hp <= Math.max(2, G.P.maxHp * 0.25) && G.player.state !== 'dead') {
       const a = 0.22 + 0.14 * Math.sin(G.time * 6);
       const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, W * 0.62); g.addColorStop(0, 'rgba(255,0,40,0)'); g.addColorStop(1, 'rgba(200,0,30,' + a + ')');

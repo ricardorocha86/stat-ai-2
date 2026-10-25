@@ -147,7 +147,7 @@
       }
       // ilha com segredo (precisa pular)
       for (let y = cy - 1; y <= cy + 1; y++) for (let x = cx + 4; x <= cx + 6; x++) { setT(x, y, T.GROUND); prot[idx(x, y)] = 1; }
-      objects.push({ type: 'chest', x: (cx + 5) * 16, y: cy * 16, flag: 'ow_lake_island', contents: { type: 'heartPiece' } });
+      // (a ilha guarda a tumba de Jacob Bernoulli: manuscritos.js)
       // píer: de oeste até 2 tiles da ilha
       let px = cx + 1;
       while (px > R.ox + 8 && map.get(px, cy) === T.WATER) px--;
@@ -302,7 +302,6 @@
     obj('floresta', 9, 9, { type: 'sign', text: '^gBOSQUE DA MEDIANA^0\n"No meio de tudo, encontra-se o caminho."' });
     struct('floresta', 'hut', 30, 19);
     obj('floresta', 31, 22, { type: 'npc', spr: 'laplace', name: 'Eremita Laplace', script: 'laplace' });
-    enclosure('floresta', 40, 6, T.CRACKED, { type: 'heartPiece' }, 'ow_flor_hp');
     clearing('floresta', 17, 25, 7, 4, T.GROUND2);
     obj('floresta', 20, 26, { type: 'qblock', flag: 'ow_flor_q', contents: 'star' });
     obj('floresta', 6, 24, { type: 'save', id: 'floresta' });
@@ -328,7 +327,6 @@
     obj('deserto', 23, 11, { type: 'sign', text: '^yRUÍNAS DA DISPERSÃO^0\n"Nem todos os caminhos ficam perto da média."' });
     struct('deserto', 'tent', 7, 18);
     obj('deserto', 8, 21, { type: 'npc', spr: 'quetelet', name: 'Mercador Quetelet', script: 'quetelet' });
-    enclosure('deserto', 40, 24, T.BARRIER, { type: 'heartPiece' }, 'ow_des_hp');
     obj('deserto', 14, 8, { type: 'oracle', flag: 'ow_des_oracle', topic: 'all', lv: 2, repeatable: true, coins: 15 });
     obj('deserto', 34, 16, { type: 'save', id: 'deserto' });
     obj('deserto', 18, 26, { type: 'pipe', id: 'deserto', name: 'Deserto da Dispersão' });
@@ -336,7 +334,6 @@
     // ---------------- VULCÃO ----------------
     struct('vulcao', 'cave', 22, 5, { door: 'd4' });
     obj('vulcao', 21, 9, { type: 'sign', text: '^rABISMO DO ACASO^0\n"Aqui, tudo depende da sorte... ou será da probabilidade?"' });
-    enclosure('vulcao', 39, 22, T.LAVA, { type: 'heartPiece' }, 'ow_vul_hp');
     obj('vulcao', 8, 24, { type: 'save', id: 'vulcao' });
     obj('vulcao', 12, 12, { type: 'pipe', id: 'vulcao', name: 'Vulcão do Acaso' });
 
@@ -634,10 +631,12 @@
       if (G.drawMapExtra) G.drawMapExtra(ctx, ox, oy, sc, seenAt);
       const p = G.player;
       if (p && G.map.kind === 'overworld' && Math.floor(G.time * 4) % 2 === 0) { const px = Math.round(ox + p.cx / 16 * sc), py = Math.round(oy + p.cy / 16 * sc); G.rect(ctx, px - 2, py - 2, 5, 5, '#ffffff'); G.rect(ctx, px - 1, py - 1, 3, 3, '#ff3a3a'); }
-      const leg = '■ salvar   ■ cano   nº masmorra   ! missão', lx0 = x + w / 2 - Math.floor(G.textW(leg) / 2);
+      const leg = '■ salvar   ■ cano   nº masmorra   ! missão   ■ tumba', lx0 = x + w / 2 - Math.floor(G.textW(leg) / 2);
       G.text(leg, x + w / 2, oy + mh + 4, '#9a98b0', { align: 'center' });
       G.rect(ctx, lx0, oy + mh + 5, 5, 5, '#7ae4ff'); G.rect(ctx, lx0 + G.textW('■ salvar   '), oy + mh + 5, 5, 5, '#3ad04a');
       G.text('!', lx0 + G.textW('■ salvar   ■ cano   nº masmorra   '), oy + mh + 4, '#ffd84a');
+      const tx0 = lx0 + G.textW('■ salvar   ■ cano   nº masmorra   ! missão   ');
+      G.rect(ctx, tx0, oy + mh + 4, 5, 6, '#1b1428'); G.rect(ctx, tx0 + 1, oy + mh + 5, 3, 4, '#ffd84a');
     }
   };
   G.cam = { x: 0, y: 0 };

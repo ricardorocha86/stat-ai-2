@@ -49,11 +49,12 @@
   const boot = G.boot;
   G.boot = () => hydrated.then(() => { boot(); if (G.touch) G.touch.apply(); send('started'); });
   addEventListener('load', () => {
+    // aberta direto (fora do Stat AI), a página joga sem aviso e sem salvar na conta: o save fica só na memória
     if (parent === window) {
-      const hint = document.createElement('p');
-      hint.textContent = 'Entre no Stat AI e abra Jogos → A Lenda de Sigma para jogar com seu progresso salvo.';
-      hint.style.cssText = 'position:fixed;color:#eee;font:16px sans-serif;padding:24px;text-align:center';
-      document.body.appendChild(hint);
+      // no localhost, ?teste=pos-vies traz um save pronto (teste-local.js)
+      const teste = G.saveDeTeste && G.saveDeTeste();
+      if (teste) values.set(SAVE, teste);
+      initialized = true; resolveInit();
     } else send('ready');
   });
 })(window.G);
