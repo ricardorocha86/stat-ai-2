@@ -92,6 +92,11 @@
         const P0 = P(), names = ['ESPADA DE MADEIRA', 'ESPADA DE FERRO', 'ESPADA DE PRATA', 'ESPADA GAUSSIANA'];
         const nv = G.equip.melhorEspada() + 1;
         if (nv <= 3) { G.equip.ganhar('espada', nv); await G.ui.banner('swordIcon', 'TÊMPERA: ' + names[nv] + '!', 'O Ferreiro Tukey aprimorou sua lâmina. Ataque +1!', { color: '#ffa24a' }); }
+        // já com uma espada melhor, mas sem a Gaussiana: ela entra na coleção sem trocar a do corpo
+        else if (!G.equip.tem('espada', 3)) {
+          const equipou = G.equip.guardar('espada', 3);
+          await G.ui.banner('espIcon3', 'ESPADA GAUSSIANA!', 'O Ferreiro Tukey forjou a lâmina que faltava na sua coleção. ' + (equipou ? 'Ataque aumentado!' : 'Para usar: Enter → STATUS → X na linha da arma.'), { color: '#ffa24a' });
+        }
         else { P0.coins = Math.min(999, P0.coins + 100); await G.ui.banner('coinRed', 'PAGAMENTO DO FERREIRO', 'Sua espada já é perfeita! Tukey pagou 100 moedas pelo serviço.', { color: '#ffa24a' }); }
       }
     } finally {
@@ -632,6 +637,11 @@
   }
   N.tukey = async () => {
     const p = P(), por = 'tukey_down0', nm = 'Ferreiro Tukey';
+    // a Gaussiana só saía da têmpera: com a missão feita, Tukey ainda a forja para quem tem a de Prata (ou melhor)
+    if (QS.done('forja') && !G.equip.tem('espada', 3)) {
+      if (G.equip.melhorEspada() >= 2) { await say(nm, 'Ainda guardo o molde da ^yEspada Gaussiana^0, a de peso perfeito, bem no centro do sino. Deixe-me forjá-la para você!', { portrait: por }); await G.give('tempera'); return; }
+      await say(nm, 'Traga uma ^yEspada de Prata^0 e eu forjo a ^yGaussiana^0 a partir dela. O Mercador Quetelet vende a de Prata aqui no deserto.', { portrait: por }); return;
+    }
     if (QS.done('forja')) { await say(nm, G.pick(['O boxplot virou meu melhor ajudante: bateu o olho, achou o defeito!', 'Metade das espadas cabe dentro da caixa, entre Q1 e Q3. O resto são os bigodes!', 'John Tukey dizia: "um bom gráfico mostra o que você nem sabia procurar".']), { portrait: por }); return; }
     if (!QS.st('forja')) {
       await say(nm, 'Uff, que calor! Sou o Ferreiro Tukey. Forjei ^y9 espadas^0 que deviam pesar quase a mesma coisa...', { portrait: por });

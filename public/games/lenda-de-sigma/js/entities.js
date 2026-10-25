@@ -44,6 +44,16 @@
     melhorEspada() { return Math.max(...this.espadas()); },
     melhorArmadura() { return Math.max(...this.armaduras()); },
     ganhar(tipo, lv) { const l = tipo === 'espada' ? this.espadas() : this.armaduras(); if (!l.includes(lv)) { l.push(lv); l.sort((a, b) => a - b); } G.P[tipo === 'espada' ? 'swordLv' : 'armorLv'] = lv; },
+    tem(tipo, lv) { return (tipo === 'espada' ? this.espadas() : this.armaduras()).includes(lv); },
+    // peça que chega fora de ordem (comprada ou forjada depois de uma melhor): entra na coleção e só é
+    // equipada se for melhor que a do corpo (com o escudo no braço, nenhuma espada o tira); devolve se equipou
+    guardar(tipo, lv) {
+      const escudo = tipo === 'espada' && G.P.escudo && G.P.usaEscudo;
+      if (!escudo && lv > G.P[tipo === 'espada' ? 'swordLv' : 'armorLv']) { this.ganhar(tipo, lv); return true; }
+      const l = tipo === 'espada' ? this.espadas() : this.armaduras();
+      if (!l.includes(lv)) { l.push(lv); l.sort((a, b) => a - b); }
+      return false;
+    },
     trocar(tipo) { const l = tipo === 'espada' ? this.espadas() : this.armaduras(), k = tipo === 'espada' ? 'swordLv' : 'armorLv'; const i = l.indexOf(G.P[k]); G.P[k] = l[(i + 1) % l.length]; return l.length > 1; }
   };
   G.rollDamage = (mul = 1) => {

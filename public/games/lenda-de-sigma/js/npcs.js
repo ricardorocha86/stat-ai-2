@@ -39,6 +39,17 @@
     { label: () => 'Bolsa Grande de Bombas', price: 120, desc: 'Carregue até 20 bombas!', cond: () => P().items.bombs && P().bombMax < 20, buy: async () => { P().bombMax = 20; P().bombs = 20; await G.ui.banner('bomb', 'BOLSA GRANDE', 'Agora você carrega até 20 bombas.'); } }
   ];
 
+  // espada ou armadura à venda: fica na loja enquanto faltar na coleção (a partir da peça anterior),
+  // mesmo depois de uma melhor; comprada fora de ordem, vai para o equipamento sem trocar a do corpo
+  const peca = (tipo, lv, label, price, desc, titulo, efeito) => ({
+    label: () => label, price, desc,
+    cond: () => !G.equip.tem(tipo, lv) && (tipo === 'espada' ? G.equip.melhorEspada() : G.equip.melhorArmadura()) >= lv - 1,
+    buy: async () => {
+      const equipou = G.equip.guardar(tipo, lv); G.sfx('fanfare');
+      await G.ui.banner((tipo === 'espada' ? 'espIcon' : 'armIcon') + lv, titulo, equipou ? efeito : 'Guardada no equipamento. Para usar: Enter → STATUS → X na linha ' + (tipo === 'espada' ? 'da arma.' : 'da armadura.'));
+    }
+  });
+
   const N = G.NPCS = {
     generic: async (n) => { await say(n.name, 'Que dia bonito, não acha?'); },
 
@@ -79,8 +90,8 @@
         await say('Seu Mendel', 'Bem-{vindo|vinda} à minha loja! Sabia que o monge ^yGregor Mendel^0 descobriu as leis da hereditariedade contando ervilhas? Estatística pura!', { portrait: por });
       }
       await shop('Seu Mendel', por, SHOP_COMMON().concat([
-        { label: () => 'Espada de Ferro (ATQ+1)', price: 100, desc: 'Uma espada mais forte. Aumenta seu ataque em 1.', cond: () => G.equip.melhorEspada() === 0, buy: async () => { G.equip.ganhar('espada', 1); G.sfx('fanfare'); await G.ui.banner('swordIcon', 'ESPADA DE FERRO', 'Ataque aumentado! Veja seu novo dano no Diário de Dados.'); } },
-        { label: () => 'Couraça de Couro (DEF+1)', price: 90, desc: 'Reduz o dano recebido em 1/4 de coração.', cond: () => G.equip.melhorArmadura() === 0, buy: async () => { G.equip.ganhar('armadura', 1); G.sfx('fanfare'); await G.ui.banner('armorIcon', 'COURAÇA DE COURO', 'Defesa aumentada!'); } },
+        peca('espada', 1, 'Espada de Ferro (ATQ+1)', 100, 'Uma espada mais forte. Aumenta seu ataque em 1.', 'ESPADA DE FERRO', 'Ataque aumentado! Veja seu novo dano no Diário de Dados.'),
+        peca('armadura', 1, 'Couraça de Couro (DEF+1)', 90, 'Reduz o dano recebido em 1/4 de coração.', 'COURAÇA DE COURO', 'Defesa aumentada!'),
         { label: () => 'Fragmento de Coração', price: 300, desc: 'Um raro fragmento. 4 fragmentos = 1 coração.', cond: () => !p.flags.shopHP1, buy: async () => { p.flags.shopHP1 = true; await G.give('heartPiece'); } }
       ]));
     },
@@ -246,8 +257,8 @@
         await say('Mercador Quetelet', 'Saudações, viajante! Meu nome vem de ^yAdolphe Quetelet^0, que estudou o "homem médio" e criou o índice de massa corporal.', { portrait: por });
       }
       await shop('Mercador Quetelet', por, SHOP_COMMON().concat([
-        { label: () => 'Espada de Prata (ATQ+1)', price: 260, desc: 'Lâmina brilhante. Exige a Espada de Ferro.', cond: () => G.equip.melhorEspada() === 1, buy: async () => { G.equip.ganhar('espada', 2); G.sfx('fanfare'); await G.ui.banner('swordIcon', 'ESPADA DE PRATA', 'Ataque aumentado!'); } },
-        { label: () => 'Cota de Malha (DEF+1)', price: 240, desc: 'Armadura resistente. Exige a Couraça de Couro.', cond: () => G.equip.melhorArmadura() === 1, buy: async () => { G.equip.ganhar('armadura', 2); G.sfx('fanfare'); await G.ui.banner('armorIcon', 'COTA DE MALHA', 'Defesa aumentada!'); } },
+        peca('espada', 2, 'Espada de Prata (ATQ+1)', 260, 'Lâmina brilhante. Exige a Espada de Ferro (ou melhor).', 'ESPADA DE PRATA', 'Ataque aumentado!'),
+        peca('armadura', 2, 'Cota de Malha (DEF+1)', 240, 'Armadura resistente. Exige a Couraça de Couro (ou melhor).', 'COTA DE MALHA', 'Defesa aumentada!'),
         { label: () => 'Fragmento de Coração', price: 350, desc: 'Raríssimo no deserto.', cond: () => !p.flags.shopHP2, buy: async () => { p.flags.shopHP2 = true; await G.give('heartPiece'); } }
       ]));
     },
