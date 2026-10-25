@@ -200,7 +200,8 @@
         if (e.onCapelo) { if (G.overlap(box, e.capeloBox ? e.capeloBox() : e)) { this.acertos.add(e); e.onCapelo(this); this.fase = 'volta'; } continue; }
         if (e.isEnemy && G.overlap(box, e.hurtbox ? e.hurtbox() : e)) {
           this.acertos.add(e); this.fase = 'volta'; G.fx.spark(this.cx, this.cy, '#ffffff', 6);
-          if (e.isBoss) G.sfx('tink'); else e.onHit(2 + (P().swordLv || 0) + (dourado() ? 2 : 0), this.cx, this.cy, 'capelo', false);
+          // chefes só fazem "tim", menos os que reagem ao capelo (o escudo do Viés 2.0)
+          if (e.isBoss && !e.senteCapelo) G.sfx('tink'); else e.onHit(2 + (P().swordLv || 0) + (dourado() ? 2 : 0), this.cx, this.cy, 'capelo', false);
           continue;
         }
         if (!this.carga && e instanceof G.Pickup && G.overlap(box, e)) { this.carga = e; this.fase = 'volta'; G.sfx('clink'); continue; }
@@ -1642,7 +1643,7 @@
     constructor(x, y, arena) {
       // sem golpe crítico com pergunta: o desafio dele é o escudo, e a fuga na metade da vida encerra a luta
       super(x, y, 28, 14, { hp: 90, name: 'VIÉS 2.0', topic: 'd6', dmg: 4, arena, thr: [], xp: 150 });
-      this.escudo = true; this.fase = 0; this.alvo = [x, y];
+      this.escudo = true; this.fase = 0; this.alvo = [x, y]; this.senteCapelo = true;
     }
     hurtbox() { return { x: this.x - 4, y: this.y - 44, w: this.w + 8, h: 58 }; }
     contactBox() { return { x: this.x + 4, y: this.y - 6, w: this.w - 8, h: this.h + 6 }; }
@@ -1651,7 +1652,9 @@
       if (this.dead || this.dying || this.fugindo || this.st === 'intro') return false;
       if (this.escudo) {
         if (kind === 'capelo') { this.escudo = false; this.stun = 3.2; G.sfx('shock'); G.flash('#7ae4ff', 0.3, 0.4); G.fx.burst(this.cx, this.y - 20, ['#7ae4ff', '#ffffff'], 24, 90); G.ui.toast('O escudo de dados quebrou! Agora, a espada!', '#7aff8a'); return true; }
-        if (!this.avisou) { this.avisou = true; G.ui.toast('Um escudo de dados! A espada não passa... talvez algo que voe e volte.', '#ffd84a'); }
+        // a primeira dica é um enigma; se o herói insistir com a espada, ela fica explícita
+        if (!this.avisou) { this.avisou = true; this.avisoT = G.time; G.ui.toast('Um escudo de dados! A espada não passa... talvez algo que voe e volte.', '#ffd84a'); }
+        else if (G.time - this.avisoT > 8) { this.avisoT = G.time; G.ui.toast('A espada não passa do escudo. Jogue o CAPELO nele (tecla C) e bata enquanto ele estiver tonto!', '#ffd84a'); }
       }
       const res = super.onHit(d, sx, sy, kind, crit);
       if (!this.fugindo && this.hp <= this.maxHp * 0.5) this.fugir();
