@@ -150,10 +150,12 @@
         P.bossKey[G.map.id] = true; if (p) p.holdItem = 'bossKey'; G.sfx('fanfare');
         await G.ui.banner('bossKey', 'CHAVE DO GUARDIÃO', 'Abre a grande porta do chefe desta masmorra!');
       } else if (kind === 'heartPiece') {
-        P.heartPieces++; if (p) p.holdItem = 'heartPiece'; G.sfx('itemget');
+        // o ícone mostra quanto do coração já está montado: um quarto, metade, três quartos ou inteiro
+        P.heartPieces++; G.sfx('itemget');
         const k = P.heartPieces % 4;
+        if (p) p.holdItem = k ? 'heartPiece' + k : 'heartContainer';
         if (k === 0) { P.maxHp += 4; P.hp = P.maxHp; await G.ui.banner('heartContainer', 'CORAÇÃO COMPLETO!', '4 fragmentos formaram um novo coração! Vida máxima aumentou.'); }
-        else await G.ui.banner('heartPiece', 'FRAGMENTO DE CORAÇÃO', 'Junte 4 fragmentos para ganhar um coração extra. Você tem ' + k + '/4.');
+        else await G.ui.banner('heartPiece' + k, 'FRAGMENTO DE CORAÇÃO', 'Você já montou ' + ['', 'um quarto', 'metade', 'três quartos'][k] + ' de um coração (' + k + '/4). Com 4 fragmentos, ele fica inteiro e sua vida máxima aumenta.');
       } else if (kind === 'heartContainer') {
         P.maxHp += 4; P.hp = P.maxHp; if (p) p.holdItem = 'heartContainer'; G.sfx('fanfare');
         await G.ui.banner('heartContainer', 'CONTÊINER DE CORAÇÃO', 'Sua vida máxima aumentou em um coração!');

@@ -123,6 +123,27 @@ Arte em peças (`reiDado`, `histoColosso` e `boxSentinela` em `js/bossart.js`), 
   - Duas salas de combate dão a chave pequena e a Chave do Guardião.
   - **Viés 2.0**: holograma treinado com os dados da máscara, com escudo de dados que só o capelo quebra (depois, 3 s de espada). Ataca com anéis de pacotes, previsões mirando o herói e bots de ruído. Na metade da vida, foge pelos cabos (`boss_d9`), aparece o cartão **A Lenda de Sigma 2 — em breve** e surge o portal de volta para a cidade.
   - **Escudo de Confiança** (`js/escudo.js`): depois da fuga, um baú (`d9_escudo`) aparece no salão. O escudo entra no lugar da espada (Enter → STATUS → X na linha da arma, depois das espadas). Bloqueia tudo o que vem de frente e dos lados (270°), desfaz tiros e empurra o atacante; só as costas (90°) tomam dano, como as caudas de um intervalo de confiança. Dano forçado (quedas, lava, a tumba que recusa) passa. O X dá um empurrão com o escudo (meio dano, corta arbustos) e não há golpe giratório.
+  - **Égide e Investida** (`js/investida.js`): segurar o X depois do empurrão ergue a Égide, um sino de Gauss de luz à frente do escudo. De guarda, o herói anda a meia velocidade sem virar. Em 0,8 s o miolo do sino se enche de ±1σ (68%) até ±2σ (95%), com as marcas de 1σ e 2σ e o rótulo ao lado. Tiros que chegam de frente voltam 1,4× mais rápidos e ferem inimigos (`stats.rebatidas`). Soltar com o sino cheio dispara a **Investida**: arrancada de 0,36 s (250 px/s, uns 80 px) com rastro azul. Ela dá 2,5× de dano de giro em quem estiver na frente e rebate tiros. O herói fica invulnerável durante a arrancada, e bater numa parede dá um baque e um recuo. Soltar antes de encher só baixa o escudo.
+
+## Revanche nas masmorras (`js/ampulheta.js`)
+
+A **Ampulheta do Recomeço** aparece na sala de entrada de toda masmorra com o guardião vencido (d1 a d7 e d9), num pedestal do lado oposto à saída. Com X, Sigma escolhe "Virar a ampulheta". Ela levita, gira 180° e solta a onda do tempo: a tela fica cinza e sépia, e um relógio cresce com os ponteiros andando para trás. A masmorra recarrega e o herói aparece de frente para a ampulheta.
+
+- **O que volta**: portas trancadas, enigmas resolvidos, salas limpas, avisos lidos, os baús de chaves, as chaves pequenas (`P.keys[did] = 0`) e a Chave do Guardião. No d6, a revanche começa direto no Viés Absoluto (`vies_f1`).
+- **O que não volta**: itens, tesouros, fragmentos e contêineres de coração, cristal e mapa já vistos.
+- **Na revanche** (`<did>_revanche`, `G.emRevanche`): a areia cai, a entrada mostra "revanche" e o mapa marca o chefe com "!". O guardião volta no salão. O Viés Absoluto surge sem a cena da máscara, e a fuga do Viés 2.0 conta como vitória.
+- **Vitória**: não há final, cristal nem contêiner. As moedas chovem do guardião, quicam e voam até o herói (cada uma paga ao chegar; a bolsa para em 999). Depois sai um portal de volta, que só se arma quando o herói sai de cima dele. Dá para virar de novo quando quiser.
+
+| Masmorra | Prêmio (`G.PREMIO_REVANCHE`) |
+|---|---|
+| d1 Templo da Média | 40 |
+| d2 Bosque da Mediana | 60 |
+| d3 Ruínas da Dispersão | 80 |
+| d4 Abismo do Acaso | 100 |
+| d5 Torre das Distribuições | 120 |
+| d7 Observatório da Inferência | 150 |
+| d6 Castelo do Viés | 200 |
+| d9 Núcleo do Amanhã | 250 |
 
 ## Manuscritos dos Mestres (`js/manuscritos.js`)
 
@@ -155,6 +176,28 @@ O menu (Enter → STATUS) mostra o herói com a armadura equipada, o equipamento
 - **Nenhuma peça se perde**: as lojas vendem qualquer peça que falte na coleção, mesmo depois de uma melhor, e, com a missão feita, o Tukey forja a Gaussiana para quem tem a de Prata (ou melhor) e não a tem. Antes disso, ele indica o Quetelet. Peça que chega fora de ordem passa por `G.equip.guardar`: entra na coleção e só é equipada se for melhor que a do corpo (com o escudo no braço, nenhuma espada o tira). O aviso diz como trocar pelo menu.
 
 - **Onda Sigma** (`js/onda.js`): o golpe giratório carregado (segurar X depois do golpe por 0,75 s) solta uma magia circular. Enquanto carrega, o anel de 3σ se risca tracejado no chão; quando a carga fica pronta, aparecem também os de 1σ e 2σ. Ao soltar, um círculo mágico se desenha em volta do herói, com borda dupla, 2σ tracejado com hexagrama, 1σ com raios e runas (Σ μ σ √ χ ± ≈) girando. Junto vêm uma coluna de luz e três ondas de choque, uma por desvio-padrão (σ = 20 px, chão achatado a 0,75), cada uma com o rótulo ao chegar: ±1σ 68%, ±2σ 95%, ±3σ 99,7%. Cada inimigo leva o golpe da faixa onde está, quando a onda dela passa: 2× até 1σ, 1,5× até 2σ e 1× até 3σ. Quem a lâmina já acertou não leva de novo. A onda empurra os inimigos para fora (chefes incluídos, pelas regras de vulnerabilidade de cada um), desfaz tiros inimigos até 3σ e corta o mato até 2σ (na masmorra, só na sala atual). As cores seguem a espada equipada, a magia ilumina as salas escuras e tem som próprio (`G.SFX.onda`: baque e um sino por anel). Com o escudo não há giro, então não há onda.
+
+## Corações
+
+- **Barra de vida em quartos**: cada coração tem 4 HP e se divide em quatro quartos com costura escura. Cada ponto de dano tira um quarto (ordem: inferior esquerdo, inferior direito, superior direito, superior esquerdo). O quarto perdido pisca branco e cai. Com pouca vida, o último coração pulsa.
+- **Fragmentos**: ao pegar um fragmento, o ícone e o aviso mostram quanto do coração já está montado: um quarto (1/4), metade (2/4) ou três quartos (3/4). O quarto fragmento vira um contêiner inteiro. O menu de pausa mostra o mesmo ícone com "k/4".
+- **Máximo: 20 corações (80 HP)**, exatos = 3 iniciais + 7 contêineres + 40 fragmentos ÷ 4.
+  - Contêineres: os guardiões do d1, d2, d3, d4, d5 e d7, mais o Ajuste a Reta. O d6 não dá contêiner, e o Viés 2.0 só marca a fuga.
+  - Fragmentos (`G.HEART_PIECES_TOTAL` = 40):
+
+    | Origem | Fragmentos |
+    |---|---|
+    | masmorras | 16 |
+    | mundo | 4 |
+    | fossos do observatório | 3 |
+    | minijogos | 3 |
+    | moradores e lojas | 5 |
+    | missões | 4 |
+    | Amanhã (4 relíquias + Poço) | 5 |
+
+## Vila Gauss protegida
+
+O centro da Vila Gauss (casas, praça e moradores; tiles 10 a 38 × 5 a 27 da região, `G.naVila`) não aceita inimigos. `G.rectBlocked` barra qualquer inimigo na borda, e tiros inimigos se desfazem ao entrar. Quem for parar lá dentro (empurrão, nascimento) volta ao último ponto de fora ou some numa fumaça. O templo, o oráculo e os blocos "?" ficam fora da zona.
 
 ## Controles
 

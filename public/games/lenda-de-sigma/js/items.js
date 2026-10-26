@@ -55,6 +55,17 @@
     SPR.heartFull = mk(9, 8, 6.6, false, 7.5);
     SPR.heartEmpty = mk(9, 8, 6.6, true, 7.5);
     SPR.heartPick = SPR.heartFull;
+    // quartos do coração do HUD (alto-esq., alto-dir., baixo-dir., baixo-esq.) e a costura entre eles
+    {
+      const f = SPR.heartFull, w = f.width, h = f.height, mx = w / 2, my = h / 2;
+      [[0, 0], [mx, 0], [mx, my], [0, my]].forEach(([x, y], q) => {
+        const c = G.acanvas(G.lw(f), G.lh(f)); c.getContext('2d').drawImage(f, x, y, mx, my, x, y, mx, my); SPR['heartQ' + q] = c;
+      });
+      const c = G.acanvas(G.lw(f), G.lh(f)), g = c.getContext('2d');
+      g.drawImage(f, 0, 0); g.globalCompositeOperation = 'source-in'; g.fillStyle = 'rgba(26,8,16,0.8)';
+      g.beginPath(); g.rect(mx - 1, 0, 1, h); g.rect(0, my, w, 1); g.fill();
+      SPR.heartCostura = c;
+    }
     // contêiner (grande, dourado)
     {
       const p = P(16, 16), cx = 16, cy = 15, s = 11.5;
@@ -63,14 +74,18 @@
       p.outline({ color: '#ffe060' }); p.outline({ color: '#7a4a10' });
       SPR.heartContainer = p.toCanvas();
     }
-    // fragmento (um quarto faltando)
-    {
-      const p = P(16, 16), cx = 16, cy = 15, s = 11.5, m = heartMask(cx, cy, s);
-      p.mask((x, y) => m(x, y) && !(x >= cx && y < cy + 1), (x, y) => { const nx = (x + 0.5 - cx) / s, ny = (y + 0.5 - cy) / s; return nx < -0.25 && ny < -0.1 && ny > -0.75 ? red[3] : (ny > 0.5) ? red[1] : red[2]; });
-      p.mask((x, y) => m(x, y) && x >= cx && y < cy + 1, '#5a3a4a80');
+    // fragmentos: k quartos acesos (1 = um quarto, 2 = metade, 3 = três quartos), na mesma ordem do HUD
+    // (relógio a partir do alto à esquerda); os quartos que faltam ficam como vidro escuro, com costura
+    for (let k = 1; k <= 3; k++) {
+      const p = P(16, 16), cx = 16, cy = 15, s = 11.5, m = heartMask(cx, cy, s), cyq = cy + 1;
+      const quarto = (x, y) => (y < cyq ? (x < cx ? 0 : 1) : (x < cx ? 3 : 2));
+      p.mask((x, y) => m(x, y) && quarto(x, y) < k, (x, y) => { const nx = (x + 0.5 - cx) / s, ny = (y + 0.5 - cy) / s; return nx < -0.25 && ny < -0.1 && ny > -0.75 ? red[3] : (ny > 0.5) ? red[1] : red[2]; });
+      p.mask((x, y) => m(x, y) && quarto(x, y) >= k, (x, y) => ((y + 0.5 - cy) / s < -0.2 ? '#6a4a6ae0' : '#523854e0'));
+      p.mask((x, y) => m(x, y) && (x === cx - 1 || y === cyq - 1), '#3a0a18');
       p.outline({ color: '#ffe060' });
-      SPR.heartPiece = p.toCanvas();
+      SPR['heartPiece' + k] = p.toCanvas();
     }
+    SPR.heartPiece = SPR.heartPiece1; // o fragmento solto no mundo é um quarto de coração
   }
   function keys() {
     const mkKey = (ramp, big) => {

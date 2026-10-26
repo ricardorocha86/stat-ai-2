@@ -4,7 +4,8 @@
 //  no lugar da espada (Enter → STATUS, linha da arma), bloqueia tudo o
 //  que vem de frente e dos lados; só as costas ficam expostas, como as
 //  caudas que um intervalo de confiança deixa de fora. O X dá um
-//  empurrão com o escudo (meio golpe, que também corta arbustos).
+//  empurrão com o escudo (meio golpe, que também corta arbustos);
+//  segurar o X ergue a Égide e solta a Investida (investida.js).
 // =====================================================================
 (function (G) {
   const TS = 16;
@@ -58,7 +59,7 @@
     G.cutscene++;
     try {
       P().escudo = true; G.sfx('fanfare'); await G.wait(0.3);
-      await G.ui.banner('escudoIcon', 'ESCUDO DE CONFIANÇA!', 'Use no lugar da espada: Enter → STATUS → X na linha da arma. Bloqueia tudo o que vem de frente e dos lados; só as costas ficam expostas, como as caudas de um intervalo de confiança.', { color: '#7ae4ff' });
+      await G.ui.banner('escudoIcon', 'ESCUDO DE CONFIANÇA!', 'Use no lugar da espada: Enter → STATUS → X na linha da arma. Bloqueia tudo o que vem de frente e dos lados; só as costas ficam expostas, como as caudas de um intervalo de confiança. SEGURE ^yX^0 para erguer a Égide e solte com o sino cheio para a ^cInvestida^0!', { color: '#7ae4ff' });
     } finally { G.cutscene--; if (p && p.state === 'hold') { p.state = 'normal'; p.holdItem = null; } }
   };
   const iconeBau = G.Chest.prototype.icon;

@@ -1165,7 +1165,7 @@
         }
         if (vis) {
           let icon = '';
-          if (r.type === 'boss') icon = P.flags['boss_' + did] ? '★' : '!';
+          if (r.type === 'boss') icon = P.flags['boss_' + did] && !P.flags[did + '_revanche'] ? '★' : '!';
           else if (r.type === 'item') icon = G.flag(did + '_item') ? '' : '?';
           else if (r.type === 'start') icon = 'E';
           else if (r.type === 'bigkey' || (r.reward && r.reward.chest && r.reward.chest.type === 'bossKey' && !P.bossKey[did])) icon = P.bossKey[did] ? '' : 'K';

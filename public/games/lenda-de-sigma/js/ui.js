@@ -560,7 +560,7 @@
         G.draw(ctx, 'crystal_' + c, cx, cy, has ? undefined : { tint: 'rgba(20,20,40,0.85)' });
       });
       G.draw(ctx, 'iconCoin', ix, y + 110); G.text(String(P.coins), ix + 12, y + 110, '#ffd84a');
-      G.text('♥ ' + (P.heartPieces % 4) + '/4', ix + 52, y + 110, '#ff8a9a');
+      { const k = P.heartPieces % 4; G.draw(ctx, 'heartEmpty', ix + 52, y + 110); for (let q = 0; q < k; q++) G.draw(ctx, 'heartQ' + q, ix + 52, y + 110); if (k) G.draw(ctx, 'heartCostura', ix + 52, y + 110); G.text(k + '/4', ix + 63, y + 110, '#ff8a9a'); }
       G.text(G.fmtTime(P.playTime), ix, y + 124, '#9a98b0');
       G.text('Progresso ' + G.completion() + '%', ix, y + 136, '#9a98b0');
       if (G.quest) { G.draw(ctx, 'lens', ix - 1, y + 146); G.text('Lentes ' + G.quest.lenses() + '/5', ix + 12, y + 148, '#7ae4ff'); }
@@ -810,18 +810,24 @@
       const grd = ctx.createLinearGradient(0, 0, 0, 30);
       grd.addColorStop(0, 'rgba(6,4,16,0.6)'); grd.addColorStop(1, 'rgba(6,4,16,0)');
       ctx.fillStyle = grd; ctx.fillRect(0, 0, W, 30);
-      // corações (o último cheio pulsa com vida baixa)
+      // corações em quartos, como nos Zeldas antigos: cada ponto de vida é um quarto (alto-esq., alto-dir.,
+      // baixo-dir., baixo-esq.); o coração incompleto mostra a costura e o último pulsa com vida baixa
       const hearts = Math.ceil(P.maxHp / 4), low = P.hp <= Math.max(2, P.maxHp * 0.25);
+      const posCor = i => [5 + (i % 10) * 10, 4 + Math.floor(i / 10) * 9];
       for (let i = 0; i < hearts; i++) {
-        const hx = 5 + (i % 10) * 10, hy = 4 + Math.floor(i / 10) * 9;
-        const fill = G.clamp(P.hp - i * 4, 0, 4) / 4;
+        const [hx, hy] = posCor(i), q = Math.ceil(G.clamp(P.hp - i * 4, 0, 4));
         G.draw(ctx, 'heartEmpty', hx, hy);
-        if (fill > 0) {
-          const s = G.spr.heartFull, cw = Math.ceil(9 * fill);
-          const pulse = low && fill > 0 && P.hp - i * 4 <= 4 ? 1 + 0.12 * Math.max(0, Math.sin(G.time * 9)) : 1;
-          if (pulse > 1) { ctx.save(); ctx.translate(hx + 4.5, hy + 4); ctx.scale(pulse, pulse); ctx.drawImage(s, 0, 0, cw * G.AR, 8 * G.AR, -4.5, -4, cw, 8); ctx.restore(); }
-          else ctx.drawImage(s, 0, 0, cw * G.AR, 8 * G.AR, hx, hy, cw, 8);
-        }
+        if (!q) continue;
+        const pulse = low && P.hp - i * 4 <= 4 ? 1 + 0.12 * Math.max(0, Math.sin(G.time * 9)) : 1;
+        if (pulse > 1) { ctx.save(); ctx.translate(hx + 4.5, hy + 4); ctx.scale(pulse, pulse); ctx.translate(-hx - 4.5, -hy - 4); }
+        if (q === 4) G.draw(ctx, 'heartFull', hx, hy);
+        else { for (let k = 0; k < q; k++) G.draw(ctx, 'heartQ' + k, hx, hy); G.draw(ctx, 'heartCostura', hx, hy); }
+        if (pulse > 1) ctx.restore();
+      }
+      // quartos que acabaram de se perder: piscam em branco e caem do coração
+      for (const c of this.quartosPerdidos || []) {
+        const [hx, hy] = posCor(c.i), k = c.t / 0.45;
+        G.draw(ctx, 'heartQ' + c.q, hx, hy + k * k * 5, { white: k < 0.35, alpha: 1 - k });
       }
       // nível e XP
       const hy2 = 5 + Math.ceil(hearts / 10) * 9;
@@ -861,6 +867,10 @@
     },
     updateHUD(dt) {
       const P = G.P; if (!P) return;
+      // cada quarto de coração perdido vira uma lasca animada no HUD
+      const hp = Math.ceil(P.hp), perdidos = this.quartosPerdidos = (this.quartosPerdidos || []).filter(c => (c.t += dt) < 0.45);
+      if (this.hpVisto !== undefined && this.pVisto === P && hp < this.hpVisto) for (let j = hp; j < this.hpVisto; j++) perdidos.push({ i: Math.floor(j / 4), q: j % 4, t: 0 });
+      this.hpVisto = hp; this.pVisto = P;
       if (P.hp > 0 && P.hp <= Math.max(2, P.maxHp * 0.25)) { this.lowT -= dt; if (this.lowT <= 0) { this.lowT = 1.1; G.sfx('lowhp'); } }
     }
   };

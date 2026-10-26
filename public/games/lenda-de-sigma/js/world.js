@@ -7,6 +7,11 @@
   const T = G.T, TP = G.TP;
   const RW = 48, RH = 32, COLS = 3, ROWS = 3, MW = RW * COLS, MH = RH * ROWS;
   const REG = [['montanha', 'castelo', 'vulcao'], ['floresta', 'vila', 'lago'], ['pantano', 'planicie', 'deserto']];
+  // centro da Vila Gauss (casas, praça e moradores; tiles 10..38 × 5..27 da região): nenhum inimigo nasce,
+  // entra ou atira ali dentro
+  const VILA = { x: (RW + 10) * 16, y: (RH + 5) * 16, w: 29 * 16, h: 23 * 16 };
+  const naVila = (x, y, w, h) => x < VILA.x + VILA.w && x + w > VILA.x && y < VILA.y + VILA.h && y + h > VILA.y;
+  G.naVila = naVila;
   const REGION_INFO = {
     vila: { name: 'Vila Gauss', sub: 'onde tudo começa', music: 'village' },
     lago: { name: 'Lago Bernoulli', sub: 'águas da lei dos grandes números', music: 'field' },
@@ -49,6 +54,7 @@
   // ------------------------------------------------------------------
   G.rectBlocked = (x, y, w, h, ent, o = {}) => {
     const m = G.map;
+    if (ent && ent.isEnemy && m.kind === 'overworld' && naVila(x, y, w, h)) return true;
     const tx0 = Math.floor(x / 16), tx1 = Math.floor((x + w - 0.001) / 16), ty0 = Math.floor(y / 16), ty1 = Math.floor((y + h - 0.001) / 16);
     for (let ty = ty0; ty <= ty1; ty++) for (let tx = tx0; tx <= tx1; tx++) {
       const tp = TP[m.get(tx, ty)];
@@ -563,6 +569,16 @@
     update(dt) {
       if (G.map.kind !== 'overworld') return;
       for (const s of G.spawners) s.update(dt);
+      // rede de segurança da vila (roda antes de desenhar): quem atravessa paredes, como os fantasmas,
+      // volta para onde estava; tiros se desfazem na divisa
+      for (const e of G.ents) {
+        if (e.dead) continue;
+        if (e.isEnemy && !e.isBoss) {
+          if (!naVila(e.x, e.y, e.w, e.h)) { e.foraX = e.x; e.foraY = e.y; }
+          else if (e.foraX !== undefined) { e.x = e.foraX; e.y = e.foraY; }
+          else { e.dead = true; G.fx.smoke(e.cx, e.cy, 6, '#e8e0f0', 30); }
+        } else if (e instanceof G.EShot && naVila(e.x, e.y, e.w, e.h)) { e.dead = true; G.fx.spark(e.cx, e.cy, '#bff4ff', 6); }
+      }
       const p = G.player; if (!p) return;
       const reg = this.regionAt(p.cx, p.cy);
       if (reg !== this.curRegion) {
