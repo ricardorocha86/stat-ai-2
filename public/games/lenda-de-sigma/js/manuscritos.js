@@ -241,24 +241,41 @@
       x.fillStyle = '#ff8a94'; x.fillRect(18, 18, 2, 2);
       c.lw = 16; c.lh = 16; SPR.manuscrito = c;
     }
-    { // Pena dos Mestres: pena de escrever com bico de ouro (aponta para a direita, cabo em x=0)
-      const c = G.canvas(44, 12), x = c.getContext('2d');
-      x.fillStyle = '#2a3a6a';
-      x.beginPath(); x.moveTo(4, 6); x.quadraticCurveTo(16, -1.5, 33, 4.6); x.lineTo(33, 7.4); x.quadraticCurveTo(16, 13.5, 4, 6); x.fill();
-      x.fillStyle = '#f6f2ff';
-      x.beginPath(); x.moveTo(5.5, 6); x.quadraticCurveTo(16, 0.4, 32, 5.2); x.lineTo(32, 6.8); x.quadraticCurveTo(16, 11.6, 5.5, 6); x.fill();
-      x.strokeStyle = '#9ab4ec'; x.lineWidth = 0.7;
-      for (let i = 9; i < 31; i += 3) { x.beginPath(); x.moveTo(i, 6); x.lineTo(i - 2.5, 2.6); x.moveTo(i, 6); x.lineTo(i - 2.5, 9.4); x.stroke(); }
-      x.fillStyle = '#c8a040'; x.fillRect(0, 5, 34, 2);
-      x.fillStyle = '#fff0c0'; x.fillRect(0, 5, 34, 0.8);
-      x.fillStyle = '#6a4a10'; x.beginPath(); x.moveTo(31, 3.2); x.lineTo(44, 6); x.lineTo(31, 8.8); x.fill();
-      x.fillStyle = '#ffd84a'; x.beginPath(); x.moveTo(32, 4.1); x.lineTo(42.6, 6); x.lineTo(32, 7.9); x.fill();
-      x.fillStyle = '#fff6c0'; x.fillRect(33, 4.8, 6, 0.6);
-      x.fillStyle = '#2a2aa0'; x.fillRect(35, 5.7, 7, 0.6);
-      c.lw = 22; c.lh = 6; SPR.swordBlade6 = c;
+    { // Espada Fênix: lâmina ondulada de fogo (núcleo branco, brasa nas bordas) e guarda de asas de
+      // fênix em ouro; aponta para a direita, cabo em x=0. Um pouco maior que as outras (24×8).
+      const p = new G.Paint(48, 16), MEIO = 8;
+      // pomo de ouro com rubi e cabo de couro vermelho trançado
+      p.ell(2.2, MEIO, 2.2, 2.4, (nx, ny) => (ny < -0.3 ? '#fff0a0' : nx + ny < 0.4 ? '#e8b43a' : '#8a5a14'));
+      p.px(2, 7, '#ff5a3a'); p.px(2, 8, '#a8180c');
+      for (let x = 4; x <= 9; x++) for (let y = 6; y <= 9; y++) p.px(x, y, (x + y) % 3 === 0 ? '#3a0c06' : y === 6 ? '#a8381a' : '#6e1a0c');
+      // guarda: duas asas de penas que varrem para a frente, por cima e por baixo
+      const ouro = (x, y) => (y < 2 || y > 13 ? '#fff0a0' : x <= 10 ? '#8a5a14' : x === 11 ? '#e8b43a' : '#ffd23a');
+      const asa = [[10, 6], [10, 2], [12, 0.2], [15.5, 0.8], [13.2, 2.2], [16.5, 2.6], [13.5, 4], [15, 5], [12.5, 6]];
+      p.poly(asa, ouro); p.poly(asa.map(([x, y]) => [x, 16 - y]), ouro);
+      p.rect(10, 5, 3, 6, '#c8902a'); p.rect(12, 5, 1, 6, '#ffd23a');
+      p.px(11, 7, '#ffb090'); p.px(12, 7, '#ff3a1a'); p.px(11, 8, '#ff3a1a'); p.px(12, 8, '#a8180c');
+      // lâmina: borda ondulada (flamberge) que afina na ponta; do miolo branco à borda em brasa
+      const meia = x => (2.9 + 0.6 * Math.sin(x * 0.62)) * (x > 38 ? Math.max(0, (47.5 - x) / 9.5) : 1);
+      for (let x = 14; x <= 47; x++) {
+        const hw = meia(x);
+        for (let y = 0; y < 16; y++) {
+          const dy = y + 0.5 - MEIO, t = Math.abs(dy) / hw;
+          if (t > 1) continue;
+          p.px(x, y, t < 0.32 ? '#fffbe0' : t < 0.58 ? '#ffe04a' : t < 0.82 ? '#ff9a1a' : dy < 0 ? '#ff5a1a' : '#c82a10');
+        }
+      }
+      // línguas de fogo nos dois fios, inclinadas para trás como chama que corre com o golpe
+      const lingua = (x, alt, lado) => {
+        const borda = lado < 0 ? Math.floor(MEIO - meia(x)) : Math.ceil(MEIO + meia(x)) - 1;
+        for (let k = 1; k <= alt; k++) p.px(x - Math.floor(k * 0.7), borda + lado * k, k === alt ? '#ff5a1a' : k === 1 ? '#ffd23a' : '#ff9a1a');
+      };
+      for (const [x, a] of [[19, 3], [25, 2], [30, 3], [36, 2], [41, 2]]) lingua(x, a, -1);
+      for (const [x, a] of [[22, 2], [28, 3], [33, 2], [39, 2]]) lingua(x, a, 1);
+      p.outline({ k: -0.82 });
+      const c = p.toCanvas(); SPR.swordBlade6 = c;
       const ic = G.canvas(32, 32), y = ic.getContext('2d');
-      y.translate(5, 27); y.rotate(-Math.PI / 4); y.drawImage(c, 0, -6, 34, 9.3);
-      ic.lw = 16; ic.lh = 16; SPR.espIcon5 = ic; SPR.penaMestresIcon = ic;
+      y.translate(4, 28); y.rotate(-Math.PI / 4); y.drawImage(c, 0, -6.8, 40.8, 13.6);
+      ic.lw = 16; ic.lh = 16; SPR.espIcon5 = ic; SPR.espadaFenixIcon = ic; SPR.penaMestresIcon = ic;
     }
   });
 
@@ -1113,17 +1130,38 @@
     if (kind === 'manuscrito') { if (!lista().includes(n)) lista().push(n); return; }
     if (kind === 'penaMestres') {
       const p = G.player;
-      if (p) { p.state = 'hold'; p.holdItem = 'penaMestresIcon'; }
+      if (p) { p.state = 'hold'; p.holdItem = 'espadaFenixIcon'; }
       G.cutscene++;
       try {
         G.equip.ganhar('espada', 5); G.sfx('fanfare'); await G.wait(0.3);
-        await G.ui.banner('penaMestresIcon', 'PENA DOS MESTRES!', 'Uma pena de escrever com bico de ouro, molhada na tinta dos sete manuscritos: a arma mais forte do reino.', { color: '#7ae4ff' });
+        await G.ui.banner('espadaFenixIcon', 'ESPADA FÊNIX!', 'Uma lâmina de fogo que arde com a chama das ideias dos sete mestres e nunca se apaga: a arma mais forte do reino.', { color: '#ffa040' });
       } finally { G.cutscene--; if (p && p.state === 'hold') { p.state = 'normal'; p.holdItem = null; } }
       return;
     }
     return give0.call(this, kind, n, o);
   };
-  if (G.SWORD_FX) G.SWORD_FX[5] = { body: '#eef0ff', edge: '#4a4aff' };
+  // (o prêmio já foi a Pena dos Mestres: o tipo 'penaMestres' e a flag continuam, para os saves antigos)
+  if (G.SWORD_FX) G.SWORD_FX[5] = { body: '#ffc870', edge: '#ff5a1a', fogo: ['#ffd23a', '#ff8a1a', '#ff4a1a', '#ffffff'] };
+
+  // chamas vivas na Espada Fênix: brilho tremulando ao longo da lâmina, luz quente e brasas que sobem
+  const lamina0 = G.Player.prototype.drawSword;
+  G.Player.prototype.drawSword = function (ctx, hx, hy) {
+    lamina0.call(this, ctx, hx, hy);
+    const l = this.lamina, P0 = G.P;
+    if (!l || !P0 || P0.swordLv !== 5 || (P0.escudo && P0.usaEscudo)) return;
+    const cs = Math.cos(l.ang), sn = Math.sin(l.ang), cam = G.cam;
+    G.light.add(l.hx + cs * 13 * l.len, l.hy + sn * 13 * l.len, 46, '#ff8a3a', 0.85, 0.5);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 6; i++) {
+      const d = (7 + i * 2.6) * l.len, sobe = 1.5 + 1.2 * Math.sin(G.time * 23 + i * 1.7);
+      G.glow(ctx, l.hx + cs * d, l.hy + sn * d - sobe, 3.2 + Math.sin(G.time * 19 + i * 2.3), i % 2 ? '#ff7a1a' : '#ffb03a', 0.45);
+    }
+    ctx.restore();
+    if (Math.random() < 0.7) {
+      const d = G.rf(6, 21) * l.len;
+      G.fx.spawn({ x: l.hx + cs * d + cam.x, y: l.hy + sn * d + cam.y, vx: G.rf(-10, 10), vy: -G.rf(25, 55), life: G.rf(0.3, 0.55), color: G.pick(['#ffd23a', '#ff8a1a', '#ff4a1a']), size: 1, drag: 0.6 });
+    }
+  };
 
   // ------------------------------------------------------------------
   //  Florence: o acervo e o prêmio dos sete
@@ -1141,8 +1179,8 @@
     if (p.flags.florenceAcervo && !p.flags.penaMestres) {
       if (k >= MESTRES.length) {
         await say('Florence', 'Os SETE! Pascal e Fermat, Bernoulli, Bayes, Laplace, Pearson, Fisher e Breiman. O acervo está completo!', o);
-        await say('Florence', 'A Florence Nightingale mudou hospitais inteiros com relatórios e gráficos. Dizem que a pena é mais poderosa que a espada...', o);
-        await say('Florence', 'Então tome a ^yPena dos Mestres^0: molhei a ponta na tinta dos sete manuscritos.', o);
+        await say('Florence', 'Os mestres se foram, mas as ideias deles nunca morreram: renascem em cada pessoa que aprende, como a fênix renasce das cinzas.', o);
+        await say('Florence', 'Então tome a ^yEspada Fênix^0. A lâmina arde com a chama das sete ideias, e essa chama não se apaga.', o);
         p.flags.penaMestres = true;
         await G.give('penaMestres');
         await say('Florence', 'Cada golpe dela carrega quase trezentos e cinquenta anos de ideias. Use bem!', o);
@@ -1193,7 +1231,7 @@
       if (p.flags.florenceAcervo) escreve('Peça uma pista à Florence, na enfermaria da Vila Gauss.', '#c8c8e0');
       else escreve('Converse com a Florence, na Vila Gauss, quando tiver alguns cristais.', '#c8c8e0');
     }
-    const premio = p.flags.penaMestres ? 'Pena dos Mestres: recebida!' : 'Junte os sete: a Florence tem um presente.';
+    const premio = p.flags.penaMestres ? 'Espada Fênix: recebida!' : 'Junte os sete: a Florence tem um presente.';
     G.text(premio, px + 7, y + h - 14, p.flags.penaMestres ? '#7aff8a' : '#9a98b0');
   };
   const mapa0 = G.drawMapExtra;

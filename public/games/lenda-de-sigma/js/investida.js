@@ -83,7 +83,7 @@
     if (!usando()) { this.guarda = false; this.guardaT = 0; return; }
     if (!this.guarda && st0 === 'attack' && this.state === 'normal' && G.input.down('a') && !this.carry) {
       this.guarda = true; this.guardaT = 0; G.sfx('guarda');
-      if (!P().flags.dicaInvestida) { P().flags.dicaInvestida = true; G.ui.toast('ÉGIDE! Segure até o sino encher (95%) e solte para a INVESTIDA. Tiros de frente voltam para quem atirou!', '#7ae4ff'); }
+      if (!P().flags.dicaInvestida) { P().flags.dicaInvestida = true; G.ui.toast('ÉGIDE! Segure até o sino encher e solte para a INVESTIDA. Tiros de frente voltam para quem atirou!', '#7ae4ff'); }
     }
     if (!this.guarda) return;
     if (this.state !== 'normal' || !G.input.down('a')) {
@@ -167,6 +167,5 @@
     if (inv) { const m = this.moving; this.state = 'normal'; this.moving = true; try { draw0.call(this, ctx, cam); } finally { this.state = 'investida'; this.moving = m; } }
     else draw0.call(this, ctx, cam);
     if (this.dir !== 1) sino();
-    if (guarda && k >= 0.5) G.text(cheia ? '95%' : '68%', ex + f.x * (H + 7), ey + f.y * (H + 6) - (f.y < 0 ? 4 : f.y > 0 ? 0 : 3), cheia ? '#e8fbff' : '#9ad8ff', { align: 'center', outline: '#0a1a3a' });
   };
 })(window.G);

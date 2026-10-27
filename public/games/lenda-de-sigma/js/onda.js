@@ -14,7 +14,6 @@
   const VIAGEM = 0.2;                    // quanto cada onda leva até o seu anel
   const DANO = [2, 1.5, 1];              // multiplicador do dano em cada faixa (a lâmina dá 2)
   const DURA = 1.05;
-  const ROTULOS = ['±1σ 68%', '±2σ 95%', '±3σ 99,7%'];
   const RUNAS = ['Σ', 'μ', 'σ', '√', 'χ', '±', 'σ', '≈'];
   const sai = u => 1 - Math.pow(1 - u, 3);
   const repique = u => { const c = 1.70158; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
@@ -141,7 +140,7 @@
       }
       ctx.restore();
     }
-    // depois da luz: coluna no herói, as três ondas e os rótulos
+    // depois da luz: coluna no herói e as três ondas
     drawLate(ctx, cam) {
       const t = this.t, x = this.ox - cam.x, y = this.oy - cam.y, pal = this.pal;
       ctx.save(); ctx.translate(x, y); ctx.globalCompositeOperation = 'lighter';
@@ -168,13 +167,6 @@
         ctx.strokeStyle = '#ffffff'; ctx.globalAlpha = a; ctx.lineWidth = Math.max(0.6, w * 0.35); circ(r);
       }
       ctx.restore();
-      ctx.globalCompositeOperation = 'source-over';
-      for (let i = 0; i < 3; i++) {
-        if (!this.pousou[i]) continue;
-        const desde = t - SAI[i] - VIAGEM, a = Math.min(1, desde / 0.08) * (t < 0.82 ? 1 : Math.max(0, 1 - (t - 0.82) / 0.2));
-        ctx.globalAlpha = a;
-        G.text(ROTULOS[i], 0, R[i] * K + 2 - Math.min(1, desde / 0.15) * 3, i === 2 ? '#ffffff' : pal.body, { ctx, align: 'center', outline: '#1a0a14' });
-      }
       ctx.restore();
     }
   }

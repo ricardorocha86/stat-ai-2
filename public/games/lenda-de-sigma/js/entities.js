@@ -446,6 +446,7 @@
             const ang = kind === 'spin' ? away + Math.PI / 2 : (this.dir < 2 ? 0.25 : Math.PI / 2 - 0.35) * (Math.random() < 0.5 ? 1 : -1) + G.rf(-0.25, 0.25);
             G.fx.cut(ex, ey, ang, crit ? 34 : 26, crit ? '#ffe27a' : pal.edge);
             G.fx.streaks(ex, ey, away, crit ? 9 : 5, 160, crit ? '#ffe27a' : '#ffffff', 0.7);
+            if (pal.fogo) G.fx.burst(ex, ey, pal.fogo, crit ? 12 : 7, 70);
             if (crit) { G.shake(3, 0.15); G.fx.ring(ex, ey, 18, '#ffe27a', 0.25, 2); }
           }
         }
@@ -598,6 +599,7 @@
         a0 = ang - sgn * Math.min(Math.PI * 1.75, k * Math.PI * 2.2);
         fade = Math.min(1, (0.42 - this.atkT) / 0.1);
       } else if (this.spinCharging) { ang = base; }
+      this.lamina = ang === null ? null : { ang, len, hx, hy }; // para efeitos presos à lâmina (chamas da Espada Fênix)
       if (ang === null) return;
       const P = G.P;
       const glow = this.spinCharging && this.spinCharge >= 0.75;
@@ -1193,29 +1195,41 @@
   G.Plate = Plate;
 
   // cristal de resposta (puzzle físico)
+  // o cristal surge do pedestal e só aceita golpes depois de pronto: o golpe que respondeu uma
+  // pergunta não responde a seguinte, cujos cristais nascem no mesmo lugar
+  const SURGE = 0.6;
   class AnswerCrystal extends Ent {
     get darkGlow() { return 24; }
     constructor(x, y, label, correct, onAnswer, o = {}) { super(x + 2, y + 6, 12, 10); this.solid = true; this.label = label; this.correct = correct; this.onAnswer = onAnswer; this.o = o; this.color = o.color || '#7ae4ff'; this.flash = 0; }
     onHit(d, sx, sy, kind) {
-      if (this.broken || this.flash > 0) return false;
+      if (this.broken || this.flash > 0 || this.t < SURGE) return false;
       this.flash = 0.4;
       this.onAnswer(this);
       return false;
     }
     shatter() { this.broken = true; this.solid = false; this.dead = true; G.fx.burst(this.cx, this.cy - 6, ['#ffffff', this.color], 14, 70, { grav: 150 }); }
-    update(dt) { this.t += dt; if (this.flash > 0) this.flash -= dt; }
+    update(dt) {
+      if (!this.t) { G.fx.ring(this.cx, this.cy - 2, 9, this.color, 0.35, 1.5); G.fx.spark(this.cx, this.cy - 2, '#ffffff', 5); }
+      this.t += dt; if (this.flash > 0) this.flash -= dt;
+    }
+    surgir() { const k = Math.min(1, this.t / SURGE); return 1 - (1 - k) * (1 - k) * (1 - k); }
     draw(ctx, cam) {
-      const sx = Math.round(this.x - 2 - cam.x), sy = Math.round(this.y - 16 - cam.y);
-      G.light.add(sx + 8, sy + 8, 30, this.color, 0.6, 0.25);
-      const bob = Math.round(Math.sin(this.t * 3 + this.x) * 1.5);
+      const sx = Math.round(this.x - 2 - cam.x), sy = Math.round(this.y - 16 - cam.y), e = this.surgir();
+      G.light.add(sx + 8, sy + 8, 30 * e, this.color, 0.6, 0.25);
+      const bob = Math.round(Math.sin(this.t * 3 + this.x) * 1.5 * e + (1 - e) * 9);
       G.rect(ctx, sx + 2, sy + 18, 12, 4, '#3a3a5a'); G.rect(ctx, sx + 3, sy + 17, 10, 2, '#6a6a8a');
-      G.shadow(ctx, sx + 8, sy + 19, 10, 0.3);
+      G.shadow(ctx, sx + 8, sy + 19, 10 * e, 0.3);
       const c = this.color;
+      ctx.save(); ctx.globalAlpha = e;
       for (let y = 0; y < 14; y++) { const hw = y < 5 ? y + 1 : Math.max(0, 6 - (y - 5) * 0.7); ctx.fillStyle = y < 5 ? '#ffffff' : c; ctx.fillRect(Math.round(sx + 8 - hw), sy + 1 + y + bob, Math.round(hw * 2), 1); }
       ctx.fillStyle = '#ffffff70'; ctx.fillRect(sx + 6, sy + 4 + bob, 2, 6);
-      if (this.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fillRect(sx + 2, sy + bob, 12, 16); }
+      if (this.flash > 0 || e < 1) { ctx.fillStyle = 'rgba(255,255,255,' + Math.max(this.flash > 0 ? 0.6 : 0, (1 - e) * 0.8) + ')'; ctx.fillRect(sx + 2, sy + bob, 12, 16); }
+      ctx.restore();
     }
-    drawLate(ctx, cam) { const sx = Math.round(this.x - 2 - cam.x), sy = Math.round(this.y - 16 - cam.y); G.puzTag(ctx, sx + 8, sy - 11, this.label, '#ffe27a'); }
+    drawLate(ctx, cam) {
+      const sx = Math.round(this.x - 2 - cam.x), sy = Math.round(this.y - 16 - cam.y);
+      ctx.save(); ctx.globalAlpha = this.surgir(); G.puzTag(ctx, sx + 8, sy - 11, this.label, '#ffe27a'); ctx.restore();
+    }
   }
   G.AnswerCrystal = AnswerCrystal;
 

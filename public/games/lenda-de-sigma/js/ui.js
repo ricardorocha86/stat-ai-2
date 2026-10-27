@@ -513,7 +513,7 @@
       // equipamento: X troca a peça da linha escolhida
       const ex = x + 76, ew = 172, sel = this.eq || 0;
       G.text('EQUIPAMENTO', ex, y, '#ffd84a');
-      const swords = ['Espada de Madeira', 'Espada de Ferro', 'Espada de Prata', 'Espada Gaussiana', 'Espada do Amanhã', 'Pena dos Mestres'];
+      const swords = ['Espada de Madeira', 'Espada de Ferro', 'Espada de Prata', 'Espada Gaussiana', 'Espada do Amanhã', 'Espada Fênix'];
       const armors = ['Túnica', 'Couraça de Couro', 'Cota de Malha', 'Armadura de Silício'];
       const linha = (i, icone, nome, bonus, todos, tem, atual) => {
         const yy = y + 12 + i * 34;
