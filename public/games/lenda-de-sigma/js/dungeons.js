@@ -20,7 +20,7 @@
         S: { at: [1, 2], type: 'start', lesson: 'media' },
         C: { at: [2, 2], type: 'combat', enemies: [['gosma', 2], ['cogumau', 2], ['barras', 1]], feat: 'pillars', clearReward: { type: 'key' } },
         Q: { at: [0, 2], type: 'bonus', qb: ['coins', 'heartPiece', 'coins', 'coin'], oracle: true, feat: 'pots' },
-        H: { at: [1, 1], type: 'balance', opt: { blocks: 3 }, feat: 'pitN' },
+        H: { at: [1, 1], type: 'balance', opt: { blocks: 3, linhaBalanca: 5.5 }, feat: 'fossoChefe' },
         L: { at: [0, 1], type: 'level', reward: { chest: { type: 'key' } } },
         M: { at: [2, 1], type: 'plates', opt: { metric: 'mean' }, reward: { chest: { type: 'key' } } },
         K: { at: [0, 0], type: 'braziers', opt: { rule: 'acimaMedia' }, reward: { chest: { type: 'bossKey' } }, dark: true },
@@ -788,7 +788,25 @@
       case 'pillars': for (const [lx, ly] of [[5, 3], [18, 3], [5, 9], [18, 9]]) setL(lx, ly, T.PILLAR); break;
       case 'pillars6': for (const [lx, ly] of [[4, 3], [11, 3], [19, 3], [4, 9], [12, 9], [19, 9]]) setL(lx, ly, T.PILLAR); break;
       case 'pitband': for (let lx = 1; lx < RWt - 1; lx++) for (const ly of [8, 9]) setL(lx, ly, T.PIT); break;
-      case 'pitN': for (let lx = 1; lx < RWt - 1; lx++) setL(lx, 2, T.PIT); break;
+      case 'fossoChefe': {
+        // Fosso em U: duas casas de largura em cada acesso ao patamar do chefe.
+        for (let ly = 1; ly <= 4; ly++) for (let lx = 8; lx <= 15; lx++) {
+          const patamar = lx >= 10 && lx <= 13 && ly <= 2;
+          setL(lx, ly, patamar ? T.FLOOR2 : T.PIT);
+        }
+        for (const lx of [11, 12]) for (let ly = 1; ly <= 2; ly++) setL(lx, ly, T.CARPET);
+        for (const lx of [7, 16]) add(new G.Brazier(...L(lx, 2), { lit: true }), r.idx);
+        add(new G.Decal(...L(10, 1), 4 * TS, 5 * TS, (ctx, x, y) => {
+          ctx.strokeStyle = '#c8a85a'; ctx.lineWidth = 1;
+          ctx.strokeRect(x + 1.5, y + 1.5, 4 * TS - 3, 2 * TS - 3);
+          // Marcas discretas de impulso e de pouso, alinhadas com a porta.
+          for (const dy of [TS + 6, 4 * TS + 5]) {
+            ctx.beginPath(); ctx.moveTo(x + 27, y + dy + 4); ctx.lineTo(x + 32, y + dy); ctx.lineTo(x + 37, y + dy + 4); ctx.stroke();
+          }
+        }), r.idx);
+        add(new G.Sign(...L(18, 3), 'O fosso protege a entrada do guardião. As ^yBotas do Salto^0 permitem cruzar as ^gduas casas^0 de vazio.', { name: 'Fosso do Guardião' }), r.idx);
+        break;
+      }
       case 'pits': for (const [lx, ly] of [[5, 4], [6, 4], [5, 5], [6, 5], [17, 7], [18, 7], [17, 8], [18, 8], [11, 9], [12, 9]]) setL(lx, ly, T.PIT); break;
       case 'barrierN': for (let lx = 1; lx < RWt - 1; lx++) setL(lx, 2, T.BARRIER); break;
       case 'lavaband': for (let lx = 1; lx < RWt - 1; lx++) for (let ly = 4; ly <= 9; ly++) setL(lx, ly, lava); break;

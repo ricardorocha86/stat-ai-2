@@ -175,7 +175,7 @@
     }), r.idx);
     // gangorra
     let ang = 0, done = c.solved;
-    c.add(new Board(r.px + x0 * TS, r.py + 3 * TS, N * TS, 40, (ctx, x, y) => {
+    c.add(new Board(r.px + x0 * TS, r.py + (c.opt.linhaBalanca ?? 3) * TS, N * TS, 40, (ctx, x, y) => {
       const mean = st.mean(blocks.map(valOf));
       const want = done ? 0 : G.clamp((mean - target) * 0.06, -0.32, 0.32);
       ang = G.lerp(ang, want, 0.12);

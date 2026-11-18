@@ -200,6 +200,7 @@
       this.starT = 0; this.superT = 0; this.pushT = 0;
       this.lastSafe = { x, y }; this.coldT = 0; this.cold = false; this.stompChain = 0;
       this.bombCD = 0; this.shotCD = 0; this.fallT = 0; this.moving = false; this.holdItem = null;
+      this.aguardaSoltarDirecao = false;
       this.alwaysUpdate = false;
     }
     get speed() { return 82; }
@@ -219,6 +220,12 @@
       // --- direção / movimento ---
       const canMove = this.state === 'normal';
       const ax = canMove ? inp.axis() : { x: 0, y: 0 };
+      // A direção segurada durante a queda só volta a mover após ser solta.
+      if (this.aguardaSoltarDirecao) {
+        if (!inp.axis().x && !inp.axis().y) this.aguardaSoltarDirecao = false;
+        ax.x = 0; ax.y = 0;
+        this.vx = 0; this.vy = 0;
+      }
       this.moving = !!(ax.x || ax.y);
       if (this.moving && !this.spinCharging) {
         if (ax.x && ax.y) {
@@ -282,8 +289,8 @@
           }
           else { if (this.spinCharge >= 0.75) this.startSpin(); this.spinCharging = false; this.spinCharge = 0; }
         }
-        // sem as botas, um pulinho: fica abaixo de 5 px (não cruza cercas nem pedras) e não vence um buraco de 1 tile
-        if (inp.pressed('b') && this.z <= 0) { this.vz = P.items.boots ? 168 : 68; this.z = 0.01; G.sfx('jump'); }
+        // Sem as botas, o pulinho fica abaixo de 5 px e não vence fossos de duas casas.
+        if (inp.pressed('b') && this.z <= 0 && this.allSafe()) { this.vz = P.items.boots ? 168 : 68; this.z = 0.01; G.sfx('jump'); }
         if (inp.pressed('sw')) G.cycleSub();
         if (P.sub === 'bomb' && P.items.bombs && inp.pressed('c')) this.placeBomb();
         if (P.sub === 'beam' && P.items.beam) {
@@ -338,9 +345,56 @@
       } else this.coldT = 0;
     }
     allSafe() {
-      const pts = [[this.x, this.y], [this.x + this.w - 1, this.y], [this.x, this.y + this.h - 1], [this.x + this.w - 1, this.y + this.h - 1]];
-      for (const [px, py] of pts) { const tp = G.TP[G.map.tileAtPx(px, py)]; if (tp.hazard && !(tp.lava && G.P.items.suit)) return false; }
+      return this.posicaoSegura(this.x, this.y);
+    }
+    posicaoSegura(x, y, margem = 0) {
+      if (G.rectBlocked(x, y, this.w, this.h, this)) return false;
+      if (G.map.kind === 'dungeon') {
+        const sala = G.dun.roomAt(x + this.w / 2, y + this.h / 2);
+        if (!sala || sala.idx !== G.curRoom) return false;
+      }
+      const x0 = Math.floor((x - margem) / 16), x1 = Math.floor((x + this.w + margem - 0.001) / 16);
+      const y0 = Math.floor((y - margem) / 16), y1 = Math.floor((y + this.h + margem - 0.001) / 16);
+      for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
+        const tp = G.TP[G.map.get(tx, ty)];
+        if (tp.hazard && !(tp.lava && G.P.items.suit)) return false;
+      }
       return true;
+    }
+    encontrarRetornoSeguro() {
+      const origem = this.lastSafe, origemValida = this.posicaoSegura(origem.x, origem.y);
+      const dx = origem.x - this.x, dy = origem.y - this.y, distancia = Math.hypot(dx, dy);
+      const recuo = distancia > 0 ? { x: dx / distancia, y: dy / distancia } : { x: 0, y: 0 };
+      const candidatos = [{ x: origem.x + recuo.x * 12, y: origem.y + recuo.y * 12 }, origem];
+      for (let raio = 2; raio <= 64; raio += 2) {
+        for (const [ox, oy] of [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+          candidatos.push({ x: origem.x + ox * raio, y: origem.y + oy * raio });
+        }
+      }
+      for (const margem of [8, 4, 0]) for (const ponto of candidatos) {
+        if (!this.posicaoSegura(ponto.x, ponto.y, margem)) continue;
+        // Não atravessa paredes, blocos ou outro braço do fosso ao recuar.
+        const passos = Math.ceil(Math.hypot(ponto.x - origem.x, ponto.y - origem.y) / 2);
+        let caminhoLivre = true;
+        if (origemValida) for (let i = 1; i <= passos; i++) {
+          if (!this.posicaoSegura(G.lerp(origem.x, ponto.x, i / passos), G.lerp(origem.y, ponto.y, i / passos))) { caminhoLivre = false; break; }
+        }
+        if (caminhoLivre) return ponto;
+      }
+      // Um piso pode ter mudado desde o último apoio (pontes e enigmas).
+      // Se o ponto antigo ficou inválido, busca chão da mesma sala antes de desistir.
+      const sala = G.map.kind === 'dungeon' ? G.map.rooms.find(r => r.idx === G.curRoom) : null;
+      const x0 = sala ? sala.x0 : 0, y0 = sala ? sala.y0 : 0;
+      const x1 = sala ? sala.x0 + 24 : G.map.w, y1 = sala ? sala.y0 + 13 : G.map.h;
+      let alternativa = null, menorDistancia = Infinity;
+      for (let ty = y0; ty < y1; ty++) for (let tx = x0; tx < x1; tx++) {
+        const x = tx * 16 + (16 - this.w) / 2, y = ty * 16 + (16 - this.h) / 2;
+        const distanciaOrigem = Math.hypot(x - origem.x, y - origem.y);
+        if (distanciaOrigem < menorDistancia && this.posicaoSegura(x, y)) {
+          alternativa = { x, y }; menorDistancia = distanciaOrigem;
+        }
+      }
+      return alternativa;
     }
     unstick() {
       if (!G.rectBlocked(this.x, this.y, this.w, this.h, this, { ghostEnts: true })) return;
@@ -375,8 +429,13 @@
       if (kind === 'lava') G.fx.burst(this.cx, this.cy, ['#ffd040', '#ff7a1a'], 12, 60);
     }
     respawnSafe() {
-      this.x = this.lastSafe.x; this.y = this.lastSafe.y; this.state = 'normal'; this.z = 0; this.vz = 0;
-      this.kbT = 0; this.vx = this.vy = 0;
+      const retorno = this.encontrarRetornoSeguro();
+      if (!retorno) { G.playerDie(); return; }
+      this.x = retorno.x; this.y = retorno.y; this.lastSafe = { x: this.x, y: this.y };
+      this.state = 'normal'; this.z = 0; this.vz = 0; this.fallT = 0;
+      this.kbT = 0; this.kbx = this.kby = 0; this.vx = this.vy = 0; this.moving = false;
+      this.spinCharging = false; this.spinCharge = 0; this.charge = 0; this.pushT = 0;
+      this.aguardaSoltarDirecao = true;
       G.hurtPlayer(this.fallKind === 'lava' ? 4 : 2, undefined, undefined, { force: true, noKb: true });
     }
     probe(d = this.dir, reach = 12) {

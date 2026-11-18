@@ -17,6 +17,12 @@ A página inicial anuncia o jogo como novidade (`components/games/SigmaGameAnnou
 
 O jogo é servido em `public/games/lenda-de-sigma`, fora do bundle React, e acompanha o build e a publicação padrão do app. As adaptações locais estão em `js/game.js` (armazenamento, retomada e escala em telas pequenas) e `js/stat-ai-bridge.js` (comunicação com o app); `index.html` carrega a ponte por último. A pasta de origem é preservada.
 
+## Saltos e retorno após quedas
+
+No Templo da Média, a porta do primeiro chefe fica num patamar com tapete e moldura dourada, cercado por um fosso em U de **duas casas** de largura. As Botas do Salto são necessárias para cruzá-lo; as laterais da sala continuam livres. A balança fica abaixo do fosso. Um novo salto exige apoio no chão, evitando encadear pulinhos sobre o vazio.
+
+Após cair em buraco, água ou lava, o herói procura uma posição segura perto do último apoio, com recuo de 12 pixels quando possível e preferência por 8 pixels de folga da borda. O retorno respeita paredes, blocos e a sala atual; corredores estreitos admitem uma folga menor. A velocidade e o impulso de dano são zerados, e a direção mantida durante a queda precisa ser solta antes de voltar a mover, evitando quedas automáticas em sequência.
+
 ## Herói ou heroína
 
 Depois de **Novo Jogo** (e da confirmação de apagar o save, quando houver), uma tela pede a escolha entre **Herói** e **Heroína** com ← → e Z; X volta ao título. O save antigo só é apagado ao confirmar a escolha. A heroína (`heroina` e `heroina_suit` em `js/sprites.js`) tem o mesmo equipamento do herói, com cabelo longo e faixa.
@@ -237,6 +243,8 @@ node scripts/test-block-pulling.cjs
 node node_modules/typescript/bin/tsc --noEmit
 npm run build
 ```
+
+O teste de saltos e quedas usa o jogo real no navegador, sem login ou emulador. Com um servidor Vite em `http://localhost:4173`, execute `node scripts/test-sigma-jumps-falls.cjs`. É possível indicar outra URL em `STATAI_BASE_URL` e outro executável Chromium em `STATAI_CHROMIUM_PATH`. O teste cobre o fosso com e sem botas, quedas nas quatro direções, direção segurada, dano único, paredes, blocos, chão alterado e corredores estreitos. A captura fica em `tmp/sigma-saltos-quedas/fosso-primeira-dungeon.png`.
 
 O teste de navegador usa Playwright do runtime local do Codex e um Firestore Emulator isolado, com as regras reais do projeto e o ID `demo-statai-sigma`. Inicie o emulador em `127.0.0.1:8088` e o Vite em `localhost:3002`:
 
