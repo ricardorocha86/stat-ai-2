@@ -431,23 +431,23 @@ const sticks = (points: [number, number][]) => (
 
 export const NORMAL_ID = 'normal';
 
-// Most used in introductory statistics first: the ones the course teaches, then the inference ones.
+// Ordem didática: discretas (Bernoulli, Binomial, Geométrica, Poisson…), depois contínuas (Uniforme, Exponencial, Normal…).
 export const CALCULATORS: CalculatorCard[] = [
-  { id: NORMAL_ID, kind: 'continuous', name: 'Normal', notation: 'X ~ N(μ, σ²)', summary: 'A mais célebre. Teorema Central do Limite, intervalos de confiança, testes z.', lessonNumbers: [19, 20], tag: '8 abas', preview: curve('M2,46 C20,46 28,8 50,8 C72,8 80,46 98,46') },
+  { id: 'bernoulli', kind: 'discrete', name: 'Bernoulli', notation: 'X ~ Bern(p)', summary: 'Um único ensaio com dois resultados (0 = fracasso, 1 = sucesso).', preview: sticks([[30, 22], [70, 14]]) },
   { id: 'binomial', kind: 'discrete', name: 'Binomial', notation: 'X ~ Bin(n, p)', summary: 'Número de sucessos em n ensaios de Bernoulli independentes.', lessonNumbers: [16], preview: sticks([[14, 42], [28, 32], [42, 14], [56, 10], [70, 22], [84, 40]]) },
+  { id: 'geometrica', kind: 'discrete', name: 'Geométrica', notation: 'X ~ Geom(p)', summary: 'Número de tentativas até o primeiro sucesso. Também sem memória.', preview: sticks([[14, 8], [28, 20], [42, 28], [56, 34], [70, 40], [84, 43]]) },
   { id: 'poisson', kind: 'discrete', name: 'Poisson', notation: 'X ~ Pois(λ)', summary: 'Número de eventos raros num intervalo fixo de tempo ou espaço.', lessonNumbers: [18], preview: sticks([[12, 26], [24, 10], [36, 14], [48, 22], [60, 32], [72, 40], [84, 44]]) },
+  { id: 'binomialneg', kind: 'discrete', name: 'Binomial Negativa', notation: 'X ~ NB(r, p)', summary: 'Tentativas até obter r sucessos. Generaliza a Geométrica.', preview: sticks([[12, 36], [24, 22], [36, 10], [48, 12], [60, 20], [72, 30], [84, 40]]) },
+  { id: 'hipergeometrica', kind: 'discrete', name: 'Hipergeométrica', notation: 'X ~ HG(N, K, n)', summary: 'Amostragem sem reposição. Sucessos em n retiradas de uma população finita.', lessonNumbers: [17], preview: sticks([[14, 40], [28, 28], [42, 12], [56, 14], [70, 30], [84, 42]]) },
+  { id: 'uniformedisc', kind: 'discrete', name: 'Uniforme Discreta', notation: 'X ~ U{a, …, b}', summary: 'Cada inteiro entre a e b tem a mesma probabilidade 1/(b−a+1).', preview: sticks([[18, 14], [34, 14], [50, 14], [66, 14], [82, 14]]) },
+  { id: 'uniforme', kind: 'continuous', name: 'Uniforme Contínua', notation: 'X ~ U(a, b)', summary: 'Todos os valores no intervalo [a, b] são igualmente prováveis.', preview: curve('M2,46 L20,46 L20,12 L80,12 L80,46 L98,46') },
+  { id: 'exponencial', kind: 'continuous', name: 'Exponencial', notation: 'X ~ Exp(λ)', summary: 'Tempo entre eventos de Poisson. Propriedade da falta de memória.', preview: curve('M2,6 C12,18 22,32 40,40 C60,46 80,46 98,46') },
+  { id: NORMAL_ID, kind: 'continuous', name: 'Normal', notation: 'X ~ N(μ, σ²)', summary: 'A mais célebre. Teorema Central do Limite, intervalos de confiança, testes z.', lessonNumbers: [19, 20], tag: '8 abas', preview: curve('M2,46 C20,46 28,8 50,8 C72,8 80,46 98,46') },
   { id: 't', kind: 'continuous', name: 't de Student', notation: 'T ~ t(ν)', summary: 'Inferência sobre média quando σ é desconhecido. Caudas mais pesadas.', preview: curve('M2,44 C20,42 30,8 50,8 C70,8 80,42 98,44') },
   { id: 'chi2', kind: 'continuous', name: 'Qui-quadrado', notation: 'X ~ χ²(ν)', summary: 'Soma de Z² independentes. Testes de aderência e independência.', preview: curve('M2,46 C10,28 18,12 30,10 C50,12 70,38 98,46') },
-  { id: 'exponencial', kind: 'continuous', name: 'Exponencial', notation: 'X ~ Exp(λ)', summary: 'Tempo entre eventos de Poisson. Propriedade da falta de memória.', preview: curve('M2,6 C12,18 22,32 40,40 C60,46 80,46 98,46') },
-  { id: 'uniforme', kind: 'continuous', name: 'Uniforme Contínua', notation: 'X ~ U(a, b)', summary: 'Todos os valores no intervalo [a, b] são igualmente prováveis.', preview: curve('M2,46 L20,46 L20,12 L80,12 L80,46 L98,46') },
-  { id: 'hipergeometrica', kind: 'discrete', name: 'Hipergeométrica', notation: 'X ~ HG(N, K, n)', summary: 'Amostragem sem reposição. Sucessos em n retiradas de uma população finita.', lessonNumbers: [17], preview: sticks([[14, 40], [28, 28], [42, 12], [56, 14], [70, 30], [84, 42]]) },
-  { id: 'bernoulli', kind: 'discrete', name: 'Bernoulli', notation: 'X ~ Bern(p)', summary: 'Um único ensaio com dois resultados (0 = fracasso, 1 = sucesso).', preview: sticks([[30, 22], [70, 14]]) },
   { id: 'f', kind: 'continuous', name: 'F de Snedecor', notation: 'F ~ F(ν₁, ν₂)', summary: 'Razão de variâncias. Estatística-chave da ANOVA.', preview: curve('M2,46 C10,30 16,10 22,8 C40,12 64,40 98,46') },
-  { id: 'geometrica', kind: 'discrete', name: 'Geométrica', notation: 'X ~ Geom(p)', summary: 'Número de tentativas até o primeiro sucesso. Também sem memória.', preview: sticks([[14, 8], [28, 20], [42, 28], [56, 34], [70, 40], [84, 43]]) },
-  { id: 'uniformedisc', kind: 'discrete', name: 'Uniforme Discreta', notation: 'X ~ U{a, …, b}', summary: 'Cada inteiro entre a e b tem a mesma probabilidade 1/(b−a+1).', preview: sticks([[18, 14], [34, 14], [50, 14], [66, 14], [82, 14]]) },
   { id: 'lognormal', kind: 'continuous', name: 'Lognormal', notation: 'X ~ LogN(μ, σ²)', summary: 'log(X) é Normal. Modelos multiplicativos: finanças, biologia, rendas.', preview: curve('M2,46 C12,40 18,14 26,10 C40,8 58,38 98,46') },
   { id: 'gama', kind: 'continuous', name: 'Gama', notation: 'X ~ Γ(α, β)', summary: 'Soma de α exponenciais. Tempos de espera, modelagem de filas.', preview: curve('M2,46 C12,30 20,12 35,8 C55,4 70,30 98,46') },
-  { id: 'binomialneg', kind: 'discrete', name: 'Binomial Negativa', notation: 'X ~ NB(r, p)', summary: 'Tentativas até obter r sucessos. Generaliza a Geométrica.', preview: sticks([[12, 36], [24, 22], [36, 10], [48, 12], [60, 20], [72, 30], [84, 40]]) },
   { id: 'beta', kind: 'continuous', name: 'Beta', notation: 'X ~ Beta(α, β)', summary: 'Suporte em [0, 1]. Distribuição de probabilidades; uso em Bayes.', preview: curve('M2,46 C10,40 20,10 50,8 C80,10 90,40 98,46') },
   { id: 'weibull', kind: 'continuous', name: 'Weibull', notation: 'X ~ Weibull(k, λ)', summary: 'Análise de confiabilidade e tempo até falha em engenharia.', preview: curve('M2,46 C14,40 24,16 36,10 C50,10 68,36 98,46') },
 ];

@@ -53,8 +53,11 @@ const CalculatorCardButton: React.FC<{ card: CalculatorCard; onSelect: (id: stri
   );
 };
 
-// All calculators in one row, most used first: arrows page through it and the mouse can drag it.
-const Hub: React.FC<{ onSelect: (id: string) => void }> = ({ onSelect }) => {
+const TITULO_FAIXA = { discrete: 'Distribuições discretas', continuous: 'Distribuições contínuas' };
+
+// Uma faixa por tipo de distribuição, na ordem de CALCULATORS: as setas paginam e o mouse pode arrastar.
+const FaixaCalculadoras: React.FC<{ tipo: CalculatorCard['kind']; onSelect: (id: string) => void }> = ({ tipo, onSelect }) => {
+  const cartoes = CALCULATORS.filter(card => card.kind === tipo);
   const stripRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   const [edges, setEdges] = useState({ start: true, end: false });
@@ -122,15 +125,13 @@ const Hub: React.FC<{ onSelect: (id: string) => void }> = ({ onSelect }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight text-[--text-primary]">Calculadoras de Probabilidade</h1>
-        <p className="mt-1 max-w-3xl text-[--text-secondary]">
-          Coleção de calculadoras para estudantes e professores de Estatística, das distribuições mais usadas para as menos usadas. Escolha uma para calcular probabilidades e quantis, com gráfico.
-        </p>
-      </header>
-
-      <section aria-label="Distribuições" className="relative">
+    <section aria-labelledby={`faixa-${tipo}`}>
+      <h2 id={`faixa-${tipo}`} className="flex items-center gap-2 text-lg font-semibold text-[--text-primary]">
+        <span className={`h-2.5 w-2.5 rounded-full ${KIND_STYLES[tipo].bar}`} aria-hidden="true" />
+        {TITULO_FAIXA[tipo]}
+        <span className="text-sm font-normal text-[--text-secondary]">({cartoes.length})</span>
+      </h2>
+      <div className="relative">
         {arrow(-1)}
         <div
           ref={stripRef}
@@ -140,12 +141,28 @@ const Hub: React.FC<{ onSelect: (id: string) => void }> = ({ onSelect }) => {
           onClickCapture={handleClickCapture}
           className="flex cursor-grab select-none snap-x snap-proximity gap-4 overflow-x-auto px-1 pb-4 pt-2 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {CALCULATORS.map(card => <CalculatorCardButton key={card.id} card={card} onSelect={onSelect} />)}
+          {cartoes.map(card => <CalculatorCardButton key={card.id} card={card} onSelect={onSelect} />)}
         </div>
         {arrow(1)}
         <div className={`pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[--bg-main] to-transparent transition-opacity ${edges.start ? 'opacity-0' : 'opacity-100'}`} aria-hidden="true" />
         <div className={`pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[--bg-main] to-transparent transition-opacity ${edges.end ? 'opacity-0' : 'opacity-100'}`} aria-hidden="true" />
-      </section>
+      </div>
+    </section>
+  );
+};
+
+const Hub: React.FC<{ onSelect: (id: string) => void }> = ({ onSelect }) => {
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight text-[--text-primary]">Calculadoras de Probabilidade</h1>
+        <p className="mt-1 max-w-3xl text-[--text-secondary]">
+          Coleção de calculadoras para estudantes e professores de Estatística: distribuições discretas em cima e contínuas embaixo. Escolha uma para calcular probabilidades e quantis, com gráfico.
+        </p>
+      </header>
+
+      <FaixaCalculadoras tipo="discrete" onSelect={onSelect} />
+      <FaixaCalculadoras tipo="continuous" onSelect={onSelect} />
 
       <p className="border-t border-slate-200 pt-5 text-center text-xs text-slate-500">
         Cada calculadora oferece cálculo de probabilidades e quantis (inverso), sempre com visualização didática que reage aos parâmetros. A Normal tem também z-score, intervalo de confiança, teste de hipótese, tamanho de amostra e a tabela Z.
